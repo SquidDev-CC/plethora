@@ -1,8 +1,12 @@
-# CCJam-2016 → Petit
+# CCJam-2016 → Plethora
 
  - A 1.8.9 peripheral provider.
  - Focuses on interaction as well as getting information
  - Utilisies Forge's new capability system
+
+## Requirements
+ - Minecraft 1.8.9 with recent version of Forge (I'm using 11.15.1.1902)
+ - ComputerCraft 1.79
 
 ## Planned features
  - Meta provider system: provides metadata about objects

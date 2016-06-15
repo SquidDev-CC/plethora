@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = mc_version + "-" + mod_version
 group= "org.squiddev"
-archivesBaseName = "petit"
+archivesBaseName = "plethora"
 
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}-${project.mc_version}"
