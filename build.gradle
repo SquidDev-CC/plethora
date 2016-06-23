@@ -29,11 +29,13 @@ minecraft {
 
 repositories {
 	jcenter()
+	maven { url "http://dvs1.progwml6.com/files/maven" }
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2291/384/[module][revision](.[ext])" }
 }
 
 dependencies {
-	provided "ComputerCraft:ComputerCraft:${project.cc_version}"
+	compile "ComputerCraft:ComputerCraft:${project.cc_version}"
+	deobfCompile "mezz.jei:jei_${project.mc_version}:2.28.9.177"
 }
 
 processResources
