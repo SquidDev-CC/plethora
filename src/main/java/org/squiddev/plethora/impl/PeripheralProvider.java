@@ -12,6 +12,9 @@ import org.squiddev.plethora.registry.Module;
 
 import java.util.List;
 
+import static org.squiddev.plethora.api.reference.Reference.id;
+import static org.squiddev.plethora.api.reference.Reference.tile;
+
 /**
  * Core module
  */
@@ -20,11 +23,12 @@ public class PeripheralProvider extends Module implements IPeripheralProvider {
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			Context<TileEntity> ctx = new Context<TileEntity>(te, world, blockPos);
-			List<IMethod<TileEntity>> methods = MethodRegistry.instance.getMethods(ctx);
+			Context<TileEntity> context = new Context<TileEntity>(null, te, world, blockPos);
+			List<IMethod<TileEntity>> methods = MethodRegistry.instance.getMethods(context);
 
 			if (methods.size() > 0) {
-				return new PeripheralMethodWrapper<TileEntity>(ctx, methods);
+				UnbakedContext<TileEntity> unbakedContext = new UnbakedContext<TileEntity>(tile(te), id(world), id(blockPos));
+				return new PeripheralMethodWrapper(te, unbakedContext, methods);
 			}
 		}
 

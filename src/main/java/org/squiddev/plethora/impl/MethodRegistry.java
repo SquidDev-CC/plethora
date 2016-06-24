@@ -71,18 +71,6 @@ public final class MethodRegistry implements IMethodRegistry {
 		return Collections.unmodifiableList(result);
 	}
 
-	@Override
-	public <T> IContext<T> getContext(T target, IContext<?> parent, Object... context) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(parent, "parent cannot be null");
-		Preconditions.checkNotNull(context, "context cannot be null");
-
-		Object[] wholeContext = Arrays.copyOf(context, context.length + 1);
-		wholeContext[context.length] = parent;
-
-		return new Context<T>(target, wholeContext);
-	}
-
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getCanonicalName())) {

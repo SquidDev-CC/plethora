@@ -4,36 +4,35 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.tileentity.TileEntity;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Wrapper that packages environment
  */
-public class PeripheralMethodWrapper<T> extends MethodWrapper<T> implements IPeripheral {
-	public PeripheralMethodWrapper(Context<T> context, List<IMethod<T>> iMethods) {
-		super(context, iMethods);
-	}
+public class PeripheralMethodWrapper extends MethodWrapper<TileEntity> implements IPeripheral {
+	private final TileEntity tile;
+	private final String type;
 
-	public PeripheralMethodWrapper(Context<T> context) {
-		super(context);
+	public PeripheralMethodWrapper(TileEntity tile, IUnbakedContext<TileEntity> context, List<IMethod<TileEntity>> methods) {
+		super(context, methods);
+		this.tile = tile;
+		this.type = tile.getClass().getCanonicalName();
 	}
 
 	@Override
 	public String getType() {
-		return context.getTarget().getClass().getCanonicalName();
+		return type;
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		Object[] existing = context.getContext();
-		Object[] additional = Arrays.copyOf(existing, existing.length + 2);
-		additional[existing.length] = access;
-		additional[existing.length + 1] = luaContext;
-
-		return callMethod(new Context<T>(context.getTarget(), additional), luaContext, method, args);
+		return callMethod(context.withContext(id(access), id(luaContext)), luaContext, method, args);
 	}
 
 	@Override
@@ -46,6 +45,9 @@ public class PeripheralMethodWrapper<T> extends MethodWrapper<T> implements IPer
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return super.equals(other);
+		if (this == other) return true;
+		if (other == null || !(other instanceof PeripheralMethodWrapper)) return false;
+
+		return tile == ((PeripheralMethodWrapper) other).tile;
 	}
 }

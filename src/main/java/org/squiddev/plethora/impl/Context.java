@@ -2,13 +2,16 @@ package org.squiddev.plethora.impl;
 
 import com.google.common.base.Preconditions;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.reference.IReference;
 
 public class Context<T> implements IContext<T> {
+	private final IUnbakedContext<T> parent;
 	private final T target;
 	private final Object[] context;
 
-
-	public Context(T target, Object... context) {
+	Context(IUnbakedContext<T> parent, T target, Object... context) {
+		this.parent = parent;
 		this.target = target;
 		this.context = context;
 	}
@@ -45,5 +48,15 @@ public class Context<T> implements IContext<T> {
 		}
 
 		return false;
+	}
+
+	@Override
+	public <U> IUnbakedContext<U> makeChild(IReference<U> target, IReference<?>... context) {
+		return parent.makeChild(target, context);
+	}
+
+	@Override
+	public IUnbakedContext<T> withContext(IReference<?>... context) {
+		return parent.withContext(context);
 	}
 }
