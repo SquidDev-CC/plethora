@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.squiddev.plethora.impl.MetaRegistry;
+import org.squiddev.plethora.impl.MethodRegistry;
 import org.squiddev.plethora.registry.Registry;
 
 @Mod(modid = Plethora.ID, name = Plethora.NAME, version = Plethora.VERSION, dependencies = Plethora.DEPENDENCIES)
@@ -23,8 +25,9 @@ public class Plethora {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-//		MinecraftForge.EVENT_BUS.register(new McEvents());
 		Registry.preInit();
+		MetaRegistry.instance.loadAsm(event.getAsmData());
+		MethodRegistry.instance.loadAsm(event.getAsmData());
 	}
 
 	@EventHandler

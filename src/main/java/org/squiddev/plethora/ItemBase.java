@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.registry.IClientModule;
+import org.squiddev.plethora.utils.Helpers;
 
 public abstract class ItemBase extends Item implements IClientModule {
 	protected final String name;

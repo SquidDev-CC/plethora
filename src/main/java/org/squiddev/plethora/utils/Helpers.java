@@ -1,4 +1,4 @@
-package org.squiddev.plethora;
+package org.squiddev.plethora.utils;
 
 import com.google.common.base.CaseFormat;
 import dan200.computercraft.ComputerCraft;
@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.Plethora;
 
 import java.io.File;
 
