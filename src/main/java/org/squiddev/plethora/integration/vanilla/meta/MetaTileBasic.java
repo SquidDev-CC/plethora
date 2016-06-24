@@ -12,8 +12,8 @@ import java.util.Map;
 @MetaProvider(value = TileEntity.class, namespace = "location")
 public class MetaTileBasic implements IMetaProvider<TileEntity> {
 	@Override
-	public Map<String, Object> getMeta(TileEntity object) {
-		HashMap<String, Object> position = Maps.newHashMap();
+	public Map<Object, Object> getMeta(TileEntity object) {
+		HashMap<Object, Object> position = Maps.newHashMap();
 		BlockPos pos = object.getPos();
 		position.put("x", pos.getX());
 		position.put("y", pos.getY());

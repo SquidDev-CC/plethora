@@ -29,10 +29,10 @@ public class NamespacedMetaProvider<T> implements IMetaProvider<T> {
 	}
 
 	@Override
-	public Map<String, Object> getMeta(T object) {
-		Map<String, Object> data = delegate.getMeta(object);
+	public Map<Object, Object> getMeta(T object) {
+		Map<Object, Object> data = delegate.getMeta(object);
 		if (data.size() > 0) {
-			return Collections.<String, Object>singletonMap(namespace, data);
+			return Collections.<Object, Object>singletonMap(namespace, data);
 		} else {
 			return Collections.emptyMap();
 		}

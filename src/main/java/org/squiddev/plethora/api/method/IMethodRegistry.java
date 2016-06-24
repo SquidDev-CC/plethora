@@ -1,5 +1,7 @@
 package org.squiddev.plethora.api.method;
 
+import dan200.computercraft.api.lua.ILuaObject;
+
 import java.util.List;
 
 /**
@@ -31,4 +33,12 @@ public interface IMethodRegistry {
 	 * @return List of valid methods
 	 */
 	List<IMethod<?>> getMethods(Class<?> target);
+
+	/**
+	 * Get a lua object for an object
+	 *
+	 * @param context The context to execute under
+	 * @return The build Lua object
+	 */
+	<T> ILuaObject getObject(IUnbakedContext<T> context);
 }

@@ -2,12 +2,11 @@ package org.squiddev.plethora.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
+import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IMethodRegistry;
-import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.*;
@@ -69,6 +68,16 @@ public final class MethodRegistry implements IMethodRegistry {
 		}
 
 		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	public <T> ILuaObject getObject(IUnbakedContext<T> context) {
+		try {
+			return new MethodWrapper<T>(context, getMethods(context.bake()));
+		} catch (LuaException e) {
+			// TODO: Handle this better
+			throw new IllegalStateException("Baking context resulted in errors", e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

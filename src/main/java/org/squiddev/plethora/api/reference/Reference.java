@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.reference;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -30,5 +31,16 @@ public final class Reference {
 	 */
 	public static <T extends TileEntity> IReference<T> tile(T object) {
 		return new TileReference<T>(object);
+	}
+
+	/**
+	 * Create an reference to a {@link net.minecraft.entity.Entity}
+	 *
+	 * @param object The entity to wrap
+	 * @return The wrapped reference
+	 * @see EntityReference
+	 */
+	public static <T extends Entity> IReference<T> entity(T object) {
+		return new EntityReference<T>(object);
 	}
 }

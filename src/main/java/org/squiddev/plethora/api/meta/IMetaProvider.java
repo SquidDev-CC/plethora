@@ -13,5 +13,5 @@ public interface IMetaProvider<T> {
 	 * @param object The object to get metadata about
 	 * @return The gathered data. Do not return {@code null}.
 	 */
-	Map<String, Object> getMeta(T object);
+	Map<Object, Object> getMeta(T object);
 }
