@@ -1,6 +1,6 @@
 package org.squiddev.plethora.api.meta;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,5 +40,5 @@ public interface IMetaRegistry {
 	 * @param target The class to get data about
 	 * @return List of valid providers
 	 */
-	Collection<IMetaProvider<?>> getMetaProviders(Class<?> target);
+	List<IMetaProvider<?>> getMetaProviders(Class<?> target);
 }

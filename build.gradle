@@ -38,18 +38,17 @@ dependencies {
 	deobfCompile "mezz.jei:jei_${project.mc_version}:2.28.9.177"
 }
 
-processResources
-{
+processResources {
 	// this will ensure that this task is redone when the versions change.
-	inputs.property "version", project.version
-	inputs.property "mcversion", project.minecraft.version
+	inputs.property "mod_version", project.mod_version
+	inputs.property "mc_version", project.mc_version
 
 	// replace stuff in mcmod.info, nothing else
 	from(sourceSets.main.resources.srcDirs) {
 		include 'mcmod.info'
 
 		// replace version and mcversion
-		expand 'version':project.version, 'mcversion':project.minecraft.version
+		expand 'mod_version': mod_version, 'mc_version': mc_version
 	}
 
 	// copy everything else, thats not the mcmod.info

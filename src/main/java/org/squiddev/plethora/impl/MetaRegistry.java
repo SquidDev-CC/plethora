@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.MetaProvider;
@@ -22,27 +23,7 @@ public final class MetaRegistry implements IMetaRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(provider, "provider cannot be null");
 
-		HashSet<Class<?>> visited = Sets.newHashSet();
-		Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
-		visited.add(target);
-		toVisit.add(target);
-
-		while (toVisit.size() > 0) {
-			Class<?> klass = toVisit.poll();
-			providers.put(klass, provider);
-
-			Class<?> parent = klass.getSuperclass();
-			if (parent != null && visited.add(parent)) {
-				toVisit.add(parent);
-			}
-
-			for (Class<?> iface : klass.getInterfaces()) {
-				if (iface != null && visited.add(iface)) {
-					toVisit.add(iface);
-				}
-			}
-		}
+		providers.put(target, provider);
 	}
 
 	@Override
@@ -64,21 +45,48 @@ public final class MetaRegistry implements IMetaRegistry {
 	}
 
 	@Override
-	public Collection<IMetaProvider<?>> getMetaProviders(Class<?> target) {
+	public List<IMetaProvider<?>> getMetaProviders(Class<?> target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
-		return providers.get(target);
+
+		List<IMetaProvider<?>> result = Lists.newArrayList();
+
+		HashSet<Class<?>> visited = Sets.newHashSet();
+		Queue<Class<?>> toVisit = Queues.newArrayDeque();
+
+		visited.add(target);
+		toVisit.add(target);
+
+		while (toVisit.size() > 0) {
+			Class<?> klass = toVisit.poll();
+			result.addAll(providers.get(klass));
+
+			Class<?> parent = klass.getSuperclass();
+			if (parent != null && visited.add(parent)) {
+				toVisit.add(parent);
+			}
+
+			for (Class<?> iface : klass.getInterfaces()) {
+				if (iface != null && visited.add(iface)) {
+					toVisit.add(iface);
+				}
+			}
+		}
+
+		return Collections.unmodifiableList(result);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(MetaProvider.class.getCanonicalName())) {
 			try {
+				DebugLogger.debug("Registering " + asmData.getClassName());
+
 				Class<?> asmClass = Class.forName(asmData.getClassName());
 				Map<String, Object> info = asmData.getAnnotationInfo();
 
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
 
-				Class<?> target = (Class<?>) info.get("value");
+				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				String namespace = (String) info.get("namespace");
 				if (Strings.isNullOrEmpty(namespace)) {
 					registerMetaProvider(target, instance);

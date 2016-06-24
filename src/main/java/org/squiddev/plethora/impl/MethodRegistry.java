@@ -3,6 +3,7 @@ package org.squiddev.plethora.impl;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodRegistry;
@@ -21,27 +22,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "provider cannot be null");
 
-		HashSet<Class<?>> visited = Sets.newHashSet();
-		Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
-		visited.add(target);
-		toVisit.add(target);
-
-		while (toVisit.size() > 0) {
-			Class<?> klass = toVisit.poll();
-			providers.put(klass, method);
-
-			Class<?> parent = klass.getSuperclass();
-			if (parent != null && visited.add(parent)) {
-				toVisit.add(parent);
-			}
-
-			for (Class<?> iface : klass.getInterfaces()) {
-				if (iface != null && visited.add(iface)) {
-					toVisit.add(iface);
-				}
-			}
-		}
+		providers.put(target, method);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,13 +37,38 @@ public final class MethodRegistry implements IMethodRegistry {
 			if (method.canApply(context)) methods.add(method);
 		}
 
-		return methods;
+		return Collections.unmodifiableList(methods);
 	}
 
 	@Override
-	public Collection<IMethod<?>> getMethods(Class<?> target) {
+	public List<IMethod<?>> getMethods(Class<?> target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
-		return providers.get(target);
+
+		List<IMethod<?>> result = Lists.newArrayList();
+
+		HashSet<Class<?>> visited = Sets.newHashSet();
+		Queue<Class<?>> toVisit = Queues.newArrayDeque();
+
+		visited.add(target);
+		toVisit.add(target);
+
+		while (toVisit.size() > 0) {
+			Class<?> klass = toVisit.poll();
+			result.addAll(providers.get(klass));
+
+			Class<?> parent = klass.getSuperclass();
+			if (parent != null && visited.add(parent)) {
+				toVisit.add(parent);
+			}
+
+			for (Class<?> iface : klass.getInterfaces()) {
+				if (iface != null && visited.add(iface)) {
+					toVisit.add(iface);
+				}
+			}
+		}
+
+		return Collections.unmodifiableList(result);
 	}
 
 	@Override
@@ -81,12 +87,14 @@ public final class MethodRegistry implements IMethodRegistry {
 	public void loadAsm(ASMDataTable asmDataTable) {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getCanonicalName())) {
 			try {
+				DebugLogger.debug("Registering " + asmData.getClassName());
+
 				Class<?> asmClass = Class.forName(asmData.getClassName());
 				Map<String, Object> info = asmData.getAnnotationInfo();
 
 				IMethod instance = asmClass.asSubclass(IMethod.class).newInstance();
 
-				Class<?> target = (Class<?>) info.get("value");
+				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				registerMethod(target, instance);
 			} catch (ClassNotFoundException e) {
 				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);

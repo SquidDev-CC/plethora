@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public interface IMethodRegistry {
 	 * @param target The class to invoke with
 	 * @return List of valid methods
 	 */
-	Collection<IMethod<?>> getMethods(Class<?> target);
+	List<IMethod<?>> getMethods(Class<?> target);
 
 	/**
 	 * Build a context for a target
