@@ -12,7 +12,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.*;
 
-public class MetaRegistry implements IMetaRegistry {
+public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
 	private final Multimap<Class<?>, IMetaProvider<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();

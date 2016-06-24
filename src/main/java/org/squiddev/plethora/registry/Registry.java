@@ -2,6 +2,7 @@ package org.squiddev.plethora.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.impl.PeripheralProvider;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ public final class Registry {
 	private static boolean postInit = false;
 
 	static {
+		addModule(new PeripheralProvider());
 	}
 
 	public static void addModule(IModule module) {

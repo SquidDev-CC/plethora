@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api.method;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A registry for metadata providers.
@@ -22,7 +23,7 @@ public interface IMethodRegistry {
 	 * @param context The context to execute under
 	 * @return List of valid methods
 	 */
-	<T> Collection<IMethod<T>> getMethods(IContext<T> context);
+	<T> List<IMethod<T>> getMethods(IContext<T> context);
 
 	/**
 	 * Get all methods targeting a class
@@ -31,15 +32,6 @@ public interface IMethodRegistry {
 	 * @return List of valid methods
 	 */
 	Collection<IMethod<?>> getMethods(Class<?> target);
-
-	/**
-	 * Build a context for a target
-	 *
-	 * @param target  The target to build for
-	 * @param context Additional context
-	 * @return The build context
-	 */
-	<T> IContext<T> getContext(T target, Object... context);
 
 	/**
 	 * Build a context for a target

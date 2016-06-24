@@ -11,7 +11,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.*;
 
-public class MethodRegistry implements IMethodRegistry {
+public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
 
 	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();
@@ -46,7 +46,7 @@ public class MethodRegistry implements IMethodRegistry {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Collection<IMethod<T>> getMethods(IContext<T> context) {
+	public <T> List<IMethod<T>> getMethods(IContext<T> context) {
 		Preconditions.checkNotNull(context, "context cannot be null");
 
 		List<IMethod<T>> methods = Lists.newArrayList();
@@ -63,14 +63,6 @@ public class MethodRegistry implements IMethodRegistry {
 	public Collection<IMethod<?>> getMethods(Class<?> target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		return providers.get(target);
-	}
-
-	@Override
-	public <T> IContext<T> getContext(T target, Object... context) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(context, "context cannot be null");
-
-		return new Context<T>(target, context);
 	}
 
 	@Override

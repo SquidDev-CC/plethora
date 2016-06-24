@@ -8,7 +8,7 @@ public class Context<T> implements IContext<T> {
 	private final Object[] context;
 
 
-	public Context(T target, Object[] context) {
+	public Context(T target, Object... context) {
 		this.target = target;
 		this.context = context;
 	}
@@ -16,6 +16,10 @@ public class Context<T> implements IContext<T> {
 	@Override
 	public T getTarget() {
 		return target;
+	}
+
+	public Object[] getContext() {
+		return context;
 	}
 
 	@Override
