@@ -1,0 +1,16 @@
+[
+	{
+		"modid": "Plethora",
+		"name": "Plethora",
+		"description": "Another Peripheral Provider",
+		"version": "${mod_version}",
+		"mcversion": "${mc_version}",
+		"credits": "Dan200, Forge team, Luaj.org",
+		"authorList": [
+			"SquidDev"
+		],
+		"dependencies": [
+			"ComputerCraft"
+		]
+	}
+]
