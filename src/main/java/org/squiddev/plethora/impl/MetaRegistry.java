@@ -53,6 +53,8 @@ public class MetaRegistry implements IMetaRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMeta(Object object) {
+		Preconditions.checkNotNull(object, "object cannot be null");
+
 		HashMap<String, Object> out = Maps.newHashMap();
 		for (IMetaProvider provider : getMetaProviders(object.getClass())) {
 			out.putAll(provider.getMeta(object));
@@ -63,6 +65,7 @@ public class MetaRegistry implements IMetaRegistry {
 
 	@Override
 	public Collection<IMetaProvider<?>> getMetaProviders(Class<?> target) {
+		Preconditions.checkNotNull(target, "target cannot be null");
 		return providers.get(target);
 	}
 

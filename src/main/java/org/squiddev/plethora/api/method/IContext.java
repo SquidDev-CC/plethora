@@ -14,28 +14,6 @@ public interface IContext<T> {
 	T getTarget();
 
 	/**
-	 * Get an environment object.
-	 * This is something which only exists at method call time: such as {@link dan200.computercraft.api.lua.ILuaContext}.
-	 * Use {@link #hasEnvironment(Class)} when checking to apply.
-	 *
-	 * @param klass The type of the klass to get.
-	 * @return The environment object or {@code null} if it doesn't exist.
-	 * @see #hasEnvironment(Class)
-	 */
-	<V> V getEnvironment(Class<V> klass);
-
-	/**
-	 * Get an environment object.
-	 * This is something which only exists at method call time: such as {@link dan200.computercraft.api.lua.ILuaContext}.
-	 * This method checks if it will exist at call time.
-	 *
-	 * @param klass The type of the klass to get.
-	 * @return If this object will exist at call time.
-	 * @see #getEnvironment(Class)
-	 */
-	<V> boolean hasEnvironment(Class<V> klass);
-
-	/**
 	 * Get surrounding context for an object.
 	 * This is generally "parent" objects: an inventory might have a tile entity in its context.
 	 * This does not include the target.

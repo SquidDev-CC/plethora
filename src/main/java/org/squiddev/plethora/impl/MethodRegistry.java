@@ -47,6 +47,8 @@ public class MethodRegistry implements IMethodRegistry {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> Collection<IMethod<T>> getMethods(IContext<T> context) {
+		Preconditions.checkNotNull(context, "context cannot be null");
+
 		List<IMethod<T>> methods = Lists.newArrayList();
 
 		for (IMethod<?> genMethod : getMethods(context.getClass())) {
@@ -59,7 +61,28 @@ public class MethodRegistry implements IMethodRegistry {
 
 	@Override
 	public Collection<IMethod<?>> getMethods(Class<?> target) {
+		Preconditions.checkNotNull(target, "target cannot be null");
 		return providers.get(target);
+	}
+
+	@Override
+	public <T> IContext<T> getContext(T target, Object... context) {
+		Preconditions.checkNotNull(target, "target cannot be null");
+		Preconditions.checkNotNull(context, "context cannot be null");
+
+		return new Context<T>(target, context);
+	}
+
+	@Override
+	public <T> IContext<T> getContext(T target, IContext<?> parent, Object... context) {
+		Preconditions.checkNotNull(target, "target cannot be null");
+		Preconditions.checkNotNull(parent, "parent cannot be null");
+		Preconditions.checkNotNull(context, "context cannot be null");
+
+		Object[] wholeContext = Arrays.copyOf(context, context.length + 1);
+		wholeContext[context.length] = parent;
+
+		return new Context<T>(target, wholeContext);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,15 +104,5 @@ public class MethodRegistry implements IMethodRegistry {
 				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
 			}
 		}
-	}
-
-	@Override
-	public <T> IContext<T> getContext(T target) {
-		return null;
-	}
-
-	@Override
-	public <T> IContext<T> getContext(T target, IContext<?> parent) {
-		return null;
 	}
 }

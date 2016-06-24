@@ -35,17 +35,19 @@ public interface IMethodRegistry {
 	/**
 	 * Build a context for a target
 	 *
-	 * @param target The target to build for
+	 * @param target  The target to build for
+	 * @param context Additional context
 	 * @return The build context
 	 */
-	<T> IContext<T> getContext(T target);
+	<T> IContext<T> getContext(T target, Object... context);
 
 	/**
 	 * Build a context for a target
 	 *
-	 * @param target The target to build for
-	 * @param parent Parent context to copy from
+	 * @param target  The target to build for
+	 * @param parent  Parent context to copy from
+	 * @param context Additional context
 	 * @return The build context
 	 */
-	<T> IContext<T> getContext(T target, IContext<?> parent);
+	<T> IContext<T> getContext(T target, IContext<?> parent, Object... context);
 }
