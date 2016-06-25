@@ -12,6 +12,7 @@ buildscript {
 	}
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply from: 'gradle/scripts/jsonGen.gradle'
 
 version = mc_version + "-" + mod_version
 group= "org.squiddev"

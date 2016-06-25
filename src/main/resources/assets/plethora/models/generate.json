@@ -1,0 +1,12 @@
+{
+	"templates": {
+		"item": { "item": "templates/item.json" },
+		"block": { "block": "templates/block.json" },
+		"both": {
+			"item": "templates/itemblock.json",
+			"block": "templates/block.json"
+		}
+	},
+	"simple": {
+	}
+}

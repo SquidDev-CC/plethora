@@ -1,0 +1,6 @@
+{
+	"parent": "cctweaks:item/flat",
+	"textures": {
+		"layer0": "${texture}"
+	}
+}
