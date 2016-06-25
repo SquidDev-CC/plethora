@@ -3,6 +3,8 @@ package org.squiddev.plethora.api.method;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.reference.IReference;
 
+import javax.annotation.Nonnull;
+
 /**
  * A context whose references haven't been resolved
  */
@@ -14,6 +16,7 @@ public interface IUnbakedContext<T> {
 	 * @throws LuaException If
 	 * @see IReference#get()
 	 */
+	@Nonnull
 	IContext<T> bake() throws LuaException;
 
 	/**
@@ -23,7 +26,8 @@ public interface IUnbakedContext<T> {
 	 * @param context Additional context items
 	 * @return The child context
 	 */
-	<U> IUnbakedContext<U> makeChild(IReference<U> target, IReference<?>... context);
+	@Nonnull
+	<U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context);
 
 	/**
 	 * Include additional properties in this context
@@ -31,5 +35,6 @@ public interface IUnbakedContext<T> {
 	 * @param context The additional context items
 	 * @return The new context
 	 */
-	IUnbakedContext<T> withContext(IReference<?>... context);
+	@Nonnull
+	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
 }

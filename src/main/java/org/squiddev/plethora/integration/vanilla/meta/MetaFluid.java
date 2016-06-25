@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -13,8 +14,9 @@ import java.util.Map;
  */
 @MetaProvider(FluidStack.class)
 public class MetaFluid implements IMetaProvider<FluidStack> {
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(FluidStack fluidStack) {
+	public Map<Object, Object> getMeta(@Nonnull FluidStack fluidStack) {
 		Map<Object, Object> data = Maps.newHashMap();
 		data.put("amount", fluidStack.amount);
 

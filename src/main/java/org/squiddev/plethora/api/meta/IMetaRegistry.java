@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.meta;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public interface IMetaRegistry {
 	 * @param target   The class this provider targets
 	 * @param provider The relevant provider
 	 */
-	<T> void registerMetaProvider(Class<T> target, IMetaProvider<T> provider);
+	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider);
 
 	/**
 	 * Register a metadata provider
@@ -24,7 +25,7 @@ public interface IMetaRegistry {
 	 * @param namespace The namespace to put this data under.
 	 * @param provider  The relevant provider
 	 */
-	<T> void registerMetaProvider(Class<T> target, String namespace, IMetaProvider<T> provider);
+	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider);
 
 	/**
 	 * Get metadata about an object
@@ -32,7 +33,8 @@ public interface IMetaRegistry {
 	 * @param object The object to get metadata about
 	 * @return The gathered metadata
 	 */
-	Map<String, Object> getMeta(Object object);
+	@Nonnull
+	Map<String, Object> getMeta(@Nonnull Object object);
 
 	/**
 	 * An list of all valid providers for a class
@@ -40,5 +42,6 @@ public interface IMetaRegistry {
 	 * @param target The class to get data about
 	 * @return List of valid providers
 	 */
-	List<IMetaProvider<?>> getMetaProviders(Class<?> target);
+	@Nonnull
+	List<IMetaProvider<?>> getMetaProviders(@Nonnull Class<?> target);
 }

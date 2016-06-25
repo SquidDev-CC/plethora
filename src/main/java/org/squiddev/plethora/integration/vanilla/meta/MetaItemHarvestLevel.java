@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,9 @@ import java.util.Map;
  */
 @MetaProvider(value = ItemStack.class, namespace = "toolClass")
 public class MetaItemHarvestLevel implements IMetaProvider<ItemStack> {
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(ItemStack stack) {
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (!item.getToolClasses(stack).isEmpty()) {
 			HashMap<Object, Object> types = Maps.newHashMap();

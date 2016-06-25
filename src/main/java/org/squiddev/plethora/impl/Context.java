@@ -5,6 +5,8 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
 
+import javax.annotation.Nonnull;
+
 public class Context<T> implements IContext<T> {
 	private final IUnbakedContext<T> parent;
 	private final T target;
@@ -16,6 +18,7 @@ public class Context<T> implements IContext<T> {
 		this.context = context;
 	}
 
+	@Nonnull
 	@Override
 	public T getTarget() {
 		return target;
@@ -27,7 +30,7 @@ public class Context<T> implements IContext<T> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <V> V getContext(Class<V> klass) {
+	public <V> V getContext(@Nonnull Class<V> klass) {
 		Preconditions.checkNotNull(klass, "klass cannot be null");
 
 		for (int i = context.length - 1; i >= 0; i--) {
@@ -39,7 +42,7 @@ public class Context<T> implements IContext<T> {
 	}
 
 	@Override
-	public <V> boolean hasContext(Class<V> klass) {
+	public <V> boolean hasContext(@Nonnull Class<V> klass) {
 		Preconditions.checkNotNull(klass, "klass cannot be null");
 
 		for (int i = context.length - 1; i >= 0; i--) {
@@ -50,13 +53,15 @@ public class Context<T> implements IContext<T> {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public <U> IUnbakedContext<U> makeChild(IReference<U> target, IReference<?>... context) {
+	public <U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context) {
 		return parent.makeChild(target, context);
 	}
 
+	@Nonnull
 	@Override
-	public <U> IContext<U> makeBakedChild(U newTarget, Object... newContext) {
+	public <U> IContext<U> makeBakedChild(@Nonnull U newTarget, @Nonnull Object... newContext) {
 		Preconditions.checkNotNull(newTarget, "target cannot be null");
 		Preconditions.checkNotNull(newContext, "context cannot be null");
 
@@ -68,8 +73,9 @@ public class Context<T> implements IContext<T> {
 		return new Context<U>(null, newTarget, wholeContext);
 	}
 
+	@Nonnull
 	@Override
-	public IUnbakedContext<T> withContext(IReference<?>... context) {
+	public IUnbakedContext<T> withContext(@Nonnull IReference<?>... context) {
 		return parent.withContext(context);
 	}
 

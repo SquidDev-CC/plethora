@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,9 @@ public class MetaItemArmor implements IMetaProvider<ItemStack> {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(ItemStack stack) {
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (item instanceof ItemArmor) {
 			ItemArmor armor = (ItemArmor) item;

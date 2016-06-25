@@ -4,6 +4,8 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * A slot in an inventory
  */
@@ -11,9 +13,10 @@ public class ItemSlot implements IReference<ItemSlot> {
 	private final ItemStack stack;
 	private final int slot;
 	private final int meta;
+	@Nonnull
 	private final IInventory inventory;
 
-	public ItemSlot(IInventory inventory, int slot) {
+	public ItemSlot(@Nonnull IInventory inventory, int slot) {
 		this.slot = slot;
 		this.inventory = inventory;
 
@@ -39,6 +42,7 @@ public class ItemSlot implements IReference<ItemSlot> {
 		return inventory.getStackInSlot(slot);
 	}
 
+	@Nonnull
 	@Override
 	public ItemSlot get() throws LuaException {
 		ItemStack newStack = inventory.getStackInSlot(slot);

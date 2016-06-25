@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +15,9 @@ import java.util.Map;
  */
 @MetaProvider(ItemStack.class)
 public class MetaItemBasic implements IMetaProvider<ItemStack> {
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(ItemStack stack) {
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		HashMap<Object, Object> data = getBasicProperties(stack);
 
 		String display = stack.getDisplayName();
@@ -32,7 +34,8 @@ public class MetaItemBasic implements IMetaProvider<ItemStack> {
 		return data;
 	}
 
-	public static HashMap<Object, Object> getBasicProperties(ItemStack stack) {
+	@Nonnull
+	public static HashMap<Object, Object> getBasicProperties(@Nonnull ItemStack stack) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
 		data.put("name", Item.itemRegistry.getNameForObject(stack.getItem()).toString());

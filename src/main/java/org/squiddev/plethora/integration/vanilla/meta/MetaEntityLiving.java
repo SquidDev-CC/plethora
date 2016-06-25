@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.impl.UnbakedContext;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 
@@ -21,8 +22,9 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  */
 @MetaProvider(EntityLivingBase.class)
 public class MetaEntityLiving implements IMetaProvider<EntityLivingBase> {
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(EntityLivingBase target) {
+	public Map<Object, Object> getMeta(@Nonnull EntityLivingBase target) {
 		Map<Object, Object> map = Maps.newHashMap();
 
 		{

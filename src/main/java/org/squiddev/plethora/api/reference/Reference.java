@@ -3,6 +3,8 @@ package org.squiddev.plethora.api.reference;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nonnull;
+
 /**
  * Factory for various reference types
  */
@@ -18,6 +20,7 @@ public final class Reference {
 	 * @return The wrapped reference
 	 * @see IdentityReference
 	 */
+	@Nonnull
 	public static <T> IReference<T> id(T object) {
 		return new IdentityReference<T>(object);
 	}
@@ -29,6 +32,7 @@ public final class Reference {
 	 * @return The wrapped reference
 	 * @see TileReference
 	 */
+	@Nonnull
 	public static <T extends TileEntity> IReference<T> tile(T object) {
 		return new TileReference<T>(object);
 	}
@@ -40,6 +44,7 @@ public final class Reference {
 	 * @return The wrapped reference
 	 * @see EntityReference
 	 */
+	@Nonnull
 	public static <T extends Entity> IReference<T> entity(T object) {
 		return new EntityReference<T>(object);
 	}

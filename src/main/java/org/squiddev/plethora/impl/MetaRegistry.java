@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class MetaRegistry implements IMetaRegistry {
@@ -19,7 +20,7 @@ public final class MetaRegistry implements IMetaRegistry {
 	private final Multimap<Class<?>, IMetaProvider<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();
 
 	@Override
-	public <T> void registerMetaProvider(Class<T> target, IMetaProvider<T> provider) {
+	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(provider, "provider cannot be null");
 
@@ -27,13 +28,14 @@ public final class MetaRegistry implements IMetaRegistry {
 	}
 
 	@Override
-	public <T> void registerMetaProvider(Class<T> target, String namespace, IMetaProvider<T> provider) {
+	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider) {
 		registerMetaProvider(target, new NamespacedMetaProvider<T>(namespace, provider));
 	}
 
+	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMeta(Object object) {
+	public Map<String, Object> getMeta(@Nonnull Object object) {
 		Preconditions.checkNotNull(object, "object cannot be null");
 
 		HashMap<String, Object> out = Maps.newHashMap();
@@ -44,8 +46,9 @@ public final class MetaRegistry implements IMetaRegistry {
 		return out;
 	}
 
+	@Nonnull
 	@Override
-	public List<IMetaProvider<?>> getMetaProviders(Class<?> target) {
+	public List<IMetaProvider<?>> getMetaProviders(@Nonnull Class<?> target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 
 		List<IMetaProvider<?>> result = Lists.newArrayList();

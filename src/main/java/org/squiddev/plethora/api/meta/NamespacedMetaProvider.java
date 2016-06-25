@@ -2,6 +2,7 @@ package org.squiddev.plethora.api.meta;
 
 import com.google.common.base.Preconditions;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
@@ -28,8 +29,9 @@ public class NamespacedMetaProvider<T> implements IMetaProvider<T> {
 		this.delegate = delegate;
 	}
 
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(T object) {
+	public Map<Object, Object> getMeta(@Nonnull T object) {
 		Map<Object, Object> data = delegate.getMeta(object);
 		if (data.size() > 0) {
 			return Collections.<Object, Object>singletonMap(namespace, data);

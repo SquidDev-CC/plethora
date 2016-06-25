@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 
 /**
@@ -15,12 +16,13 @@ public class TileReference<T extends TileEntity> implements IReference<T> {
 	private final BlockPos pos;
 	private final World world;
 
-	public TileReference(T tile) {
+	public TileReference(@Nonnull T tile) {
 		this.tile = new WeakReference<T>(tile);
 		pos = tile.getPos();
 		world = tile.getWorld();
 	}
 
+	@Nonnull
 	@Override
 	public T get() throws LuaException {
 		T value = tile.get();

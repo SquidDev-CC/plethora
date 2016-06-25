@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
@@ -19,16 +20,17 @@ public final class MethodRegistry implements IMethodRegistry {
 	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();
 
 	@Override
-	public <T> void registerMethod(Class<T> target, IMethod<T> method) {
+	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
 
 		providers.put(target, method);
 	}
 
-	@SuppressWarnings("unchecked")
+	@Nonnull
 	@Override
-	public <T> List<IMethod<T>> getMethods(IContext<T> context) {
+	@SuppressWarnings("unchecked")
+	public <T> List<IMethod<T>> getMethods(@Nonnull IContext<T> context) {
 		Preconditions.checkNotNull(context, "context cannot be null");
 
 		List<IMethod<T>> methods = Lists.newArrayList();
@@ -41,8 +43,9 @@ public final class MethodRegistry implements IMethodRegistry {
 		return Collections.unmodifiableList(methods);
 	}
 
+	@Nonnull
 	@Override
-	public List<IMethod<?>> getMethods(Class<?> target) {
+	public List<IMethod<?>> getMethods(@Nonnull Class<?> target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 
 		List<IMethod<?>> result = Lists.newArrayList();
@@ -72,8 +75,9 @@ public final class MethodRegistry implements IMethodRegistry {
 		return Collections.unmodifiableList(result);
 	}
 
+	@Nonnull
 	@Override
-	public ILuaObject getObject(IUnbakedContext<?> initialContext) {
+	public ILuaObject getObject(@Nonnull IUnbakedContext<?> initialContext) {
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = getMethodsPaired(initialContext);
 
 		return new MethodWrapper(pair.getFirst(), pair.getSecond());
@@ -87,7 +91,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		try {
 			initialBaked = initialContext.bake();
 		} catch (LuaException e) {
-			throw new IllegalStateException("Error occured when baking", e);
+			throw new IllegalStateException("Error occurred when baking", e);
 		}
 
 		Object initialTarget = initialBaked.getTarget();

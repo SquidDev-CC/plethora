@@ -3,6 +3,7 @@ package org.squiddev.plethora.api.reference;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 
 /**
@@ -15,6 +16,7 @@ public final class EntityReference<T extends Entity> implements IReference<T> {
 		this.entity = new WeakReference<T>(entity);
 	}
 
+	@Nonnull
 	@Override
 	public T get() throws LuaException {
 		T value = entity.get();

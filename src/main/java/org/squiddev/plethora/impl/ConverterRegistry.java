@@ -9,6 +9,7 @@ import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.converter.IConverterRegistry;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,17 @@ public class ConverterRegistry implements IConverterRegistry {
 	private final Multimap<Class<?>, IConverter<?, ?>> converters = MultimapBuilder.hashKeys().hashSetValues().build();
 
 	@Override
-	public <TIn, TOut> void registerConverter(Class<TIn> source, IConverter<TIn, TOut> converter) {
+	public <TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter) {
 		Preconditions.checkNotNull(source, "source cannot be null");
 		Preconditions.checkNotNull(converter, "converter cannot be null");
 
 		converters.put(source, converter);
 	}
 
+	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<?> convertAll(Object in) {
+	public List<?> convertAll(@Nonnull Object in) {
 		Preconditions.checkNotNull(in, "in cannot be null");
 
 		List<Object> result = Lists.newArrayList();

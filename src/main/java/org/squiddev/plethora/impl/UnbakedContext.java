@@ -6,6 +6,8 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
 
+import javax.annotation.Nonnull;
+
 /**
  * A context which doesn't have solidified references.
  */
@@ -18,6 +20,7 @@ public class UnbakedContext<T> implements IUnbakedContext<T> {
 		this.context = context;
 	}
 
+	@Nonnull
 	@Override
 	public IContext<T> bake() throws LuaException {
 		T value = target.get();
@@ -30,8 +33,9 @@ public class UnbakedContext<T> implements IUnbakedContext<T> {
 		return new Context<T>(this, value);
 	}
 
+	@Nonnull
 	@Override
-	public <U> IUnbakedContext<U> makeChild(IReference<U> newTarget, IReference<?>... newContext) {
+	public <U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> newTarget, @Nonnull IReference<?>... newContext) {
 		Preconditions.checkNotNull(newTarget, "target cannot be null");
 		Preconditions.checkNotNull(newContext, "context cannot be null");
 
@@ -43,8 +47,9 @@ public class UnbakedContext<T> implements IUnbakedContext<T> {
 		return new UnbakedContext<U>(newTarget, wholeContext);
 	}
 
+	@Nonnull
 	@Override
-	public IUnbakedContext<T> withContext(IReference<?>... newContext) {
+	public IUnbakedContext<T> withContext(@Nonnull IReference<?>... newContext) {
 		Preconditions.checkNotNull(newContext, "context cannot be null");
 
 		IReference<?>[] wholeContext = new IReference<?>[newContext.length + context.length];

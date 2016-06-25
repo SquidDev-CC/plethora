@@ -1,5 +1,7 @@
 package org.squiddev.plethora.api.converter;
 
+import javax.annotation.Nonnull;
+
 /**
  * An implicit converter: takes an object and converts it into something else
  */
@@ -11,5 +13,6 @@ public interface IConverter<TIn, TOut> {
 	 * @param from The object to convert from
 	 * @return The converted object
 	 */
-	TOut convert(TIn from);
+	@Nonnull
+	TOut convert(@Nonnull TIn from);
 }

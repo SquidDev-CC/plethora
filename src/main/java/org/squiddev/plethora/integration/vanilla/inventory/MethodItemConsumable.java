@@ -9,6 +9,8 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
+import javax.annotation.Nonnull;
+
 /**
  * A provider for consumables: food and potions.
  *
@@ -21,7 +23,7 @@ public class MethodItemConsumable extends BasicMethod<ItemSlot> {
 	}
 
 	@Override
-	public boolean canApply(IContext<ItemSlot> context) {
+	public boolean canApply(@Nonnull IContext<ItemSlot> context) {
 		ItemStack stack = context.getTarget().getStack();
 
 		if (stack != null && context.hasContext(EntityPlayer.class)) {
@@ -35,7 +37,7 @@ public class MethodItemConsumable extends BasicMethod<ItemSlot> {
 	}
 
 	@Override
-	public Object[] apply(IContext<ItemSlot> context, Object[] args) throws LuaException {
+	public Object[] apply(@Nonnull IContext<ItemSlot> context, @Nonnull Object[] args) throws LuaException {
 		ItemSlot slot = context.getTarget();
 		ItemStack stack = slot.getStack();
 		EntityPlayer player = context.getContext(EntityPlayer.class);

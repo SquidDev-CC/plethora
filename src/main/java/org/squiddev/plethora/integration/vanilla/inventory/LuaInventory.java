@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public final class LuaInventory {
@@ -21,7 +22,7 @@ public final class LuaInventory {
 		}
 
 		@Override
-		public Object[] apply(IContext<IInventory> context, Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
 			HashMap<Integer, Object> items = Maps.newHashMap();
 			IInventory inventory = context.getTarget();
 			int size = inventory.getSizeInventory();
@@ -43,7 +44,7 @@ public final class LuaInventory {
 		}
 
 		@Override
-		public Object[] apply(IContext<IInventory> context, Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
 			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
 
 			IInventory inventory = context.getTarget();
@@ -67,7 +68,7 @@ public final class LuaInventory {
 		}
 
 		@Override
-		public Object[] apply(IContext<IInventory> context, Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
 			return new Object[]{context.getTarget().getSizeInventory()};
 		}
 	}
@@ -79,7 +80,7 @@ public final class LuaInventory {
 		}
 
 		@Override
-		public Object[] apply(IContext<IInventory> context, Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
 			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
 
 			IInventory inventory = context.getTarget();

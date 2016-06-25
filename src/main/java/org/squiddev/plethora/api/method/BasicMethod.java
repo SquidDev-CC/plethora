@@ -1,5 +1,7 @@
 package org.squiddev.plethora.api.method;
 
+import javax.annotation.Nonnull;
+
 /**
  * Basic wrapper for methods
  */
@@ -17,6 +19,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 		worldThread = false;
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return name;
@@ -28,7 +31,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	}
 
 	@Override
-	public boolean canApply(IContext<T> context) {
+	public boolean canApply(@Nonnull IContext<T> context) {
 		return true;
 	}
 }

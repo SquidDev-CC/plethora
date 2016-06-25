@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
@@ -18,8 +19,9 @@ import java.util.Map;
  */
 @MetaProvider(value = ItemStack.class, namespace = "fluid")
 public class MetaItemFluidContainer implements IMetaProvider<ItemStack> {
+	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(ItemStack stack) {
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(stack);
 		int capacity = 0;
 

@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.meta;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -13,5 +14,6 @@ public interface IMetaProvider<T> {
 	 * @param object The object to get metadata about
 	 * @return The gathered data. Do not return {@code null}.
 	 */
-	Map<Object, Object> getMeta(T object);
+	@Nonnull
+	Map<Object, Object> getMeta(@Nonnull T object);
 }

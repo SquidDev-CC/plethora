@@ -3,6 +3,9 @@ package org.squiddev.plethora.api.method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A Lua side method targeting a class
  * Register with {@link IMethodRegistry}
@@ -13,6 +16,7 @@ public interface IMethod<T> {
 	 *
 	 * @return The name of this method
 	 */
+	@Nonnull
 	String getName();
 
 	/**
@@ -28,9 +32,8 @@ public interface IMethod<T> {
 	 * @param context The context to check in
 	 * @return If this function can be applied.
 	 * @see IContext#hasContext(Class)
-	 * @see IContext#hasEnvironment(Class)
 	 */
-	boolean canApply(IContext<T> context);
+	boolean canApply(@Nonnull IContext<T> context);
 
 	/**
 	 * Apply the method
@@ -42,5 +45,6 @@ public interface IMethod<T> {
 	 * @throws RuntimeException Unhandled errors: these will be rethrown as {@link LuaException}s and the call stack logged.
 	 * @see dan200.computercraft.api.lua.ILuaObject#callMethod(ILuaContext, int, Object[])
 	 */
-	Object[] apply(IContext<T> context, Object[] args) throws LuaException;
+	@Nullable
+	Object[] apply(@Nonnull IContext<T> context, @Nonnull Object[] args) throws LuaException;
 }

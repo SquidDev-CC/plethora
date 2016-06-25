@@ -2,6 +2,8 @@ package org.squiddev.plethora.api.method;
 
 import org.squiddev.plethora.api.reference.IReference;
 
+import javax.annotation.Nonnull;
+
 /**
  * This holds the context for a method.
  *
@@ -13,6 +15,7 @@ public interface IContext<T> {
 	 *
 	 * @return The target for this context.
 	 */
+	@Nonnull
 	T getTarget();
 
 	/**
@@ -24,7 +27,7 @@ public interface IContext<T> {
 	 * @return The context object or {@code null} if it doesn't exist.
 	 * @see #hasContext(Class)
 	 */
-	<V> V getContext(Class<V> klass);
+	<V> V getContext(@Nonnull Class<V> klass);
 
 	/**
 	 * Check if a context exists.
@@ -35,7 +38,7 @@ public interface IContext<T> {
 	 * @return If this context exists. It is more performant to check if {@link #getContext(Class)} returns null.
 	 * @see #getContext(Class)
 	 */
-	<V> boolean hasContext(Class<V> klass);
+	<V> boolean hasContext(@Nonnull Class<V> klass);
 
 	/**
 	 * Make a child context
@@ -44,7 +47,8 @@ public interface IContext<T> {
 	 * @param context Additional context items
 	 * @return The child context
 	 */
-	<U> IUnbakedContext<U> makeChild(IReference<U> target, IReference<?>... context);
+	@Nonnull
+	<U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context);
 
 	/**
 	 * Make a child context
@@ -53,7 +57,8 @@ public interface IContext<T> {
 	 * @param context Additional context items
 	 * @return The child context
 	 */
-	<U> IContext<U> makeBakedChild(U target, Object... context);
+	@Nonnull
+	<U> IContext<U> makeBakedChild(@Nonnull U target, @Nonnull Object... context);
 
 	/**
 	 * Include additional properties in this context
@@ -61,5 +66,6 @@ public interface IContext<T> {
 	 * @param context The additional context items
 	 * @return The new context
 	 */
-	IUnbakedContext<T> withContext(IReference<?>... context);
+	@Nonnull
+	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
 }
