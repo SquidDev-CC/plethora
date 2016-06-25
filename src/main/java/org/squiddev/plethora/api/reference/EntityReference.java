@@ -18,7 +18,7 @@ public final class EntityReference<T extends Entity> implements IReference<T> {
 	@Override
 	public T get() throws LuaException {
 		T value = entity.get();
-		if (value == null || value.isDead) throw new LuaException("The entity is no longer there!");
+		if (value == null || value.isDead) throw new LuaException("The entity is no longer there");
 
 		return value;
 	}

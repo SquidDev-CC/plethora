@@ -10,7 +10,7 @@ public class Context<T> implements IContext<T> {
 	private final T target;
 	private final Object[] context;
 
-	Context(IUnbakedContext<T> parent, T target, Object... context) {
+	public Context(IUnbakedContext<T> parent, T target, Object... context) {
 		this.parent = parent;
 		this.target = target;
 		this.context = context;
@@ -56,7 +56,24 @@ public class Context<T> implements IContext<T> {
 	}
 
 	@Override
+	public <U> IContext<U> makeBakedChild(U newTarget, Object... newContext) {
+		Preconditions.checkNotNull(newTarget, "target cannot be null");
+		Preconditions.checkNotNull(newContext, "context cannot be null");
+
+		Object[] wholeContext = new Object[newContext.length + context.length + 1];
+		arrayCopy(newContext, wholeContext, 0);
+		arrayCopy(context, wholeContext, newContext.length);
+		wholeContext[wholeContext.length - 1] = target;
+
+		return new Context<U>(null, newTarget, wholeContext);
+	}
+
+	@Override
 	public IUnbakedContext<T> withContext(IReference<?>... context) {
 		return parent.withContext(context);
+	}
+
+	private static void arrayCopy(Object[] src, Object[] to, int start) {
+		System.arraycopy(src, 0, to, start, src.length);
 	}
 }

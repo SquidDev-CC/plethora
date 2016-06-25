@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class MetaItemArmor implements IMetaProvider<ItemStack> {
 
 			return data;
 		} else {
-			return null;
+			return Collections.emptyMap();
 		}
 	}
 }

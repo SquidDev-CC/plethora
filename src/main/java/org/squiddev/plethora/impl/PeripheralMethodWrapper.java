@@ -15,12 +15,12 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 /**
  * Wrapper that packages environment
  */
-public class PeripheralMethodWrapper extends MethodWrapper<TileEntity> implements IPeripheral {
+public class PeripheralMethodWrapper extends MethodWrapper implements IPeripheral {
 	private final TileEntity tile;
 	private final String type;
 
-	public PeripheralMethodWrapper(TileEntity tile, IUnbakedContext<TileEntity> context, List<IMethod<TileEntity>> methods) {
-		super(context, methods);
+	public PeripheralMethodWrapper(TileEntity tile, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+		super(methods, contexts);
 		this.tile = tile;
 		this.type = tile.getClass().getCanonicalName();
 	}
@@ -32,7 +32,7 @@ public class PeripheralMethodWrapper extends MethodWrapper<TileEntity> implement
 
 	@Override
 	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		return callMethod(context.withContext(id(access), id(luaContext)), luaContext, method, args);
+		return callMethod(getContext(method).withContext(id(access), id(luaContext)), luaContext, getMethod(method), args);
 	}
 
 	@Override

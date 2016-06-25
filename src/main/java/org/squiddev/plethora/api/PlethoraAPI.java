@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api;
 
+import org.squiddev.plethora.api.converter.IConverterRegistry;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.IMethodRegistry;
 
@@ -11,6 +12,8 @@ public class PlethoraAPI {
 		IMethodRegistry methodRegistry();
 
 		IMetaRegistry metaRegistry();
+
+		IConverterRegistry converterRegistry();
 	}
 
 	private static final IPlethoraAPI API;

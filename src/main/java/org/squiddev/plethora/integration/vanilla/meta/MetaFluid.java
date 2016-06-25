@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.vanilla;
+package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraftforge.fluids.Fluid;

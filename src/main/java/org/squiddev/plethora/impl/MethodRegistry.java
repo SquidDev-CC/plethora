@@ -4,9 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.*;
@@ -19,7 +21,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Override
 	public <T> void registerMethod(Class<T> target, IMethod<T> method) {
 		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(method, "provider cannot be null");
+		Preconditions.checkNotNull(method, "method cannot be null");
 
 		providers.put(target, method);
 	}
@@ -31,7 +33,7 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		List<IMethod<T>> methods = Lists.newArrayList();
 
-		for (IMethod<?> genMethod : getMethods(context.getClass())) {
+		for (IMethod<?> genMethod : getMethods(context.getTarget().getClass())) {
 			final IMethod<T> method = (IMethod<T>) genMethod;
 			if (method.canApply(context)) methods.add(method);
 		}
@@ -71,13 +73,43 @@ public final class MethodRegistry implements IMethodRegistry {
 	}
 
 	@Override
-	public <T> ILuaObject getObject(IUnbakedContext<T> context) {
+	public ILuaObject getObject(IUnbakedContext<?> initialContext) {
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = getMethodsPaired(initialContext);
+
+		return new MethodWrapper(pair.getFirst(), pair.getSecond());
+	}
+
+	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext) {
+		ArrayList<IMethod<?>> methods = Lists.newArrayList();
+		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
+
+		IContext<?> initialBaked;
 		try {
-			return new MethodWrapper<T>(context, getMethods(context.bake()));
+			initialBaked = initialContext.bake();
 		} catch (LuaException e) {
-			// TODO: Handle this better
-			throw new IllegalStateException("Baking context resulted in errors", e);
+			throw new IllegalStateException("Error occured when baking", e);
 		}
+
+		Object initialTarget = initialBaked.getTarget();
+		for (Object obj : ConverterRegistry.instance.convertAll(initialTarget)) {
+			IUnbakedContext<?> ctx;
+			IContext<?> ctxBaked;
+
+			if (obj == initialTarget) {
+				ctx = initialContext;
+				ctxBaked = initialBaked;
+			} else {
+				ctx = initialContext.makeChild(new IdentityReference<Object>(obj));
+				ctxBaked = initialBaked.makeBakedChild(obj);
+			}
+
+			for (IMethod method : getMethods(ctxBaked)) {
+				methods.add(method);
+				contexts.add(ctx);
+			}
+		}
+
+		return new Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>>(methods, contexts);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,11 +126,11 @@ public final class MethodRegistry implements IMethodRegistry {
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				registerMethod(target, instance);
 			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
 			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
 			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
 			}
 		}
 	}

@@ -40,5 +40,5 @@ public interface IMethodRegistry {
 	 * @param context The context to execute under
 	 * @return The build Lua object
 	 */
-	<T> ILuaObject getObject(IUnbakedContext<T> context);
+	ILuaObject getObject(IUnbakedContext<?> context);
 }

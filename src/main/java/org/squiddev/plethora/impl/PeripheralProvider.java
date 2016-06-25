@@ -6,8 +6,10 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.registry.Module;
 
 import java.util.List;
@@ -16,19 +18,19 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 import static org.squiddev.plethora.api.reference.Reference.tile;
 
 /**
- * Core module
+ * Wraps tile entities and provides them as a peripheral
+ * TODO: Blacklisting system
  */
 public class PeripheralProvider extends Module implements IPeripheralProvider {
 	@Override
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			Context<TileEntity> context = new Context<TileEntity>(null, te, world, blockPos);
-			List<IMethod<TileEntity>> methods = MethodRegistry.instance.getMethods(context);
+			IUnbakedContext<TileEntity> context = new UnbakedContext<TileEntity>(tile(te), id(world), id(blockPos));
+			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 
-			if (methods.size() > 0) {
-				UnbakedContext<TileEntity> unbakedContext = new UnbakedContext<TileEntity>(tile(te), id(world), id(blockPos));
-				return new PeripheralMethodWrapper(te, unbakedContext, methods);
+			if (paired.getFirst().size() > 0) {
+				return new PeripheralMethodWrapper(te, paired.getFirst(), paired.getSecond());
 			}
 		}
 

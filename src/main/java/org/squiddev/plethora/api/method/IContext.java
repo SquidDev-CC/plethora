@@ -47,6 +47,15 @@ public interface IContext<T> {
 	<U> IUnbakedContext<U> makeChild(IReference<U> target, IReference<?>... context);
 
 	/**
+	 * Make a child context
+	 *
+	 * @param target  The child's target
+	 * @param context Additional context items
+	 * @return The child context
+	 */
+	<U> IContext<U> makeBakedChild(U target, Object... context);
+
+	/**
 	 * Include additional properties in this context
 	 *
 	 * @param context The additional context items

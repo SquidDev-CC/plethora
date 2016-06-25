@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ public class MetaItemFluidContainer implements IMetaProvider<ItemStack> {
 			data.put("fluid", PlethoraAPI.instance().metaRegistry().getMeta(fluidStack));
 			return data;
 		} else {
-			return null;
+			return Collections.emptyMap();
 		}
 	}
 }
