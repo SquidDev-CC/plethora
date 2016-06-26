@@ -2,6 +2,8 @@ package org.squiddev.plethora.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.BlockManipulator;
+import org.squiddev.plethora.gameplay.ItemModule;
 import org.squiddev.plethora.impl.PeripheralProvider;
 
 import java.util.HashSet;
@@ -19,6 +21,8 @@ public final class Registry {
 
 	static {
 		addModule(new PeripheralProvider());
+		addModule(new ItemModule());
+		addModule(new BlockManipulator());
 	}
 
 	public static void addModule(IModule module) {

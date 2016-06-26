@@ -1,5 +1,5 @@
 {
-	"parent": "cctweaks:block/${name}",
+	"parent": "plethora:block/${name}",
 	"display": {
 		"thirdperson": {
 			"rotation": [ 10, -45, 170 ],

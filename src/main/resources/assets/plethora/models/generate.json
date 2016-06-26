@@ -1,6 +1,7 @@
 {
 	"templates": {
 		"item": { "item": "templates/item.json" },
+		"itemblock": { "item": "templates/itemblock.json" },
 		"block": { "block": "templates/block.json" },
 		"both": {
 			"item": "templates/itemblock.json",
@@ -8,5 +9,14 @@
 		}
 	},
 	"simple": {
+		"item": {
+			"moduleIntrospection": "plethora:items/moduleIntrospection",
+			"moduleLaser": "plethora:items/moduleLaser",
+			"moduleScanner": "plethora:items/moduleScanner",
+			"moduleSensor": "plethora:items/moduleSensor"
+		},
+		"itemblock": {
+			"manipulator": "manipulator"
+		}
 	}
 }

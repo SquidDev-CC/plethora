@@ -1,13 +1,17 @@
 package org.squiddev.plethora;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
+
+import java.util.List;
 
 public abstract class ItemBase extends Item implements IClientModule {
 	protected final String name;
@@ -29,6 +33,12 @@ public abstract class ItemBase extends Item implements IClientModule {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
 		return tag;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
+		super.addInformation(stack, player, out, um);
+		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".desc"));
 	}
 
 	@Override

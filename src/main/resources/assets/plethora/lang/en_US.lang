@@ -1,0 +1,14 @@
+item.plethora.module.moduleIntrospection.name=Introspection Module
+item.plethora.module.moduleIntrospection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
+
+item.plethora.module.moduleLaser.name=Frickin' laser beam
+item.plethora.module.moduleLaser.desc=It fires lasers. 'nough said
+
+item.plethora.module.moduleScanner.name=Block Scanner
+item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity, wrapping them as peripherals
+
+item.plethora.module.moduleSensor.name=Entity Sensor
+item.plethora.module.moduleSensor.desc=Scans nearby entities and wraps them as peripherals
+
+tile.plethora.manipulator.name=Manipulator
+tile.plethora.manipulator.desc=Allows using a module from a computer

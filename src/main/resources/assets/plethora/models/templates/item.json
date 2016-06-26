@@ -1,5 +1,5 @@
 {
-	"parent": "cctweaks:item/flat",
+	"parent": "plethora:item/flat",
 	"textures": {
 		"layer0": "${texture}"
 	}

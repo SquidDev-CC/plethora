@@ -7,6 +7,7 @@ import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.Plethora;
 
 import java.io.File;
+import java.util.Random;
 
 /**
  * Helper methods for various things
@@ -126,5 +128,21 @@ public class Helpers {
 		ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
 		ModelBakery.registerItemVariants(item, res);
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, damage, res);
+	}
+
+	public static final Random RANDOM = new Random();
+
+	public static void spawnItemStack(World world, double x, double y, double z, ItemStack stack) {
+		float dX = RANDOM.nextFloat() * 0.8F + 0.1F;
+		float dY = RANDOM.nextFloat() * 0.8F + 0.1F;
+		float dZ = RANDOM.nextFloat() * 0.8F + 0.1F;
+
+		EntityItem entity = new EntityItem(world, x + dX, y + dY, z + dZ, stack);
+
+		float motion = 0.05F;
+		entity.motionX = RANDOM.nextGaussian() * (double) motion;
+		entity.motionY = RANDOM.nextGaussian() * (double) motion + 0.20000000298023224D;
+		entity.motionZ = RANDOM.nextGaussian() * (double) motion;
+		world.spawnEntityInWorld(entity);
 	}
 }
