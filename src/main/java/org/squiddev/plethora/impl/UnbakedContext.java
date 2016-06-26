@@ -30,7 +30,7 @@ public class UnbakedContext<T> implements IUnbakedContext<T> {
 			baked[i] = context[i].get();
 		}
 
-		return new Context<T>(this, value);
+		return new Context<T>(this, value, baked);
 	}
 
 	@Nonnull

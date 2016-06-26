@@ -8,13 +8,13 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.registry.Module;
 
 import java.util.List;
 
-import static org.squiddev.plethora.api.reference.Reference.id;
 import static org.squiddev.plethora.api.reference.Reference.tile;
 
 /**
@@ -26,7 +26,7 @@ public class PeripheralProvider extends Module implements IPeripheralProvider {
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			IUnbakedContext<TileEntity> context = new UnbakedContext<TileEntity>(tile(te), id(world), id(blockPos));
+			IUnbakedContext<TileEntity> context = new UnbakedContext<TileEntity>(tile(te), new WorldLocation(world, blockPos));
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 
 			if (paired.getFirst().size() > 0) {

@@ -47,6 +47,7 @@ public abstract class TileBase extends TileEntity {
 	public void markForUpdate() {
 		markDirty();
 		worldObj.markBlockForUpdate(pos);
+		worldObj.notifyNeighborsOfStateChange(pos, blockType);
 	}
 
 	/**

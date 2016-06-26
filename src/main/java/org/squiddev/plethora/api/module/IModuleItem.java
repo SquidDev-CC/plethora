@@ -26,5 +26,5 @@ public interface IModuleItem {
 	 * @return The additional context items.
 	 */
 	@Nonnull
-	Collection<? extends IReference<?>> getAdditionalContext(@Nonnull ItemStack stack);
+	Collection<IReference<?>> getAdditionalContext(@Nonnull ItemStack stack);
 }

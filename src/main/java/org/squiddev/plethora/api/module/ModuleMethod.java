@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 /**
  * A method bound to a specific module
  */
-public abstract class ModuleMethod<T> extends BasicMethod<T> {
+public abstract class ModuleMethod extends BasicMethod<IModule> {
 	protected final ResourceLocation module;
 
 	protected ModuleMethod(String name, boolean worldThread, ResourceLocation module) {
@@ -23,9 +23,7 @@ public abstract class ModuleMethod<T> extends BasicMethod<T> {
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<T> context) {
-		if (!super.canApply(context)) return false;
-		IModule module = context.getContext(IModule.class);
-		return module != null && module.getModuleId().equals(module);
+	public boolean canApply(@Nonnull IContext<IModule> context) {
+		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
 	}
 }

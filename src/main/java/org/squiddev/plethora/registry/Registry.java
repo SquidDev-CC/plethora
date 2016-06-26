@@ -2,9 +2,9 @@ package org.squiddev.plethora.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.gameplay.BlockManipulator;
-import org.squiddev.plethora.gameplay.ItemModule;
 import org.squiddev.plethora.impl.PeripheralProvider;
+import org.squiddev.plethora.modules.BlockManipulator;
+import org.squiddev.plethora.modules.ItemModule;
 
 import java.util.HashSet;
 import java.util.Set;

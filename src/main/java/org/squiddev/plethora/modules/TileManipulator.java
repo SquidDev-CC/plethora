@@ -1,4 +1,4 @@
-package org.squiddev.plethora.gameplay;
+package org.squiddev.plethora.modules;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -6,12 +6,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import org.squiddev.plethora.TileBase;
 import org.squiddev.plethora.api.module.IModuleItem;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
-import static org.squiddev.plethora.gameplay.BlockManipulator.OFFSET;
+import static org.squiddev.plethora.modules.BlockManipulator.OFFSET;
 
-public class TileManipulator extends TileBase {
+public final class TileManipulator extends TileBase {
 	private ItemStack stack;
 
 	// Lazily loaded render options
@@ -55,7 +54,6 @@ public class TileManipulator extends TileBase {
 		if (player.worldObj.isRemote) return true;
 
 		ItemStack newStack = player.getHeldItem();
-		DebugLogger.debug("Clicked from " + stack + " → " + newStack);
 		if (newStack == null && stack != null) {
 			if (!player.capabilities.isCreativeMode) {
 				Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);

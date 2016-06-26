@@ -15,11 +15,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.gameplay.TileManipulator;
+import org.squiddev.plethora.modules.TileManipulator;
 
 import java.util.List;
 
-import static org.squiddev.plethora.gameplay.BlockManipulator.OFFSET;
+import static org.squiddev.plethora.modules.BlockManipulator.OFFSET;
 
 public final class RenderManipulator extends TileEntitySpecialRenderer<TileManipulator> {
 	private ItemModelMesher mesher;
