@@ -26,15 +26,12 @@ public final class IntrospectionModule {
 			super("getInventory", true, MODULE);
 		}
 
-		@Override
-		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(EntityPlayer.class);
-		}
-
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
+			if (player == null) throw new LuaException("Player not found");
+
 			IInventory inventory = player.inventory;
 			IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
@@ -47,15 +44,12 @@ public final class IntrospectionModule {
 			super("getEnder", true, MODULE);
 		}
 
-		@Override
-		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(EntityPlayer.class);
-		}
-
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
+			if (player == null) throw new LuaException("Player not found");
+
 			IInventory inventory = player.getInventoryEnderChest();
 			IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};

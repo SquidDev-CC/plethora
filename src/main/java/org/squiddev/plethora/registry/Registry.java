@@ -19,9 +19,11 @@ public final class Registry {
 	private static boolean init = false;
 	private static boolean postInit = false;
 
+	public static final ItemModule itemModule;
+
 	static {
 		addModule(new PeripheralProvider());
-		addModule(new ItemModule());
+		addModule(itemModule = new ItemModule());
 		addModule(new BlockManipulator());
 	}
 

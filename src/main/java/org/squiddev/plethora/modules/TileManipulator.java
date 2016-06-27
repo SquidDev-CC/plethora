@@ -50,7 +50,6 @@ public final class TileManipulator extends TileBase {
 
 	@Override
 	public boolean onActivated(EntityPlayer player, EnumFacing side) {
-		if (side != EnumFacing.UP) return false;
 		if (player.worldObj.isRemote) return true;
 
 		ItemStack newStack = player.getHeldItem();
@@ -93,8 +92,8 @@ public final class TileManipulator extends TileBase {
 	public double incrementRotation() {
 		long tick = ++this.tick;
 		double offset = this.offset;
-		if (offset < 0) offset = this.offset = Helpers.RANDOM.nextDouble() * 360;
+		if (offset < 0) offset = this.offset = Helpers.RANDOM.nextDouble() * (2 * Math.PI);
 
-		return tick + offset;
+		return (tick / 100.0) + offset;
 	}
 }

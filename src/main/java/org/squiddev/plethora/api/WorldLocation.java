@@ -26,6 +26,10 @@ public final class WorldLocation implements IReference<WorldLocation> {
 		this.pos = pos;
 	}
 
+	public WorldLocation(@Nonnull World world, int x, int y, int z) {
+		this(world, new BlockPos(x, y, z));
+	}
+
 	@Nonnull
 	public World getWorld() {
 		return world;

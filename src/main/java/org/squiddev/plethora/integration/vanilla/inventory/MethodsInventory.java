@@ -14,7 +14,7 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 
-public final class LuaInventory {
+public final class MethodsInventory {
 	@Method(IInventory.class)
 	public static class ListMethod extends BasicMethod<IInventory> {
 		public ListMethod() {

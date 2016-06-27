@@ -3,6 +3,10 @@ package org.squiddev.plethora.modules;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -10,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.BlockBase;
@@ -47,6 +52,15 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	public void init() {
 		super.init();
 		ComputerCraftAPI.registerPeripheralProvider(this);
+
+		GameRegistry.addShapedRecipe(new ItemStack(this),
+			"GGG",
+			"IMI",
+			"III",
+			'G', new ItemStack(Blocks.glass),
+			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
+			'I', new ItemStack(Items.iron_ingot)
+		);
 	}
 
 	@Override

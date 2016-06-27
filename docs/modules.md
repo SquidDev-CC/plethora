@@ -20,14 +20,14 @@ the manipulator, on a neural interface or used by the player.
  - Laser beam breaks blocks or damages enemies, setting them on fire.
 
 ## Scanner
- - Crafted from ender pearls, modems and gold.
+ - Crafted from ender pearls, modem, iron and dirt.
  - **Manipulator/Neural interface:** Describes blocks within a cube centered on the player.
    Also allows wrapping them as peripherals if possible. The larger the radius the longer the
    delay before getting a result.
  - **In hand:** Highlights ores within a 8 block radius
 
 ## Sensor
- - Crafted from potion of instant health and damage, zombie flesh and gold.
+ - Crafted from ender pearls, modem, iron and rotten flesh.
  - **Manipulator/Neural interface:** Describes entities within a cube centered on the player.
    Also allows wrapping them as peripherals if possible.
  -- **In hand:** Highlights entities within a 16 block radius.
