@@ -34,7 +34,7 @@ public interface IMetaRegistry {
 	 * @return The gathered metadata
 	 */
 	@Nonnull
-	Map<String, Object> getMeta(@Nonnull Object object);
+	Map<Object, Object> getMeta(@Nonnull Object object);
 
 	/**
 	 * An list of all valid providers for a class

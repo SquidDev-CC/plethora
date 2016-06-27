@@ -9,6 +9,8 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
@@ -35,12 +37,18 @@ public final class MetaRegistry implements IMetaRegistry {
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMeta(@Nonnull Object object) {
+	public Map<Object, Object> getMeta(@Nonnull Object object) {
 		Preconditions.checkNotNull(object, "object cannot be null");
+		if (object instanceof IContext || object instanceof IUnbakedContext) {
+			throw new IllegalArgumentException("Trying to get instance of context. This is probably a bug");
+		}
 
-		HashMap<String, Object> out = Maps.newHashMap();
-		for (IMetaProvider provider : getMetaProviders(object.getClass())) {
-			out.putAll(provider.getMeta(object));
+		HashMap<Object, Object> out = Maps.newHashMap();
+
+		for (Object child : ConverterRegistry.instance.convertAll(object)) {
+			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
+				out.putAll(provider.getMeta(child));
+			}
 		}
 
 		return out;

@@ -9,7 +9,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	private final String name;
 	private final boolean worldThread;
 
-	protected BasicMethod(String name, boolean worldThread) {
+	public BasicMethod(String name, boolean worldThread) {
 		this.name = name;
 		this.worldThread = worldThread;
 	}

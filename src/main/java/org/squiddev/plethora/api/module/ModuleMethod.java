@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 public abstract class ModuleMethod extends BasicMethod<IModule> {
 	protected final ResourceLocation module;
 
-	protected ModuleMethod(String name, boolean worldThread, ResourceLocation module) {
+	public ModuleMethod(String name, boolean worldThread, ResourceLocation module) {
 		super(name, worldThread);
 		this.module = module;
 	}
