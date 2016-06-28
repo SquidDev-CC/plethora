@@ -1,17 +1,23 @@
 package org.squiddev.plethora.modules;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,6 +28,8 @@ import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.client.entity.RenderLaser;
+import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -47,6 +55,8 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	public static final int SCANNER_RADIUS = 8;
 	public static final int SENSOR_RADIUS = 16;
+
+	private static final int LASER_TICKS = 72000;
 
 	public ItemModule() {
 		super("module");
@@ -99,8 +109,30 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 				} else {
 					player.displayGUIChest(player.getInventoryEnderChest());
 				}
+			case LASER_ID:
+				player.setItemInUse(stack, 72000);
 			default:
 				return stack;
+		}
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int ticks) {
+		super.onPlayerStoppedUsing(stack, world, player, ticks);
+		if (ticks > LASER_TICKS) ticks = LASER_TICKS;
+		if (ticks < 0) ticks = 0;
+
+		float potency = (ticks * 4.0f / LASER_TICKS) + 1;
+		float inaccuracy = (LASER_TICKS - ticks) / LASER_TICKS;
+		world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
+	}
+
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack) {
+		if (stack.getItemDamage() == LASER_ID) {
+			return EnumAction.BOW;
+		} else {
+			return super.getItemUseAction(stack);
 		}
 	}
 
@@ -121,6 +153,24 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 		for (int i = 0; i < MODULES; i++) {
 			Helpers.setupModel(this, i, getName(i));
 		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void clientPreInit() {
+		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
+			@Override
+			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {
+				DebugLogger.debug("Creating renderer");
+				return new RenderLaser(renderManager);
+			}
+		});
+	}
+
+	@Override
+	public void preInit() {
+		super.preInit();
+		EntityRegistry.registerModEntity(EntityLaser.class, Plethora.ID + ":laser", 0, Plethora.instance, 64, 10, true);
 	}
 
 	@Override

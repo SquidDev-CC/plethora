@@ -2,6 +2,7 @@ package org.squiddev.plethora.api.reference;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import org.squiddev.plethora.api.WorldLocation;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +39,7 @@ public final class Reference {
 	}
 
 	/**
-	 * Create an reference to a {@link net.minecraft.entity.Entity}
+	 * Create an reference to a {@link Entity}
 	 *
 	 * @param object The entity to wrap
 	 * @return The wrapped reference
@@ -47,5 +48,19 @@ public final class Reference {
 	@Nonnull
 	public static <T extends Entity> IReference<T> entity(T object) {
 		return new EntityReference<T>(object);
+	}
+
+	/**
+	 * Create a reference to a {@link Entity} that must be within a radius of a block
+	 *
+	 * @param object   The entity to wrap
+	 * @param location The location to check around
+	 * @param radius   The radius of this size
+	 * @return The wrapped reference
+	 * @see BoundedEntityReference
+	 */
+	@Nonnull
+	public static <T extends Entity> IReference<T> bounded(T object, WorldLocation location, int radius) {
+		return new BoundedEntityReference<T>(object, location, radius);
 	}
 }

@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 /**
  * A reference that returns its value
  */
-public class IdentityReference<T> implements IReference<T> {
+public final class IdentityReference<T> implements IReference<T> {
 	private final T object;
 
 	public IdentityReference(@Nonnull T object) {

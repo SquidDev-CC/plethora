@@ -7,9 +7,9 @@ import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 
 /**
- * An reference to an entity. Ensures it is still alive
+ * An reference to an entity. Ensures it is still alive.
  */
-public final class EntityReference<T extends Entity> implements IReference<T> {
+public class EntityReference<T extends Entity> implements IReference<T> {
 	private final WeakReference<T> entity;
 
 	public EntityReference(T entity) {

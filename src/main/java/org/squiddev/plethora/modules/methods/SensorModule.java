@@ -81,9 +81,8 @@ public final class SensorModule {
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			Entity entity = findEntityByUUID(context, args);
-			// TODO: Reference that forces it within radius
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(
-				context.makeChild(Reference.entity(entity))
+				context.makeChild(Reference.bounded(entity, context.getContext(WorldLocation.class), SENSOR_RADIUS))
 			)};
 		}
 	}

@@ -125,6 +125,13 @@ public final class Registry {
 		}
 
 		@Override
+		@SideOnly(Side.CLIENT)
+		public void preInit() {
+			super.preInit();
+			base.clientPreInit();
+		}
+
+		@Override
 		public String toString() {
 			return base.toString();
 		}

@@ -64,4 +64,9 @@ public abstract class ItemBase extends Item implements IClientModule {
 	public void clientInit() {
 		Helpers.setupModel(this, 0, name);
 	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void clientPreInit() {
+	}
 }

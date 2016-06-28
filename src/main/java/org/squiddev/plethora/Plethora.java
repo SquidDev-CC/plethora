@@ -24,6 +24,9 @@ public class Plethora {
 		return ComputerCraft.mainCreativeTab;
 	}
 
+	@Mod.Instance
+	public static Plethora instance;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		Registry.preInit();
