@@ -5,7 +5,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
@@ -30,7 +29,7 @@ public class LaserModule {
 
 		@Override
 		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(WorldLocation.class);
+			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
 		@Nullable
@@ -46,7 +45,7 @@ public class LaserModule {
 			double motionZ = (double) (MathHelper.cos(yaw) * MathHelper.cos(pitch));
 			double motionY = (double) (-MathHelper.sin(pitch));
 
-			IWorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(IWorldLocation.class);
 			BlockPos pos = location.getPos();
 
 			EntityLaser laser = new EntityLaser(location.getWorld());

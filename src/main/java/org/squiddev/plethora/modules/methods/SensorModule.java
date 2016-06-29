@@ -9,7 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
@@ -38,7 +37,7 @@ public final class SensorModule {
 
 		@Override
 		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(WorldLocation.class);
+			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 	}
 
@@ -51,7 +50,7 @@ public final class SensorModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final IWorldLocation location = context.getContext(WorldLocation.class);
+			final IWorldLocation location = context.getContext(IWorldLocation.class);
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -83,7 +82,7 @@ public final class SensorModule {
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			Entity entity = findEntityByUUID(context, args);
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(
-				context.makeChild(Reference.bounded(entity, context.getContext(WorldLocation.class), SENSOR_RADIUS))
+				context.makeChild(Reference.bounded(entity, context.getContext(IWorldLocation.class), SENSOR_RADIUS))
 			)};
 		}
 	}
@@ -141,7 +140,7 @@ public final class SensorModule {
 	}
 
 	private static Entity findEntityByUUID(IContext<IModule> context, Object[] args) throws LuaException {
-		IWorldLocation location = context.getContext(WorldLocation.class);
+		IWorldLocation location = context.getContext(IWorldLocation.class);
 
 		UUID uuid;
 		try {
@@ -159,7 +158,7 @@ public final class SensorModule {
 	}
 
 	private static Entity findEntityByName(IContext<IModule> context, Object[] args) throws LuaException {
-		IWorldLocation location = context.getContext(WorldLocation.class);
+		IWorldLocation location = context.getContext(IWorldLocation.class);
 
 		String name = getString(args, 0);
 

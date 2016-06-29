@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
@@ -41,13 +40,13 @@ public final class ScannerModule {
 
 		@Override
 		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(WorldLocation.class);
+			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final IWorldLocation location = context.getContext(WorldLocation.class);
+			final IWorldLocation location = context.getContext(IWorldLocation.class);
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -84,7 +83,7 @@ public final class ScannerModule {
 
 		@Override
 		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(WorldLocation.class);
+			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
 		@Nullable
@@ -96,7 +95,7 @@ public final class ScannerModule {
 
 			validatePosition(x, y, z);
 
-			IWorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(IWorldLocation.class);
 			BlockPos pos = location.getPos().add(x, y, z);
 			World world = location.getWorld();
 
@@ -121,7 +120,7 @@ public final class ScannerModule {
 
 		@Override
 		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(WorldLocation.class);
+			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
 		@Nullable
@@ -133,7 +132,7 @@ public final class ScannerModule {
 
 			validatePosition(x, y, z);
 
-			IWorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(IWorldLocation.class);
 			BlockPos pos = location.getPos().add(x, y, z);
 			World world = location.getWorld();
 
