@@ -13,7 +13,7 @@ import org.squiddev.plethora.Plethora;
  */
 public class DebugLogger {
 	private static final Logger logger = LogManager.getLogger(Plethora.ID);
-	private static final boolean DEBUG = true;
+	public static final boolean DEBUG = true;
 
 	public static void trace(String message, int max) {
 		try {

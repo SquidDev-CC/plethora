@@ -55,4 +55,36 @@ public final class IntrospectionModule {
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
 		}
 	}
+
+	@Method(IModule.class)
+	public static final class GetIDMethod extends ModuleMethod {
+		public GetIDMethod() {
+			super("getID", true, MODULE);
+		}
+
+		@Nullable
+		@Override
+		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			EntityPlayer player = context.getContext(EntityPlayer.class);
+			if (player == null) throw new LuaException("Player not found");
+
+			return new Object[]{player.getUniqueID().toString()};
+		}
+	}
+
+	@Method(IModule.class)
+	public static final class GetNameMethod extends ModuleMethod {
+		public GetNameMethod() {
+			super("getName", true, MODULE);
+		}
+
+		@Nullable
+		@Override
+		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			EntityPlayer player = context.getContext(EntityPlayer.class);
+			if (player == null) throw new LuaException("Player not found");
+
+			return new Object[]{player.getName()};
+		}
+	}
 }

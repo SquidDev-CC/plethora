@@ -1,5 +1,6 @@
 package org.squiddev.plethora.neural;
 
+import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -15,11 +16,11 @@ public class ItemNeuralConnector extends ItemBase {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (!world.isRemote) {
-			ItemStack neuralStack = NeuralContainer.getStack(player);
+			ItemStack neuralStack = NeuralHelpers.getStack(player);
 			if (neuralStack != null) {
-				NeuralInterface iFace = NeuralManager.get(neuralStack, player);
-				if (iFace != null) {
-					iFace.turnOn();
+				ServerComputer computer = ItemComputerHandler.getServer(neuralStack, player, player.inventory);
+				if (computer != null) {
+					computer.turnOn();
 					player.openGui(Plethora.instance, GuiHandler.GUI_NEURAL, player.worldObj, 0, 0, 0);
 				}
 			}

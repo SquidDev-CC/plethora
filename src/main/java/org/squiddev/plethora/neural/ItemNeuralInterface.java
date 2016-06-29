@@ -1,29 +1,45 @@
 package org.squiddev.plethora.neural;
 
+import com.google.common.base.Objects;
+import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.plethora.ItemBase;
 import org.squiddev.plethora.Plethora;
+import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.client.ModelInterface;
 import org.squiddev.plethora.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
 
+import static org.squiddev.plethora.neural.ItemComputerHandler.*;
+import static org.squiddev.plethora.neural.NeuralHelpers.INV_SIZE;
+
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
+
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", 33, new int[]{0, 0, 0, 0}, 0);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -35,6 +51,135 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
+	private void onUpdate(ItemStack stack, EntityLivingBase player, boolean forceActive) {
+		if (player.worldObj.isRemote) {
+			if (forceActive) ItemComputerHandler.getClient(stack);
+		} else {
+			NBTTagCompound tag = ItemBase.getTag(stack);
+			ServerComputer computer;
+
+			// Fetch computer
+			InventoryPlayer inventory = player instanceof EntityPlayer ? ((EntityPlayer) player).inventory : null;
+			if (forceActive) {
+				computer = ItemComputerHandler.getServer(stack, player, inventory);
+				computer.turnOn();
+				computer.keepAlive();
+			} else {
+				computer = ItemComputerHandler.tryGetServer(stack);
+				if (computer == null) return;
+			}
+
+			boolean dirty = false;
+
+			// Sync entity
+			long newMost = player.getUniqueID().getMostSignificantBits();
+			long newLeast = player.getUniqueID().getLeastSignificantBits();
+			if (tag.getLong(ENTITY_MOST) != newMost || tag.getLong(ENTITY_LEAST) != newLeast) {
+				ItemComputerHandler.setEntity(stack, computer, player);
+				dirty = true;
+			}
+
+			// Sync computer ID
+			int newId = computer.getID();
+			if (!tag.hasKey(COMPUTER_ID) || tag.getInteger(COMPUTER_ID) != newId) {
+				tag.setInteger(COMPUTER_ID, newId);
+				dirty = true;
+			}
+
+			// Sync Label
+			String newLabel = computer.getLabel();
+			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
+			if (!Objects.equal(newLabel, label)) {
+				if (newLabel == null || newLabel.isEmpty()) {
+					stack.clearCustomName();
+				} else {
+					stack.setStackDisplayName(newLabel);
+				}
+				dirty = true;
+			}
+
+			// Sync peripherals
+			if (tag.getByte(DIRTY) != 0) {
+				byte dirtyStatus = tag.getByte(DIRTY);
+				tag.setByte(DIRTY, (byte) 0);
+				dirty = true;
+
+				IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+				for (int slot = 0; slot < INV_SIZE; slot++) {
+					if ((dirtyStatus & (1 << slot)) == 1 << slot) {
+						computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler.getStackInSlot(slot), player));
+					}
+				}
+			}
+
+			if (dirty && inventory != null) inventory.markDirty();
+		}
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt) {
+		return new InvProvider(stack);
+	}
+
+	private static class InvProvider implements ICapabilitySerializable<NBTBase> {
+		private final ItemStack stack;
+		private final IItemHandler inv = new ItemStackHandler(INV_SIZE) {
+			@Override
+			public ItemStack insertItem(int slot, ItemStack toInsert, boolean simulate) {
+				if (toInsert != null && toInsert.getItem() instanceof IModuleItem && getStackInSlot(slot) == null) {
+					return super.insertItem(slot, toInsert, simulate);
+				} else {
+					return toInsert;
+				}
+			}
+
+			@Override
+			protected int getStackLimit(int slot, ItemStack stack) {
+				return 1;
+			}
+
+			@Override
+			protected void onContentsChanged(int slot) {
+				super.onContentsChanged(slot);
+
+				NBTTagCompound tag = ItemBase.getTag(stack);
+				tag.setByte(DIRTY, (byte) (tag.getByte("dirty") | 1 << slot));
+			}
+		};
+
+		private InvProvider(ItemStack stack) {
+			this.stack = stack;
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+			return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+				return (T) inv;
+			} else {
+				return null;
+			}
+		}
+
+		@Override
+		public NBTBase serializeNBT() {
+			Capability<IItemHandler> capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+			return capability.getStorage().writeNBT(capability, inv, null);
+		}
+
+		@Override
+		public void deserializeNBT(NBTBase nbt) {
+			Capability<IItemHandler> capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+			capability.getStorage().readNBT(capability, inv, null, nbt);
+		}
+	}
+
+	//region Armor stuff
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, double v, int i) {
 		return FAKE_PROPERTIES;
@@ -53,6 +198,12 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean additional) {
 		super.addInformation(stack, player, out, additional);
 		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".desc"));
+
+		if (additional) {
+			if (stack.hasTagCompound() && stack.getTagCompound().hasKey(COMPUTER_ID)) {
+				out.add("Computer ID " + stack.getTagCompound().getInteger(COMPUTER_ID));
+			}
+		}
 	}
 
 	@Override
@@ -69,37 +220,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 	}
 
-	private void onUpdate(ItemStack stack, EntityLivingBase player, boolean forceActive) {
-		if (player.worldObj.isRemote) {
-			if (forceActive) NeuralManager.getClient(stack);
-		} else {
-			NBTTagCompound tag = ItemBase.getTag(stack);
-			NeuralInterface neuralInterface;
-
-			if (forceActive) {
-				neuralInterface = NeuralManager.get(tag, player);
-				neuralInterface.turnOn();
-				neuralInterface.update();
-			} else {
-				neuralInterface = NeuralManager.tryGet(tag, player);
-				if (neuralInterface == null) return;
-			}
-
-			if (neuralInterface.isDirty()) {
-				neuralInterface.toNBT(tag);
-				String label = tag.getString("label");
-				if (label == null || label.isEmpty()) {
-					stack.clearCustomName();
-				} else {
-					stack.setStackDisplayName(label);
-				}
-
-				if (player instanceof EntityPlayer) {
-					((EntityPlayer) player).inventory.markDirty();
-				}
-			}
-		}
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -111,7 +231,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String existing) {
 		return Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
 	}
+	//endregion
 
+	//region Registry stuff
 	@Override
 	public boolean canLoad() {
 		return true;
@@ -140,4 +262,5 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
 	}
+	//endregion
 }

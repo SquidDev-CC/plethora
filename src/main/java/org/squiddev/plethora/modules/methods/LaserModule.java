@@ -1,9 +1,11 @@
 package org.squiddev.plethora.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
@@ -12,6 +14,7 @@ import org.squiddev.plethora.api.module.ModuleMethod;
 import org.squiddev.plethora.modules.BlockManipulator;
 import org.squiddev.plethora.modules.EntityLaser;
 import org.squiddev.plethora.modules.ItemModule;
+import org.squiddev.plethora.modules.TileManipulator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,11 +52,29 @@ public class LaserModule {
 			BlockPos pos = location.getPos();
 
 			EntityLaser laser = new EntityLaser(location.getWorld());
-			laser.setPosition(
-				pos.getX() + 0.5,
-				motionY < 0 ? pos.getY() - 0.3 : pos.getY() + BlockManipulator.OFFSET + 0.1,
-				pos.getZ() + 0.5
-			);
+			if (context.hasContext(TileManipulator.class)) {
+				laser.setPosition(
+					pos.getX() + 0.5,
+					motionY < 0 ? pos.getY() - 0.3 : pos.getY() + BlockManipulator.OFFSET + 0.1,
+					pos.getZ() + 0.5
+				);
+			} else if (context.hasContext(EntityLivingBase.class)) {
+				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+				Vec3 vector = entity.getPositionEyes(1.0f);
+				double offset = entity.width + 0.2;
+				double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+				laser.setPosition(
+					vector.xCoord + motionX / length * offset,
+					vector.yCoord + motionY / length * offset,
+					vector.zCoord + motionZ / length * offset
+				);
+			} else {
+				laser.setPosition(
+					pos.getX() + 0.5,
+					pos.getY() + 0.5,
+					pos.getZ() + 0.5
+				);
+			}
 
 			laser.setPotency(potency);
 			laser.setThrowableHeading(motionX, motionY, motionZ, 1.5f, 0);
