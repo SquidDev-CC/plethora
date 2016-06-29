@@ -4,13 +4,13 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
+import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.ItemBase;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,12 +21,8 @@ import java.util.Map;
  */
 public class NeuralManager {
 	private static final HashMap<Integer, NeuralInterface> interfaces = Maps.newHashMap();
-	private static int sessionId = 0;
-	private static int instanceId = 0;
 
 	public static void setup() {
-		sessionId++;
-		instanceId = 0;
 		interfaces.clear();
 	}
 
@@ -35,7 +31,6 @@ public class NeuralManager {
 			neural.unload();
 		}
 
-		instanceId = 0;
 		interfaces.clear();
 	}
 
@@ -46,28 +41,34 @@ public class NeuralManager {
 	public static NeuralInterface get(NBTTagCompound tag, EntityLivingBase entity) {
 		if (entity.worldObj.isRemote) throw new RuntimeException("Cannot get NeuralInterface on client thread");
 
+		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;
+		final int sessionId = manager.getSessionID();
+
 		NeuralInterface neuralInterface;
 
-		if (tag.getInteger(NeuralInterface.SESSION_ID) != sessionId) {
+		if (tag.getInteger(ServerComputerManager.SESSION_ID) != sessionId) {
 			// Running on an old session. Update it
-			neuralInterface = new NeuralInterface(entity, instanceId++, sessionId, tag);
+			int id = manager.getUnusedInstanceID();
+			neuralInterface = new NeuralInterface(entity, id, sessionId, tag);
 			synchronized (interfaces) {
-				interfaces.put(neuralInterface.instanceId, neuralInterface);
+				interfaces.put(id, neuralInterface);
 			}
 		} else {
 			synchronized (interfaces) {
-				neuralInterface = interfaces.get(tag.getInteger(NeuralInterface.INSTANCE_ID));
+				neuralInterface = interfaces.get(tag.getInteger(ServerComputerManager.INSTANCE_ID));
 
 				if (neuralInterface == null) {
 					// Doesn't exist. Create it
-					neuralInterface = new NeuralInterface(entity, instanceId++, sessionId, tag);
-					interfaces.put(neuralInterface.instanceId, neuralInterface);
+					int id = manager.getUnusedInstanceID();
+					neuralInterface = new NeuralInterface(entity, id, sessionId, tag);
+					interfaces.put(id, neuralInterface);
 				} else if (neuralInterface.entity != entity) {
 					// Wrong player. Destroy and create
 					neuralInterface.unload();
 
-					neuralInterface = new NeuralInterface(entity, instanceId++, sessionId, tag);
-					interfaces.put(neuralInterface.instanceId, neuralInterface);
+					int id = manager.getUnusedInstanceID();
+					neuralInterface = new NeuralInterface(entity, id, sessionId, tag);
+					interfaces.put(id, neuralInterface);
 				}
 			}
 		}
@@ -77,9 +78,9 @@ public class NeuralManager {
 
 	public static NeuralInterface tryGet(NBTTagCompound tag, EntityLivingBase entity) {
 		if (entity.worldObj.isRemote) throw new RuntimeException("Cannot get NeuralInterface on client thread");
-		if (tag.getInteger(NeuralInterface.SESSION_ID) == sessionId) {
+		if (tag.getInteger(ServerComputerManager.SESSION_ID) == ComputerCraft.serverComputerRegistry.getSessionID()) {
 			synchronized (interfaces) {
-				return interfaces.get(tag.getInteger(NeuralInterface.INSTANCE_ID));
+				return interfaces.get(tag.getInteger(ServerComputerManager.INSTANCE_ID));
 			}
 		}
 
@@ -92,29 +93,15 @@ public class NeuralManager {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static ClientComputer getClientVerbose(ItemStack stack) {
-		NBTTagCompound tag = ItemBase.getTag(stack);
-		ClientComputer computer = getClient(tag);
-		if (computer == null) {
-			DebugLogger.debug("Getting no client from " + tag);
-		} else {
-			DebugLogger.debug("Getting client " + computer.getID() + " / " + computer.getInstanceID() + " → " + computer.isOn() + " from " + tag);
-		}
-		return computer;
-	}
-
-	@SideOnly(Side.CLIENT)
 	public static ClientComputer getClient(NBTTagCompound tag) {
-		int instanceId = tag.getInteger(NeuralInterface.INSTANCE_ID);
+		int instanceId = tag.getInteger(ServerComputerManager.INSTANCE_ID);
 		if (instanceId < 0) return null;
 
 		if (!ComputerCraft.clientComputerRegistry.contains(instanceId)) {
 			ComputerCraft.clientComputerRegistry.add(instanceId, new ClientComputer(instanceId));
 		}
 
-		ClientComputer computer = ComputerCraft.clientComputerRegistry.get(instanceId);
-//		DebugLogger.debug("Getting client " + computer.getID() + " / " + computer.getInstanceID() + " → " + computer.isOn() + " from " + tag);
-		return computer;
+		return ComputerCraft.clientComputerRegistry.get(instanceId);
 	}
 
 	public static void update() {

@@ -13,7 +13,7 @@ public class GuiNeuralInterface extends GuiComputer {
 		super(
 			container,
 			ComputerFamily.Advanced,
-			NeuralManager.getClientVerbose(container.getStack()),
+			NeuralManager.getClient(container.getStack()),
 			51,
 			19
 		);

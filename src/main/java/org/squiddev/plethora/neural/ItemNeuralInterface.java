@@ -19,7 +19,6 @@ import org.squiddev.plethora.ItemBase;
 import org.squiddev.plethora.Plethora;
 import org.squiddev.plethora.client.ModelInterface;
 import org.squiddev.plethora.registry.IClientModule;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public void onUpdate(ItemStack stauck, World world, Entity entity, int um1, boolean um2) {
+	public void onUpdate(ItemStack stack, World world, Entity entity, int um1, boolean um2) {
 		super.onUpdate(stack, world, entity, um1, um2);
 		if (entity instanceof EntityLivingBase) {
 			onUpdate(stack, (EntityLivingBase) entity, false);
@@ -88,7 +87,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 			if (neuralInterface.isDirty()) {
 				neuralInterface.toNBT(tag);
-				DebugLogger.debug("Is dirty: saving " + tag);
 				String label = tag.getString("label");
 				if (label == null || label.isEmpty()) {
 					stack.clearCustomName();

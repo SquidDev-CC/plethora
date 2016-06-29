@@ -28,20 +28,16 @@ import static org.squiddev.plethora.api.reference.Reference.entity;
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 public final class NeuralInterface extends ServerComputerManager {
-	public static final String SESSION_ID = "session_id";
-	public static final String INSTANCE_ID = "instance_id";
+
 
 	private final ItemStack[] modules = new ItemStack[6];
 	private final boolean[] moduleDirty = new boolean[6];
 
 	public final EntityLivingBase entity;
-	public final int instanceId;
-	public final int sessionId;
 
 	public NeuralInterface(EntityLivingBase entity, int instanceId, int sessionId, NBTTagCompound tagCompound) {
+		super(instanceId, sessionId);
 		this.entity = entity;
-		this.instanceId = instanceId;
-		this.sessionId = sessionId;
 
 		fromNBT(tagCompound);
 		turnOn();
@@ -140,8 +136,8 @@ public final class NeuralInterface extends ServerComputerManager {
 
 
 	@Override
-	protected ServerComputer createComputer(int instanceId, int computerId, String label) {
-		ServerComputer computer = super.createComputer(instanceId, computerId, label);
+	protected ServerComputer createComputer(int instanceId, String label) {
+		ServerComputer computer = super.createComputer(instanceId, label);
 
 		for (int i = 0; i < 6; i++) {
 			ItemStack stack = modules[i];
@@ -164,9 +160,6 @@ public final class NeuralInterface extends ServerComputerManager {
 	@Override
 	public void toNBT(NBTTagCompound tag) {
 		super.toNBT(tag);
-		tag.setInteger(INSTANCE_ID, instanceId);
-		tag.setInteger(SESSION_ID, sessionId);
-
 		NBTTagCompound upgradeLookup = new NBTTagCompound();
 		for (int i = 0; i < 6; i++) {
 			ItemStack stack = modules[i];

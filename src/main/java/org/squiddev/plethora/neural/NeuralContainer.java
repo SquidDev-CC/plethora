@@ -12,7 +12,7 @@ public class NeuralContainer extends Container {
 	private final ItemStack stack;
 
 	public NeuralContainer(ItemStack stack) {
-		this.stack = stack.copy();
+		this.stack = stack;
 	}
 
 	@Override
