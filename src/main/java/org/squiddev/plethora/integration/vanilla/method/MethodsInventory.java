@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.vanilla.inventory;
+package org.squiddev.plethora.integration.vanilla.method;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;

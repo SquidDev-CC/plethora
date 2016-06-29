@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.vanilla.inventory;
+package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
