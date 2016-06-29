@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
@@ -46,7 +47,7 @@ public final class ScannerModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final WorldLocation location = context.getContext(WorldLocation.class);
+			final IWorldLocation location = context.getContext(WorldLocation.class);
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -95,7 +96,7 @@ public final class ScannerModule {
 
 			validatePosition(x, y, z);
 
-			WorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(WorldLocation.class);
 			BlockPos pos = location.getPos().add(x, y, z);
 			World world = location.getWorld();
 
@@ -132,7 +133,7 @@ public final class ScannerModule {
 
 			validatePosition(x, y, z);
 
-			WorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(WorldLocation.class);
 			BlockPos pos = location.getPos().add(x, y, z);
 			World world = location.getWorld();
 

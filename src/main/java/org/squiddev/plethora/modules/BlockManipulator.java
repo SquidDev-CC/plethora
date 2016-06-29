@@ -100,12 +100,12 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		// Reference that ensures the module still exists.
+		// TODO: Reference that ensures the module still exists.
 		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(id(module), contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 		if (paired.getFirst().size() > 0) {
-			return new PeripheralMethodWrapper(te, paired.getFirst(), paired.getSecond());
+			return new PeripheralMethodWrapper(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {
 			return null;
 		}

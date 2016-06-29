@@ -7,6 +7,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
@@ -50,7 +51,7 @@ public final class SensorModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final WorldLocation location = context.getContext(WorldLocation.class);
+			final IWorldLocation location = context.getContext(WorldLocation.class);
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -140,7 +141,7 @@ public final class SensorModule {
 	}
 
 	private static Entity findEntityByUUID(IContext<IModule> context, Object[] args) throws LuaException {
-		WorldLocation location = context.getContext(WorldLocation.class);
+		IWorldLocation location = context.getContext(WorldLocation.class);
 
 		UUID uuid;
 		try {
@@ -158,7 +159,7 @@ public final class SensorModule {
 	}
 
 	private static Entity findEntityByName(IContext<IModule> context, Object[] args) throws LuaException {
-		WorldLocation location = context.getContext(WorldLocation.class);
+		IWorldLocation location = context.getContext(WorldLocation.class);
 
 		String name = getString(args, 0);
 

@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.tileentity.TileEntity;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 
@@ -16,13 +15,17 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  * Wrapper that packages environment
  */
 public class PeripheralMethodWrapper extends MethodWrapper implements IPeripheral {
-	private final TileEntity tile;
+	private final Object owner;
 	private final String type;
 
-	public PeripheralMethodWrapper(TileEntity tile, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+	public PeripheralMethodWrapper(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+		this(owner.getClass().getCanonicalName(), owner, methods, contexts);
+	}
+
+	public PeripheralMethodWrapper(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
 		super(methods, contexts);
-		this.tile = tile;
-		this.type = tile.getClass().getCanonicalName();
+		this.owner = owner;
+		this.type = name;
 	}
 
 	@Override
@@ -48,6 +51,6 @@ public class PeripheralMethodWrapper extends MethodWrapper implements IPeriphera
 		if (this == other) return true;
 		if (other == null || !(other instanceof PeripheralMethodWrapper)) return false;
 
-		return tile == ((PeripheralMethodWrapper) other).tile;
+		return owner == ((PeripheralMethodWrapper) other).owner;
 	}
 }

@@ -29,7 +29,6 @@ import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.client.entity.RenderLaser;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -146,7 +145,6 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			float potency = (ticks / LASER_TICKS) * (LASER_MAX_DAMAGE - LASER_MIN_DAMAGE) + LASER_MIN_DAMAGE;
 			float inaccuracy = (LASER_TICKS - ticks) / LASER_TICKS * LASER_MAX_SPREAD;
 
-			DebugLogger.debug("Firing from " + ticks + " with " + potency + " and ±" + inaccuracy);
 			world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
 		} else {
 			super.onPlayerStoppedUsing(stack, world, player, remaining);
@@ -196,7 +194,6 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
 			@Override
 			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {
-				DebugLogger.debug("Creating renderer");
 				return new RenderLaser(renderManager);
 			}
 		});

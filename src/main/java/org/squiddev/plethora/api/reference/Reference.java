@@ -2,7 +2,7 @@ package org.squiddev.plethora.api.reference;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.IWorldLocation;
 
 import javax.annotation.Nonnull;
 
@@ -60,7 +60,7 @@ public final class Reference {
 	 * @see BoundedEntityReference
 	 */
 	@Nonnull
-	public static <T extends Entity> IReference<T> bounded(T object, WorldLocation location, int radius) {
+	public static <T extends Entity> IReference<T> bounded(T object, IWorldLocation location, int radius) {
 		return new BoundedEntityReference<T>(object, location, radius);
 	}
 }

@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
@@ -45,7 +46,7 @@ public class LaserModule {
 			double motionZ = (double) (MathHelper.cos(yaw) * MathHelper.cos(pitch));
 			double motionY = (double) (-MathHelper.sin(pitch));
 
-			WorldLocation location = context.getContext(WorldLocation.class);
+			IWorldLocation location = context.getContext(WorldLocation.class);
 			BlockPos pos = location.getPos();
 
 			EntityLaser laser = new EntityLaser(location.getWorld());

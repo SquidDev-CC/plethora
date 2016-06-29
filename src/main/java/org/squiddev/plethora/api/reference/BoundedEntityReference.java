@@ -3,7 +3,7 @@ package org.squiddev.plethora.api.reference;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
-import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.IWorldLocation;
 
 import javax.annotation.Nonnull;
 
@@ -11,10 +11,10 @@ import javax.annotation.Nonnull;
  * An reference to an entity. Ensures it is still alive and within a radius.
  */
 public class BoundedEntityReference<T extends Entity> extends EntityReference<T> {
-	private final WorldLocation location;
+	private final IWorldLocation location;
 	private final int radius;
 
-	public BoundedEntityReference(T entity, WorldLocation location, int radius) {
+	public BoundedEntityReference(T entity, IWorldLocation location, int radius) {
 		super(entity);
 		this.location = location;
 		this.radius = radius;
