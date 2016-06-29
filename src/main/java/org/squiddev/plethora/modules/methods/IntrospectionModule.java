@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 public final class IntrospectionModule {
-	public static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.INTROSPECTION);
+	private static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.INTROSPECTION);
 
 	@Method(IModule.class)
 	public static final class GetInventoryMethod extends ModuleMethod {

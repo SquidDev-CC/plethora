@@ -28,7 +28,7 @@ import static org.squiddev.plethora.ArgumentHelper.getString;
 import static org.squiddev.plethora.modules.ItemModule.SENSOR_RADIUS;
 
 public final class SensorModule {
-	public static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.SENSOR);
+	private static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.SENSOR);
 
 	private abstract static class SensorMethod extends ModuleMethod {
 		public SensorMethod(String name) {

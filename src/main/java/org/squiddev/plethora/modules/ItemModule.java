@@ -46,17 +46,29 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 	public static final String SCANNER = "moduleScanner";
 	public static final String SENSOR = "moduleSensor";
 
-	public static final int INTROSPECTION_ID = 0;
-	public static final int LASER_ID = 1;
-	public static final int SCANNER_ID = 2;
-	public static final int SENSOR_ID = 3;
+	private static final int INTROSPECTION_ID = 0;
+	private static final int LASER_ID = 1;
+	private static final int SCANNER_ID = 2;
+	private static final int SENSOR_ID = 3;
 
 	private static final int MODULES = 4;
 
 	public static final int SCANNER_RADIUS = 8;
 	public static final int SENSOR_RADIUS = 16;
 
-	private static final int LASER_TICKS = 72000;
+	private static final int LASER_MAX_TICKS = 72000;
+	private static final int LASER_TICKS = 30;
+
+	public static final float LASER_MAX_DAMAGE = 5;
+	private static final float LASER_MIN_DAMAGE = 1;
+
+	/**
+	 * We multiply the gaussian by this number.
+	 * This is the change in velocity for each axis after normalisation.
+	 *
+	 * @see net.minecraft.entity.projectile.EntityThrowable#setThrowableHeading(double, double, double, float, float)
+	 */
+	private static final float LASER_MAX_SPREAD = (float) (0.1 / 0.007499999832361937);
 
 	public ItemModule() {
 		super("module");
@@ -96,35 +108,49 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (world.isRemote) return stack;
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
-				if (player.isSneaking()) {
-					UUID id = player.getGameProfile().getId();
-					if (id != null) {
-						NBTTagCompound compound = getTag(stack);
-						compound.setLong("id_lower", id.getLeastSignificantBits());
-						compound.setLong("id_upper", id.getMostSignificantBits());
+				if (!world.isRemote) {
+					if (player.isSneaking()) {
+						UUID id = player.getGameProfile().getId();
+						if (id != null) {
+							NBTTagCompound compound = getTag(stack);
+							compound.setLong("id_lower", id.getLeastSignificantBits());
+							compound.setLong("id_upper", id.getMostSignificantBits());
+						}
+					} else {
+						player.displayGUIChest(player.getInventoryEnderChest());
 					}
-				} else {
-					player.displayGUIChest(player.getInventoryEnderChest());
 				}
+
+				return stack;
 			case LASER_ID:
-				player.setItemInUse(stack, 72000);
+				player.setItemInUse(stack, LASER_MAX_TICKS);
+				return stack;
 			default:
 				return stack;
 		}
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int ticks) {
-		super.onPlayerStoppedUsing(stack, world, player, ticks);
-		if (ticks > LASER_TICKS) ticks = LASER_TICKS;
-		if (ticks < 0) ticks = 0;
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int remaining) {
+		if (stack.getItemDamage() == LASER_ID) {
+			if (world.isRemote) return;
 
-		float potency = (ticks * 4.0f / LASER_TICKS) + 1;
-		float inaccuracy = (LASER_TICKS - ticks) / LASER_TICKS;
-		world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
+			// Get the number of ticks the laser has been used for
+			// We use a float we'll have to cast it later anyway
+			float ticks = LASER_MAX_TICKS - remaining;
+			if (ticks > LASER_TICKS) ticks = LASER_TICKS;
+			if (ticks < 0) ticks = 0;
+
+			float potency = (ticks / LASER_TICKS) * (LASER_MAX_DAMAGE - LASER_MIN_DAMAGE) + LASER_MIN_DAMAGE;
+			float inaccuracy = (LASER_TICKS - ticks) / LASER_TICKS * LASER_MAX_SPREAD;
+
+			DebugLogger.debug("Firing from " + ticks + " with " + potency + " and ±" + inaccuracy);
+			world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
+		} else {
+			super.onPlayerStoppedUsing(stack, world, player, remaining);
+		}
 	}
 
 	@Override
@@ -133,6 +159,15 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			return EnumAction.BOW;
 		} else {
 			return super.getItemUseAction(stack);
+		}
+	}
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack stack) {
+		if (stack.getItemDamage() == LASER_ID) {
+			return LASER_MAX_TICKS;
+		} else {
+			return super.getMaxItemUseDuration(stack);
 		}
 	}
 

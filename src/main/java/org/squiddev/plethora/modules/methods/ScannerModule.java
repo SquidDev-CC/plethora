@@ -30,7 +30,7 @@ import static org.squiddev.plethora.ArgumentHelper.getInt;
 import static org.squiddev.plethora.modules.ItemModule.SCANNER_RADIUS;
 
 public final class ScannerModule {
-	public static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.SCANNER);
+	private static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.SCANNER);
 
 	@Method(IModule.class)
 	public static final class ScanBlocksMethod extends ModuleMethod {

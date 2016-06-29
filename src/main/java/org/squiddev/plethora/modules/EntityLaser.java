@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.List;
 
@@ -63,14 +62,15 @@ public final class EntityLaser extends EntityThrowable {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		if (potency < 0 || ticksExisted > 20 * 30) {
-			DebugLogger.debug("Killing die: " + potency + " /" + ticksExisted);
+		if (!worldObj.isRemote && (potency < 0 || ticksExisted > 20 * 30)) {
 			setDead();
 		}
 	}
 
 	@Override
 	protected void onImpact(MovingObjectPosition collision) {
+		if (worldObj.isRemote) return;
+
 		switch (collision.typeOfHit) {
 			case BLOCK: {
 				BlockPos position = collision.getBlockPos();
@@ -95,6 +95,7 @@ public final class EntityLaser extends EntityThrowable {
 						potency = -1;
 					}
 				}
+				break;
 			}
 			case ENTITY: {
 				Entity entity = collision.entityHit;
@@ -104,6 +105,7 @@ public final class EntityLaser extends EntityThrowable {
 					entity.attackEntityFrom(source, potency * 3);
 					potency = -1;
 				}
+				break;
 			}
 		}
 	}
