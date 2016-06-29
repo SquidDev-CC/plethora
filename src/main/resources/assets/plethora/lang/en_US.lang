@@ -10,5 +10,14 @@ item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity, 
 item.plethora.module.moduleSensor.name=Entity Sensor
 item.plethora.module.moduleSensor.desc=Scans nearby entities and wraps them as peripherals
 
+item.plethora.module.unknown.name=Unknown module
+item.plethora.module.unknown.desc=What did you break this time?
+
 tile.plethora.manipulator.name=Manipulator
 tile.plethora.manipulator.desc=Allows using a module from a computer
+
+item.plethora.neuralConnector.name=Neural Connector
+item.plethora.neuralConnector.desc=Used to connect to Neural Interfaces
+
+item.plethora.neuralInterface.name=Neural Interface
+item.plethora.neuralInterface.desc=Goes in your helmet slot. Connect with the neural connector.

@@ -2,14 +2,17 @@ package org.squiddev.plethora;
 
 import dan200.computercraft.ComputerCraft;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.squiddev.plethora.impl.ConverterRegistry;
 import org.squiddev.plethora.impl.MetaRegistry;
 import org.squiddev.plethora.impl.MethodRegistry;
+import org.squiddev.plethora.neural.NeuralManager;
 import org.squiddev.plethora.registry.Registry;
 
 @Mod(modid = Plethora.ID, name = Plethora.NAME, version = Plethora.VERSION, dependencies = Plethora.DEPENDENCIES)
@@ -34,15 +37,36 @@ public class Plethora {
 		MetaRegistry.instance.loadAsm(event.getAsmData());
 		MethodRegistry.instance.loadAsm(event.getAsmData());
 		ConverterRegistry.instance.loadAsm(event.getAsmData());
+		MinecraftForge.EVENT_BUS.register(new EventBus());
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		Registry.init();
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		Registry.postInit();
+	}
+
+	@EventHandler
+	public void serverStarting(FMLServerAboutToStartEvent event) {
+		NeuralManager.setup();
+	}
+
+	@EventHandler
+	public void serverStopping(FMLServerStoppingEvent event) {
+		NeuralManager.tearDown();
+	}
+
+	public class EventBus {
+		@SubscribeEvent
+		public void onServerTick(TickEvent.ServerTickEvent event) {
+			if (event.phase == TickEvent.Phase.START) {
+				NeuralManager.update();
+			}
+		}
 	}
 }

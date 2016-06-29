@@ -13,7 +13,9 @@
 			"moduleIntrospection": "plethora:items/moduleIntrospection",
 			"moduleLaser": "plethora:items/moduleLaser",
 			"moduleScanner": "plethora:items/moduleScanner",
-			"moduleSensor": "plethora:items/moduleSensor"
+			"moduleSensor": "plethora:items/moduleSensor",
+			"module": "plethora:items/moduleUnknown",
+			"neuralConnector": "plethora:items/neuralConnector"
 		},
 		"itemblock": {
 			"manipulator": "manipulator"

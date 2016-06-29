@@ -5,6 +5,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.impl.PeripheralProvider;
 import org.squiddev.plethora.modules.BlockManipulator;
 import org.squiddev.plethora.modules.ItemModule;
+import org.squiddev.plethora.neural.ItemNeuralConnector;
+import org.squiddev.plethora.neural.ItemNeuralInterface;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,15 +21,18 @@ public final class Registry {
 	private static boolean init = false;
 	private static boolean postInit = false;
 
-	public static final ItemModule itemModule;
+	public static final ItemNeuralInterface itemNeuralInterface;
 
 	static {
 		addModule(new PeripheralProvider());
-		addModule(itemModule = new ItemModule());
+		addModule(new ItemModule());
 		addModule(new BlockManipulator());
+
+		addModule(itemNeuralInterface = new ItemNeuralInterface());
+		addModule(new ItemNeuralConnector());
 	}
 
-	public static void addModule(IModule module) {
+	private static void addModule(IModule module) {
 		if (module instanceof IClientModule) {
 			module = new RegisterWrapperClient((IClientModule) module);
 		}
