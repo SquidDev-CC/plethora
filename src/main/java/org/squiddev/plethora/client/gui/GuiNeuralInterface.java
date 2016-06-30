@@ -5,8 +5,6 @@ import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -25,10 +23,10 @@ public class GuiNeuralInterface extends GuiContainer {
 	private final IComputer computer;
 	private WidgetTerminal terminalGui;
 
-	public GuiNeuralInterface(InventoryPlayer player, ItemStack stack) {
-		super(new ContainerNeuralInterface(player, stack));
+	public GuiNeuralInterface(ContainerNeuralInterface container) {
+		super(container);
 
-		computer = ItemComputerHandler.getClient(stack);
+		computer = ItemComputerHandler.getClient(container.getStack());
 		xSize = 254;
 		ySize = 217;
 	}

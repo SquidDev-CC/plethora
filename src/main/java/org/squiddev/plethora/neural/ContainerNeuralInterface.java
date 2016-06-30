@@ -1,5 +1,6 @@
 package org.squiddev.plethora.neural;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -21,9 +22,12 @@ public class ContainerNeuralInterface extends Container {
 	private static final int S = 18;
 
 	private final ItemStack stack;
+	private final EntityLivingBase parent;
 
-	public ContainerNeuralInterface(IInventory playerInventory, ItemStack stack) {
+	public ContainerNeuralInterface(IInventory playerInventory, EntityLivingBase parent, ItemStack stack) {
 		this.stack = stack;
+		this.parent = parent;
+
 		IItemHandlerModifiable stackInv = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		// DOWN, UP, NORTH, SOUTH, WEST, EAST;
@@ -51,7 +55,11 @@ public class ContainerNeuralInterface extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return player != null && player.isEntityAlive() && stack == player.getCurrentArmor(ARMOR_SLOT);
+		return player != null && player.isEntityAlive() && parent.isEntityAlive() && stack == parent.getEquipmentInSlot(ARMOR_SLOT);
+	}
+
+	public ItemStack getStack() {
+		return stack;
 	}
 
 	@Override

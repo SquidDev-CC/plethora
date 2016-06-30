@@ -92,10 +92,7 @@ public final class ItemComputerHandler {
 	}
 
 	public static ClientComputer getClient(ItemStack stack) {
-		return getClient(getTag(stack));
-	}
-
-	public static ClientComputer getClient(NBTTagCompound tag) {
+		NBTTagCompound tag = getTag(stack);
 		int instanceId = tag.getInteger(INSTANCE_ID);
 		if (instanceId < 0) return null;
 

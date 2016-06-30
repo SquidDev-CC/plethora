@@ -23,7 +23,7 @@ import static org.squiddev.plethora.api.reference.Reference.entity;
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 public final class NeuralHelpers {
-	public static final int ARMOR_SLOT = 3;
+	public static final int ARMOR_SLOT = 4;
 
 	private NeuralHelpers() {
 		throw new IllegalStateException("Cannot instantiate");
@@ -32,7 +32,7 @@ public final class NeuralHelpers {
 	public static final int INV_SIZE = 6;
 
 	public static ItemStack getStack(EntityLivingBase entity) {
-		ItemStack stack = entity.getCurrentArmor(ARMOR_SLOT);
+		ItemStack stack = entity.getEquipmentInSlot(ARMOR_SLOT);
 
 		if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
 			return stack;

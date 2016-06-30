@@ -16,10 +16,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,10 +39,9 @@ import org.squiddev.plethora.utils.Helpers;
 import java.util.List;
 
 import static org.squiddev.plethora.neural.ItemComputerHandler.*;
-import static org.squiddev.plethora.neural.NeuralHelpers.INV_SIZE;
+import static org.squiddev.plethora.neural.NeuralHelpers.*;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
-
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", 33, new int[]{0, 0, 0, 0}, 0);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -51,9 +53,22 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
+	@Override
+	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+		if (entity.getEquipmentInSlot(ARMOR_SLOT) == null && stack.stackSize == 1) {
+			if (!player.worldObj.isRemote) {
+				entity.setCurrentItemOrArmor(ARMOR_SLOT, stack.copy());
+				stack.stackSize = 0;
+			}
+			return true;
+		} else {
+			return super.itemInteractionForEntity(stack, player, entity);
+		}
+	}
+
 	private void onUpdate(ItemStack stack, EntityLivingBase player, boolean forceActive) {
 		if (player.worldObj.isRemote) {
-			if (forceActive) ItemComputerHandler.getClient(stack);
+			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
 			NBTTagCompound tag = ItemBase.getTag(stack);
 			ServerComputer computer;
@@ -231,9 +246,24 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String existing) {
 		return Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
 	}
+
+
+	/**
+	 * Force armor ticks for entities
+	 *
+	 * @param event Entity armor ticks
+	 */
+	@SubscribeEvent
+	public void onEntityLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+		if (event.entityLiving instanceof EntityPlayer) return;
+
+		ItemStack stack = getStack(event.entityLiving);
+		if (stack != null) {
+			onUpdate(stack, event.entityLiving, true);
+		}
+	}
 	//endregion
 
-	//region Registry stuff
 	@Override
 	public boolean canLoad() {
 		return true;
@@ -242,6 +272,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	public void preInit() {
 		GameRegistry.registerItem(this, NAME);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
