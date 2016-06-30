@@ -2,6 +2,7 @@ package org.squiddev.plethora.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.client.RenderInterfaceLiving;
 import org.squiddev.plethora.impl.PeripheralProvider;
 import org.squiddev.plethora.modules.BlockManipulator;
 import org.squiddev.plethora.modules.ItemModule;
@@ -30,6 +31,7 @@ public final class Registry {
 
 		addModule(itemNeuralInterface = new ItemNeuralInterface());
 		addModule(new ItemNeuralConnector());
+		addModule(new RenderInterfaceLiving());
 	}
 
 	private static void addModule(IModule module) {

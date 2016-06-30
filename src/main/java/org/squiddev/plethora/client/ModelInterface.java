@@ -3,11 +3,15 @@ package org.squiddev.plethora.client;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.Plethora;
 
 /**
  * Model for the neural interface
  */
 public class ModelInterface extends ModelBiped {
+	public static String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
+	public static ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
 
 	private static ModelInterface instance;
 
@@ -37,14 +41,5 @@ public class ModelInterface extends ModelBiped {
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 		bipedHeadwear.render(f5);
-	}
-
-	/**
-	 * This is a helper function from Tabula to set the rotation of model parts
-	 */
-	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
 	}
 }
