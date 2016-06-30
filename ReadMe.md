@@ -21,6 +21,11 @@ manipulate them with the built-in computer. Building a cyborg army has never bee
  - [ComputerCraft 1.79](http://minecraft.curseforge.com/projects/computercraft)
  - **[Recommended]** [JEI for 1.8.9](http://minecraft.curseforge.com/projects/just-enough-items-jei)
 
+## Examples
+There is a [whole directory of examples](https://github.com/SquidDev-CC/ccjam-2016/tree/master/examples) though
+it is rather sparse at the moment. To get started, place a manipulator on top of a computer and place the appropriate
+module within it.
+
 ## Images
 ![](https://raw.githubusercontent.com/SquidDev-CC/ccjam-2016/master/images/Squids%20and%20Lasers.png)
 
@@ -30,4 +35,5 @@ their heads!
 ![](https://raw.githubusercontent.com/SquidDev-CC/ccjam-2016/master/images/Modules.png)
 
 > Various modules available
+
 [More images here](https://github.com/SquidDev-CC/ccjam-2016/tree/master/images)
