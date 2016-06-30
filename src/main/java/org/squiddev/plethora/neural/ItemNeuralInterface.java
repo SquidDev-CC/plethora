@@ -1,12 +1,18 @@
 package org.squiddev.plethora.neural;
 
 import com.google.common.base.Objects;
+import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
+import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
+import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -34,6 +40,7 @@ import org.squiddev.plethora.Plethora;
 import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.client.ModelInterface;
 import org.squiddev.plethora.registry.IClientModule;
+import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
@@ -42,7 +49,7 @@ import static org.squiddev.plethora.neural.ItemComputerHandler.*;
 import static org.squiddev.plethora.neural.NeuralHelpers.*;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
-	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", 33, new int[]{0, 0, 0, 0}, 0);
+	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
 
@@ -55,14 +62,24 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-		if (!entity.isChild() && entity.getEquipmentInSlot(ARMOR_SLOT) == null && stack.stackSize == 1) {
+		if (entity.isChild() || entity instanceof EntityPlayer) return false;
+
+		if (entity.getEquipmentInSlot(ARMOR_SLOT) == null && stack.stackSize == 1) {
 			if (!player.worldObj.isRemote) {
 				entity.setCurrentItemOrArmor(ARMOR_SLOT, stack.copy());
+
+				// Force dropping when killed
+				if (entity instanceof EntityLiving) {
+					EntityLiving living = (EntityLiving) entity;
+					living.setEquipmentDropChance(ARMOR_SLOT, 1);
+					living.enablePersistence();
+				}
+
 				stack.stackSize = 0;
 			}
 			return true;
 		} else {
-			return super.itemInteractionForEntity(stack, player, entity);
+			return false;
 		}
 	}
 
@@ -206,7 +223,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, int i, int i1) {
+	public void damageArmor(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, int damage, int slot) {
+		// TODO: Fix armor
+		DebugLogger.debug("Damaging amour with " + damage);
 	}
 
 	@Override
@@ -277,6 +296,16 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public void init() {
+		GameRegistry.addShapedRecipe(new ItemStack(this),
+			"  G",
+			"IPR",
+			" GM",
+			'G', new ItemStack(Items.gold_ingot),
+			'I', new ItemStack(Items.iron_ingot),
+			'R', new ItemStack(Items.redstone),
+			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
+			'P', PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false)
+		);
 	}
 
 	@Override

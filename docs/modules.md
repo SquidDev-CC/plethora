@@ -42,10 +42,9 @@ the manipulator, on a neural interface or used by the player.
 # Manipulator
  - The manipulator has 9 inventory slots for storing various items and 1 slot for the
    module.
- - The module is rendered above the manipulator: like OpenPeripheral's sensor.
+ - The module is rendered above the manipulator
 
 # Neural interface
- - Holds 5 modules.
+ - Holds 6 modules.
  - Goes in helmet slot.
- - *Hopefully* can be mounted on other entities: squid with frickin' laser beams attached to
-   their heads.
+ - Can be mounted on other entities

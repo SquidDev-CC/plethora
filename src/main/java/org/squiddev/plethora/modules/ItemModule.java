@@ -45,10 +45,10 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 	public static final String SCANNER = "moduleScanner";
 	public static final String SENSOR = "moduleSensor";
 
-	private static final int INTROSPECTION_ID = 0;
-	private static final int LASER_ID = 1;
-	private static final int SCANNER_ID = 2;
-	private static final int SENSOR_ID = 3;
+	public static final int INTROSPECTION_ID = 0;
+	public static final int LASER_ID = 1;
+	public static final int SCANNER_ID = 2;
+	public static final int SENSOR_ID = 3;
 
 	private static final int MODULES = 4;
 

@@ -3,8 +3,10 @@ package org.squiddev.plethora.neural;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.squiddev.plethora.GuiHandler;
 import org.squiddev.plethora.ItemBase;
 import org.squiddev.plethora.Plethora;
@@ -35,6 +37,8 @@ public class ItemNeuralConnector extends ItemBase {
 
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+		if (entity instanceof EntityPlayer) return false;
+
 		ItemStack armor = NeuralHelpers.getStack(entity);
 		if (armor != null) {
 			if (!player.worldObj.isRemote) {
@@ -42,7 +46,21 @@ public class ItemNeuralConnector extends ItemBase {
 			}
 			return true;
 		} else {
-			return super.itemInteractionForEntity(stack, player, entity);
+			return false;
 		}
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		GameRegistry.addShapedRecipe(new ItemStack(this),
+			"  R",
+			"IIR",
+			"IEI",
+			'R', new ItemStack(Items.redstone),
+			'E', new ItemStack(Items.ender_pearl),
+			'I', new ItemStack(Items.iron_ingot)
+		);
 	}
 }

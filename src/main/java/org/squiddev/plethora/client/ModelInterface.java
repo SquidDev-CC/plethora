@@ -42,4 +42,10 @@ public class ModelInterface extends ModelBiped {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 		bipedHeadwear.render(f5);
 	}
+
+	public static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+		modelRenderer.rotateAngleX = x;
+		modelRenderer.rotateAngleY = y;
+		modelRenderer.rotateAngleZ = z;
+	}
 }
