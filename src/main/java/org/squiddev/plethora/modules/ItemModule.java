@@ -29,6 +29,7 @@ import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.client.entity.RenderLaser;
+import org.squiddev.plethora.modules.methods.KineticModule;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -44,22 +45,26 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 	public static final String LASER = "moduleLaser";
 	public static final String SCANNER = "moduleScanner";
 	public static final String SENSOR = "moduleSensor";
+	public static final String KINETIC = "moduleKinetic";
 
 	public static final int INTROSPECTION_ID = 0;
 	public static final int LASER_ID = 1;
 	public static final int SCANNER_ID = 2;
 	public static final int SENSOR_ID = 3;
+	public static final int KINETIC_ID = 4;
 
-	private static final int MODULES = 4;
+	private static final int MODULES = 5;
 
 	public static final int SCANNER_RADIUS = 8;
 	public static final int SENSOR_RADIUS = 16;
 
-	private static final int LASER_MAX_TICKS = 72000;
-	private static final int LASER_TICKS = 30;
+	private static final int MAX_TICKS = 72000;
+	private static final int USE_TICKS = 30;
 
 	public static final float LASER_MAX_DAMAGE = 5;
 	private static final float LASER_MIN_DAMAGE = 1;
+
+	public static final int KINETIC_LAUNCH_MAX = 4;
 
 	/**
 	 * We multiply the gaussian by this number.
@@ -84,6 +89,8 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 				return SCANNER;
 			case SENSOR_ID:
 				return SENSOR;
+			case KINETIC_ID:
+				return KINETIC;
 			default:
 				return "unknown";
 		}
@@ -124,7 +131,8 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 				return stack;
 			case LASER_ID:
-				player.setItemInUse(stack, LASER_MAX_TICKS);
+			case KINETIC_ID:
+				player.setItemInUse(stack, MAX_TICKS);
 				return stack;
 			default:
 				return stack;
@@ -133,27 +141,35 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int remaining) {
-		if (stack.getItemDamage() == LASER_ID) {
-			if (world.isRemote) return;
+		if (world.isRemote) return;
 
-			// Get the number of ticks the laser has been used for
-			// We use a float we'll have to cast it later anyway
-			float ticks = LASER_MAX_TICKS - remaining;
-			if (ticks > LASER_TICKS) ticks = LASER_TICKS;
-			if (ticks < 0) ticks = 0;
+		// Get the number of ticks the laser has been used for
+		// We use a float we'll have to cast it later anyway
+		float ticks = MAX_TICKS - remaining;
+		if (ticks > USE_TICKS) ticks = USE_TICKS;
+		if (ticks < 0) ticks = 0;
 
-			float potency = (ticks / LASER_TICKS) * (LASER_MAX_DAMAGE - LASER_MIN_DAMAGE) + LASER_MIN_DAMAGE;
-			float inaccuracy = (LASER_TICKS - ticks) / LASER_TICKS * LASER_MAX_SPREAD;
+		switch (stack.getItemDamage()) {
+			case LASER_ID: {
+				float potency = (ticks / USE_TICKS) * (LASER_MAX_DAMAGE - LASER_MIN_DAMAGE) + LASER_MIN_DAMAGE;
+				float inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
 
-			world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
-		} else {
-			super.onPlayerStoppedUsing(stack, world, player, remaining);
+				world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
+				break;
+			}
+			case KINETIC_ID: {
+				if (player.isAirBorne) return;
+				KineticModule.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * KINETIC_LAUNCH_MAX);
+				break;
+			}
+			default:
+				super.onPlayerStoppedUsing(stack, world, player, remaining);
 		}
 	}
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID) {
+		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
 			return EnumAction.BOW;
 		} else {
 			return super.getItemUseAction(stack);
@@ -162,8 +178,8 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID) {
-			return LASER_MAX_TICKS;
+		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
+			return MAX_TICKS;
 		} else {
 			return super.getMaxItemUseDuration(stack);
 		}
@@ -222,13 +238,14 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			"III",
 			"GDR",
 			"  I",
+			'D', new ItemStack(Items.diamond),
 			'I', new ItemStack(Items.iron_ingot),
 			'G', new ItemStack(Blocks.glass),
 			'R', new ItemStack(Items.redstone)
 		);
 
 
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SCANNER_ID),
 			"EDE",
 			"IGI",
 			"III",
@@ -238,7 +255,7 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			'D', new ItemStack(Blocks.dirt)
 		);
 
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SENSOR_ID),
 			"ERE",
 			"IGI",
 			"III",
@@ -246,6 +263,16 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			'I', new ItemStack(Items.iron_ingot),
 			'E', new ItemStack(Items.ender_pearl),
 			'R', new ItemStack(Items.rotten_flesh)
+		);
+
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, KINETIC_ID),
+			"RGR",
+			"PBP",
+			"RGR",
+			'G', new ItemStack(Items.gold_ingot),
+			'R', new ItemStack(Items.redstone),
+			'P', new ItemStack(Blocks.piston),
+			'B', new ItemStack(Blocks.redstone_block)
 		);
 	}
 

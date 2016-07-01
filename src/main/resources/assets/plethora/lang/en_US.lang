@@ -5,10 +5,13 @@ item.plethora.module.moduleLaser.name=Frickin' laser beam
 item.plethora.module.moduleLaser.desc=It fires lasers. 'nough said
 
 item.plethora.module.moduleScanner.name=Block Scanner
-item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity, wrapping them as peripherals
+item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity
 
 item.plethora.module.moduleSensor.name=Entity Sensor
-item.plethora.module.moduleSensor.desc=Scans nearby entities and wraps them as peripherals
+item.plethora.module.moduleSensor.desc=Detects nearby entities, gathering data about them
+
+item.plethora.module.moduleKinetic.name=Kinetic Augment
+item.plethora.module.moduleKinetic.desc=Allows controlling your body via the neural interface
 
 item.plethora.module.unknown.name=Unknown module
 item.plethora.module.unknown.desc=What did you break this time?

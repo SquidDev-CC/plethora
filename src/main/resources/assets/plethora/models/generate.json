@@ -14,6 +14,7 @@
 			"moduleLaser": "plethora:items/moduleLaser",
 			"moduleScanner": "plethora:items/moduleScanner",
 			"moduleSensor": "plethora:items/moduleSensor",
+			"moduleKinetic": "plethora:items/moduleKinetic",
 			"module": "plethora:items/moduleUnknown",
 			"neuralConnector": "plethora:items/neuralConnector",
 			"neuralInterface": "plethora:items/neuralInterface"

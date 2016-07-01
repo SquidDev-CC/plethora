@@ -1,12 +1,7 @@
 package org.squiddev.plethora.modules.methods;
 
 import com.google.common.collect.Maps;
-import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -109,58 +104,6 @@ public final class ScannerModule {
 			}
 
 			return new Object[]{meta};
-		}
-	}
-
-	@Method(IModule.class)
-	public static final class WrapBlockMethod extends ModuleMethod {
-		public WrapBlockMethod() {
-			super("wrap", true, MODULE);
-		}
-
-		@Override
-		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(IWorldLocation.class);
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			int x = getInt(args, 0);
-			int y = getInt(args, 1);
-			int z = getInt(args, 2);
-
-			validatePosition(x, y, z);
-
-			IWorldLocation location = context.getContext(IWorldLocation.class);
-			BlockPos pos = location.getPos().add(x, y, z);
-			World world = location.getWorld();
-
-			final IPeripheral peripheral = ComputerCraft.getPeripheralAt(world, pos, null);
-			if (peripheral != null) {
-				final IComputerAccess access = context.getContext(IComputerAccess.class);
-
-				// TODO: Find a way of storing IComputerAccess within blocks
-				if (access == null) throw new LuaException("Not attached to a computer");
-
-				// Hope and pray that this doesn't break things.
-				// TODO: Detach sometime to ensure that this doesn't break things
-				peripheral.attach(access);
-
-				return new Object[]{new ILuaObject() {
-					@Override
-					public String[] getMethodNames() {
-						return peripheral.getMethodNames();
-					}
-
-					@Override
-					public Object[] callMethod(ILuaContext context, int method, Object[] args) throws LuaException, InterruptedException {
-						return peripheral.callMethod(access, context, method, args);
-					}
-				}};
-			} else {
-				return null;
-			}
 		}
 	}
 

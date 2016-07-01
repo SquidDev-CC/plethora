@@ -47,6 +47,7 @@ public final class NeuralHelpers {
 		final ItemStack stack = handler.getStackInSlot(slot);
 		if (stack == null || !(stack.getItem() instanceof IModuleItem)) return null;
 
+		// TODO: Switch to proper registry system to allow CC items.
 		IModuleItem item = (IModuleItem) stack.getItem();
 		final IModule module = item.getModule(stack);
 

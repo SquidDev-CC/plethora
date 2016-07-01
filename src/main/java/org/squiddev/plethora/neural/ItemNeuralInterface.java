@@ -70,7 +70,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				// Force dropping when killed
 				if (entity instanceof EntityLiving) {
 					EntityLiving living = (EntityLiving) entity;
-					living.setEquipmentDropChance(ARMOR_SLOT, 1);
+					living.setEquipmentDropChance(ARMOR_SLOT, 2);
 					living.enablePersistence();
 				}
 

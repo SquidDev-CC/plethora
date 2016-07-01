@@ -13,7 +13,6 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.ModuleMethod;
-import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.modules.ItemModule;
 
@@ -68,38 +67,6 @@ public final class SensorModule {
 			}
 
 			return new Object[]{map};
-		}
-	}
-
-	@Method(IModule.class)
-	public static final class GetUUIDMethod extends SensorMethod {
-		public GetUUIDMethod() {
-			super("getByID");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			Entity entity = findEntityByUUID(context, args);
-			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(
-				context.makeChild(Reference.bounded(entity, context.getContext(IWorldLocation.class), SENSOR_RADIUS))
-			)};
-		}
-	}
-
-	@Method(IModule.class)
-	public static final class GetNameMethod extends SensorMethod {
-		public GetNameMethod() {
-			super("getByName");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			Entity entity = findEntityByName(context, args);
-			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(
-				context.makeChild(Reference.entity(entity))
-			)};
 		}
 	}
 
