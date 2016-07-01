@@ -18,6 +18,13 @@ import static org.squiddev.plethora.ArgumentHelper.getNumber;
  * Various methods for mobs
  */
 public final class KineticModuleMobs {
+	/*
+		TODO: `walk(x, y, z)` path find to position
+		TODO: `shoot(x, y, z)` for skelletons with bows
+		TODO: `lookAt(pitch, yaw)` look at entities
+		TODO: `swing()` Swing hand to dig/attack
+		TODO: `activate()` Right click to activate
+	*/
 	public static abstract class KineticMethodEntity<T extends EntityLivingBase> extends KineticModule.KineticMethod {
 		private final Class<T> klass;
 
