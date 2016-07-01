@@ -71,7 +71,7 @@ public final class NeuralHelpers {
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 		if (paired.getFirst().size() > 0) {
-			return new PeripheralMethodWrapper(module.toString(), stack, paired.getFirst(), paired.getSecond());
+			return new PeripheralMethodWrapper(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {
 			return null;
 		}

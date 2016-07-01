@@ -26,6 +26,10 @@ public class MetaEntity implements IMetaProvider<Entity> {
 		result.put("name", getName(entity));
 		result.put("displayName", entity.getName());
 
+		result.put("motionX", entity.motionX);
+		result.put("motionY", entity.motionY);
+		result.put("motionZ", entity.motionZ);
+
 		return result;
 	}
 

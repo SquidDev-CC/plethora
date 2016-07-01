@@ -65,6 +65,9 @@ public class MetaEntityLiving implements IMetaProvider<EntityLivingBase> {
 		map.put("isChild", target.isChild());
 		map.put("isDead", target.isDead);
 
+		map.put("pitch", target.rotationPitch);
+		map.put("yaw", target.rotationYaw);
+
 		return map;
 	}
 

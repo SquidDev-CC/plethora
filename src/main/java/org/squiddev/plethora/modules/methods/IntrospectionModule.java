@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import org.squiddev.plethora.ArmorInvWrapper;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
@@ -36,7 +36,7 @@ public final class IntrospectionModule {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
 			if (player == null) throw new LuaException("Player not found");
 
-			IItemHandler inventory = new PlayerInvWrapper(player.inventory);
+			IItemHandler inventory = new PlayerMainInvWrapper(player.inventory);
 			IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
 		}

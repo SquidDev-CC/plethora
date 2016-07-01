@@ -3,7 +3,6 @@ package org.squiddev.plethora.modules.methods;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -38,15 +37,15 @@ public class LaserModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			float yaw = (float) getNumber(args, 0);
-			float pitch = (float) getNumber(args, 1);
+			double yaw = getNumber(args, 0);
+			double pitch = getNumber(args, 1);
 			float potency = (float) getNumber(args, 2);
 
 			if (potency < 0 || potency > ItemModule.LASER_MAX_DAMAGE) throw new LuaException("Potency out of range");
 
-			double motionX = (double) (-MathHelper.sin(yaw) * MathHelper.cos(pitch));
-			double motionZ = (double) (MathHelper.cos(yaw) * MathHelper.cos(pitch));
-			double motionY = (double) (-MathHelper.sin(pitch));
+			double motionX = -Math.sin(yaw) * Math.cos(pitch);
+			double motionZ = Math.cos(yaw) * Math.cos(pitch);
+			double motionY = -Math.sin(pitch);
 
 			IWorldLocation location = context.getContext(IWorldLocation.class);
 			BlockPos pos = location.getPos();
