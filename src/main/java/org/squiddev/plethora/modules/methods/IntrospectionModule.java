@@ -1,9 +1,13 @@
 package org.squiddev.plethora.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import org.squiddev.plethora.ArmorInvWrapper;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -32,8 +36,26 @@ public final class IntrospectionModule {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
 			if (player == null) throw new LuaException("Player not found");
 
-			IInventory inventory = player.inventory;
-			IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
+			IItemHandler inventory = new PlayerInvWrapper(player.inventory);
+			IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
+			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
+		}
+	}
+
+	@Method(IModule.class)
+	public static final class GetArmorMethod extends ModuleMethod {
+		public GetArmorMethod() {
+			super("getArmor", true, MODULE);
+		}
+
+		@Nullable
+		@Override
+		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+			if (entity == null) throw new LuaException("Entity not found");
+
+			IItemHandler inventory = new ArmorInvWrapper(entity);
+			IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
 			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
 		}
 	}
@@ -65,10 +87,10 @@ public final class IntrospectionModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			EntityPlayer player = context.getContext(EntityPlayer.class);
-			if (player == null) throw new LuaException("Player not found");
+			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+			if (entity == null) throw new LuaException("Entity not found");
 
-			return new Object[]{player.getUniqueID().toString()};
+			return new Object[]{entity.getUniqueID().toString()};
 		}
 	}
 
@@ -81,10 +103,10 @@ public final class IntrospectionModule {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			EntityPlayer player = context.getContext(EntityPlayer.class);
-			if (player == null) throw new LuaException("Player not found");
+			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+			if (entity == null) throw new LuaException("Entity not found");
 
-			return new Object[]{player.getName()};
+			return new Object[]{entity.getName()};
 		}
 	}
 }

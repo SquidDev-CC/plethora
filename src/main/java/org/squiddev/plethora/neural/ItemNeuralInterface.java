@@ -40,7 +40,6 @@ import org.squiddev.plethora.Plethora;
 import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.client.ModelInterface;
 import org.squiddev.plethora.registry.IClientModule;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
@@ -139,7 +138,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 				for (int slot = 0; slot < INV_SIZE; slot++) {
 					if ((dirtyStatus & (1 << slot)) == 1 << slot) {
-						computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler.getStackInSlot(slot), player));
+						computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, player));
 					}
 				}
 			}
@@ -224,8 +223,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public void damageArmor(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, int damage, int slot) {
-		// TODO: Fix armor
-		DebugLogger.debug("Damaging amour with " + damage);
 	}
 
 	@Override

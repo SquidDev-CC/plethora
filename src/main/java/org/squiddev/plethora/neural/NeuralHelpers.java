@@ -1,10 +1,12 @@
 package org.squiddev.plethora.neural;
 
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -16,11 +18,11 @@ import org.squiddev.plethora.impl.PeripheralMethodWrapper;
 import org.squiddev.plethora.impl.UnbakedContext;
 import org.squiddev.plethora.registry.Registry;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
 import static org.squiddev.plethora.api.reference.Reference.entity;
-import static org.squiddev.plethora.api.reference.Reference.id;
 
 public final class NeuralHelpers {
 	public static final int ARMOR_SLOT = 4;
@@ -41,11 +43,12 @@ public final class NeuralHelpers {
 		}
 	}
 
-	public static IPeripheral buildPeripheral(ItemStack stack, Entity owner) {
+	public static IPeripheral buildPeripheral(final IItemHandler handler, final int slot, Entity owner) {
+		final ItemStack stack = handler.getStackInSlot(slot);
 		if (stack == null || !(stack.getItem() instanceof IModuleItem)) return null;
 
 		IModuleItem item = (IModuleItem) stack.getItem();
-		IModule module = item.getModule(stack);
+		final IModule module = item.getModule(stack);
 
 		Collection<IReference<?>> additionalContext = item.getAdditionalContext(stack);
 
@@ -54,8 +57,16 @@ public final class NeuralHelpers {
 		contextData[contextData.length - 2] = entity(owner);
 		contextData[contextData.length - 1] = new EntityWorldLocation(owner);
 
-		// TODO: Reference that ensures the module still exists.
-		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(id(module), contextData);
+		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(new IReference<IModule>() {
+			@Nonnull
+			@Override
+			public IModule get() throws LuaException {
+				if (!ItemStack.areItemStacksEqual(stack, handler.getStackInSlot(slot))) {
+					throw new LuaException("The module has been removed");
+				}
+				return module;
+			}
+		}, contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 		if (paired.getFirst().size() > 0) {

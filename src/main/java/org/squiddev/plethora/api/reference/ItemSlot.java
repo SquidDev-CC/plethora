@@ -1,8 +1,9 @@
 package org.squiddev.plethora.api.reference;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 
@@ -13,10 +14,11 @@ public class ItemSlot implements IReference<ItemSlot> {
 	private final ItemStack stack;
 	private final int slot;
 	private final int meta;
-	@Nonnull
-	private final IInventory inventory;
 
-	public ItemSlot(@Nonnull IInventory inventory, int slot) {
+	@Nonnull
+	private final IItemHandler inventory;
+
+	public ItemSlot(@Nonnull IItemHandler inventory, int slot) {
 		this.slot = slot;
 		this.inventory = inventory;
 
@@ -25,12 +27,30 @@ public class ItemSlot implements IReference<ItemSlot> {
 	}
 
 	/**
-	 * Replace this item with another
+	 * Replace this item with another. Call {@link #canReplace()} before hand.
 	 *
 	 * @param newStack The new item
 	 */
 	public void replace(ItemStack newStack) {
-		inventory.setInventorySlotContents(slot, newStack);
+		((IItemHandlerModifiable) inventory).setStackInSlot(slot, newStack);
+	}
+
+	/**
+	 * If this slot can be replaced
+	 *
+	 * @return If this slot can be replaced
+	 */
+	public boolean canReplace() {
+		return inventory instanceof IItemHandlerModifiable;
+	}
+
+	/**
+	 * Extract a number of items from this slot
+	 *
+	 * @param count Number of items to extract
+	 */
+	public void extract(int count) {
+		inventory.extractItem(slot, count, false);
 	}
 
 	/**

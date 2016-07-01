@@ -24,6 +24,8 @@ public class MethodItemConsumable extends BasicMethod<ItemSlot> {
 
 	@Override
 	public boolean canApply(@Nonnull IContext<ItemSlot> context) {
+		if (!context.getTarget().canReplace()) return false;
+
 		ItemStack stack = context.getTarget().getStack();
 
 		if (stack != null && context.hasContext(EntityPlayer.class)) {

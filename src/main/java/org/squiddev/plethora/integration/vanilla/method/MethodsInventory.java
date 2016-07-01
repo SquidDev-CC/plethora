@@ -2,8 +2,8 @@ package org.squiddev.plethora.integration.vanilla.method;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IContext;
@@ -15,17 +15,17 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public final class MethodsInventory {
-	@Method(IInventory.class)
-	public static class ListMethod extends BasicMethod<IInventory> {
+	@Method(IItemHandler.class)
+	public static class ListMethod extends BasicMethod<IItemHandler> {
 		public ListMethod() {
 			super("list", true);
 		}
 
 		@Override
-		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 			HashMap<Integer, Object> items = Maps.newHashMap();
-			IInventory inventory = context.getTarget();
-			int size = inventory.getSizeInventory();
+			IItemHandler inventory = context.getTarget();
+			int size = inventory.getSlots();
 			for (int i = 0; i < size; i++) {
 				ItemStack stack = inventory.getStackInSlot(i);
 				if (stack != null) {
@@ -37,19 +37,19 @@ public final class MethodsInventory {
 		}
 	}
 
-	@Method(IInventory.class)
-	public static class GetItemMethod extends BasicMethod<IInventory> {
+	@Method(IItemHandler.class)
+	public static class GetItemMethod extends BasicMethod<IItemHandler> {
 		public GetItemMethod() {
 			super("getItem", true);
 		}
 
 		@Override
-		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
 
-			IInventory inventory = context.getTarget();
+			IItemHandler inventory = context.getTarget();
 			int slot = ((Number) args[0]).intValue();
-			if (slot < 1 || slot > inventory.getSizeInventory()) throw new LuaException("Slot out of range");
+			if (slot < 1 || slot > inventory.getSlots()) throw new LuaException("Slot out of range");
 
 			ItemStack stack = inventory.getStackInSlot(slot - 1);
 			if (stack == null) {
@@ -61,31 +61,31 @@ public final class MethodsInventory {
 		}
 	}
 
-	@Method(IInventory.class)
-	public static class SizeMethod extends BasicMethod<IInventory> {
+	@Method(IItemHandler.class)
+	public static class SizeMethod extends BasicMethod<IItemHandler> {
 		public SizeMethod() {
 			super("size", true);
 		}
 
 		@Override
-		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
-			return new Object[]{context.getTarget().getSizeInventory()};
+		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+			return new Object[]{context.getTarget().getSlots()};
 		}
 	}
 
-	@Method(IInventory.class)
-	public static class MetadataMethod extends BasicMethod<IInventory> {
+	@Method(IItemHandler.class)
+	public static class MetadataMethod extends BasicMethod<IItemHandler> {
 		public MetadataMethod() {
 			super("getMetadata", true);
 		}
 
 		@Override
-		public Object[] apply(@Nonnull IContext<IInventory> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
 
-			IInventory inventory = context.getTarget();
+			IItemHandler inventory = context.getTarget();
 			int slot = ((Number) args[0]).intValue();
-			if (slot < 1 || slot > inventory.getSizeInventory()) throw new LuaException("Slot out of range");
+			if (slot < 1 || slot > inventory.getSlots()) throw new LuaException("Slot out of range");
 
 			ItemStack stack = inventory.getStackInSlot(slot - 1);
 			if (stack == null) {

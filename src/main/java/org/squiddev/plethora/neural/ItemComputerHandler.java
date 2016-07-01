@@ -69,7 +69,7 @@ public final class ItemComputerHandler {
 	public static void setEntity(ItemStack stack, ServerComputer computer, Entity owner) {
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
-			computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler.getStackInSlot(slot), owner));
+			computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, owner));
 		}
 
 		NBTTagCompound tag = getTag(stack);

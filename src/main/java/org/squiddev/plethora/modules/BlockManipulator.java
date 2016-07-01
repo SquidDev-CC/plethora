@@ -1,6 +1,7 @@
 package org.squiddev.plethora.modules;
 
 import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.peripheral.PeripheralType;
@@ -29,10 +30,10 @@ import org.squiddev.plethora.impl.MethodRegistry;
 import org.squiddev.plethora.impl.PeripheralMethodWrapper;
 import org.squiddev.plethora.impl.UnbakedContext;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
-import static org.squiddev.plethora.api.reference.Reference.id;
 import static org.squiddev.plethora.api.reference.Reference.tile;
 
 public final class BlockManipulator extends BlockBase<TileManipulator> implements IPeripheralProvider {
@@ -82,17 +83,17 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 	@Override
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
-		TileEntity te = world.getTileEntity(blockPos);
+		final TileEntity te = world.getTileEntity(blockPos);
 		if (!(te instanceof TileManipulator)) return null;
-		TileManipulator manipulator = (TileManipulator) te;
-		ItemStack stack = manipulator.getStack();
+		final TileManipulator manipulator = (TileManipulator) te;
+		final ItemStack stack = manipulator.getStack();
 
 		if (stack == null) return null;
 
 		if (!(stack.getItem() instanceof IModuleItem)) return null;
 		IModuleItem item = (IModuleItem) stack.getItem();
 
-		IModule module = item.getModule(stack);
+		final IModule module = item.getModule(stack);
 		Collection<IReference<?>> additionalContext = item.getAdditionalContext(stack);
 
 		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
@@ -100,8 +101,16 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		// TODO: Reference that ensures the module still exists.
-		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(id(module), contextData);
+		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(new IReference<IModule>() {
+			@Nonnull
+			@Override
+			public IModule get() throws LuaException {
+				if (!ItemStack.areItemStacksEqual(manipulator.getStack(), stack)) {
+					throw new LuaException("The module has been removed");
+				}
+				return module;
+			}
+		}, contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
 		if (paired.getFirst().size() > 0) {
