@@ -1,12 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.network.NetHandlerPlayServer;
 import org.squiddev.plethora.ArgumentHelper;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
@@ -28,27 +28,32 @@ public final class MethodsKineticEntity {
 		TODO: `activate()` Right click to activate (requires fake player)
 	*/
 
-	@Method(IMethod.class)
-	public static class KineticMethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
-		public KineticMethodEntityLook() {
-			super("look", true, PlethoraModules.KINETIC, EntityLivingBase.class);
+	@Method(IModule.class)
+	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLiving> {
+		public MethodEntityLook() {
+			super("look", true, PlethoraModules.KINETIC, EntityLiving.class);
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull EntityLivingBase target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull EntityLiving target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			double yaw = ArgumentHelper.getNumber(args, 0);
 			double pitch = ArgumentHelper.getNumber(args, 1);
 
+			/**
+			 * TODO: Support EntityPlayer
+			 * @see net.minecraft.entity.player.EntityPlayerMP#playerNetServerHandler
+			 * @see NetHandlerPlayServer#setPlayerLocation(double, double, double, float, float)
+			 */
 			target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
 			target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
 			return null;
 		}
 	}
 
-	@Method(IMethod.class)
-	public static class KineticMethodEntityCreeperExplode extends TargetedModuleMethod<EntityCreeper> {
-		public KineticMethodEntityCreeperExplode() {
+	@Method(IModule.class)
+	public static final class MethodEntityCreeperExplode extends TargetedModuleMethod<EntityCreeper> {
+		public MethodEntityCreeperExplode() {
 			super("explode", true, PlethoraModules.KINETIC, EntityCreeper.class);
 		}
 
@@ -60,9 +65,9 @@ public final class MethodsKineticEntity {
 		}
 	}
 
-	@Method(IMethod.class)
-	public static class KineticMethodEntityEndermanBlink extends TargetedModuleMethod<EntityEnderman> {
-		public KineticMethodEntityEndermanBlink() {
+	@Method(IModule.class)
+	public static final class MethodEntityEndermanTeleport extends TargetedModuleMethod<EntityEnderman> {
+		public MethodEntityEndermanTeleport() {
 			super("teleport", true, PlethoraModules.KINETIC, EntityEnderman.class);
 		}
 

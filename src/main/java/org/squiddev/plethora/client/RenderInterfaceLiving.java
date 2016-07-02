@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.registry.IClientModule;
 import org.squiddev.plethora.registry.Module;
+import org.squiddev.plethora.utils.DebugLogger;
 
 public class RenderInterfaceLiving extends Module implements IClientModule {
 	@Override
@@ -48,7 +49,13 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		if (render instanceof RenderLiving<?>) {
 			RenderLiving living = (RenderLiving) render;
 			ModelRenderer head = getHead(living.getMainModel());
-			if (head != null) living.addLayer(new LayerInterface(head, dx, dy, dz));
+			if (head != null) {
+				living.addLayer(new LayerInterface(head, dx, dy, dz));
+			} else {
+				DebugLogger.warn("Cannot inject neural renderer for " + render);
+			}
+		} else {
+			DebugLogger.warn("Cannot inject neural renderer for " + render);
 		}
 	}
 
@@ -74,6 +81,8 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 			return ((ModelBlaze) model).blazeHead;
 		} else if (model instanceof ModelOcelot) {
 			return ((ModelOcelot) model).ocelotHead;
+		} else if (model instanceof ModelEnderman) {
+			return ((ModelEnderman) model).bipedHeadwear;
 		} else {
 			return null;
 		}
