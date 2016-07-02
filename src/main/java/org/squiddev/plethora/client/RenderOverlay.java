@@ -126,7 +126,7 @@ public class RenderOverlay extends Module implements IClientModule {
 	@SideOnly(Side.CLIENT)
 	private void renderFlare(double x, double y, double z, int id, RenderManager manager) {
 		// Generate an offset based off the hash code
-		float offset = (float)(id % (Math.PI * 2));
+		float offset = (float) (id % (Math.PI * 2));
 
 		GlStateManager.pushMatrix();
 

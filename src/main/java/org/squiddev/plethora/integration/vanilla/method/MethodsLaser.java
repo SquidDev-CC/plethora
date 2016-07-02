@@ -1,42 +1,31 @@
-package org.squiddev.plethora.modules.methods;
+package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
-import org.squiddev.plethora.api.module.ModuleMethod;
-import org.squiddev.plethora.modules.BlockManipulator;
-import org.squiddev.plethora.modules.EntityLaser;
-import org.squiddev.plethora.modules.ItemModule;
-import org.squiddev.plethora.modules.TileManipulator;
+import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.modules.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.ArgumentHelper.getNumber;
 
-public class LaserModule {
-	private static final ResourceLocation MODULE = ItemModule.toResource(ItemModule.LASER);
-
+public final class MethodsLaser {
 	@Method(IModule.class)
-	public static final class FireMethod extends ModuleMethod {
-		public FireMethod() {
-			super("fire", true, MODULE);
-		}
-
-		@Override
-		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(IWorldLocation.class);
+	public static final class MethodFire extends TargetedModuleMethod<IWorldLocation> {
+		public MethodFire() {
+			super("fire", true, PlethoraModules.LASER, IWorldLocation.class);
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			double yaw = getNumber(args, 0);
 			double pitch = getNumber(args, 1);
 			float potency = (float) getNumber(args, 2);
@@ -47,7 +36,6 @@ public class LaserModule {
 			double motionZ = Math.cos(yaw) * Math.cos(pitch);
 			double motionY = -Math.sin(pitch);
 
-			IWorldLocation location = context.getContext(IWorldLocation.class);
 			BlockPos pos = location.getPos();
 
 			EntityLaser laser = new EntityLaser(location.getWorld());

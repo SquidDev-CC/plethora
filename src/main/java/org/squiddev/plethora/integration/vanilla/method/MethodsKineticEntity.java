@@ -1,13 +1,16 @@
-package org.squiddev.plethora.modules.methods;
+package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
+import org.squiddev.plethora.ArgumentHelper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,41 +20,36 @@ import static org.squiddev.plethora.ArgumentHelper.getNumber;
 /**
  * Various methods for mobs
  */
-public final class KineticModuleMobs {
+public final class MethodsKineticEntity {
 	/*
 		TODO: `walk(x, y, z)` path find to position
-		TODO: `shoot(x, y, z)` for skelletons with bows
-		TODO: `lookAt(pitch, yaw)` look at entities
-		TODO: `swing()` Swing hand to dig/attack
-		TODO: `activate()` Right click to activate
+		TODO: `shoot(x, y, z)` for skeletons with bows
+		TODO: `swing()` Swing hand to dig/attack (requires fake player)
+		TODO: `activate()` Right click to activate (requires fake player)
 	*/
-	public static abstract class KineticMethodEntity<T extends EntityLivingBase> extends KineticModule.KineticMethod {
-		private final Class<T> klass;
 
-		public KineticMethodEntity(String name, Class<T> klass) {
-			super(name);
-			this.klass = klass;
-		}
-
-		@Override
-		public boolean canApply(@Nonnull IContext<IModule> context) {
-			return super.canApply(context) && context.hasContext(klass);
+	@Method(IMethod.class)
+	public static class KineticMethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
+		public KineticMethodEntityLook() {
+			super("look", true, PlethoraModules.KINETIC, EntityLivingBase.class);
 		}
 
 		@Nullable
 		@Override
-		public final Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			return apply(context.getContext(klass), context, args);
-		}
+		public Object[] apply(@Nonnull EntityLivingBase target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			double yaw = ArgumentHelper.getNumber(args, 0);
+			double pitch = ArgumentHelper.getNumber(args, 1);
 
-		@Nullable
-		public abstract Object[] apply(@Nonnull T target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException;
+			target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
+			target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
+			return null;
+		}
 	}
 
 	@Method(IMethod.class)
-	public static class KineticMethodEntityCreeperExplode extends KineticMethodEntity<EntityCreeper> {
+	public static class KineticMethodEntityCreeperExplode extends TargetedModuleMethod<EntityCreeper> {
 		public KineticMethodEntityCreeperExplode() {
-			super("explode", EntityCreeper.class);
+			super("explode", true, PlethoraModules.KINETIC, EntityCreeper.class);
 		}
 
 		@Nullable
@@ -63,9 +61,9 @@ public final class KineticModuleMobs {
 	}
 
 	@Method(IMethod.class)
-	public static class KineticMethodEntityEndermanBlink extends KineticMethodEntity<EntityEnderman> {
+	public static class KineticMethodEntityEndermanBlink extends TargetedModuleMethod<EntityEnderman> {
 		public KineticMethodEntityEndermanBlink() {
-			super("teleport", EntityEnderman.class);
+			super("teleport", true, PlethoraModules.KINETIC, EntityEnderman.class);
 		}
 
 		@Nullable

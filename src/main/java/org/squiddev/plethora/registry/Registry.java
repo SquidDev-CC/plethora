@@ -28,7 +28,7 @@ public final class Registry {
 
 	static {
 		addModule(new PeripheralProvider());
-		addModule(itemModule =new ItemModule());
+		addModule(itemModule = new ItemModule());
 		addModule(new BlockManipulator());
 		addModule(new RenderOverlay());
 

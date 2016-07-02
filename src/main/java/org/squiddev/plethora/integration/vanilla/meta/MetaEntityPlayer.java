@@ -7,20 +7,21 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Map;
 
-@MetaProvider(value = EntityPlayer.class, namespace = "food")
-public class MetaPlayer implements IMetaProvider<EntityPlayer> {
+@MetaProvider(EntityPlayer.class)
+public class MetaEntityPlayer implements IMetaProvider<EntityPlayer> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull EntityPlayer object) {
 		FoodStats stats = object.getFoodStats();
 
-		Map<Object, Object> out = Maps.newHashMap();
-		out.put("hunger", stats.getFoodLevel());
-		out.put("saturation", stats.getSaturationLevel());
-		out.put("hungry", stats.needFood());
+		Map<Object, Object> food = Maps.newHashMap();
+		food.put("hunger", stats.getFoodLevel());
+		food.put("saturation", stats.getSaturationLevel());
+		food.put("hungry", stats.needFood());
 
-		return out;
+		return Collections.<Object, Object>singletonMap("food", food);
 	}
 }

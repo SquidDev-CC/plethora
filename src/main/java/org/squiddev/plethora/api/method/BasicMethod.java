@@ -14,11 +14,6 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 		this.worldThread = worldThread;
 	}
 
-	public BasicMethod(String name) {
-		this.name = name;
-		worldThread = false;
-	}
-
 	@Nonnull
 	@Override
 	public String getName() {

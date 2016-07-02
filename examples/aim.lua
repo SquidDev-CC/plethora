@@ -18,7 +18,7 @@ local function bestFire(entity, motion)
 		for i = 1, maxTicks do
 			local nx, ny, nz = x + dx * i, y + dy * i, z + dz * i
 
-			local distance = nx*nx + ny*ny + nz*nz
+			local distance = nx * nx + ny * ny + nz * nz
 			local delta = math.sqrt(distance) % laserSpeed
 			if delta < bestDelta then
 				bestDelta = delta
@@ -33,7 +33,7 @@ local function bestFire(entity, motion)
 	end
 
 	local nx, ny, nz = x + dx * ticks, y + dy * ticks, z + dz * ticks
-	local pitch = -math.atan2(ny, math.sqrt(nx*nx + nz*nz))
+	local pitch = -math.atan2(ny, math.sqrt(nx * nx + nz * nz))
 	local yaw = math.atan2(-nx, nz)
 
 	laser.fire(yaw, pitch, 5)

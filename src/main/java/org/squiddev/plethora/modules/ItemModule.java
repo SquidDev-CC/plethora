@@ -29,7 +29,7 @@ import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.client.entity.RenderLaser;
-import org.squiddev.plethora.modules.methods.KineticModule;
+import org.squiddev.plethora.integration.vanilla.method.MethodsKinetic;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -96,10 +96,6 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 		}
 	}
 
-	public static ResourceLocation toResource(String name) {
-		return new ResourceLocation(Plethora.RESOURCE_DOMAIN, name);
-	}
-
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		return super.getUnlocalizedName() + "." + getName(stack.getItemDamage());
@@ -159,7 +155,7 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			}
 			case KINETIC_ID: {
 				if (player.isAirBorne) return;
-				KineticModule.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * KINETIC_LAUNCH_MAX);
+				MethodsKinetic.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * KINETIC_LAUNCH_MAX);
 				break;
 			}
 			default:
@@ -302,7 +298,7 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 	@Nonnull
 	@Override
 	public IModule getModule(@Nonnull ItemStack stack) {
-		final ResourceLocation location = toResource(getName(stack.getItemDamage()));
+		final ResourceLocation location = PlethoraModules.toResource(getName(stack.getItemDamage()));
 
 		return new IModule() {
 			@Nonnull

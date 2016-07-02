@@ -30,6 +30,9 @@ public class MetaEntity implements IMetaProvider<Entity> {
 		result.put("motionY", entity.motionY);
 		result.put("motionZ", entity.motionZ);
 
+		result.put("pitch", Math.toRadians(entity.rotationPitch));
+		result.put("yaw", Math.toRadians(entity.rotationYaw));
+
 		return result;
 	}
 

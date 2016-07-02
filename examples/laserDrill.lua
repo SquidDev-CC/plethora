@@ -9,7 +9,7 @@ local id = intro.getID()
 while true do
 	local me = sensor.getMetaByID(id)
 	if me.isSneaking then
-		laser.fire(math.rad(me.yaw), math.rad(me.pitch), 5)
+		laser.fire(me.yaw, me.pitch, 5)
 	else
 		sleep(0.1)
 	end

@@ -17,8 +17,8 @@ import javax.annotation.Nonnull;
  * This enables consuming it: Eating/Drinking it
  */
 @Method(ItemSlot.class)
-public class MethodItemConsumable extends BasicMethod<ItemSlot> {
-	public MethodItemConsumable() {
+public class MethodItemConsume extends BasicMethod<ItemSlot> {
+	public MethodItemConsume() {
 		super("consume", true);
 	}
 

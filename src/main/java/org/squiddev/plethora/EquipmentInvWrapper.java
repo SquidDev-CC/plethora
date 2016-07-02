@@ -10,12 +10,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 /**
  * The entity this references
  */
-public class ArmorInvWrapper implements IItemHandlerModifiable {
+public class EquipmentInvWrapper implements IItemHandlerModifiable {
 	private static final int SLOTS = 5;
 
 	private final EntityLivingBase entity;
 
-	public ArmorInvWrapper(EntityLivingBase entity) {
+	public EquipmentInvWrapper(EntityLivingBase entity) {
 		this.entity = entity;
 	}
 

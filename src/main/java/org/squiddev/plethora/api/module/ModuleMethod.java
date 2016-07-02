@@ -17,11 +17,6 @@ public abstract class ModuleMethod extends BasicMethod<IModule> {
 		this.module = module;
 	}
 
-	public ModuleMethod(String name, ResourceLocation module) {
-		super(name);
-		this.module = module;
-	}
-
 	@Override
 	public boolean canApply(@Nonnull IContext<IModule> context) {
 		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
