@@ -83,7 +83,7 @@ public final class EntityLaser extends EntityThrowable {
 					if (hardness > -1 && hardness <= potency) {
 						potency -= hardness;
 
-						// We *should* fire events but that requires creating a fake player.
+						// TODO: We *should* fire events but that requires creating a fake player.
 						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
 						if (drops != null) {
 							for (ItemStack stack : drops) {

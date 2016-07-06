@@ -10,8 +10,8 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.integration.registry.IClientModule;
-import org.squiddev.plethora.integration.registry.Module;
+import org.squiddev.plethora.gameplay.registry.IClientModule;
+import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.utils.DebugLogger;
 
 public class RenderInterfaceLiving extends Module implements IClientModule {

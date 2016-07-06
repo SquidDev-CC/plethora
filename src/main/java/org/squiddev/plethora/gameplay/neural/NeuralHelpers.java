@@ -16,7 +16,7 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PeripheralMethodWrapper;
 import org.squiddev.plethora.core.UnbakedContext;
-import org.squiddev.plethora.integration.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

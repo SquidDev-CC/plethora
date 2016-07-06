@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.registry;
+package org.squiddev.plethora.gameplay.registry;
 
 /**
  * Default implementation of {@link IModule}

@@ -8,7 +8,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.integration.registry.IClientModule;
+import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;

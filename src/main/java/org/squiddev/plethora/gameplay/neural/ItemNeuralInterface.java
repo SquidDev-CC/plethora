@@ -39,7 +39,7 @@ import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
-import org.squiddev.plethora.integration.registry.IClientModule;
+import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;

@@ -47,12 +47,12 @@ public final class MethodsLaser {
 				);
 			} else if (context.hasContext(EntityLivingBase.class)) {
 				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
-				Vec3 vector = entity.getPositionEyes(1.0f);
+				Vec3 vector = entity.getPositionVector();
 				double offset = entity.width + 0.2;
 				double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 				laser.setPosition(
 					vector.xCoord + motionX / length * offset,
-					vector.yCoord + motionY / length * offset,
+					vector.yCoord + entity.getEyeHeight() + motionY / length * offset,
 					vector.zCoord + motionZ / length * offset
 				);
 			} else {

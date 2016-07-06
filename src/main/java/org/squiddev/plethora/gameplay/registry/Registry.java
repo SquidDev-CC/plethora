@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.registry;
+package org.squiddev.plethora.gameplay.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

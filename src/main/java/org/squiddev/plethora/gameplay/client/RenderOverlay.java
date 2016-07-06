@@ -20,9 +20,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
-import org.squiddev.plethora.integration.registry.IClientModule;
-import org.squiddev.plethora.integration.registry.Module;
-import org.squiddev.plethora.integration.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.IClientModule;
+import org.squiddev.plethora.gameplay.registry.Module;
+import org.squiddev.plethora.gameplay.registry.Registry;
 
 import java.awt.*;
 import java.util.List;

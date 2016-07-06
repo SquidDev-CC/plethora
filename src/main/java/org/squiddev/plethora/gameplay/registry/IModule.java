@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.registry;
+package org.squiddev.plethora.gameplay.registry;
 
 /**
  * An item that can be registered

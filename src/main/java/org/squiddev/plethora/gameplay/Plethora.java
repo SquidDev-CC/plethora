@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.squiddev.plethora.integration.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registry;
 
 import static org.squiddev.plethora.gameplay.Plethora.*;
 
