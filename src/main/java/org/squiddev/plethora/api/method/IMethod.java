@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * A Lua side method targeting a class

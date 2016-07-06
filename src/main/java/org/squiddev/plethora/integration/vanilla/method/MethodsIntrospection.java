@@ -11,7 +11,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
-import org.squiddev.plethora.api.module.ModuleMethod;
+import org.squiddev.plethora.api.module.ModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 
 public final class MethodsIntrospection {
 	@Method(IModule.class)
-	public static final class MethodEntityPlayerInventory extends ModuleMethod {
+	public static final class MethodEntityPlayerInventory extends ModuleObjectMethod {
 		public MethodEntityPlayerInventory() {
 			super("getInventory", true, PlethoraModules.INTROSPECTION);
 		}
@@ -39,7 +39,7 @@ public final class MethodsIntrospection {
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityEquipment extends ModuleMethod {
+	public static final class MethodEntityEquipment extends ModuleObjectMethod {
 		public MethodEntityEquipment() {
 			super("getEquipment", true, PlethoraModules.INTROSPECTION);
 		}
@@ -57,7 +57,7 @@ public final class MethodsIntrospection {
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityPlayerGetEnder extends ModuleMethod {
+	public static final class MethodEntityPlayerGetEnder extends ModuleObjectMethod {
 		public MethodEntityPlayerGetEnder() {
 			super("getEnder", true, PlethoraModules.INTROSPECTION);
 		}
@@ -75,7 +75,7 @@ public final class MethodsIntrospection {
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityGetID extends ModuleMethod {
+	public static final class MethodEntityGetID extends ModuleObjectMethod {
 		public MethodEntityGetID() {
 			super("getID", true, PlethoraModules.INTROSPECTION);
 		}
@@ -91,7 +91,7 @@ public final class MethodsIntrospection {
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityGetName extends ModuleMethod {
+	public static final class MethodEntityGetName extends ModuleObjectMethod {
 		public MethodEntityGetName() {
 			super("getName", true, PlethoraModules.INTROSPECTION);
 		}

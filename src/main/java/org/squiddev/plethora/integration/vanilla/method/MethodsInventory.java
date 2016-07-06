@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public final class MethodsInventory {
+	// TODO: Switch to new argument validation
+
 	@Method(IItemHandler.class)
 	public static class ListMethod extends BasicObjectMethod<IItemHandler> {
 		public ListMethod() {

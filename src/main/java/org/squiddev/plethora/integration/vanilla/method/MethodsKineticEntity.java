@@ -7,13 +7,17 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.network.NetHandlerPlayServer;
 import org.squiddev.plethora.ArgumentHelper;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.ArgumentHelper.getNumber;
 
@@ -31,28 +35,34 @@ public final class MethodsKineticEntity {
 	@Method(IModule.class)
 	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLiving> {
 		public MethodEntityLook() {
-			super("look", true, PlethoraModules.KINETIC, EntityLiving.class);
+			super("look", PlethoraModules.KINETIC, EntityLiving.class);
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public Object[] apply(@Nonnull EntityLiving target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			double yaw = ArgumentHelper.getNumber(args, 0);
-			double pitch = ArgumentHelper.getNumber(args, 1);
+		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			final double yaw = ArgumentHelper.getNumber(args, 0);
+			final double pitch = ArgumentHelper.getNumber(args, 1);
 
-			/**
-			 * TODO: Support EntityPlayer
-			 * @see net.minecraft.entity.player.EntityPlayerMP#playerNetServerHandler
-			 * @see NetHandlerPlayServer#setPlayerLocation(double, double, double, float, float)
-			 */
-			target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
-			target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
-			return null;
+			return MethodResult.nextTick(new Callable<MethodResult>() {
+				@Override
+				public MethodResult call() throws Exception {
+					/**
+					 * TODO: Support EntityPlayer
+					 * @see net.minecraft.entity.player.EntityPlayerMP#playerNetServerHandler
+					 * @see NetHandlerPlayServer#setPlayerLocation(double, double, double, float, float)
+					 */
+					EntityLiving target = context.bake().getContext(EntityLiving.class);
+					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
+					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
+					return null;
+				}
+			});
 		}
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityCreeperExplode extends TargetedModuleMethod<EntityCreeper> {
+	public static final class MethodEntityCreeperExplode extends TargetedModuleObjectMethod<EntityCreeper> {
 		public MethodEntityCreeperExplode() {
 			super("explode", true, PlethoraModules.KINETIC, EntityCreeper.class);
 		}
@@ -66,7 +76,7 @@ public final class MethodsKineticEntity {
 	}
 
 	@Method(IModule.class)
-	public static final class MethodEntityEndermanTeleport extends TargetedModuleMethod<EntityEnderman> {
+	public static final class MethodEntityEndermanTeleport extends TargetedModuleObjectMethod<EntityEnderman> {
 		public MethodEntityEndermanTeleport() {
 			super("teleport", true, PlethoraModules.KINETIC, EntityEnderman.class);
 		}

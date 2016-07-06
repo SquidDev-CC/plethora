@@ -9,9 +9,12 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 
@@ -21,13 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
 
 public final class MethodsSensor {
 	@Method(IModule.class)
-	public static final class ScanEntitiesMethod extends TargetedModuleMethod<IWorldLocation> {
+	public static final class ScanEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
 		public ScanEntitiesMethod() {
 			super("scan", true, PlethoraModules.SENSOR, IWorldLocation.class);
 		}
@@ -58,28 +62,47 @@ public final class MethodsSensor {
 	@Method(IModule.class)
 	public static final class GetMetaUUIDMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaUUIDMethod() {
-			super("getMetaByID", true, PlethoraModules.SENSOR, IWorldLocation.class);
+			super("getMetaByID", PlethoraModules.SENSOR, IWorldLocation.class);
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			Entity entity = findEntityByUUID(location, args);
-			return new Object[]{PlethoraAPI.instance().metaRegistry().getMeta(entity)};
+		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			final UUID uuid;
+			try {
+				uuid = UUID.fromString(getString(args, 0));
+			} catch (IllegalArgumentException e) {
+				throw new LuaException("Invalid UUID");
+			}
+
+			return MethodResult.nextTick(new Callable<MethodResult>() {
+				@Override
+				public MethodResult call() throws Exception {
+					Entity entity = findEntityByUUID(context.bake().getContext(IWorldLocation.class), uuid);
+					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+				}
+			});
 		}
 	}
 
 	@Method(IModule.class)
 	public static final class GetMetaNameMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaNameMethod() {
-			super("getMetaByName", true, PlethoraModules.SENSOR, IWorldLocation.class);
+			super("getMetaByName", PlethoraModules.SENSOR, IWorldLocation.class);
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			Entity entity = findEntityByName(location, args);
-			return new Object[]{PlethoraAPI.instance().metaRegistry().getMeta(entity)};
+		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			final String name = getString(args, 0);
+
+			return MethodResult.nextTick(new Callable<MethodResult>() {
+				@Override
+				public MethodResult call() throws Exception {
+					Entity entity = findEntityByName(context.bake().getContext(IWorldLocation.class), name);
+					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+				}
+			});
 		}
 	}
 
@@ -91,14 +114,7 @@ public final class MethodsSensor {
 		);
 	}
 
-	private static Entity findEntityByUUID(IWorldLocation location, Object[] args) throws LuaException {
-		UUID uuid;
-		try {
-			uuid = UUID.fromString(getString(args, 0));
-		} catch (IllegalArgumentException e) {
-			throw new LuaException("Invalid UUID");
-		}
-
+	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) throws LuaException {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (entity.getUniqueID().equals(uuid)) return entity;
@@ -107,9 +123,7 @@ public final class MethodsSensor {
 		throw new LuaException("No such entity");
 	}
 
-	private static Entity findEntityByName(IWorldLocation location, Object[] args) throws LuaException {
-		String name = getString(args, 0);
-
+	private static Entity findEntityByName(IWorldLocation location, String name) throws LuaException {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (MetaEntity.getName(entity).equals(name)) return entity;

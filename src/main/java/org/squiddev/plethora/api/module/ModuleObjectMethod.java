@@ -1,7 +1,7 @@
 package org.squiddev.plethora.api.module;
 
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 
 import javax.annotation.Nonnull;
@@ -9,16 +9,16 @@ import javax.annotation.Nonnull;
 /**
  * A method bound to a specific module
  */
-public abstract class ModuleMethod extends BasicMethod<IModule> {
+public abstract class ModuleObjectMethod extends BasicObjectMethod<IModule> {
 	protected final ResourceLocation module;
 
-	public ModuleMethod(String name, ResourceLocation module) {
-		super(name);
+	public ModuleObjectMethod(String name, boolean worldThread, ResourceLocation module) {
+		super(name, worldThread);
 		this.module = module;
 	}
 
-	public ModuleMethod(String name, int priority, ResourceLocation module) {
-		super(name, priority);
+	public ModuleObjectMethod(String name, boolean worldThread, int priority, ResourceLocation module) {
+		super(name, worldThread, priority);
 		this.module = module;
 	}
 

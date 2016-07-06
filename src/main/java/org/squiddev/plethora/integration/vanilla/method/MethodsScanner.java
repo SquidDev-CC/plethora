@@ -10,22 +10,26 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SCANNER_RADIUS;
 
 public final class MethodsScanner {
 	@Method(IModule.class)
-	public static final class MethodScanBlocks extends TargetedModuleMethod<IWorldLocation> {
+	public static final class MethodScanBlocks extends TargetedModuleObjectMethod<IWorldLocation> {
 		public MethodScanBlocks() {
 			super("scan", true, PlethoraModules.SCANNER, IWorldLocation.class);
 		}
@@ -64,31 +68,37 @@ public final class MethodsScanner {
 	@Method(IModule.class)
 	public static final class MethodMetaBlock extends TargetedModuleMethod<IWorldLocation> {
 		public MethodMetaBlock() {
-			super("getBlockMeta", true, PlethoraModules.SCANNER, IWorldLocation.class);
+			super("getBlockMeta", PlethoraModules.SCANNER, IWorldLocation.class);
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			int x = getInt(args, 0);
-			int y = getInt(args, 1);
-			int z = getInt(args, 2);
+		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+			final int x = getInt(args, 0);
+			final int y = getInt(args, 1);
+			final int z = getInt(args, 2);
 
 			validatePosition(x, y, z);
 
-			BlockPos pos = location.getPos().add(x, y, z);
-			World world = location.getWorld();
+			return MethodResult.nextTick(new Callable<MethodResult>() {
+				@Override
+				public MethodResult call() throws Exception {
+					IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+					BlockPos pos = location.getPos().add(x, y, z);
+					World world = location.getWorld();
 
-			IBlockState block = world.getBlockState(pos);
-			IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
-			Map<Object, Object> meta = registry.getMeta(block);
+					IBlockState block = world.getBlockState(pos);
+					IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
+					Map<Object, Object> meta = registry.getMeta(block);
 
-			TileEntity te = world.getTileEntity(pos);
-			if (te != null) {
-				meta.putAll(registry.getMeta(block));
-			}
+					TileEntity te = world.getTileEntity(pos);
+					if (te != null) {
+						meta.putAll(registry.getMeta(block));
+					}
 
-			return new Object[]{meta};
+					return MethodResult.result(meta);
+				}
+			});
 		}
 	}
 
