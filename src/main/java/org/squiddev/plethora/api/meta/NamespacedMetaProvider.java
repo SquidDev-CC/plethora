@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @see IMetaRegistry#registerMetaProvider(Class, String, IMetaProvider)
  */
-public class NamespacedMetaProvider<T> implements IMetaProvider<T> {
+public class NamespacedMetaProvider<T> extends BasicMetaProvider<T> {
 	private final String namespace;
 	private final IMetaProvider<T> delegate;
 

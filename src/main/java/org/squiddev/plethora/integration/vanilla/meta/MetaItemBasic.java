@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Adds basic properties for item stacks.
  */
 @MetaProvider(ItemStack.class)
-public class MetaItemBasic implements IMetaProvider<ItemStack> {
+public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {

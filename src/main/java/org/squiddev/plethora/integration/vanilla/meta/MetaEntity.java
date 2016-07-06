@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @MetaProvider(Entity.class)
-public class MetaEntity implements IMetaProvider<Entity> {
+public class MetaEntity extends BasicMetaProvider<Entity> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull Entity object) {

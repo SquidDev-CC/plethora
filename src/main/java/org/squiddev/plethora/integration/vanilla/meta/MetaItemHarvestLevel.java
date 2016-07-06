@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -15,7 +15,7 @@ import java.util.Map;
  * Displays classes for tools
  */
 @MetaProvider(value = ItemStack.class, namespace = "toolClass")
-public class MetaItemHarvestLevel implements IMetaProvider<ItemStack> {
+public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {

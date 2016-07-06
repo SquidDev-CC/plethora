@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 @Method(Object.class)
 public class MethodMeta extends BasicMethod<Object> {
 	public MethodMeta() {
-		super("getMetadata", true);
+		super("getMetadata", true, Integer.MIN_VALUE);
 	}
 
 	@Override

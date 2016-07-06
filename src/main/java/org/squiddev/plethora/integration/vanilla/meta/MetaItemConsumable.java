@@ -7,7 +7,7 @@ import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -22,7 +22,7 @@ import java.util.Map;
  * Provides food and saturation for foodstuffs, and potion details for potions.
  */
 @MetaProvider(ItemStack.class)
-public class MetaItemConsumable implements IMetaProvider<ItemStack> {
+public class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
@@ -60,7 +60,7 @@ public class MetaItemConsumable implements IMetaProvider<ItemStack> {
 						data.put("color", potion.getLiquidColor());
 					}
 
-					effectsInfo.put(i, entry);
+					effectsInfo.put(i + 1, entry);
 					i++;
 				}
 

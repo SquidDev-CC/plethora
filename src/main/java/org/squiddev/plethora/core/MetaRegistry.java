@@ -2,7 +2,10 @@ package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -11,6 +14,7 @@ import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
@@ -19,7 +23,14 @@ import java.util.*;
 public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
-	private final Multimap<Class<?>, IMetaProvider<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();
+	private final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(new Comparator<IMetaProvider<?>>() {
+		@Override
+		public int compare(IMetaProvider<?> o1, IMetaProvider<?> o2) {
+			int p1 = o1.getPriority();
+			int p2 = o2.getPriority();
+			return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
+		}
+	});
 
 	@Override
 	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {

@@ -1,7 +1,9 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.Tuple;
@@ -9,6 +11,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IdentityReference;
+import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
@@ -17,7 +20,14 @@ import java.util.*;
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
 
-	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().hashSetValues().build();
+	private final SortedMultimap<Class<?>, IMethod<?>> providers = SortedMultimap.create(new Comparator<IMethod<?>>() {
+		@Override
+		public int compare(IMethod<?> o1, IMethod<?> o2) {
+			int p1 = o1.getPriority();
+			int p2 = o2.getPriority();
+			return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
+		}
+	});
 
 	@Override
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
@@ -84,6 +94,8 @@ public final class MethodRegistry implements IMethodRegistry {
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext) {
+		// TODO: Handle priority correctly.
+
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
 

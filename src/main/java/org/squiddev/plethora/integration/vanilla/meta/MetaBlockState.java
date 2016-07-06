@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @MetaProvider(value = IBlockState.class)
-public class MetaBlockState implements IMetaProvider<IBlockState> {
+public class MetaBlockState extends BasicMetaProvider<IBlockState> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IBlockState object) {

@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import java.util.Map;
  * Meta provider for amour properties. Material is handled in {@link MetaItemMaterial}.
  */
 @MetaProvider(ItemStack.class)
-public class MetaItemArmor implements IMetaProvider<ItemStack> {
+public class MetaItemArmor extends BasicMetaProvider<ItemStack> {
 	private static String convertArmorType(int armorType) {
 		switch (armorType) {
 			case 0:

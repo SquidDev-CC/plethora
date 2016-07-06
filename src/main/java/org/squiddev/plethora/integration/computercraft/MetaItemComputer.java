@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import java.util.Map;
  * Provider for computer items;
  */
 @MetaProvider(value = ItemStack.class, namespace = "computer")
-public class MetaItemComputer implements IMetaProvider<ItemStack> {
+public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {

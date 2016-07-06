@@ -27,6 +27,16 @@ public interface IMethod<T> {
 	boolean worldThread();
 
 	/**
+	 * Get the priority of this provider
+	 *
+	 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Providers
+	 * with higher priorities will be preferred.
+	 *
+	 * @return The provider's priority
+	 */
+	int getPriority();
+
+	/**
 	 * Check if this function can be applied in the given context.
 	 *
 	 * @param context The context to check in
