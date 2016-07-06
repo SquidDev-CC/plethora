@@ -1,6 +1,5 @@
 package org.squiddev.plethora.utils;
 
-import com.google.common.base.CaseFormat;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
@@ -16,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.Plethora;
+import org.squiddev.plethora.gameplay.Plethora;
 
 import java.io.File;
 import java.util.Random;
@@ -112,14 +111,6 @@ public class Helpers {
 
 	public static int nextId(World world, IPeripheral peripheral) {
 		return nextId(world, peripheral.getType());
-	}
-
-	public static boolean equals(Object a, Object b) {
-		return a == b || (a != null && a.equals(b));
-	}
-
-	public static String snakeCase(String name) {
-		return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
 	}
 
 	@SideOnly(Side.CLIENT)

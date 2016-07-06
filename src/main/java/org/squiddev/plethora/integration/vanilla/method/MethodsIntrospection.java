@@ -13,7 +13,7 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.ModuleMethod;
-import org.squiddev.plethora.modules.PlethoraModules;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

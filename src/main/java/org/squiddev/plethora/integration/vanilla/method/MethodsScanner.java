@@ -13,7 +13,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.modules.PlethoraModules;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.ArgumentHelper.getInt;
-import static org.squiddev.plethora.modules.ItemModule.SCANNER_RADIUS;
+import static org.squiddev.plethora.gameplay.modules.ItemModule.SCANNER_RADIUS;
 
 public final class MethodsScanner {
 	@Method(IModule.class)

@@ -29,7 +29,7 @@ public class PlethoraAPI {
 
 	static {
 		IPlethoraAPI api;
-		final String name = "org.squiddev.plethora.impl.API";
+		final String name = "org.squiddev.plethora.core.API";
 		try {
 			Class<?> registryClass = Class.forName(name);
 			api = (IPlethoraAPI) registryClass.newInstance();

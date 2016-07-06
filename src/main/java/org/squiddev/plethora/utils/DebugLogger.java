@@ -5,14 +5,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
-import org.squiddev.plethora.Plethora;
 
 /**
  * Facade to the basic logger, which also forces debug calls
  * if {@link #DEBUG} is enabled
  */
 public class DebugLogger {
-	private static final Logger logger = LogManager.getLogger(Plethora.ID);
+	private static final Logger logger = LogManager.getLogger("Plethora");
 	public static final boolean DEBUG = true;
 
 	public static void trace(String message, int max) {

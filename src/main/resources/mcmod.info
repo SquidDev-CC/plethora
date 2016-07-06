@@ -1,16 +1,30 @@
 [
 	{
-		"modid": "Plethora",
-		"name": "Plethora",
-		"description": "Another Peripheral Provider",
+		"modid": "Plethora-Core",
+		"name": "Plethora Core",
+		"description": "Peripheral provider for ComputerCraft",
 		"version": "${mod_version}",
 		"mcversion": "${mc_version}",
-		"credits": "Dan200, Forge team, Luaj.org",
+		"credits": "Dan200, Forge team",
 		"authorList": [
 			"SquidDev"
 		],
 		"dependencies": [
 			"ComputerCraft"
 		]
-	}
+	},
+	{
+    		"modid": "Plethora",
+    		"name": "Plethora",
+    		"description": "Adds gameplay related items to Plethora",
+    		"version": "${mod_version}",
+    		"mcversion": "${mc_version}",
+    		"credits": "Dan200, Forge team",
+    		"authorList": [
+    			"SquidDev"
+    		],
+    		"dependencies": [
+    			"ComputerCraft", "Plethora-Gameplay"
+    		]
+    	}
 ]

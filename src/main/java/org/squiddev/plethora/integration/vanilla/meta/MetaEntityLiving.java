@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.impl.UnbakedContext;
+import org.squiddev.plethora.core.UnbakedContext;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

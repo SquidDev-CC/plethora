@@ -12,8 +12,8 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
-import org.squiddev.plethora.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.squiddev.plethora.ArgumentHelper.getString;
-import static org.squiddev.plethora.modules.ItemModule.SENSOR_RADIUS;
+import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
 
 public final class MethodsSensor {
 	@Method(IModule.class)
