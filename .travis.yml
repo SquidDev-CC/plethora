@@ -1,0 +1,8 @@
+language: java
+sudo: false
+notifications:
+  email: false
+cache:
+  directories:
+  - $HOME/.gradle
+  - $HOME/.m2
