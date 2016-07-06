@@ -2,7 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
@@ -22,7 +22,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public void loadComplete(FMLLoadCompleteEvent event) {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 }

@@ -10,6 +10,8 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.List;
 
+import static org.squiddev.plethora.api.reference.Reference.id;
+
 /**
  * Wrapper for a list of methods
  */
@@ -36,7 +38,7 @@ public class MethodWrapper implements ILuaObject {
 
 	@Override
 	public Object[] callMethod(ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		return callMethod(getContext(method), luaContext, getMethod(method), args);
+		return callMethod(getContext(method).withContext(id(luaContext)), luaContext, getMethod(method), args);
 	}
 
 	public IMethod<?> getMethod(int i) {
@@ -72,7 +74,9 @@ public class MethodWrapper implements ILuaObject {
 	private static Object[] doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
 		try {
 			return method.apply(context.bake(), args);
-		} catch (RuntimeException e) {
+		} catch (LuaException e) {
+			throw e;
+		} catch (Throwable e) {
 			DebugLogger.error("Unexpected error calling " + method.getName(), e);
 			throw new LuaException("Java Exception Thrown: " + e.toString());
 		}
