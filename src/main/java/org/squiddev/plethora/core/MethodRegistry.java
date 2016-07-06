@@ -4,12 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -87,24 +86,15 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public ILuaObject getObject(@Nonnull IUnbakedContext<?> initialContext) {
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = getMethodsPaired(initialContext);
-
-		return new MethodWrapper(pair.getFirst(), pair.getSecond());
+	public <T> IUnbakedContext<T> makeContext(IReference<T> target, IReference<?>... context) {
+		return new UnbakedContext<T>(target, context);
 	}
 
-	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext) {
+	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {
 		// TODO: Handle priority correctly.
 
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
-
-		IContext<?> initialBaked;
-		try {
-			initialBaked = initialContext.bake();
-		} catch (LuaException e) {
-			throw new IllegalStateException("Error occurred when baking", e);
-		}
 
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : ConverterRegistry.instance.convertAll(initialTarget)) {

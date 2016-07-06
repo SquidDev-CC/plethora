@@ -20,13 +20,6 @@ public interface IMethod<T> {
 	String getName();
 
 	/**
-	 * If this function should be executed on the world thread
-	 *
-	 * @return If this function should be executed on the world thread.
-	 */
-	boolean worldThread();
-
-	/**
 	 * Get the priority of this provider
 	 *
 	 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Providers
@@ -55,6 +48,6 @@ public interface IMethod<T> {
 	 * @throws RuntimeException Unhandled errors: these will be rethrown as {@link LuaException}s and the call stack logged.
 	 * @see dan200.computercraft.api.lua.ILuaObject#callMethod(ILuaContext, int, Object[])
 	 */
-	@Nullable
-	Object[] apply(@Nonnull IContext<T> context, @Nonnull Object[] args) throws LuaException;
+	@Nonnull
+	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
 }

@@ -1,17 +1,22 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * A context which doesn't have solidified references.
  */
-public class UnbakedContext<T> implements IUnbakedContext<T> {
+public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<T> target;
 	private final IReference<?>[] context;
 
@@ -59,7 +64,24 @@ public class UnbakedContext<T> implements IUnbakedContext<T> {
 		return new UnbakedContext<T>(target, wholeContext);
 	}
 
-	private static void arrayCopy(Object[] src, Object[] to, int start) {
+	@Nonnull
+	@Override
+	public ILuaObject getObject() {
+		IContext<T> baked = tryBake(this);
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(this, baked);
+
+		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond(), baked.getContext(IComputerAccess.class));
+	}
+
+	public static void arrayCopy(Object[] src, Object[] to, int start) {
 		System.arraycopy(src, 0, to, start, src.length);
+	}
+
+	public static <T> IContext<T> tryBake(IUnbakedContext<T> context) {
+		try {
+			return context.bake();
+		} catch (LuaException e) {
+			throw new IllegalStateException("Error occurred when baking", e);
+		}
 	}
 }

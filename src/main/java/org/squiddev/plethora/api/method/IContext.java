@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -68,4 +69,12 @@ public interface IContext<T> {
 	 */
 	@Nonnull
 	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
+
+	/**
+	 * Get a lua object from this context
+	 *
+	 * @return The built Lua object
+	 */
+	@Nonnull
+	ILuaObject getObject();
 }

@@ -7,7 +7,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import org.squiddev.plethora.EquipmentInvWrapper;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.Method;
@@ -35,7 +34,7 @@ public final class MethodsIntrospection {
 
 			IItemHandler inventory = new PlayerMainInvWrapper(player.inventory);
 			IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
-			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
+			return new Object[]{newContext.getObject()};
 		}
 	}
 
@@ -53,7 +52,7 @@ public final class MethodsIntrospection {
 
 			IItemHandler inventory = new EquipmentInvWrapper(entity);
 			IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
-			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
+			return new Object[]{newContext.getObject()};
 		}
 	}
 
@@ -71,7 +70,7 @@ public final class MethodsIntrospection {
 
 			IInventory inventory = player.getInventoryEnderChest();
 			IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
-			return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(newContext)};
+			return new Object[]{newContext.getObject()};
 		}
 	}
 

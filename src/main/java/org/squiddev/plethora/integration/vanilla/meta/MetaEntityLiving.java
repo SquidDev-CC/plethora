@@ -4,10 +4,8 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.core.UnbakedContext;
 
 import javax.annotation.Nonnull;
@@ -71,7 +69,6 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 	private static <T> ILuaObject wrap(EntityLivingBase entity, T object) {
 		if (object == null) return null;
 
-		IUnbakedContext<T> context = new UnbakedContext<T>(id(object), entity(entity));
-		return PlethoraAPI.instance().methodRegistry().getObject(context);
+		return new UnbakedContext<T>(id(object), entity(entity)).getObject();
 	}
 }

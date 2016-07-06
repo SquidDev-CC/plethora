@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.reference.IReference;
 
@@ -37,4 +38,13 @@ public interface IUnbakedContext<T> {
 	 */
 	@Nonnull
 	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
+
+	/**
+	 * Get a lua object from this context
+	 *
+	 * @return The built Lua object
+	 * @throws IllegalStateException If the context cannot be baked
+	 */
+	@Nonnull
+	ILuaObject getObject();
 }

@@ -5,7 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.reference.ItemSlot;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public final class MethodsInventory {
 	@Method(IItemHandler.class)
-	public static class ListMethod extends BasicMethod<IItemHandler> {
+	public static class ListMethod extends BasicObjectMethod<IItemHandler> {
 		public ListMethod() {
 			super("list", true);
 		}
@@ -38,7 +38,7 @@ public final class MethodsInventory {
 	}
 
 	@Method(IItemHandler.class)
-	public static class GetItemMethod extends BasicMethod<IItemHandler> {
+	public static class GetItemMethod extends BasicObjectMethod<IItemHandler> {
 		public GetItemMethod() {
 			super("getItem", true);
 		}
@@ -56,13 +56,13 @@ public final class MethodsInventory {
 				return new Object[]{false, "No item there"};
 			} else {
 				ItemSlot item = new ItemSlot(inventory, slot - 1);
-				return new Object[]{PlethoraAPI.instance().methodRegistry().getObject(context.makeChild(item))};
+				return new Object[]{context.makeChild(item).getObject()};
 			}
 		}
 	}
 
 	@Method(IItemHandler.class)
-	public static class SizeMethod extends BasicMethod<IItemHandler> {
+	public static class SizeMethod extends BasicObjectMethod<IItemHandler> {
 		public SizeMethod() {
 			super("size", true);
 		}
@@ -74,7 +74,7 @@ public final class MethodsInventory {
 	}
 
 	@Method(IItemHandler.class)
-	public static class MetadataMethod extends BasicMethod<IItemHandler> {
+	public static class MetadataMethod extends BasicObjectMethod<IItemHandler> {
 		public MetadataMethod() {
 			super("getMetadata", true);
 		}

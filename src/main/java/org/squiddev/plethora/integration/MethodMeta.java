@@ -3,14 +3,14 @@ package org.squiddev.plethora.integration;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 
 import javax.annotation.Nonnull;
 
 @Method(Object.class)
-public class MethodMeta extends BasicMethod<Object> {
+public class MethodMeta extends BasicObjectMethod<Object> {
 	public MethodMeta() {
 		super("getMetadata", true, Integer.MIN_VALUE);
 	}

@@ -4,7 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.reference.ItemSlot;
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  * This enables consuming it: Eating/Drinking it
  */
 @Method(ItemSlot.class)
-public class MethodItemConsume extends BasicMethod<ItemSlot> {
+public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 	public MethodItemConsume() {
 		super("consume", true);
 	}

@@ -3,22 +3,19 @@ package org.squiddev.plethora.api.method;
 import javax.annotation.Nonnull;
 
 /**
- * Basic wrapper for methods
+ * A basic wrapper for methods
  */
 public abstract class BasicMethod<T> implements IMethod<T> {
 	private final String name;
-	private final boolean worldThread;
 	private final int priority;
 
-	public BasicMethod(String name, boolean worldThread, int priority) {
+	public BasicMethod(String name, int priority) {
 		this.name = name;
-		this.worldThread = worldThread;
 		this.priority = priority;
 	}
 
-	public BasicMethod(String name, boolean worldThread) {
+	public BasicMethod(String name) {
 		this.name = name;
-		this.worldThread = worldThread;
 		this.priority = 0;
 	}
 
@@ -26,11 +23,6 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	@Override
 	public final String getName() {
 		return name;
-	}
-
-	@Override
-	public final boolean worldThread() {
-		return worldThread;
 	}
 
 	@Override

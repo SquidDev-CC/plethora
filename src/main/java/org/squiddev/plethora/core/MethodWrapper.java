@@ -1,21 +1,24 @@
 package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.List;
-
-import static org.squiddev.plethora.api.reference.Reference.id;
+import java.util.concurrent.Callable;
 
 /**
- * Wrapper for a list of methods
+ * Handles the base for various Lua objects
+ *
+ * @see dan200.computercraft.api.peripheral.IPeripheral
+ * @see dan200.computercraft.api.lua.ILuaObject
  */
-public class MethodWrapper implements ILuaObject {
+public class MethodWrapper {
 	private final List<IMethod<?>> methods;
 	private final List<IUnbakedContext<?>> contexts;
 
@@ -31,14 +34,8 @@ public class MethodWrapper implements ILuaObject {
 		}
 	}
 
-	@Override
 	public String[] getMethodNames() {
 		return names;
-	}
-
-	@Override
-	public Object[] callMethod(ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		return callMethod(getContext(method).withContext(id(luaContext)), luaContext, getMethod(method), args);
 	}
 
 	public IMethod<?> getMethod(int i) {
@@ -49,36 +46,74 @@ public class MethodWrapper implements ILuaObject {
 		return contexts.get(i);
 	}
 
-	private static final class ObjectCell {
-		public Object[] value;
-	}
-
-	public static Object[] callMethod(final IUnbakedContext context, ILuaContext luaContext, final IMethod method, final Object[] args) throws LuaException, InterruptedException {
-		if (method.worldThread()) {
-			// We do this magic to prevent ILuaObject being converted to functions then nil.
-			final ObjectCell cell = new ObjectCell();
-			luaContext.executeMainThreadTask(new ILuaTask() {
-				@Override
-				public Object[] execute() throws LuaException {
-					cell.value = doCallMethod(method, context, args);
-					return null;
-				}
-			});
-			return cell.value;
-		} else {
-			return doCallMethod(method, context, args);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
-	private static Object[] doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
+	protected static MethodResult doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
 		try {
-			return method.apply(context.bake(), args);
+			return method.apply(context, args);
 		} catch (LuaException e) {
 			throw e;
 		} catch (Throwable e) {
 			DebugLogger.error("Unexpected error calling " + method.getName(), e);
 			throw new LuaException("Java Exception Thrown: " + e.toString());
+		}
+	}
+
+	private static class Task implements ILuaTask {
+		public Object[] returnValue;
+		private int remaining;
+		private Callable<MethodResult> callback;
+
+		public Task(MethodResult result) {
+			setup(result);
+		}
+
+		private void setup(MethodResult result) {
+			if (result.isFinal()) {
+				returnValue = result.getResult();
+			} else {
+				remaining = result.getDelay();
+				callback = result.getCallback();
+			}
+		}
+
+		@Override
+		public Object[] execute() throws LuaException {
+			if (remaining == 0) {
+				remaining--;
+				try {
+					setup(callback.call());
+				} catch (LuaException e) {
+					throw e;
+				} catch (Throwable e) {
+					DebugLogger.error("Unexpected error", e);
+					throw new LuaException("Java Exception Thrown: " + e.toString());
+				}
+			} else {
+				remaining--;
+			}
+			return null;
+		}
+
+		public boolean done() {
+			return remaining < 0;
+		}
+	}
+
+	protected static Object[] unwrap(MethodResult result, IComputerAccess access, ILuaContext context) throws LuaException, InterruptedException {
+		if (result.isFinal()) {
+			return result.getResult();
+		} else {
+			if (access == null) {
+				// This is a horrible hack. As we don't have a computer access, we cannot queue events.
+				// Instead we issue a task n number of times until everything has executed.
+				Task task = new Task(result);
+				while (!task.done()) {
+					context.executeMainThreadTask(task);
+				}
+				return task.returnValue;
+			} else {
+				return TaskHandler.addTask(access, context, result.getCallback(), result.getDelay());
+			}
 		}
 	}
 }

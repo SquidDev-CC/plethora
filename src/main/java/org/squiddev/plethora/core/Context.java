@@ -1,11 +1,18 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
+import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+
+import static org.squiddev.plethora.core.UnbakedContext.arrayCopy;
 
 public class Context<T> implements IContext<T> {
 	private final IUnbakedContext<T> parent;
@@ -56,6 +63,7 @@ public class Context<T> implements IContext<T> {
 	@Nonnull
 	@Override
 	public <U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context) {
+		Preconditions.checkNotNull(parent, "This is not a fully fleshed context");
 		return parent.makeChild(target, context);
 	}
 
@@ -76,10 +84,16 @@ public class Context<T> implements IContext<T> {
 	@Nonnull
 	@Override
 	public IUnbakedContext<T> withContext(@Nonnull IReference<?>... context) {
+		Preconditions.checkNotNull(parent, "This is not a fully fleshed context");
 		return parent.withContext(context);
 	}
 
-	private static void arrayCopy(Object[] src, Object[] to, int start) {
-		System.arraycopy(src, 0, to, start, src.length);
+	@Nonnull
+	@Override
+	public ILuaObject getObject() {
+		Preconditions.checkNotNull(parent, "This is not a fully fleshed context");
+
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(parent, this);
+		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond(), getContext(IComputerAccess.class));
 	}
 }

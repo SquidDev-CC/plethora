@@ -6,23 +6,24 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 
 import java.util.List;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
- * Wrapper that packages environment
+ * Handles integration with a {@link IPeripheral}
  */
-public class PeripheralMethodWrapper extends MethodWrapper implements IPeripheral {
+public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral {
 	private final Object owner;
 	private final String type;
 
-	public PeripheralMethodWrapper(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
 		this(owner.getClass().getCanonicalName(), owner, methods, contexts);
 	}
 
-	public PeripheralMethodWrapper(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
 		super(methods, contexts);
 		this.owner = owner;
 		this.type = name;
@@ -35,7 +36,10 @@ public class PeripheralMethodWrapper extends MethodWrapper implements IPeriphera
 
 	@Override
 	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		return callMethod(getContext(method).withContext(id(access), id(luaContext)), luaContext, getMethod(method), args);
+		IUnbakedContext context = getContext(method).withContext(id(access), id(luaContext));
+		MethodResult result = doCallMethod(getMethod(method), context, args);
+
+		return unwrap(result, access, luaContext);
 	}
 
 	@Override
@@ -49,8 +53,8 @@ public class PeripheralMethodWrapper extends MethodWrapper implements IPeriphera
 	@Override
 	public boolean equals(IPeripheral other) {
 		if (this == other) return true;
-		if (other == null || !(other instanceof PeripheralMethodWrapper)) return false;
+		if (other == null || !(other instanceof MethodWrapperPeripheral)) return false;
 
-		return owner == ((PeripheralMethodWrapper) other).owner;
+		return owner == ((MethodWrapperPeripheral) other).owner;
 	}
 }

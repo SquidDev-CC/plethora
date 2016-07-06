@@ -14,7 +14,7 @@ import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleItem;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.MethodRegistry;
-import org.squiddev.plethora.core.PeripheralMethodWrapper;
+import org.squiddev.plethora.core.MethodWrapperPeripheral;
 import org.squiddev.plethora.core.UnbakedContext;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
@@ -69,9 +69,9 @@ public final class NeuralHelpers {
 			}
 		}, contextData);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context);
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {
-			return new PeripheralMethodWrapper(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
+			return new MethodWrapperPeripheral(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {
 			return null;
 		}

@@ -1,6 +1,6 @@
 package org.squiddev.plethora.api.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
+import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,11 +38,13 @@ public interface IMethodRegistry {
 	List<IMethod<?>> getMethods(@Nonnull Class<?> target);
 
 	/**
-	 * Get a lua object for an object
+	 * Build a context
 	 *
-	 * @param context The context to execute under
-	 * @return The build Lua object
+	 * @param target  The object to target
+	 * @param context Additional context items
+	 * @return The built context
 	 */
 	@Nonnull
-	ILuaObject getObject(@Nonnull IUnbakedContext<?> context);
+	<T> IUnbakedContext<T> makeContext(IReference<T> target, IReference<?>... context);
+
 }

@@ -56,7 +56,9 @@ public final class MetaRegistry implements IMetaRegistry {
 
 		HashMap<Object, Object> out = Maps.newHashMap();
 
-		for (Object child : ConverterRegistry.instance.convertAll(object)) {
+		List<?> objects = ConverterRegistry.instance.convertAll(object);
+		Collections.reverse(objects);
+		for (Object child : objects) {
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
 				out.putAll(provider.getMeta(child));
 			}
