@@ -1,6 +1,9 @@
 package org.squiddev.plethora.gameplay.client;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockOre;
+import net.minecraft.block.BlockRedstoneOre;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -9,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -17,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
@@ -25,7 +30,9 @@ import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SCANNER_RADIUS;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
@@ -34,8 +41,40 @@ import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
  * Renders overlays for various modules
  */
 public class RenderOverlay extends Module implements IClientModule {
-	public static ResourceLocation TEXTURE = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/misc/flare.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/misc/flare.png");
+
 	private int ticks;
+
+	private static final class BlockStack {
+		public final Block block;
+		public final int meta;
+
+		private BlockStack(Block block, int meta) {
+			this.block = block;
+			this.meta = meta;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof BlockStack)) return false;
+
+			BlockStack that = (BlockStack) o;
+
+			if (meta != that.meta) return false;
+			return block.equals(that.block);
+
+		}
+
+		@Override
+		public int hashCode() {
+			int result = block.hashCode();
+			result = 31 * result + meta;
+			return result;
+		}
+	}
+
+	private static final Map<BlockStack, Boolean> oreBlockCache = new HashMap<BlockStack, Boolean>();
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -101,12 +140,11 @@ public class RenderOverlay extends Module implements IClientModule {
 					for (int oX = x - SCANNER_RADIUS; oX <= x + SCANNER_RADIUS; oX++) {
 						for (int oY = y - SCANNER_RADIUS; oY <= y + SCANNER_RADIUS; oY++) {
 							for (int oZ = z - SCANNER_RADIUS; oZ <= z + SCANNER_RADIUS; oZ++) {
-								Block block = world.getBlockState(new BlockPos(oX, oY, oZ)).getBlock();
-								String name = block.getRegistryName();
+								IBlockState state = world.getBlockState(new BlockPos(oX, oY, oZ));
+								Block block = state.getBlock();
 
-								// Nobody said it was decent
-								if (name.contains("ore")) {
-									renderFlare(oX + 0.5, oY + 0.5, oZ + 0.5, name.hashCode(), renderManager);
+								if (isBlockOre(block, block.getMetaFromState(state))) {
+									renderFlare(oX + 0.5, oY + 0.5, oZ + 0.5, block.getRegistryName().hashCode(), renderManager);
 								}
 							}
 						}
@@ -121,6 +159,36 @@ public class RenderOverlay extends Module implements IClientModule {
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
 		}
+	}
+
+	public static boolean isBlockOre(Block block, int meta) {
+		if (block == null) {
+			return false;
+		}
+
+		if (block instanceof BlockOre || block instanceof BlockRedstoneOre) {
+			return true;
+		}
+
+		if (Item.getItemFromBlock(block) == null) {
+			return false;
+		}
+
+		BlockStack type = new BlockStack(block, meta);
+		Boolean cached = oreBlockCache.get(type);
+		if (cached != null) return cached;
+
+		ItemStack stack = new ItemStack(block, meta);
+		for (int id : OreDictionary.getOreIDs(stack)) {
+			String oreName = OreDictionary.getOreName(id);
+			if (oreName.contains("ore")) {
+				oreBlockCache.put(type, true);
+				return true;
+			}
+		}
+
+		oreBlockCache.put(type, false);
+		return false;
 	}
 
 	@SideOnly(Side.CLIENT)

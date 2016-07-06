@@ -47,7 +47,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 	@SideOnly(Side.CLIENT)
 	private void inject(Render<?> render, float dx, float dy, float dz) {
 		if (render instanceof RenderLiving<?>) {
-			RenderLiving living = (RenderLiving) render;
+			RenderLiving<?> living = (RenderLiving) render;
 			ModelRenderer head = getHead(living.getMainModel());
 			if (head != null) {
 				living.addLayer(new LayerInterface(head, dx, dy, dz));

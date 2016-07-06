@@ -65,3 +65,9 @@ processResources {
 		exclude 'mcmod.info'
 	}
 }
+
+gradle.projectsEvaluated {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes"
+	}
+}
