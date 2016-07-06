@@ -67,14 +67,24 @@ public final class ItemComputerHandler {
 	}
 
 	public static void setEntity(ItemStack stack, ServerComputer computer, Entity owner) {
-		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
-			computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, owner));
-		}
-
 		NBTTagCompound tag = getTag(stack);
-		tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
-		tag.setLong(ENTITY_MOST, owner.getPersistentID().getLeastSignificantBits());
+		if (owner == null || !owner.isEntityAlive()) {
+			// Clear entity if it isn't there
+			tag.removeTag(ENTITY_LEAST);
+			tag.removeTag(ENTITY_MOST);
+
+			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
+				computer.setPeripheral(slot, null);
+			}
+		} else {
+			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
+				computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, owner));
+			}
+
+			tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
+			tag.setLong(ENTITY_MOST, owner.getPersistentID().getLeastSignificantBits());
+		}
 		tag.setByte(DIRTY, (byte) 0);
 	}
 
