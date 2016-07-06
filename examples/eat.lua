@@ -1,8 +1,8 @@
 --- Attempts to keep the player fully fed
 -- Requires sensor and introspection modules
 
-local sensor = assert(peripheral.find("plethora:moduleSensor"), "Cannot find sensor")
-local me = assert(peripheral.find("plethora:moduleIntrospection"), "Cannot find introspection")
+local sensor = assert(peripheral.find("plethora:sensor"), "Cannot find sensor")
+local me = assert(peripheral.find("plethora:introspection"), "Cannot find introspection")
 
 -- Get basic details about the player
 local id = me.getID()

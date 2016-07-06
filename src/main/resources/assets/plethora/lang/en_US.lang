@@ -4,6 +4,10 @@ item.plethora.module.moduleIntrospection.desc=Wraps your inventory as a peripher
 item.plethora.module.moduleLaser.name=Frickin' laser beam
 item.plethora.module.moduleLaser.desc=It fires lasers. 'nough said
 
+death.attack.laser=%1$s was vapourised by %2$s
+death.attack.laser.item=%1$s was vapourised by %2$s using %3$s
+entity.Plethora.laser.name=Laser
+
 item.plethora.module.moduleScanner.name=Block Scanner
 item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity
 
@@ -17,7 +21,7 @@ item.plethora.module.unknown.name=Unknown module
 item.plethora.module.unknown.desc=What did you break this time?
 
 tile.plethora.manipulator.name=Manipulator
-tile.plethora.manipulator.desc=Allows using a module from a computer
+tile.plethora.manipulator.desc=Used to interface with modules from a computer
 
 item.plethora.neuralConnector.name=Neural Connector
 item.plethora.neuralConnector.desc=Used to connect to Neural Interfaces

@@ -1,7 +1,7 @@
 -- Finds hostile mobs and fires lasers at them
 
-local laser = assert(peripheral.find("plethora:moduleLaser"), "Cannot find laser")
-local sensor = assert(peripheral.find("plethora:moduleSensor"), "Cannot find sensor")
+local laser = assert(peripheral.find("plethora:laser"), "Cannot find laser")
+local sensor = assert(peripheral.find("plethora:sensor"), "Cannot find sensor")
 
 local maxTicks = 10
 local laserSpeed = 1.5
