@@ -28,6 +28,14 @@ minecraft {
 	replace '${cc_version}', project.cc_version
 }
 
+jar {
+	manifest {
+		attributes(
+			'FMLAT': 'Plethora_at.cfg',
+		)
+	}
+}
+
 repositories {
 	jcenter()
 	maven { url "http://dvs1.progwml6.com/files/maven" }
