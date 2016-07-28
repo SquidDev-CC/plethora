@@ -1,15 +1,17 @@
 package org.squiddev.plethora.core;
 
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -112,6 +114,8 @@ public class TaskHandler {
 	}
 
 	private static final class LuaTask {
+		private static final Set<Class<?>> badClasses = Collections.newSetFromMap(new WeakHashMap<Class<?>, Boolean>());
+
 		public int remaining;
 
 		private final IComputerAccess access;
@@ -136,6 +140,11 @@ public class TaskHandler {
 		public boolean execute() {
 			try {
 				MethodResult result = task.call();
+				if (result == null) {
+					reportClass(task.getClass());
+					result = MethodResult.empty();
+				}
+
 				if (result.isFinal()) {
 					// We've finished this task. Queue an event and store the return values
 					returnValues = result.getResult();
@@ -154,6 +163,23 @@ public class TaskHandler {
 				DebugLogger.error("Error in task: ", e);
 				yieldFailure("Java Exception Thrown: " + e.toString());
 				return true;
+			}
+		}
+
+		private static void reportClass(Class<?> klass) {
+			if (badClasses.add(klass)) {
+				String message = "Task " + klass.getName() + " returned null. Use MethodResult.empty() instead.";
+				File file = Helpers.getContainingJar(klass);
+				if (file != null) {
+					Set<String> mods = Helpers.getContainingMods(file);
+					if (mods.size() > 0) {
+						message += " From mod(s) " + Joiner.on(", ").join(mods);
+					} else {
+						message += " In file " + file.getAbsolutePath();
+					}
+				}
+
+				DebugLogger.warn(message);
 			}
 		}
 	}

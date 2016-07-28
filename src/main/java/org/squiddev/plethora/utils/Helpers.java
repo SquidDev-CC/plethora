@@ -1,5 +1,6 @@
 package org.squiddev.plethora.utils;
 
+import com.google.common.collect.Sets;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
@@ -12,13 +13,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Helper methods for various things
@@ -148,5 +155,42 @@ public class Helpers {
 			mesher = Helpers.mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
 		}
 		return mesher;
+	}
+
+	public static Set<String> getContainingMods(File file) {
+		Set<String> modIds = Sets.newHashSet();
+
+		for (ModContainer container : Loader.instance().getModList()) {
+			if (container.getSource().equals(file)) {
+				modIds.add(container.getModId());
+			}
+		}
+
+		return modIds;
+	}
+
+	public static File getContainingJar(Class<?> klass) {
+		String path = klass.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+		int bangIndex = path.indexOf("!");
+		if (bangIndex >= 0) {
+			path = path.substring(0, bangIndex);
+		}
+
+		URL url;
+		try {
+			url = new URL(path);
+		} catch (MalformedURLException ignored) {
+			return null;
+		}
+
+		File file;
+		try {
+			file = new File(url.toURI());
+		} catch (URISyntaxException ignored) {
+			file = new File(url.getPath());
+		}
+
+		return file;
 	}
 }
