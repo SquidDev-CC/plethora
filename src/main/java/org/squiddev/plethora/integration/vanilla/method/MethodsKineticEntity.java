@@ -55,7 +55,7 @@ public final class MethodsKineticEntity {
 					EntityLiving target = context.bake().getContext(EntityLiving.class);
 					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
 					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
-					return null;
+					return MethodResult.empty();
 				}
 			});
 		}

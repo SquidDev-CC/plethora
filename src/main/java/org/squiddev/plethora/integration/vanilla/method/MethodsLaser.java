@@ -77,7 +77,7 @@ public final class MethodsLaser {
 
 					location.getWorld().spawnEntityInWorld(laser);
 
-					return null;
+					return MethodResult.empty();
 				}
 			});
 		}

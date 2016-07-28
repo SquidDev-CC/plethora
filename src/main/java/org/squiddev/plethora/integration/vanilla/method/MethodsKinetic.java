@@ -47,7 +47,7 @@ public final class MethodsKinetic {
 
 					launch(entity, yaw, pitch, power);
 
-					return null;
+					return MethodResult.empty();
 				}
 			});
 		}
