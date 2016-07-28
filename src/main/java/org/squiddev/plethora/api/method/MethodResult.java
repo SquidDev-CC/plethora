@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import java.util.concurrent.Callable;
 
 /**
- * The returnValue of a method
+ * The result of a method
  */
 public final class MethodResult {
 	private static final MethodResult empty = new MethodResult(null);
@@ -52,7 +52,7 @@ public final class MethodResult {
 	 * Defer a function until next tick
 	 *
 	 * @param next The callback to execute
-	 * @return The built method returnValue
+	 * @return The built MethodResult
 	 * @see #nextTick(Runnable)
 	 */
 	public static MethodResult nextTick(Callable<MethodResult> next) {
@@ -63,7 +63,7 @@ public final class MethodResult {
 	 * Defer a function until next tick
 	 *
 	 * @param next The callback to execute
-	 * @return The built method returnValue
+	 * @return The built MethodResult
 	 * @see #nextTick(Callable)
 	 */
 	public static MethodResult nextTick(Runnable next) {
@@ -75,7 +75,7 @@ public final class MethodResult {
 	 *
 	 * @param delay The number of ticks to sit idle before executing. 0 will result in the method being executed next tick.
 	 * @param next  The callback to execute
-	 * @return The built method returnValue
+	 * @return The built MethodResult
 	 * @see #delayed(int, Runnable)
 	 */
 	public static MethodResult delayed(int delay, Callable<MethodResult> next) {
@@ -87,7 +87,7 @@ public final class MethodResult {
 	 *
 	 * @param delay The number of ticks to sit idle before executing. 0 will result in the method being executed n
 	 * @param next  The callback to execute
-	 * @return The built method returnValue
+	 * @return The built MethodResult
 	 * @see #delayed(int, Callable)
 	 */
 	public static MethodResult delayed(int delay, Runnable next) {
@@ -95,19 +95,29 @@ public final class MethodResult {
 	}
 
 	/**
-	 * Get a final method returnValue
+	 * Get a final method MethodResult
 	 *
 	 * @param args The arguments to return
-	 * @return The built method returnValue
+	 * @return The built MethodResult
 	 */
 	public static MethodResult result(Object... args) {
 		return new MethodResult(args);
 	}
 
 	/**
-	 * Get a final method returnValue with no values
+	 * Get a final MethodResult representing a failure
 	 *
-	 * @return An empty method returnValue
+	 * @param message The failure message
+	 * @return The built MethodResult
+	 */
+	public static MethodResult failure(String message) {
+		return new MethodResult(new Object[]{false, message});
+	}
+
+	/**
+	 * Get a final MethodResult with no values
+	 *
+	 * @return An empty MethodResult
 	 */
 	public static MethodResult empty() {
 		return empty;
