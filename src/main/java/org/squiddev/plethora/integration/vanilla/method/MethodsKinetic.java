@@ -5,10 +5,7 @@ import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.Method;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
@@ -19,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
-import static org.squiddev.plethora.gameplay.modules.ItemModule.KINETIC_LAUNCH_MAX;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.kineticLaunchMax;
 
 public final class MethodsKinetic {
 	@Method(IModule.class)
@@ -35,7 +32,7 @@ public final class MethodsKinetic {
 			final float pitch = (float) getNumber(args, 1);
 			final float power = (float) getNumber(args, 2);
 
-			if (power < 0 || power > KINETIC_LAUNCH_MAX) throw new LuaException("Power out of range");
+			ArgumentHelper.assertBetween(power, 0, kineticLaunchMax, "Power out of range (%s).");
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override

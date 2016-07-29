@@ -40,6 +40,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.*;
+
 public final class ItemModule extends ItemBase implements IModuleItem {
 	public static final String INTROSPECTION = "moduleIntrospection";
 	public static final String LASER = "moduleLaser";
@@ -55,16 +57,8 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	private static final int MODULES = 5;
 
-	public static final int SCANNER_RADIUS = 8;
-	public static final int SENSOR_RADIUS = 16;
-
 	private static final int MAX_TICKS = 72000;
 	private static final int USE_TICKS = 30;
-
-	public static final float LASER_MAX_DAMAGE = 5;
-	public static final float LASER_MIN_DAMAGE = 0.5f;
-
-	public static final int KINETIC_LAUNCH_MAX = 4;
 
 	/**
 	 * We multiply the gaussian by this number.
@@ -147,15 +141,15 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 		switch (stack.getItemDamage()) {
 			case LASER_ID: {
-				float potency = (ticks / USE_TICKS) * (LASER_MAX_DAMAGE - LASER_MIN_DAMAGE) + LASER_MIN_DAMAGE;
-				float inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
+				double potency = (ticks / USE_TICKS) * (laserMaximum - laserMinimum) + laserMaximum;
+				double inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
 
-				world.spawnEntityInWorld(new EntityLaser(world, player, inaccuracy, potency));
+				world.spawnEntityInWorld(new EntityLaser(world, player, (float) inaccuracy, (float) potency));
 				break;
 			}
 			case KINETIC_ID: {
 				if (player.isAirBorne) return;
-				MethodsKinetic.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * KINETIC_LAUNCH_MAX);
+				MethodsKinetic.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * kineticLaunchMax);
 				break;
 			}
 			default:

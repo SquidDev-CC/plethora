@@ -101,11 +101,20 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
+		top:
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(MetaProvider.class.getCanonicalName())) {
+			String name = asmData.getClassName();
 			try {
-				DebugLogger.debug("Registering " + asmData.getClassName());
+				for (String prefix : ConfigCore.Blacklist.blacklistMeta) {
+					if (name.startsWith(prefix)) {
+						DebugLogger.debug("Ignoring " + name + " due to blacklist " + prefix);
+						continue top;
+					}
+				}
 
-				Class<?> asmClass = Class.forName(asmData.getClassName());
+				DebugLogger.debug("Registering " + name);
+
+				Class<?> asmClass = Class.forName(name);
 				Map<String, Object> info = asmData.getAnnotationInfo();
 
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
@@ -118,11 +127,11 @@ public final class MetaRegistry implements IMetaRegistry {
 					registerMetaProvider(target, namespace, instance);
 				}
 			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			}
 		}
 	}

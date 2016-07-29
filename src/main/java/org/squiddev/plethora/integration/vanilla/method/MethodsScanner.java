@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
-import static org.squiddev.plethora.gameplay.modules.ItemModule.SCANNER_RADIUS;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.scannerRadius;
 
 public final class MethodsScanner {
 	@Method(IModule.class)
@@ -43,9 +43,9 @@ public final class MethodsScanner {
 
 			int i = 0;
 			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (int oX = x - SCANNER_RADIUS; oX <= x + SCANNER_RADIUS; oX++) {
-				for (int oY = y - SCANNER_RADIUS; oY <= y + SCANNER_RADIUS; oY++) {
-					for (int oZ = z - SCANNER_RADIUS; oZ <= z + SCANNER_RADIUS; oZ++) {
+			for (int oX = x - scannerRadius; oX <= x + scannerRadius; oX++) {
+				for (int oY = y - scannerRadius; oY <= y + scannerRadius; oY++) {
+					for (int oZ = z - scannerRadius; oZ <= z + scannerRadius; oZ++) {
 						BlockPos newPos = new BlockPos(oX, oY, oZ);
 						IBlockState block = world.getBlockState(newPos);
 
@@ -103,14 +103,14 @@ public final class MethodsScanner {
 	}
 
 	private static void validatePosition(int x, int y, int z) throws LuaException {
-		if (x < -SCANNER_RADIUS || x > SCANNER_RADIUS) {
-			throw new LuaException("X coordinate out of bounds (+-" + SCANNER_RADIUS + ")");
+		if (x < -scannerRadius || x > scannerRadius) {
+			throw new LuaException("X coordinate out of bounds (+-" + scannerRadius + ")");
 		}
-		if (y < -SCANNER_RADIUS || y > SCANNER_RADIUS) {
-			throw new LuaException("Y coordinate out of bounds (+-" + SCANNER_RADIUS + ")");
+		if (y < -scannerRadius || y > scannerRadius) {
+			throw new LuaException("Y coordinate out of bounds (+-" + scannerRadius + ")");
 		}
-		if (z < -SCANNER_RADIUS || z > SCANNER_RADIUS) {
-			throw new LuaException("Z coordinate out of bounds (+-" + SCANNER_RADIUS + ")");
+		if (z < -scannerRadius || z > scannerRadius) {
+			throw new LuaException("Z coordinate out of bounds (+-" + scannerRadius + ")");
 		}
 	}
 }

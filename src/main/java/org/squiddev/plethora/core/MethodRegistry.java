@@ -132,9 +132,18 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
+		top:
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getCanonicalName())) {
+			String name = asmData.getClassName();
 			try {
-				DebugLogger.debug("Registering " + asmData.getClassName());
+				for (String prefix : ConfigCore.Blacklist.blacklistMethods) {
+					if (name.startsWith(prefix)) {
+						DebugLogger.debug("Ignoring " + name + " due to blacklist " + prefix);
+						continue top;
+					}
+				}
+
+				DebugLogger.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(asmData.getClassName());
 				Map<String, Object> info = asmData.getAnnotationInfo();
@@ -144,11 +153,11 @@ public final class MethodRegistry implements IMethodRegistry {
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				registerMethod(target, instance);
 			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: " + asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			}
 		}
 	}

@@ -26,6 +26,11 @@ public class PeripheralProvider implements IPeripheralProvider {
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
+			String name = te.getClass().getName();
+			for (String prefix : ConfigCore.Blacklist.blacklistTileEntities) {
+				if (name.startsWith(prefix)) return null;
+			}
+
 			MethodRegistry registry = MethodRegistry.instance;
 
 			ICostHandler handler = registry.getCostHandler(te);

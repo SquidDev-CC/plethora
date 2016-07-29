@@ -1,3 +1,4 @@
+# Modules
 item.plethora.module.moduleIntrospection.name=Introspection Module
 item.plethora.module.moduleIntrospection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
 
@@ -23,10 +24,31 @@ item.plethora.module.unknown.desc=What did you break this time?
 tile.plethora.manipulator.name=Manipulator
 tile.plethora.manipulator.desc=Used to interface with modules from a computer
 
+# Neural interface/connector
 item.plethora.neuralConnector.name=Neural Connector
 item.plethora.neuralConnector.desc=Used to connect to Neural Interfaces
 
 item.plethora.neuralInterface.name=Neural Interface
 item.plethora.neuralInterface.desc=Goes in your helmet slot. Connect with the neural connector.
 
+# Creative tab
 itemGroup.plethora=Plethora
+
+# Core config
+gui.config.plethora.costsystem=Cost System
+gui.config.plethora.costsystem.initial=Initial level
+gui.config.plethora.costsystem.regen=Regen
+gui.config.plethora.costsystem.limit=Limit
+gui.config.plethora.blacklist=Blacklist
+gui.config.plethora.blacklist.blacklistMethods=Blacklisted methods
+gui.config.plethora.blacklist.blacklistMeta=Blacklisted meta providers
+gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
+
+# Gameplay config
+gui.config.plethora.modules=Modules
+gui.config.plethora.modules.laserMinimum=Laser minimum
+gui.config.plethora.modules.laserMaximum=Laser maximum
+gui.config.plethora.modules.laserCost=Laser cost
+gui.config.plethora.modules.kineticLaunchMax=Kinetic launch max
+gui.config.plethora.modules.scannerRadius=Scanner radius
+gui.config.plethora.modules.sensorRadius=Sensor radius

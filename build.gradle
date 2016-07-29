@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply from: 'gradle/scripts/jsonGen.gradle'
 
 version = mc_version + "-" + mod_version
-group= "org.squiddev"
+group = "org.squiddev"
 archivesBaseName = "plethora"
 
 minecraft {
@@ -34,17 +34,22 @@ jar {
 			'FMLAT': 'Plethora_at.cfg',
 		)
 	}
+
+	exclude "**/*.java"
 }
 
 repositories {
 	jcenter()
 	maven { url "http://dvs1.progwml6.com/files/maven" }
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2291/384/[module][revision](.[ext])" }
+	maven { url = "https://dl.bintray.com/squiddev/maven" }
 }
 
 dependencies {
 	compile "ComputerCraft:ComputerCraft:${project.cc_version}"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:2.28.9.177"
+
+	provided('org.squiddev:ConfigGen:1.2.4') { exclude group: 'net.minecraftforge' }
 }
 
 processResources {

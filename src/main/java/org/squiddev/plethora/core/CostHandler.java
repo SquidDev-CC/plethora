@@ -41,7 +41,7 @@ public final class CostHandler implements ICostHandler {
 	}
 
 	public CostHandler() {
-		this(100, 10, 100);
+		this(ConfigCore.CostSystem.initial, ConfigCore.CostSystem.regen, ConfigCore.CostSystem.limit);
 	}
 
 	@Override

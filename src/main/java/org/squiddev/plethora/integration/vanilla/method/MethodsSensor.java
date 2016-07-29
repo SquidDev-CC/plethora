@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
-import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.sensorRadius;
 
 public final class MethodsSensor {
 	@Method(IModule.class)
@@ -109,8 +109,8 @@ public final class MethodsSensor {
 	private static AxisAlignedBB getBox(BlockPos pos) {
 		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 		return new AxisAlignedBB(
-			x - SENSOR_RADIUS, y - SENSOR_RADIUS, z - SENSOR_RADIUS,
-			x + SENSOR_RADIUS, y + SENSOR_RADIUS, z + SENSOR_RADIUS
+			x - sensorRadius, y - sensorRadius, z - sensorRadius,
+			x + sensorRadius, y + sensorRadius, z + sensorRadius
 		);
 	}
 

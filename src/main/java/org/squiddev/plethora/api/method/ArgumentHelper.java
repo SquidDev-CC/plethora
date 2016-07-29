@@ -132,4 +132,16 @@ public final class ArgumentHelper {
 			throw badArgument(value, index, "table");
 		}
 	}
+
+	public static void assertBetween(double value, double min, double max, String message) throws LuaException {
+		if (value < min || value > max) {
+			throw new LuaException(String.format("%s", "between " + min + " and " + max));
+		}
+	}
+
+	public static void assertBetween(int value, int min, int max, String message) throws LuaException {
+		if (value < min || value > max) {
+			throw new LuaException(String.format("%s", "between " + min + " and " + max));
+		}
+	}
 }

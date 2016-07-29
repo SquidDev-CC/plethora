@@ -8,12 +8,17 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.gameplay.modules.*;
+import org.squiddev.plethora.gameplay.modules.BlockManipulator;
+import org.squiddev.plethora.gameplay.modules.EntityLaser;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.gameplay.modules.TileManipulator;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMaximum;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMinimum;
 
 public final class MethodsLaser {
 	@Method(IModule.class)
@@ -29,9 +34,7 @@ public final class MethodsLaser {
 			final double pitch = getNumber(args, 1);
 			final float potency = (float) getNumber(args, 2);
 
-			if (potency < ItemModule.LASER_MIN_DAMAGE || potency > ItemModule.LASER_MAX_DAMAGE) {
-				throw new LuaException("Potency out of range (between " + ItemModule.LASER_MIN_DAMAGE + " and " + ItemModule.LASER_MAX_DAMAGE + ")");
-			}
+			ArgumentHelper.assertBetween(potency, laserMinimum, laserMaximum, "Potency out of range (%s).");
 
 			CostHelpers.checkCost(unbaked.getCostHandler(), potency * 10);
 
