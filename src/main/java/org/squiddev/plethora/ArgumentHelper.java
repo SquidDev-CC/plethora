@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public final class ArgumentHelper {
 	private ArgumentHelper() {
-		throw new IllegalStateException("Cannot create ArgumentHelper");
+		throw new IllegalStateException("Cannot instantiate singleton " + getClass().getName());
 	}
 
 	public static String getType(Object type) {

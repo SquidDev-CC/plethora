@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
@@ -19,9 +20,11 @@ import java.util.List;
 public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<T> target;
 	private final IReference<?>[] context;
+	private final ICostHandler handler;
 
-	public UnbakedContext(IReference<T> target, IReference<?>... context) {
+	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>... context) {
 		this.target = target;
+		this.handler = handler;
 		this.context = context;
 	}
 
@@ -35,7 +38,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			baked[i] = context[i].get();
 		}
 
-		return new Context<T>(this, value, baked);
+		return new Context<T>(this, value, handler, baked);
 	}
 
 	@Nonnull
@@ -49,7 +52,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new UnbakedContext<U>(newTarget, wholeContext);
+		return new UnbakedContext<U>(newTarget, handler, wholeContext);
 	}
 
 	@Nonnull
@@ -61,7 +64,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(newContext, wholeContext, 0);
 		arrayCopy(context, wholeContext, newContext.length);
 
-		return new UnbakedContext<T>(target, wholeContext);
+		return new UnbakedContext<T>(target, handler, wholeContext);
 	}
 
 	@Nonnull
@@ -71,6 +74,12 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(this, baked);
 
 		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond(), baked.getContext(IComputerAccess.class));
+	}
+
+	@Nonnull
+	@Override
+	public ICostHandler getCostHandler() {
+		return handler;
 	}
 
 	public static void arrayCopy(Object[] src, Object[] to, int start) {

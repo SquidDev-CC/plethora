@@ -26,6 +26,7 @@ public class PlethoraCore {
 		MetaRegistry.instance.loadAsm(event.getAsmData());
 		MethodRegistry.instance.loadAsm(event.getAsmData());
 		ConverterRegistry.instance.loadAsm(event.getAsmData());
+		CostHandler.register();
 
 		MinecraftForge.EVENT_BUS.register(this);
 	}
@@ -53,6 +54,7 @@ public class PlethoraCore {
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			TaskHandler.update();
+			CostHandler.update();
 		}
 	}
 }

@@ -5,10 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.Method;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.*;
@@ -32,13 +29,15 @@ public final class MethodsLaser {
 			final double pitch = getNumber(args, 1);
 			final float potency = (float) getNumber(args, 2);
 
-			if (potency < 0 || potency > ItemModule.LASER_MAX_DAMAGE) throw new LuaException("Potency out of range");
+			if (potency < ItemModule.LASER_MIN_DAMAGE || potency > ItemModule.LASER_MAX_DAMAGE) {
+				throw new LuaException("Potency out of range (between " + ItemModule.LASER_MIN_DAMAGE + " and " + ItemModule.LASER_MAX_DAMAGE + ")");
+			}
+
+			CostHelpers.checkCost(unbaked.getCostHandler(), potency * 10);
 
 			final double motionX = -Math.sin(yaw) * Math.cos(pitch);
 			final double motionZ = Math.cos(yaw) * Math.cos(pitch);
 			final double motionY = -Math.sin(pitch);
-
-			// TODO: Sleep after executing
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override

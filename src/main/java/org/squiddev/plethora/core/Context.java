@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
@@ -18,10 +19,12 @@ public class Context<T> implements IContext<T> {
 	private final IUnbakedContext<T> parent;
 	private final T target;
 	private final Object[] context;
+	private final ICostHandler handler;
 
-	public Context(IUnbakedContext<T> parent, T target, Object... context) {
+	public Context(IUnbakedContext<T> parent, T target, ICostHandler handler, Object... context) {
 		this.parent = parent;
 		this.target = target;
+		this.handler = handler;
 		this.context = context;
 	}
 
@@ -78,7 +81,7 @@ public class Context<T> implements IContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new Context<U>(null, newTarget, wholeContext);
+		return new Context<U>(null, newTarget, handler, wholeContext);
 	}
 
 	@Nonnull
@@ -95,5 +98,11 @@ public class Context<T> implements IContext<T> {
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(parent, this);
 		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond(), getContext(IComputerAccess.class));
+	}
+
+	@Nonnull
+	@Override
+	public ICostHandler getCostHandler() {
+		return handler;
 	}
 }

@@ -77,4 +77,12 @@ public interface IContext<T> {
 	 */
 	@Nonnull
 	ILuaObject getObject();
+
+	/**
+	 * Get the cost handler associated with this object.
+	 *
+	 * @return The cost handler
+	 */
+	@Nonnull
+	ICostHandler getCostHandler();
 }

@@ -9,6 +9,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 
@@ -25,10 +26,13 @@ public class PeripheralProvider implements IPeripheralProvider {
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			IUnbakedContext<TileEntity> context = new UnbakedContext<TileEntity>(tile(te), new WorldLocation(world, blockPos));
-			IContext<TileEntity> baked = new Context<TileEntity>(null, te, new WorldLocation(world, blockPos));
-			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
+			MethodRegistry registry = MethodRegistry.instance;
 
+			ICostHandler handler = registry.getCostHandler(te);
+			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, new WorldLocation(world, blockPos));
+			IContext<TileEntity> baked = new Context<TileEntity>(null, te, handler, new WorldLocation(world, blockPos));
+
+			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {
 				// TODO: Get registry name?
 				return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond());

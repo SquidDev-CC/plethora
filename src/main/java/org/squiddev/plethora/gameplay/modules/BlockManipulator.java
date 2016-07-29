@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
@@ -101,7 +102,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(new IReference<IModule>() {
+		IUnbakedContext<IModule> context = MethodRegistry.instance.makeContext(new IReference<IModule>() {
 			@Nonnull
 			@Override
 			public IModule get() throws LuaException {
@@ -110,7 +111,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 				}
 				return module;
 			}
-		}, contextData);
+		}, CostHelpers.getCostHandler(stack), contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {

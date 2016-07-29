@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.EntityWorldLocation;
+import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
@@ -58,7 +59,7 @@ public final class NeuralHelpers {
 		contextData[contextData.length - 2] = entity(owner);
 		contextData[contextData.length - 1] = new EntityWorldLocation(owner);
 
-		IUnbakedContext<IModule> context = new UnbakedContext<IModule>(new IReference<IModule>() {
+		IUnbakedContext<IModule> context = MethodRegistry.instance.makeContext(new IReference<IModule>() {
 			@Nonnull
 			@Override
 			public IModule get() throws LuaException {
@@ -67,7 +68,7 @@ public final class NeuralHelpers {
 				}
 				return module;
 			}
-		}, contextData);
+		}, CostHelpers.getCostHandler(stack), contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {

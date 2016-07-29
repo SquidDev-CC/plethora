@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.*;
@@ -86,8 +87,19 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public <T> IUnbakedContext<T> makeContext(IReference<T> target, IReference<?>... context) {
-		return new UnbakedContext<T>(target, context);
+	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<?>... context) {
+		Preconditions.checkNotNull(target, "target cannot be null");
+		Preconditions.checkNotNull(handler, "handler cannot be null");
+		Preconditions.checkNotNull(context, "context cannot be null");
+		return new UnbakedContext<T>(target, handler, context);
+	}
+
+	@Nonnull
+	@Override
+	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object) {
+		Preconditions.checkNotNull(object, "object cannot be null");
+		ICostHandler handler = object.getCapability(CostHandler.COST_HANDLER_CAPABILITY, null);
+		return handler != null ? handler : CostHandler.get(object);
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {

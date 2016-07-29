@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
-import org.squiddev.plethora.core.UnbakedContext;
+import org.squiddev.plethora.core.MethodRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -69,6 +69,10 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 	private static <T> ILuaObject wrap(EntityLivingBase entity, T object) {
 		if (object == null) return null;
 
-		return new UnbakedContext<T>(id(object), entity(entity)).getObject();
+		return MethodRegistry.instance.makeContext(
+			id(object),
+			MethodRegistry.instance.getCostHandler(entity),
+			entity(entity)
+		).getObject();
 	}
 }

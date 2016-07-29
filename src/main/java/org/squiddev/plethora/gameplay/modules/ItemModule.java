@@ -62,7 +62,7 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 	private static final int USE_TICKS = 30;
 
 	public static final float LASER_MAX_DAMAGE = 5;
-	private static final float LASER_MIN_DAMAGE = 1;
+	public static final float LASER_MIN_DAMAGE = 0.5f;
 
 	public static final int KINETIC_LAUNCH_MAX = 4;
 

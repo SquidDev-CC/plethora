@@ -47,4 +47,12 @@ public interface IUnbakedContext<T> {
 	 */
 	@Nonnull
 	ILuaObject getObject();
+
+	/**
+	 * Get the cost handler associated with this object
+	 *
+	 * @return The parent's cost handler
+	 */
+	@Nonnull
+	ICostHandler getCostHandler();
 }

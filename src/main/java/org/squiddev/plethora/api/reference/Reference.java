@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
  */
 public final class Reference {
 	private Reference() {
-		throw new IllegalStateException("Cannot create a Reference instance");
+		throw new IllegalStateException("Cannot instantiate singleton " + getClass().getName());
 	}
 
 	/**

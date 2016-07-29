@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -41,10 +42,19 @@ public interface IMethodRegistry {
 	 * Build a context
 	 *
 	 * @param target  The object to target
+	 * @param handler The cost handler for this object
 	 * @param context Additional context items
 	 * @return The built context
 	 */
 	@Nonnull
-	<T> IUnbakedContext<T> makeContext(IReference<T> target, IReference<?>... context);
+	<T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<?>... context);
 
+	/**
+	 * Get the cost handler for this object
+	 *
+	 * @param object The cost handler's owner
+	 * @return The associated cost handler
+	 */
+	@Nonnull
+	ICostHandler getCostHandler(@Nonnull ICapabilityProvider object);
 }
