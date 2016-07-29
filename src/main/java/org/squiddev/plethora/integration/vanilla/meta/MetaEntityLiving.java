@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.core.MethodRegistry;
 
 import javax.annotation.Nonnull;
@@ -71,7 +72,7 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 
 		return MethodRegistry.instance.makeContext(
 			id(object),
-			MethodRegistry.instance.getCostHandler(entity),
+			CostHelpers.getCostHandler(entity),
 			entity(entity)
 		).getObject();
 	}

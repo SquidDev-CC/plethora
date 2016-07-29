@@ -1,8 +1,9 @@
-package org.squiddev.plethora;
+package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -13,22 +14,34 @@ public final class ArgumentHelper {
 		throw new IllegalStateException("Cannot instantiate singleton " + getClass().getName());
 	}
 
-	public static String getType(Object type) {
+	@Nonnull
+	public static String getType(@Nullable Object type) {
 		if (type == null) return "nil";
 		if (type instanceof String) return "string";
 		if (type instanceof Boolean) return "boolean";
 		if (type instanceof Number) return "number";
 		if (type instanceof Map) return "table";
 
-		DebugLogger.debug("Unknown type of " + type.getClass());
-		return "unknown";
+		Class<?> klass = type.getClass();
+		if (klass.isArray()) {
+			StringBuilder name = new StringBuilder();
+			while (klass.isArray()) {
+				name.append("[]");
+				klass = klass.getComponentType();
+			}
+			name.insert(0, klass.getName());
+			return name.toString();
+		} else {
+			return klass.getName();
+		}
 	}
 
-	public static LuaException badArgument(Object object, int index, String expected) {
+	@Nonnull
+	public static LuaException badArgument(@Nullable Object object, int index, @Nonnull String expected) {
 		return new LuaException("Expected " + expected + " +  for argument " + (index + 1) + ", got " + getType(object));
 	}
 
-	public static double getNumber(Object[] args, int index) throws LuaException {
+	public static double getNumber(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof Number) {
 			return ((Number) value).doubleValue();
@@ -37,11 +50,11 @@ public final class ArgumentHelper {
 		}
 	}
 
-	public static int getInt(Object[] args, int index) throws LuaException {
+	public static int getInt(@Nonnull Object[] args, int index) throws LuaException {
 		return (int) getNumber(args, index);
 	}
 
-	public static boolean getBoolean(Object[] args, int index) throws LuaException {
+	public static boolean getBoolean(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof Boolean) {
 			return (Boolean) value;
@@ -50,7 +63,8 @@ public final class ArgumentHelper {
 		}
 	}
 
-	public static String getString(Object[] args, int index) throws LuaException {
+	@Nonnull
+	public static String getString(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof String) {
 			return (String) value;
@@ -60,7 +74,8 @@ public final class ArgumentHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<Object, Object> getTable(Object[] args, int index) throws LuaException {
+	@Nonnull
+	public static Map<Object, Object> getTable(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof Map) {
 			return (Map<Object, Object>) value;
@@ -69,7 +84,7 @@ public final class ArgumentHelper {
 		}
 	}
 
-	public static double optNumber(Object[] args, int index, double def) throws LuaException {
+	public static double optNumber(@Nonnull Object[] args, int index, double def) throws LuaException {
 		Object value = args.length < index ? args[index] : null;
 		if (value == null) {
 			return def;
@@ -80,11 +95,11 @@ public final class ArgumentHelper {
 		}
 	}
 
-	public static int optInt(Object[] args, int index, int def) throws LuaException {
+	public static int optInt(@Nonnull Object[] args, int index, int def) throws LuaException {
 		return (int) optNumber(args, index, def);
 	}
 
-	public static boolean optBoolean(Object[] args, int index, boolean def) throws LuaException {
+	public static boolean optBoolean(@Nonnull Object[] args, int index, boolean def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
 			return def;
@@ -95,7 +110,7 @@ public final class ArgumentHelper {
 		}
 	}
 
-	public static String optString(Object[] args, int index, String def) throws LuaException {
+	public static String optString(@Nonnull Object[] args, int index, String def) throws LuaException {
 		Object value = args.length < index ? args[index] : null;
 		if (value == null) {
 			return def;
@@ -107,7 +122,7 @@ public final class ArgumentHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<Object, Object> defaultTable(Object[] args, int index, Map<Object, Object> def) throws LuaException {
+	public static Map<Object, Object> defaultTable(@Nonnull Object[] args, int index, Map<Object, Object> def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
 			return def;

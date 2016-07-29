@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.KINETIC_LAUNCH_MAX;
 
 public final class MethodsKinetic {

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.ArgumentHelper.getString;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SENSOR_RADIUS;
 
 public final class MethodsSensor {

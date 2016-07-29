@@ -13,7 +13,7 @@ import org.squiddev.plethora.gameplay.modules.*;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
 
 public final class MethodsLaser {
 	@Method(IModule.class)

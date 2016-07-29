@@ -5,11 +5,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.network.NetHandlerPlayServer;
-import org.squiddev.plethora.ArgumentHelper;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.Method;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
@@ -19,7 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
 
 /**
  * Various methods for mobs

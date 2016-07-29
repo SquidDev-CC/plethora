@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.ArgumentHelper.getInt;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.modules.ItemModule.SCANNER_RADIUS;
 
 public final class MethodsScanner {
