@@ -308,11 +308,9 @@ public final class EntityLaser extends Entity implements IProjectile {
 		}
 
 		if (shooterPlayer != null) {
-			if (shooter == null) {
-				shooterPlayer.setPositionAndRotation(posX, posY, posZ, rotationYaw, rotationPitch);
-			} else {
-				shooterPlayer.setPositionAndRotation(shooter.posX, shooter.posY, shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
-			}
+			Entity from = shooter == null ? this : shooter;
+			shooterPlayer.worldObj = from.worldObj;
+			shooterPlayer.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 		}
 	}
 }

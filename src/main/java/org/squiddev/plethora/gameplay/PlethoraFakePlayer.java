@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import java.util.UUID;
 
 public class PlethoraFakePlayer extends FakePlayer {
-	private static final GameProfile profile = new GameProfile(UUID.fromString("ebcda071-3ef5-4f4a-849d-c078264010c4"), Plethora.ID);
+	private static final GameProfile profile = new GameProfile(UUID.fromString("ebcda071-3ef5-4f4a-849d-c078264010c4"), "[" + Plethora.ID + "]");
 
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
