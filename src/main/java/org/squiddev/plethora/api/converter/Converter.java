@@ -18,4 +18,13 @@ public @interface Converter {
 	 * @return The target class
 	 */
 	Class<?> value();
+
+	/**
+	 * Set if this converter depends on a mod
+	 *
+	 * @return The mod's id
+	 * @see net.minecraftforge.fml.common.Optional.Method
+	 * @see net.minecraftforge.fml.common.Optional.Interface
+	 */
+	String modId() default "";
 }

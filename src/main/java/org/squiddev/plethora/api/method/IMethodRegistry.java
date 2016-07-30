@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import com.google.common.collect.Multimap;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.reference.IReference;
 
@@ -37,6 +38,14 @@ public interface IMethodRegistry {
 	 */
 	@Nonnull
 	List<IMethod<?>> getMethods(@Nonnull Class<?> target);
+
+	/**
+	 * Group of all methods available
+	 *
+	 * @return All methods, grouped by their target class
+	 */
+	@Nonnull
+	Multimap<Class<?>, IMethod<?>> getMethods();
 
 	/**
 	 * Build a context

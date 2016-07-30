@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A Lua side method targeting a class
@@ -17,6 +18,25 @@ public interface IMethod<T> {
 	 */
 	@Nonnull
 	String getName();
+
+	/**
+	 * Get the doc string for this method.
+	 *
+	 * This can take several forms:
+	 *
+	 * - {@code Description of function}: A basic description with no types
+	 * - {@code function(arg1:type [, optionArg:type]):returnType -- Description of function}: Function with return type
+	 * - {@code function(arg1:type [, optionArg:type])->ret1:type [,optionRet1:type] -- Description of function}: Function with named return values
+	 *
+	 * Standard argument types are any, nil, string, number, integer, boolean and table.
+	 *
+	 * The function description can be multiple lines. The first line or sentence is read as a synopsis, with everything else being
+	 * considered additional detail.
+	 *
+	 * @return The doc string. This can be {@code null} if you don't want to include one.
+	 */
+	@Nullable
+	String getDocString();
 
 	/**
 	 * Get the priority of this provider

@@ -1,9 +1,6 @@
 package org.squiddev.plethora.core.collections;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public class SortedMultimap<K, V> {
 	private final Comparator<V> comparator;
@@ -34,5 +31,9 @@ public class SortedMultimap<K, V> {
 
 	public static <K, V> SortedMultimap<K, V> create(Comparator<V> comparator) {
 		return new SortedMultimap<K, V>(comparator);
+	}
+
+	public final Map<K, Collection<V>> items() {
+		return Collections.<K, Collection<V>>unmodifiableMap(items);
 	}
 }

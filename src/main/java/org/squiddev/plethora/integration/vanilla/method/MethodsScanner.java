@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.scannerRadius;
 
@@ -31,7 +32,7 @@ public final class MethodsScanner {
 	@Method(IModule.class)
 	public static final class MethodScanBlocks extends TargetedModuleObjectMethod<IWorldLocation> {
 		public MethodScanBlocks() {
-			super("scan", true, PlethoraModules.SCANNER, IWorldLocation.class);
+			super("scan", PlethoraModules.SCANNER, IWorldLocation.class, true, "function() -- Scan all blocks in the vicinity");
 		}
 
 		@Nullable
@@ -68,7 +69,7 @@ public final class MethodsScanner {
 	@Method(IModule.class)
 	public static final class MethodMetaBlock extends TargetedModuleMethod<IWorldLocation> {
 		public MethodMetaBlock() {
-			super("getBlockMeta", PlethoraModules.SCANNER, IWorldLocation.class);
+			super("getBlockMeta", PlethoraModules.SCANNER, IWorldLocation.class, "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block");
 		}
 
 		@Nonnull
@@ -78,7 +79,9 @@ public final class MethodsScanner {
 			final int y = getInt(args, 1);
 			final int z = getInt(args, 2);
 
-			validatePosition(x, y, z);
+			assertBetween(x, -scannerRadius, scannerRadius, "X coordinate out of bounds (%s)");
+			assertBetween(y, -scannerRadius, scannerRadius, "Y coordinate out of bounds (%s)");
+			assertBetween(z, -scannerRadius, scannerRadius, "Z coordinate out of bounds (%s)");
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
@@ -99,18 +102,6 @@ public final class MethodsScanner {
 					return MethodResult.result(meta);
 				}
 			});
-		}
-	}
-
-	private static void validatePosition(int x, int y, int z) throws LuaException {
-		if (x < -scannerRadius || x > scannerRadius) {
-			throw new LuaException("X coordinate out of bounds (+-" + scannerRadius + ")");
-		}
-		if (y < -scannerRadius || y > scannerRadius) {
-			throw new LuaException("Y coordinate out of bounds (+-" + scannerRadius + ")");
-		}
-		if (z < -scannerRadius || z > scannerRadius) {
-			throw new LuaException("Z coordinate out of bounds (+-" + scannerRadius + ")");
 		}
 	}
 }

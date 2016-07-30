@@ -24,7 +24,7 @@ public final class MethodsLaser {
 	@Method(IModule.class)
 	public static final class MethodFire extends TargetedModuleMethod<IWorldLocation> {
 		public MethodFire() {
-			super("fire", PlethoraModules.LASER, IWorldLocation.class);
+			super("fire", PlethoraModules.LASER, IWorldLocation.class, "function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction");
 		}
 
 		@Nonnull

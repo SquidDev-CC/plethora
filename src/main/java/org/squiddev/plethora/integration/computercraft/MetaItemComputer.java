@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Provider for computer items;
  */
-@MetaProvider(value = ItemStack.class, namespace = "computer")
+@MetaProvider(value = ItemStack.class, namespace = "computer", modId = "ComputerCraft")
 public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

@@ -1,9 +1,8 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
-import com.google.common.collect.Sets;
+import com.google.common.base.Strings;
+import com.google.common.collect.*;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -12,6 +11,7 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.core.collections.SortedMultimap;
+import org.squiddev.plethora.integration.MethodDocumentation;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -88,6 +88,18 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
+	public Multimap<Class<?>, IMethod<?>> getMethods() {
+		Multimap<Class<?>, IMethod<?>> map = MultimapBuilder.hashKeys().arrayListValues().build();
+
+		for (Map.Entry<Class<?>, Collection<IMethod<?>>> item : providers.items().entrySet()) {
+			map.putAll(item.getKey(), item.getValue());
+		}
+
+		return map;
+	}
+
+	@Nonnull
+	@Override
 	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<?>... context) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
@@ -128,12 +140,17 @@ public final class MethodRegistry implements IMethodRegistry {
 			}
 		}
 
+		if (methods.size() > 0) {
+			methods.add(new MethodDocumentation(methods));
+			contexts.add(initialContext);
+		}
+
 		return new Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>>(methods, contexts);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getCanonicalName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getName())) {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMethods, name)) {
@@ -141,11 +158,16 @@ public final class MethodRegistry implements IMethodRegistry {
 					continue;
 				}
 
+				Map<String, Object> info = asmData.getAnnotationInfo();
+				String modName = (String) info.get("modId");
+				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
+					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded");
+					continue;
+				}
+
 				DebugLogger.debug("Registering " + name);
 
-				Class<?> asmClass = Class.forName(asmData.getClassName());
-				Map<String, Object> info = asmData.getAnnotationInfo();
-
+				Class<?> asmClass = Class.forName(name);
 				IMethod instance = asmClass.asSubclass(IMethod.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());

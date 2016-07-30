@@ -33,7 +33,7 @@ public final class MethodsSensor {
 	@Method(IModule.class)
 	public static final class ScanEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
 		public ScanEntitiesMethod() {
-			super("scan", true, PlethoraModules.SENSOR, IWorldLocation.class);
+			super("scan", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
 		}
 
 		@Nullable
@@ -62,7 +62,7 @@ public final class MethodsSensor {
 	@Method(IModule.class)
 	public static final class GetMetaUUIDMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaUUIDMethod() {
-			super("getMetaByID", PlethoraModules.SENSOR, IWorldLocation.class);
+			super("getMetaByID", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by UUID");
 		}
 
 		@Nonnull
@@ -79,7 +79,11 @@ public final class MethodsSensor {
 				@Override
 				public MethodResult call() throws Exception {
 					Entity entity = findEntityByUUID(context.bake().getContext(IWorldLocation.class), uuid);
-					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+					if (entity == null) {
+						return MethodResult.empty();
+					} else {
+						return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+					}
 				}
 			});
 		}
@@ -88,7 +92,7 @@ public final class MethodsSensor {
 	@Method(IModule.class)
 	public static final class GetMetaNameMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaNameMethod() {
-			super("getMetaByName", PlethoraModules.SENSOR, IWorldLocation.class);
+			super("getMetaByName", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by name");
 		}
 
 		@Nonnull
@@ -100,7 +104,11 @@ public final class MethodsSensor {
 				@Override
 				public MethodResult call() throws Exception {
 					Entity entity = findEntityByName(context.bake().getContext(IWorldLocation.class), name);
-					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+					if (entity == null) {
+						return MethodResult.empty();
+					} else {
+						return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+					}
 				}
 			});
 		}
@@ -114,21 +122,23 @@ public final class MethodsSensor {
 		);
 	}
 
+	@Nullable
 	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) throws LuaException {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (entity.getUniqueID().equals(uuid)) return entity;
 		}
 
-		throw new LuaException("No such entity");
+		return null;
 	}
 
+	@Nullable
 	private static Entity findEntityByName(IWorldLocation location, String name) throws LuaException {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (MetaEntity.getName(entity).equals(name)) return entity;
 		}
 
-		throw new LuaException("No such entity");
+		return null;
 	}
 }

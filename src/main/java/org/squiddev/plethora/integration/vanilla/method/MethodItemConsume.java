@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 @Method(ItemSlot.class)
 public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 	public MethodItemConsume() {
-		super("consume", true);
+		super("consume", true, "function():nil -- Consume one item from this stack.");
 	}
 
 	@Override

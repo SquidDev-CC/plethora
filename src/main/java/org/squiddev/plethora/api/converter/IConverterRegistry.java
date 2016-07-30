@@ -16,7 +16,7 @@ public interface IConverterRegistry {
 	<TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter);
 
 	/**
-	 * Convert an object to all convertable objects
+	 * Convert an object to all convertible objects
 	 *
 	 * @param in The object to convert from
 	 * @return All converted values

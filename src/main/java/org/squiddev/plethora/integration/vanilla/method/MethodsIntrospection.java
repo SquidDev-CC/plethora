@@ -23,7 +23,7 @@ public final class MethodsIntrospection {
 	@Method(IModule.class)
 	public static final class MethodEntityPlayerInventory extends ModuleObjectMethod {
 		public MethodEntityPlayerInventory() {
-			super("getInventory", true, PlethoraModules.INTROSPECTION);
+			super("getInventory", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's inventory");
 		}
 
 		@Nullable
@@ -41,7 +41,7 @@ public final class MethodsIntrospection {
 	@Method(IModule.class)
 	public static final class MethodEntityEquipment extends ModuleObjectMethod {
 		public MethodEntityEquipment() {
-			super("getEquipment", true, PlethoraModules.INTROSPECTION);
+			super("getEquipment", PlethoraModules.INTROSPECTION, true, "function():table -- Get this entity's held item and armor");
 		}
 
 		@Nullable
@@ -59,7 +59,7 @@ public final class MethodsIntrospection {
 	@Method(IModule.class)
 	public static final class MethodEntityPlayerGetEnder extends ModuleObjectMethod {
 		public MethodEntityPlayerGetEnder() {
-			super("getEnder", true, PlethoraModules.INTROSPECTION);
+			super("getEnder", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's ender chest.");
 		}
 
 		@Nullable
@@ -77,7 +77,7 @@ public final class MethodsIntrospection {
 	@Method(IModule.class)
 	public static final class MethodEntityGetID extends ModuleObjectMethod {
 		public MethodEntityGetID() {
-			super("getID", true, PlethoraModules.INTROSPECTION);
+			super("getID", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's UUID.");
 		}
 
 		@Nullable
@@ -93,7 +93,7 @@ public final class MethodsIntrospection {
 	@Method(IModule.class)
 	public static final class MethodEntityGetName extends ModuleObjectMethod {
 		public MethodEntityGetName() {
-			super("getName", true, PlethoraModules.INTROSPECTION);
+			super("getName", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's name");
 		}
 
 		@Nullable

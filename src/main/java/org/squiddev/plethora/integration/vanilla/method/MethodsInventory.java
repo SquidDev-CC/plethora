@@ -20,7 +20,7 @@ public final class MethodsInventory {
 	@Method(IItemHandler.class)
 	public static class ListMethod extends BasicObjectMethod<IItemHandler> {
 		public ListMethod() {
-			super("list", true);
+			super("list", true, "function():table -- List all items in this inventory");
 		}
 
 		@Override
@@ -42,7 +42,7 @@ public final class MethodsInventory {
 	@Method(IItemHandler.class)
 	public static class GetItemMethod extends BasicObjectMethod<IItemHandler> {
 		public GetItemMethod() {
-			super("getItem", true);
+			super("getItem", true, "function(slot:integer):table|nil -- Get the item in a slot. The slot number starts from 1.");
 		}
 
 		@Override
@@ -55,7 +55,7 @@ public final class MethodsInventory {
 
 			ItemStack stack = inventory.getStackInSlot(slot - 1);
 			if (stack == null) {
-				return new Object[]{false, "No item there"};
+				return null;
 			} else {
 				ItemSlot item = new ItemSlot(inventory, slot - 1);
 				return new Object[]{context.makeChild(item).getObject()};
@@ -66,7 +66,7 @@ public final class MethodsInventory {
 	@Method(IItemHandler.class)
 	public static class SizeMethod extends BasicObjectMethod<IItemHandler> {
 		public SizeMethod() {
-			super("size", true);
+			super("size", true, "function():integer -- Get the size of the inventory");
 		}
 
 		@Override
@@ -78,7 +78,7 @@ public final class MethodsInventory {
 	@Method(IItemHandler.class)
 	public static class MetadataMethod extends BasicObjectMethod<IItemHandler> {
 		public MetadataMethod() {
-			super("getMetadata", true);
+			super("getMetadata", true, "function(slot:integer):table|nil -- Get the metadata of the item in a slot. The slot number starts from 1.");
 		}
 
 		@Override
@@ -91,7 +91,7 @@ public final class MethodsInventory {
 
 			ItemStack stack = inventory.getStackInSlot(slot - 1);
 			if (stack == null) {
-				return new Object[]{false, "No item there"};
+				return null;
 			} else {
 				return new Object[]{PlethoraAPI.instance().metaRegistry().getMeta(stack)};
 			}

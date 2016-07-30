@@ -1,6 +1,7 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
@@ -8,6 +9,7 @@ import org.squiddev.plethora.api.converter.Converter;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.converter.IConverterRegistry;
 import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -75,22 +77,28 @@ public class ConverterRegistry implements IConverterRegistry {
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Converter.class.getCanonicalName())) {
+			String name = asmData.getClassName();
 			try {
-				DebugLogger.debug("Registering " + asmData.getClassName());
-
-				Class<?> asmClass = Class.forName(asmData.getClassName());
 				Map<String, Object> info = asmData.getAnnotationInfo();
+				String modName = (String) info.get("modId");
+				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
+					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded");
+					continue;
+				}
 
+				DebugLogger.debug("Registering " + name);
+
+				Class<?> asmClass = Class.forName(name);
 				IConverter instance = asmClass.asSubclass(IConverter.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				registerConverter(target, instance);
 			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: %s", asmData.getClassName(), e);
+				DebugLogger.error("Failed to load: %s", name, e);
 			}
 		}
 	}

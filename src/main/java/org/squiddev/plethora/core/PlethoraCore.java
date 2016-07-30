@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.core.docdump.CommandDump;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
@@ -42,6 +43,11 @@ public class PlethoraCore {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			TaskHandler.reset();
 		}
+	}
+
+	@Mod.EventHandler
+	public void onSeverStarting(FMLServerStartingEvent evt) {
+		evt.registerServerCommand(new CommandDump(evt.getServer().isDedicatedServer()));
 	}
 
 	@Mod.EventHandler

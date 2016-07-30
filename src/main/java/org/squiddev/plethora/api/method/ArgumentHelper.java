@@ -85,7 +85,7 @@ public final class ArgumentHelper {
 	}
 
 	public static double optNumber(@Nonnull Object[] args, int index, double def) throws LuaException {
-		Object value = args.length < index ? args[index] : null;
+		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
 			return def;
 		} else if (value instanceof Number) {
@@ -111,7 +111,7 @@ public final class ArgumentHelper {
 	}
 
 	public static String optString(@Nonnull Object[] args, int index, String def) throws LuaException {
-		Object value = args.length < index ? args[index] : null;
+		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
 			return def;
 		} else if (value instanceof String) {
@@ -135,13 +135,13 @@ public final class ArgumentHelper {
 
 	public static void assertBetween(double value, double min, double max, String message) throws LuaException {
 		if (value < min || value > max) {
-			throw new LuaException(String.format("%s", "between " + min + " and " + max));
+			throw new LuaException(String.format(message, "between " + min + " and " + max));
 		}
 	}
 
 	public static void assertBetween(int value, int min, int max, String message) throws LuaException {
 		if (value < min || value > max) {
-			throw new LuaException(String.format("%s", "between " + min + " and " + max));
+			throw new LuaException(String.format(message, "between " + min + " and " + max));
 		}
 	}
 }

@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -208,5 +209,9 @@ public class Helpers {
 
 	public static boolean classBlacklisted(Iterable<String> blacklist, Class<?> klass) {
 		return classBlacklisted(blacklist, klass.getName());
+	}
+
+	public static boolean modLoaded(String mod) {
+		return Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod);
 	}
 }

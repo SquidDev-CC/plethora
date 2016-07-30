@@ -16,13 +16,14 @@ import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.optBoolean;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.kineticLaunchMax;
 
 public final class MethodsKinetic {
 	@Method(IModule.class)
 	public static final class MethodEntityLaunch extends TargetedModuleMethod<EntityLivingBase> {
 		public MethodEntityLaunch() {
-			super("launch", PlethoraModules.KINETIC, EntityLivingBase.class);
+			super("launch", PlethoraModules.KINETIC, EntityLivingBase.class, "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction");
 		}
 
 		@Nonnull
@@ -53,13 +54,13 @@ public final class MethodsKinetic {
 	@Method(IModule.class)
 	public static final class MethodEntityLivingDisableAI extends TargetedModuleObjectMethod<EntityLiving> {
 		public MethodEntityLivingDisableAI() {
-			super("disableAI", true, PlethoraModules.KINETIC, EntityLiving.class);
+			super("disableAI", PlethoraModules.KINETIC, EntityLiving.class, true, "function([disable:boolean]) -- Disable the AI of this entity");
 		}
 
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull EntityLiving entity, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			entity.setNoAI(true);
+			entity.setNoAI(optBoolean(args, 0, true));
 			return null;
 		}
 	}

@@ -1,7 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -29,9 +29,9 @@ public final class MethodsKineticEntity {
 	*/
 
 	@Method(IModule.class)
-	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLiving> {
+	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
 		public MethodEntityLook() {
-			super("look", PlethoraModules.KINETIC, EntityLiving.class);
+			super("look", PlethoraModules.KINETIC, EntityLivingBase.class, "function(yaw:number, pitch:number) -- Look in a set direction");
 		}
 
 		@Nonnull
@@ -48,7 +48,7 @@ public final class MethodsKineticEntity {
 					 * @see net.minecraft.entity.player.EntityPlayerMP#playerNetServerHandler
 					 * @see NetHandlerPlayServer#setPlayerLocation(double, double, double, float, float)
 					 */
-					EntityLiving target = context.bake().getContext(EntityLiving.class);
+					EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
 					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
 					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
 					return MethodResult.empty();
@@ -60,7 +60,7 @@ public final class MethodsKineticEntity {
 	@Method(IModule.class)
 	public static final class MethodEntityCreeperExplode extends TargetedModuleObjectMethod<EntityCreeper> {
 		public MethodEntityCreeperExplode() {
-			super("explode", true, PlethoraModules.KINETIC, EntityCreeper.class);
+			super("explode", PlethoraModules.KINETIC, EntityCreeper.class, true, "function() -- Explode this creeper");
 		}
 
 		@Nullable
@@ -74,7 +74,7 @@ public final class MethodsKineticEntity {
 	@Method(IModule.class)
 	public static final class MethodEntityEndermanTeleport extends TargetedModuleObjectMethod<EntityEnderman> {
 		public MethodEntityEndermanTeleport() {
-			super("teleport", true, PlethoraModules.KINETIC, EntityEnderman.class);
+			super("teleport", PlethoraModules.KINETIC, EntityEnderman.class, true, "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one");
 		}
 
 		@Nullable

@@ -13,13 +13,20 @@ import java.util.concurrent.Callable;
 public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 	private final boolean worldThread;
 
-	public BasicObjectMethod(String name, boolean worldThread, int priority) {
-		super(name, priority);
-		this.worldThread = worldThread;
+	public BasicObjectMethod(String name, boolean worldThread) {
+		this(name, worldThread, 0, null);
 	}
 
-	public BasicObjectMethod(String name, boolean worldThread) {
-		super(name);
+	public BasicObjectMethod(String name, boolean worldThread, String docs) {
+		this(name, worldThread, 0, docs);
+	}
+
+	public BasicObjectMethod(String name, boolean worldThread, int priority) {
+		this(name, worldThread, priority, null);
+	}
+
+	public BasicObjectMethod(String name, boolean worldThread, int priority, String docs) {
+		super(name, priority, docs);
 		this.worldThread = worldThread;
 	}
 

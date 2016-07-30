@@ -25,4 +25,13 @@ public @interface MetaProvider {
 	 * @return The namespace to insert into. None if empty string or {@code null}.
 	 */
 	String namespace() default "";
+
+	/**
+	 * Set if this meta provider depends on a mod
+	 *
+	 * @return The mod's id
+	 * @see net.minecraftforge.fml.common.Optional.Method
+	 * @see net.minecraftforge.fml.common.Optional.Interface
+	 */
+	String modId() default "";
 }

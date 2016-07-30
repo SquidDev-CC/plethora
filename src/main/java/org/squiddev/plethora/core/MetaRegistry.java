@@ -55,6 +55,8 @@ public final class MetaRegistry implements IMetaRegistry {
 			throw new IllegalArgumentException("Trying to get instance of context. This is probably a bug");
 		}
 
+		// TODO: Handle priority across each conversion correctly
+
 		HashMap<Object, Object> out = Maps.newHashMap();
 
 		List<?> objects = ConverterRegistry.instance.convertAll(object);
@@ -110,11 +112,16 @@ public final class MetaRegistry implements IMetaRegistry {
 					continue;
 				}
 
+				Map<String, Object> info = asmData.getAnnotationInfo();
+				String modName = (String) info.get("modId");
+				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
+					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded");
+					continue;
+				}
+
 				DebugLogger.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(name);
-				Map<String, Object> info = asmData.getAnnotationInfo();
-
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());

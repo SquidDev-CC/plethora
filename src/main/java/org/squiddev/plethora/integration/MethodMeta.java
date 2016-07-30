@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 @Method(Object.class)
 public class MethodMeta extends BasicObjectMethod<Object> {
 	public MethodMeta() {
-		super("getMetadata", true, Integer.MIN_VALUE);
+		super("getMetadata", true, Integer.MIN_VALUE, "function():table -- Get metadata about this object");
 	}
 
 	@Override
