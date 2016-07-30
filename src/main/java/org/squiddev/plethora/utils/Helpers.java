@@ -193,4 +193,20 @@ public class Helpers {
 
 		return file;
 	}
+
+	public static boolean classBlacklisted(Iterable<String> blacklist, String name) {
+		for (String prefix : blacklist) {
+			if (prefix.endsWith(".")) {
+				if (name.startsWith(prefix)) return true;
+			} else if (name.equals(prefix)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean classBlacklisted(Iterable<String> blacklist, Class<?> klass) {
+		return classBlacklisted(blacklist, klass.getName());
+	}
 }

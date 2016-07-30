@@ -13,6 +13,7 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -132,15 +133,12 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		top:
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getCanonicalName())) {
 			String name = asmData.getClassName();
 			try {
-				for (String prefix : ConfigCore.Blacklist.blacklistMethods) {
-					if (name.startsWith(prefix)) {
-						DebugLogger.debug("Ignoring " + name + " due to blacklist " + prefix);
-						continue top;
-					}
+				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMethods, name)) {
+					DebugLogger.debug("Ignoring " + name);
+					continue;
 				}
 
 				DebugLogger.debug("Registering " + name);

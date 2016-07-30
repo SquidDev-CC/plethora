@@ -16,6 +16,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -101,15 +102,12 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		top:
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(MetaProvider.class.getCanonicalName())) {
 			String name = asmData.getClassName();
 			try {
-				for (String prefix : ConfigCore.Blacklist.blacklistMeta) {
-					if (name.startsWith(prefix)) {
-						DebugLogger.debug("Ignoring " + name + " due to blacklist " + prefix);
-						continue top;
-					}
+				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMeta, name)) {
+					DebugLogger.debug("Ignoring " + name);
+					continue;
 				}
 
 				DebugLogger.debug("Registering " + name);

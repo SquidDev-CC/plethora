@@ -12,24 +12,25 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.squiddev.plethora.api.reference.Reference.tile;
 
 /**
  * Wraps tile entities and provides them as a peripheral
- * TODO: Blacklisting system
  */
 public class PeripheralProvider implements IPeripheralProvider {
 	@Override
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			String name = te.getClass().getName();
-			for (String prefix : ConfigCore.Blacklist.blacklistTileEntities) {
-				if (name.startsWith(prefix)) return null;
-			}
+			Class<?> klass = te.getClass();
+			if (isBlacklisted(klass)) return null;
 
 			MethodRegistry registry = MethodRegistry.instance;
 
@@ -45,5 +46,29 @@ public class PeripheralProvider implements IPeripheralProvider {
 		}
 
 		return null;
+	}
+
+	private static Set<String> blacklist = new HashSet<String>();
+
+	public static void addToBlacklist(String klass) {
+		blacklist.add(klass);
+	}
+
+	public static boolean isBlacklisted(Class<?> klass) {
+		String name = klass.getName();
+
+		if (blacklist.contains(name)) return true;
+		if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, klass)) return true;
+
+		try {
+			klass.getField("PLETHORA_IGNORE");
+			blacklist.add(name);
+			return true;
+		} catch (NoSuchFieldException ignored) {
+		} catch (Throwable t) {
+			DebugLogger.warn("Cannot get ignored field from " + name, t);
+		}
+
+		return false;
 	}
 }

@@ -20,7 +20,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	private final String type;
 
 	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
-		this(owner.getClass().getCanonicalName(), owner, methods, contexts);
+		this(owner.getClass().getName(), owner, methods, contexts);
 	}
 
 	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
