@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -17,7 +16,8 @@ import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.gameplay.modules.TileManipulator;
 
 import javax.vecmath.Matrix4f;
@@ -31,7 +31,6 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 	public void renderTileEntityAt(TileManipulator tileManipulator, double x, double y, double z, float f, int i) {
 		ItemStack stack = tileManipulator.getStack();
 		if (stack != null) {
-			Item item = stack.getItem();
 			GlStateManager.pushMatrix();
 
 			GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
@@ -46,8 +45,9 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 			float delta = (float) tileManipulator.incrementRotation();
 
 			IBakedModel model;
-			if (item instanceof IModuleItem) {
-				Pair<IBakedModel, Matrix4f> pair = ((IModuleItem) item).getModel(stack, delta);
+			IModuleHandler handler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+			if (handler != null) {
+				Pair<IBakedModel, Matrix4f> pair = handler.getModel(delta);
 				ForgeHooksClient.multiplyCurrentGlMatrix(pair.getRight());
 				model = pair.getLeft();
 			} else {

@@ -12,36 +12,33 @@ import javax.vecmath.Matrix4f;
 import java.util.Collection;
 
 /**
- * An item which holds a module
+ * A capability which provides a module
  */
-public interface IModuleItem {
+public interface IModuleHandler {
 	/**
 	 * Get the module from this item
 	 *
-	 * @param stack The stack to extract from
 	 * @return The module.
 	 */
 	@Nonnull
-	IModule getModule(@Nonnull ItemStack stack);
+	IModule getModule();
 
 	/**
 	 * Used to get additional context from a stack
 	 *
-	 * @param stack The stack to extract from
 	 * @return The additional context items.
 	 */
 	@Nonnull
-	Collection<IReference<?>> getAdditionalContext(@Nonnull ItemStack stack);
+	Collection<IReference<?>> getAdditionalContext();
 
 	/**
 	 * Get a model from this stack
 	 *
-	 * @param stack The stack to get a model from
-	 * @param delta A tick based offset. Generally used to rotate the model.
+	 * @param delta A tick based offset. Can used to animate the model.
 	 * @return A baked model and its transformation
 	 * @see net.minecraft.client.renderer.ItemModelMesher#getItemModel(ItemStack)
 	 */
-	@SideOnly(Side.CLIENT)
 	@Nonnull
-	Pair<IBakedModel, Matrix4f> getModel(@Nonnull ItemStack stack, float delta);
+	@SideOnly(Side.CLIENT)
+	Pair<IBakedModel, Matrix4f> getModel(float delta);
 }

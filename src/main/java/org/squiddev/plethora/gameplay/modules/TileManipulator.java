@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -62,7 +62,7 @@ public final class TileManipulator extends TileBase {
 			markForUpdate();
 
 			return true;
-		} else if (stack == null && newStack != null && newStack.getItem() instanceof IModuleItem) {
+		} else if (stack == null && newStack != null && newStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
 			stack = newStack.copy();
 			stack.stackSize = 1;
 

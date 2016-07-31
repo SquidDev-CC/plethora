@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +36,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
@@ -44,6 +46,7 @@ import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
 
+import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
@@ -128,13 +131,27 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				dirty = true;
 			}
 
+			// Force an update on each peripheral item
+			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
+				ItemStack module = handler.getStackInSlot(slot);
+				if (module != null) {
+					IPeripheralHandler peripheralHandler = module.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);
+					if (peripheralHandler != null) {
+						peripheralHandler.update(
+							player.worldObj,
+							new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ)
+						);
+					}
+				}
+			}
+
 			// Sync peripherals
 			if (tag.getByte(DIRTY) != 0) {
 				byte dirtyStatus = tag.getByte(DIRTY);
 				tag.setByte(DIRTY, (byte) 0);
 				dirty = true;
 
-				IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 				for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
 					if ((dirtyStatus & (1 << slot)) == 1 << slot) {
 						computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, player));
@@ -156,7 +173,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		private final IItemHandler inv = new ItemStackHandler(NeuralHelpers.INV_SIZE) {
 			@Override
 			public ItemStack insertItem(int slot, ItemStack toInsert, boolean simulate) {
-				if (toInsert != null && toInsert.getItem() instanceof IModuleItem && getStackInSlot(slot) == null) {
+				if (toInsert != null && getStackInSlot(slot) == null && (
+					toInsert.hasCapability(MODULE_HANDLER_CAPABILITY, null) ||
+						toInsert.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
+						toInsert.hasCapability(PERIPHERAL_CAPABILITY, null)
+				)) {
 					return super.insertItem(slot, toInsert, simulate);
 				} else {
 					return toInsert;

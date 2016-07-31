@@ -1,5 +1,7 @@
 package org.squiddev.plethora.api.method;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -9,6 +11,9 @@ import javax.annotation.concurrent.ThreadSafe;
  * This can be bound as a capability to an object.
  *
  * You should aim to regen the fuel level when possible
+ *
+ * @see org.squiddev.plethora.api.Constants#COST_HANDLER_CAPABILITY
+ * @see IMethodRegistry#getCostHandler(ICapabilityProvider)
  */
 @ThreadSafe
 public interface ICostHandler {

@@ -7,9 +7,11 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
+import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.IdentityReference;
+import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.integration.MethodDocumentation;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -111,8 +113,8 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Override
 	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object) {
 		Preconditions.checkNotNull(object, "object cannot be null");
-		ICostHandler handler = object.getCapability(CostHandler.COST_HANDLER_CAPABILITY, null);
-		return handler != null ? handler : CostHandler.get(object);
+		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, null);
+		return handler != null ? handler : DefaultCostHandler.get(object);
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {

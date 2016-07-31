@@ -7,12 +7,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.items.IItemHandler;
+import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
@@ -46,13 +47,18 @@ public final class NeuralHelpers {
 
 	public static IPeripheral buildPeripheral(final IItemHandler handler, final int slot, Entity owner) {
 		final ItemStack stack = handler.getStackInSlot(slot);
-		if (stack == null || !(stack.getItem() instanceof IModuleItem)) return null;
+		if (stack == null) return null;
 
-		// TODO: Switch to proper registry system to allow CC items.
-		IModuleItem item = (IModuleItem) stack.getItem();
-		final IModule module = item.getModule(stack);
+		IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+		if (moduleHandler == null) {
+			IPeripheral peripheral = stack.getCapability(Constants.PERIPHERAL_CAPABILITY, null);
+			if (peripheral != null) return peripheral;
 
-		Collection<IReference<?>> additionalContext = item.getAdditionalContext(stack);
+			return stack.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null).getPeripheral();
+		}
+
+		final IModule module = moduleHandler.getModule();
+		Collection<IReference<?>> additionalContext = moduleHandler.getAdditionalContext();
 
 		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
 		additionalContext.toArray(contextData);

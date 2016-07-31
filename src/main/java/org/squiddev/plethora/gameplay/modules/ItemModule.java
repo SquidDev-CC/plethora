@@ -13,8 +13,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -22,8 +25,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
+import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModule;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.gameplay.ItemBase;
@@ -42,7 +46,7 @@ import java.util.UUID;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.*;
 
-public final class ItemModule extends ItemBase implements IModuleItem {
+public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "moduleIntrospection";
 	public static final String LASER = "moduleLaser";
 	public static final String SCANNER = "moduleScanner";
@@ -268,19 +272,73 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 
 	//endregion
 
-	//region IModuleItem
-	@Nonnull
 	@Override
-	public Collection<IReference<?>> getAdditionalContext(@Nonnull ItemStack stack) {
-		Entity entity = getEntity(stack);
-		if (entity != null) {
-			return Collections.<IReference<?>>singleton(new EntityReference<Entity>(entity));
-		} else {
-			return Collections.emptyList();
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound tag) {
+		return new ItemModuleHandler(stack);
+	}
+
+	private static final class ItemModuleHandler implements IModuleHandler, IModule, ICapabilityProvider {
+		private final ItemStack stack;
+		private ResourceLocation moduleId;
+
+		private ItemModuleHandler(ItemStack stack) {
+			this.stack = stack;
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES ? (T) this : null;
+		}
+
+		@Nonnull
+		@Override
+		public ResourceLocation getModuleId() {
+			// Cache the ID
+			ResourceLocation id = moduleId;
+			if (id == null) {
+				return this.moduleId = PlethoraModules.toResource(getName(stack.getItemDamage()));
+			} else {
+				return id;
+			}
+		}
+
+		@Nonnull
+		@Override
+		public IModule getModule() {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public Collection<IReference<?>> getAdditionalContext() {
+			Entity entity = getEntity(stack);
+			if (entity != null) {
+				return Collections.<IReference<?>>singleton(new EntityReference<Entity>(entity));
+			} else {
+				return Collections.emptyList();
+			}
+		}
+
+		@Nonnull
+		@Override
+		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
+			Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+			matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
+
+			return Pair.of(
+				Helpers.getMesher().getItemModel(stack),
+				matrix
+			);
 		}
 	}
 
-	private Entity getEntity(ItemStack stack) {
+	private static Entity getEntity(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
 			return MinecraftServer.getServer().getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
@@ -288,32 +346,4 @@ public final class ItemModule extends ItemBase implements IModuleItem {
 			return null;
 		}
 	}
-
-	@Nonnull
-	@Override
-	public IModule getModule(@Nonnull ItemStack stack) {
-		final ResourceLocation location = PlethoraModules.toResource(getName(stack.getItemDamage()));
-
-		return new IModule() {
-			@Nonnull
-			@Override
-			public ResourceLocation getModuleId() {
-				return location;
-			}
-		};
-	}
-
-	@Nonnull
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull ItemStack stack, float delta) {
-		Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-		matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
-
-		return Pair.of(
-			Helpers.getMesher().getItemModel(stack),
-			matrix
-		);
-	}
-	//endregion
 }

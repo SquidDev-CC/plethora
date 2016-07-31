@@ -38,7 +38,7 @@ public final class ArgumentHelper {
 
 	@Nonnull
 	public static LuaException badArgument(@Nullable Object object, int index, @Nonnull String expected) {
-		return new LuaException("Expected " + expected + " +  for argument " + (index + 1) + ", got " + getType(object));
+		return new LuaException("Expected " + expected + " for argument " + (index + 1) + ", got " + getType(object));
 	}
 
 	public static double getNumber(@Nonnull Object[] args, int index) throws LuaException {

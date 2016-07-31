@@ -18,12 +18,13 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
-import org.squiddev.plethora.api.module.IModuleItem;
+import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
@@ -91,11 +92,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		if (stack == null) return null;
 
-		if (!(stack.getItem() instanceof IModuleItem)) return null;
-		IModuleItem item = (IModuleItem) stack.getItem();
+		IModuleHandler item = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+		if (item == null) return null;
 
-		final IModule module = item.getModule(stack);
-		Collection<IReference<?>> additionalContext = item.getAdditionalContext(stack);
+		final IModule module = item.getModule();
+		Collection<IReference<?>> additionalContext = item.getAdditionalContext();
 
 		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
 		additionalContext.toArray(contextData);
