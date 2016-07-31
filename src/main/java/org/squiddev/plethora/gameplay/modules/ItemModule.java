@@ -152,7 +152,6 @@ public final class ItemModule extends ItemBase {
 				break;
 			}
 			case KINETIC_ID: {
-				if (player.isAirBorne) return;
 				MethodsKinetic.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * kineticLaunchMax);
 				break;
 			}

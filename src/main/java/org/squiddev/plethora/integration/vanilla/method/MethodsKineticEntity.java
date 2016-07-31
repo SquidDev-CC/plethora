@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
@@ -43,14 +44,14 @@ public final class MethodsKineticEntity {
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
 				public MethodResult call() throws Exception {
-					/**
-					 * TODO: Support EntityPlayer
-					 * @see net.minecraft.entity.player.EntityPlayerMP#playerNetServerHandler
-					 * @see NetHandlerPlayServer#setPlayerLocation(double, double, double, float, float)
-					 */
 					EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
-					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
-					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
+					if (target instanceof EntityPlayerMP) {
+						NetHandlerPlayServer handler = ((EntityPlayerMP) target).playerNetServerHandler;
+						handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
+					} else {
+						target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
+						target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
+					}
 					return MethodResult.empty();
 				}
 			});

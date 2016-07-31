@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
@@ -39,12 +38,7 @@ public final class MethodsKinetic {
 				@Override
 				public MethodResult call() throws Exception {
 					EntityLivingBase entity = context.bake().getContext(EntityLivingBase.class);
-					if (entity.isAirBorne && !(entity instanceof EntityFlying)) {
-						throw new LuaException("Entity is in the air");
-					}
-
 					launch(entity, yaw, pitch, power);
-
 					return MethodResult.empty();
 				}
 			});
