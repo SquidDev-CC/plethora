@@ -2,12 +2,11 @@ package org.squiddev.plethora.integration.vanilla.converter;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import org.squiddev.plethora.api.converter.Converter;
 import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
 
-@Converter(IBlockState.class)
+@IConverter.Inject(IBlockState.class)
 public class ConverterBlockState implements IConverter<IBlockState, Block> {
 	@Nonnull
 	@Override

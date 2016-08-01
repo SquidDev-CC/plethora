@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.meta.MetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -104,7 +103,7 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(MetaProvider.class.getCanonicalName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getCanonicalName())) {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMeta, name)) {

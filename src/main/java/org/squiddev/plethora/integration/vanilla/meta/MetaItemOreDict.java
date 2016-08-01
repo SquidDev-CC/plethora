@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Provides Ore Dictionary lookup for items
  */
-@MetaProvider(value = ItemStack.class, namespace = "ores")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "ores")
 public class MetaItemOreDict extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

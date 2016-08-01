@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Lists enchantments on items
  */
-@MetaProvider(value = ItemStack.class, namespace = "enchantments")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "enchantments")
 public class MetaItemEnchantment extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

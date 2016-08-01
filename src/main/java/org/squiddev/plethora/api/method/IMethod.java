@@ -5,6 +5,10 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * A Lua side method targeting a class
@@ -69,4 +73,31 @@ public interface IMethod<T> {
 	 */
 	@Nonnull
 	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
+
+	/**
+	 * Automatically register a method.
+	 *
+	 * The class must have a public constructor and implement {@link IMethod}.
+	 *
+	 * @see IMethodRegistry#registerMethod(Class, IMethod)
+	 */
+	@Target(ElementType.TYPE)
+	@Retention(RetentionPolicy.CLASS)
+	@interface Inject {
+		/**
+		 * The target class
+		 *
+		 * @return The target class
+		 */
+		Class<?> value();
+
+		/**
+		 * Set if this method depends on a mod
+		 *
+		 * @return The mod's id
+		 * @see net.minecraftforge.fml.common.Optional.Method
+		 * @see net.minecraftforge.fml.common.Optional.Interface
+		 */
+		String modId() default "";
+	}
 }

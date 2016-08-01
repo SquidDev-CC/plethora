@@ -19,7 +19,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.optBoolean;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.kineticLaunchMax;
 
 public final class MethodsKinetic {
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityLaunch extends TargetedModuleMethod<EntityLivingBase> {
 		public MethodEntityLaunch() {
 			super("launch", PlethoraModules.KINETIC, EntityLivingBase.class, "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction");
@@ -45,7 +45,7 @@ public final class MethodsKinetic {
 		}
 	}
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityLivingDisableAI extends TargetedModuleObjectMethod<EntityLiving> {
 		public MethodEntityLivingDisableAI() {
 			super("disableAI", PlethoraModules.KINETIC, EntityLiving.class, true, "function([disable:boolean]) -- Disable the AI of this entity");

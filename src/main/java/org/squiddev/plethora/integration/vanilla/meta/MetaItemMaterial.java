@@ -2,7 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import net.minecraft.item.*;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Displays tool's material
  */
-@MetaProvider(ItemStack.class)
+@IMetaProvider.Inject(ItemStack.class)
 public class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

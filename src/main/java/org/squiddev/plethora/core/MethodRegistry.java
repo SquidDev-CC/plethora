@@ -152,7 +152,7 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Method.class.getName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMethod.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMethods, name)) {

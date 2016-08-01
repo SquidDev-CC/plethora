@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Displays fluids contained inside a container
  */
-@MetaProvider(value = ItemStack.class, namespace = "fluid")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "fluid")
 public class MetaItemFluidContainer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

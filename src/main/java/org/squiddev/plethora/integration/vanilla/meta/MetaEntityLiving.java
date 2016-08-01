@@ -5,7 +5,7 @@ import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.core.MethodRegistry;
 
@@ -19,7 +19,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 /**
  * A basic provider for living entities
  */
-@MetaProvider(EntityLivingBase.class)
+@IMetaProvider.Inject(EntityLivingBase.class)
 public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 	@Nonnull
 	@Override

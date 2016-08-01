@@ -7,7 +7,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
@@ -17,7 +17,7 @@ import java.util.HashMap;
 public final class MethodsInventory {
 	// TODO: Switch to new argument validation
 
-	@Method(IItemHandler.class)
+	@IMethod.Inject(IItemHandler.class)
 	public static class ListMethod extends BasicObjectMethod<IItemHandler> {
 		public ListMethod() {
 			super("list", true, "function():table -- List all items in this inventory");
@@ -39,7 +39,7 @@ public final class MethodsInventory {
 		}
 	}
 
-	@Method(IItemHandler.class)
+	@IMethod.Inject(IItemHandler.class)
 	public static class GetItemMethod extends BasicObjectMethod<IItemHandler> {
 		public GetItemMethod() {
 			super("getItem", true, "function(slot:integer):table|nil -- Get the item in a slot. The slot number starts from 1.");
@@ -63,7 +63,7 @@ public final class MethodsInventory {
 		}
 	}
 
-	@Method(IItemHandler.class)
+	@IMethod.Inject(IItemHandler.class)
 	public static class SizeMethod extends BasicObjectMethod<IItemHandler> {
 		public SizeMethod() {
 			super("size", true, "function():integer -- Get the size of the inventory");
@@ -75,7 +75,7 @@ public final class MethodsInventory {
 		}
 	}
 
-	@Method(IItemHandler.class)
+	@IMethod.Inject(IItemHandler.class)
 	public static class MetadataMethod extends BasicObjectMethod<IItemHandler> {
 		public MetadataMethod() {
 			super("getMetadata", true, "function(slot:integer):table|nil -- Get the metadata of the item in a slot. The slot number starts from 1.");

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.MetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * Provides food and saturation for foodstuffs, and potion details for potions.
  */
-@MetaProvider(ItemStack.class)
+@IMetaProvider.Inject(ItemStack.class)
 public class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

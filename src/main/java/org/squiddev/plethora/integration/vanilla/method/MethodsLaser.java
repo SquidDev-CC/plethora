@@ -21,7 +21,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMaximum
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMinimum;
 
 public final class MethodsLaser {
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodFire extends TargetedModuleMethod<IWorldLocation> {
 		public MethodFire() {
 			super("fire", PlethoraModules.LASER, IWorldLocation.class, "function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction");

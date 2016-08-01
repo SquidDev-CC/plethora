@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
-import org.squiddev.plethora.api.converter.Converter;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.converter.IConverterRegistry;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -76,7 +75,7 @@ public class ConverterRegistry implements IConverterRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(Converter.class.getCanonicalName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IConverter.Inject.class.getCanonicalName())) {
 			String name = asmData.getClassName();
 			try {
 				Map<String, Object> info = asmData.getAnnotationInfo();

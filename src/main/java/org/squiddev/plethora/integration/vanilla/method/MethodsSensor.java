@@ -9,8 +9,8 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.Method;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
@@ -30,7 +30,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.sensorRadius;
 
 public final class MethodsSensor {
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class ScanEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
 		public ScanEntitiesMethod() {
 			super("scan", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
@@ -59,7 +59,7 @@ public final class MethodsSensor {
 		}
 	}
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class GetMetaUUIDMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaUUIDMethod() {
 			super("getMetaByID", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by UUID");
@@ -89,7 +89,7 @@ public final class MethodsSensor {
 		}
 	}
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class GetMetaNameMethod extends TargetedModuleMethod<IWorldLocation> {
 		public GetMetaNameMethod() {
 			super("getMetaByName", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by name");

@@ -5,11 +5,11 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.Method;
+import org.squiddev.plethora.api.method.IMethod;
 
 import javax.annotation.Nonnull;
 
-@Method(Object.class)
+@IMethod.Inject(Object.class)
 public class MethodMeta extends BasicObjectMethod<Object> {
 	public MethodMeta() {
 		super("getMetadata", true, Integer.MIN_VALUE, "function():table -- Get metadata about this object");

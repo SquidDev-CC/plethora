@@ -29,7 +29,7 @@ public final class MethodsKineticEntity {
 		TODO: `activate()` Right click to activate (requires fake player)
 	*/
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
 		public MethodEntityLook() {
 			super("look", PlethoraModules.KINETIC, EntityLivingBase.class, "function(yaw:number, pitch:number) -- Look in a set direction");
@@ -58,7 +58,7 @@ public final class MethodsKineticEntity {
 		}
 	}
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityCreeperExplode extends TargetedModuleObjectMethod<EntityCreeper> {
 		public MethodEntityCreeperExplode() {
 			super("explode", PlethoraModules.KINETIC, EntityCreeper.class, true, "function() -- Explode this creeper");
@@ -72,7 +72,7 @@ public final class MethodsKineticEntity {
 		}
 	}
 
-	@Method(IModule.class)
+	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityEndermanTeleport extends TargetedModuleObjectMethod<EntityEnderman> {
 		public MethodEntityEndermanTeleport() {
 			super("teleport", PlethoraModules.KINETIC, EntityEnderman.class, true, "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one");
