@@ -130,12 +130,12 @@ public final class MetaRegistry implements IMetaRegistry {
 				} else {
 					registerMetaProvider(target, namespace, instance);
 				}
-			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
-			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
-			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
+			} catch (Throwable e) {
+				if (ConfigCore.Testing.strict) {
+					throw new IllegalStateException("Failed to load: " + name, e);
+				} else {
+					DebugLogger.error("Failed to load: " + name, e);
+				}
 			}
 		}
 	}

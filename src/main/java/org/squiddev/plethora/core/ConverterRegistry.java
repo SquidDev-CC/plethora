@@ -92,12 +92,12 @@ public class ConverterRegistry implements IConverterRegistry {
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
 				registerConverter(target, instance);
-			} catch (ClassNotFoundException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
-			} catch (IllegalAccessException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
-			} catch (InstantiationException e) {
-				DebugLogger.error("Failed to load: %s", name, e);
+			} catch (Throwable e) {
+				if (ConfigCore.Testing.strict) {
+					throw new IllegalStateException("Failed to load: " + name, e);
+				} else {
+					DebugLogger.error("Failed to load: " + name, e);
+				}
 			}
 		}
 	}

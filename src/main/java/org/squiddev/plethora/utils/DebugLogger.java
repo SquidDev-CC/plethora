@@ -5,14 +5,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
+import org.squiddev.plethora.core.ConfigCore;
 
 /**
  * Facade to the basic logger, which also forces debug calls
- * if {@link #DEBUG} is enabled
+ * if {@link ConfigCore.Testing.debug} is enabled
  */
 public class DebugLogger {
 	private static final Logger logger = LogManager.getLogger("Plethora");
-	public static final boolean DEBUG = true;
 
 	public static void trace(String message, int max) {
 		try {
@@ -39,25 +39,25 @@ public class DebugLogger {
 	}
 
 	public static void debug(Marker marker, String message) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(marker, message);
 		}
 	}
 
 	public static void debug(Marker marker, String message, Object... params) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(marker, String.format(message, params));
 		}
 	}
 
 	public static void debug(Marker marker, String message, Throwable t) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(marker, message, t);
 		}
 	}
 
 	public static void debug(String message) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(message);
 		} else {
 			logger.debug(message);
@@ -65,7 +65,7 @@ public class DebugLogger {
 	}
 
 	public static void debug(String message, Object... params) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(String.format(message, params));
 		} else {
 			logger.debug(String.format(message, params));
@@ -73,7 +73,7 @@ public class DebugLogger {
 	}
 
 	public static void debug(String message, Throwable t) {
-		if (DEBUG) {
+		if (ConfigCore.Testing.debug) {
 			logger.info(message, t);
 		} else {
 			logger.debug(message, t);
