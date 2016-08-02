@@ -11,8 +11,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A Lua side method targeting a class
- * Register with {@link IMethodRegistry}
+ * A Lua side method targeting a class.
+ *
+ * There are several ways of using {@link IMethod}:
+ * - Extend {@link BasicMethod}, one of its subclasses or write your own. Then register using {@link Inject}.
+ * - As above but register using {@link IMethodRegistry#registerMethod(Class, IMethod)}.
+ * - Create a static method on a class and register using {@link BasicMethod.Inject} or similar. If you wish to
+ * use a custom base class see {@link IMethodBuilder}.
+ *
+ * @see BasicMethod
+ * @see IMethodRegistry#registerMethod(Class, IMethod)
  */
 public interface IMethod<T> {
 	/**

@@ -5,6 +5,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
@@ -66,4 +67,12 @@ public interface IMethodRegistry {
 	 */
 	@Nonnull
 	ICostHandler getCostHandler(@Nonnull ICapabilityProvider object);
+
+	/**
+	 * Register a method builder
+	 *
+	 * @param klass   The annotation to build from
+	 * @param builder The builder to register
+	 */
+	<T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder);
 }

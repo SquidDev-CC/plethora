@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import com.google.common.base.Preconditions;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.MinecraftForge;
@@ -7,6 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -30,15 +32,14 @@ public class PlethoraCore {
 	public static final String VERSION = "${mod_version}";
 	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},)";
 
+	private ASMDataTable asmData;
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		// Setup the config file
 		ConfigCore.init(event.getSuggestedConfigurationFile());
 
-		// Load various objects from annotations
-		MetaRegistry.instance.loadAsm(event.getAsmData());
-		MethodRegistry.instance.loadAsm(event.getAsmData());
-		ConverterRegistry.instance.loadAsm(event.getAsmData());
+		asmData = event.getAsmData();
 
 		// Register capabilities
 		CapabilityManager.INSTANCE.register(ICostHandler.class, new DefaultStorage<ICostHandler>(), DefaultCostHandler.class);
@@ -52,13 +53,24 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
+	public void postInit(FMLPostInitializationEvent event) {
+		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
+
+		// Load various objects from annotations
+		MetaRegistry.instance.loadAsm(asmData);
+		MethodRegistry.instance.loadAsm(asmData);
+		ConverterRegistry.instance.loadAsm(asmData);
+		MethodTypeBuilder.instance.loadAsm(asmData);
+	}
+
+	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event) {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 
 	@Mod.EventHandler
-	public void onSeverStarting(FMLServerStartingEvent evt) {
-		evt.registerServerCommand(new CommandDump(evt.getServer().isDedicatedServer()));
+	public void onSeverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandDump(event.getServer().isDedicatedServer()));
 	}
 
 	@Mod.EventHandler

@@ -18,6 +18,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
@@ -115,6 +116,14 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(object, "object cannot be null");
 		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, null);
 		return handler != null ? handler : DefaultCostHandler.get(object);
+	}
+
+	@Override
+	public <T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder) {
+		Preconditions.checkNotNull(klass, "klass cannot be null");
+		Preconditions.checkNotNull(builder, "builder cannot be null");
+
+		MethodTypeBuilder.instance.addBuilder(klass, builder);
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {
