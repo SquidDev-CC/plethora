@@ -103,7 +103,7 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getCanonicalName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistMeta, name)) {

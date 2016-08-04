@@ -75,7 +75,7 @@ public class ConverterRegistry implements IConverterRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IConverter.Inject.class.getCanonicalName())) {
+		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IConverter.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
 				Map<String, Object> info = asmData.getAnnotationInfo();
