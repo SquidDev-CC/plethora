@@ -107,9 +107,6 @@ public final class MethodTypeBuilder extends ClassLoader {
 		if (error != null || contents.length() > 0) {
 			reader.accept(new TraceClassVisitor(printWriter), 0);
 			throw new IllegalStateException(writer.toString(), error);
-		} else {
-			reader.accept(new TraceClassVisitor(printWriter), 0);
-			DebugLogger.debug(writer.toString());
 		}
 	}
 
@@ -166,6 +163,11 @@ public final class MethodTypeBuilder extends ClassLoader {
 	}
 
 	public <T extends Annotation> void addBuilder(Class<T> klass, IMethodBuilder<T> builder) {
+		IMethodBuilder<?> other = annotations.get(klass);
+		if (other != null) {
+			throw new IllegalArgumentException("Duplicate builder for " + klass.getName() + ": trying to replace " + other + " with " + builder);
+		}
+
 		annotations.put(klass, builder);
 	}
 
@@ -181,7 +183,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				Class<? extends Annotation> target = Class.forName(((Type) info.get("value")).getClassName()).asSubclass(Annotation.class);
-				annotations.put(target, instance);
+				addBuilder(target, instance);
 			} catch (Throwable e) {
 				DebugLogger.error("Failed to load: " + name, e);
 			}
@@ -197,14 +199,9 @@ public final class MethodTypeBuilder extends ClassLoader {
 		String methodName = methodWhole.substring(0, offset);
 		String methodDesc = methodWhole.substring(offset);
 
-		DebugLogger.debug("Looking for " + methodName + " with desc " + methodDesc);
-
 		for (Method method : klass.getDeclaredMethods()) {
-			DebugLogger.debug(" Checking " + method);
 			if (method.getName().equals(methodName)) {
-				DebugLogger.debug("  " + Type.getMethodDescriptor(method));
 				if (Type.getMethodDescriptor(method).equals(methodDesc)) {
-					DebugLogger.debug("Found!");
 					return method;
 				}
 			}

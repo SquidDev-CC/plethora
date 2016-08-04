@@ -5,96 +5,90 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 
 public final class MethodsInventory {
-	// TODO: Switch to new argument validation
-
-	@IMethod.Inject(IItemHandler.class)
-	public static class ListMethod extends BasicObjectMethod<IItemHandler> {
-		public ListMethod() {
-			super("list", true, "function():table -- List all items in this inventory");
+	@BasicObjectMethod.Inject(
+		value = IItemHandler.class, worldThread = true,
+		doc = "function():table -- List all items in this inventory"
+	)
+	public static Object[] list(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+		HashMap<Integer, Object> items = Maps.newHashMap();
+		IItemHandler inventory = context.getTarget();
+		int size = inventory.getSlots();
+		for (int i = 0; i < size; i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack != null) {
+				items.put(i + 1, MetaItemBasic.getBasicProperties(stack));
+			}
 		}
 
-		@Override
-		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			HashMap<Integer, Object> items = Maps.newHashMap();
-			IItemHandler inventory = context.getTarget();
-			int size = inventory.getSlots();
-			for (int i = 0; i < size; i++) {
-				ItemStack stack = inventory.getStackInSlot(i);
-				if (stack != null) {
-					items.put(i + 1, MetaItemBasic.getBasicProperties(stack));
+		return new Object[]{items};
+	}
+
+	@BasicMethod.Inject(
+		value = IItemHandler.class,
+		doc = "function(slot:integer):table|nil -- Get the item in a slot. The slot number starts from 1."
+	)
+	public static MethodResult getItem(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+		final int slot = getInt(args, 0);
+
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IItemHandler inventory = context.bake().getTarget();
+
+				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
+
+				ItemStack stack = inventory.getStackInSlot(slot - 1);
+				if (stack == null) {
+					return MethodResult.empty();
+				} else {
+					ItemSlot item = new ItemSlot(inventory, slot - 1);
+					return MethodResult.result(context.makeChild(item).getObject());
 				}
 			}
-
-			return new Object[]{items};
-		}
+		});
 	}
 
-	@IMethod.Inject(IItemHandler.class)
-	public static class GetItemMethod extends BasicObjectMethod<IItemHandler> {
-		public GetItemMethod() {
-			super("getItem", true, "function(slot:integer):table|nil -- Get the item in a slot. The slot number starts from 1.");
-		}
+	@BasicObjectMethod.Inject(
+		value = IItemHandler.class, worldThread = true,
+		doc = "function():integer -- Get the size of the inventory"
+	)
+	public static Object[] size(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+		return new Object[]{context.getTarget().getSlots()};
+	}
 
-		@Override
-		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
+	@BasicMethod.Inject(
+		value = IItemHandler.class,
+		doc = "function(slot:integer):table|nil -- Get the metadata of the item in a slot. The slot number starts from 1."
+	)
+	public static MethodResult getMetadata(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+		final int slot = getInt(args, 0);
 
-			IItemHandler inventory = context.getTarget();
-			int slot = ((Number) args[0]).intValue();
-			if (slot < 1 || slot > inventory.getSlots()) throw new LuaException("Slot out of range");
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IItemHandler inventory = context.bake().getTarget();
 
-			ItemStack stack = inventory.getStackInSlot(slot - 1);
-			if (stack == null) {
-				return null;
-			} else {
-				ItemSlot item = new ItemSlot(inventory, slot - 1);
-				return new Object[]{context.makeChild(item).getObject()};
+				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
+
+				ItemStack stack = inventory.getStackInSlot(slot - 1);
+				if (stack == null) {
+					return MethodResult.empty();
+				} else {
+					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(stack));
+				}
 			}
-		}
-	}
-
-	@IMethod.Inject(IItemHandler.class)
-	public static class SizeMethod extends BasicObjectMethod<IItemHandler> {
-		public SizeMethod() {
-			super("size", true, "function():integer -- Get the size of the inventory");
-		}
-
-		@Override
-		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			return new Object[]{context.getTarget().getSlots()};
-		}
-	}
-
-	@IMethod.Inject(IItemHandler.class)
-	public static class MetadataMethod extends BasicObjectMethod<IItemHandler> {
-		public MetadataMethod() {
-			super("getMetadata", true, "function(slot:integer):table|nil -- Get the metadata of the item in a slot. The slot number starts from 1.");
-		}
-
-		@Override
-		public Object[] apply(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			if (args.length < 1 || !(args[0] instanceof Number)) throw new LuaException("Expected number");
-
-			IItemHandler inventory = context.getTarget();
-			int slot = ((Number) args[0]).intValue();
-			if (slot < 1 || slot > inventory.getSlots()) throw new LuaException("Slot out of range");
-
-			ItemStack stack = inventory.getStackInSlot(slot - 1);
-			if (stack == null) {
-				return null;
-			} else {
-				return new Object[]{PlethoraAPI.instance().metaRegistry().getMeta(stack)};
-			}
-		}
+		});
 	}
 }

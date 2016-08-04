@@ -5,6 +5,10 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 
 /**
@@ -58,4 +62,63 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 	 */
 	@Nullable
 	public abstract Object[] apply(@Nonnull IContext<T> context, @Nonnull Object[] args) throws LuaException;
+
+	/**
+	 * Delegate to a normal method from a {@link BasicObjectMethod}.
+	 *
+	 * The method should be a public and static with the same signature as {@link BasicObjectMethod#apply(IContext, Object[])}.
+	 * This does not allow fine grain control over whether a method can be applied or not. If you require
+	 * {@link IMethod#canApply(IContext)} you should use a normal {@link IMethod} instead.
+	 *
+	 * Use {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to be loaded.
+	 */
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Inject {
+		/**
+		 * The name this function should be exposed as.
+		 *
+		 * This defaults to the method's name
+		 *
+		 * @return The function's name
+		 * @see IMethod#getName()
+		 */
+		String name() default "";
+
+		/**
+		 * The class this method targets.
+		 *
+		 * @return The target class.
+		 */
+		Class<?> value();
+
+		/**
+		 * The priority of the method.
+		 *
+		 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Methods
+		 * with higher priorities will be preferred.
+		 *
+		 * @return The method's priority
+		 * @see IMethod#getPriority()
+		 */
+		int priority() default 0;
+
+		/**
+		 * The method's doc string.
+		 *
+		 * See {@link IMethod#getDocString()} for format information
+		 *
+		 * @return The method's doc string
+		 * @see IMethod#getDocString()
+		 */
+		String doc() default "";
+
+		/**
+		 * Run this method on the world thread
+		 *
+		 * @return Whether this method should be run on the world thread
+		 * @see BasicObjectMethod#BasicObjectMethod(String, boolean)
+		 */
+		boolean worldThread();
+	}
 }
