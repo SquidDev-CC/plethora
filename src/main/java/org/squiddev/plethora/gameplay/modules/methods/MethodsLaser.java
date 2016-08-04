@@ -1,4 +1,4 @@
-package org.squiddev.plethora.integration.vanilla.method;
+package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;

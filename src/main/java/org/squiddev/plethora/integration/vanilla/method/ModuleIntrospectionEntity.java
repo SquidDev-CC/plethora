@@ -19,7 +19,10 @@ import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
-public final class MethodsIntrospection {
+/**
+ * org.squiddev.plethora.integration.vanilla.method (plethora
+ */
+public class ModuleIntrospectionEntity {
 	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityPlayerInventory extends ModuleObjectMethod {
 		public MethodEntityPlayerInventory() {
@@ -71,38 +74,6 @@ public final class MethodsIntrospection {
 			IInventory inventory = player.getInventoryEnderChest();
 			IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
 			return new Object[]{newContext.getObject()};
-		}
-	}
-
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityGetID extends ModuleObjectMethod {
-		public MethodEntityGetID() {
-			super("getID", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's UUID.");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
-			if (entity == null) throw new LuaException("Entity not found");
-
-			return new Object[]{entity.getUniqueID().toString()};
-		}
-	}
-
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityGetName extends ModuleObjectMethod {
-		public MethodEntityGetName() {
-			super("getName", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's name");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
-			if (entity == null) throw new LuaException("Entity not found");
-
-			return new Object[]{entity.getName()};
 		}
 	}
 }
