@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api.converter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,7 +18,7 @@ public interface IConverter<TIn, TOut> {
 	 * @param from The object to convert from
 	 * @return The converted object
 	 */
-	@Nonnull
+	@Nullable
 	TOut convert(@Nonnull TIn from);
 
 	/**

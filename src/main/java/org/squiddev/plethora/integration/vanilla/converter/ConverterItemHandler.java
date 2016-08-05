@@ -6,10 +6,11 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @IConverter.Inject(IInventory.class)
 public class ConverterItemHandler implements IConverter<IInventory, IItemHandler> {
-	@Nonnull
+	@Nullable
 	@Override
 	public IItemHandler convert(@Nonnull IInventory from) {
 		return new InvWrapper(from);

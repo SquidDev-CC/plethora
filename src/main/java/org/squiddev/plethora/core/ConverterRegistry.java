@@ -54,7 +54,8 @@ public class ConverterRegistry implements IConverterRegistry {
 			while (toVisit.size() > 0) {
 				Class<?> klass = toVisit.poll();
 				for (IConverter<?, ?> converter : converters.get(klass)) {
-					toConvert.add(((IConverter<Object, Object>) converter).convert(target));
+					Object converted = ((IConverter<Object, Object>) converter).convert(target);
+					if (converted != null) toConvert.add(converted);
 				}
 
 				Class<?> parent = klass.getSuperclass();
