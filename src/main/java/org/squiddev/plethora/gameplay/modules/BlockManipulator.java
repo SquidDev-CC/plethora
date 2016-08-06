@@ -20,13 +20,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.core.Context;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
+import org.squiddev.plethora.core.UnbakedContext;
 import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 
@@ -101,7 +103,6 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		ICostHandler costHandler = CostHelpers.getCostHandler(stack);
 		IUnbakedContext<IModule> context = MethodRegistry.instance.makeContext(new IReference<IModule>() {
 			@Nonnull
 			@Override
@@ -111,10 +112,9 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 				}
 				return module;
 			}
-		}, costHandler, contextData);
-		IContext<IModule> baked = new Context<IModule>(null, module, costHandler, contextData);
+		}, CostHelpers.getCostHandler(stack), contextData);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {
 			return new MethodWrapperPeripheral(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {
