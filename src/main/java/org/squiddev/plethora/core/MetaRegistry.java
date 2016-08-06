@@ -8,6 +8,7 @@ import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
@@ -58,7 +59,7 @@ public final class MetaRegistry implements IMetaRegistry {
 
 		HashMap<Object, Object> out = Maps.newHashMap();
 
-		List<?> objects = ConverterRegistry.instance.convertAll(object);
+		List<?> objects = PlethoraAPI.instance().converterRegistry().convertAll(object);
 		Collections.reverse(objects);
 		for (Object child : objects) {
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {

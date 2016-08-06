@@ -9,15 +9,13 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
-import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.core.Context;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
-import org.squiddev.plethora.core.UnbakedContext;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
@@ -65,6 +63,7 @@ public final class NeuralHelpers {
 		contextData[contextData.length - 2] = entity(owner);
 		contextData[contextData.length - 1] = new EntityWorldLocation(owner);
 
+		ICostHandler costHandler = CostHelpers.getCostHandler(stack);
 		IUnbakedContext<IModule> context = MethodRegistry.instance.makeContext(new IReference<IModule>() {
 			@Nonnull
 			@Override
@@ -74,9 +73,10 @@ public final class NeuralHelpers {
 				}
 				return module;
 			}
-		}, CostHelpers.getCostHandler(stack), contextData);
+		}, costHandler, contextData);
+		IContext<IModule> baked = new Context<IModule>(null, module, costHandler, contextData);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
+		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getFirst().size() > 0) {
 			return new MethodWrapperPeripheral(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {

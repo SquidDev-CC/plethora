@@ -4,10 +4,10 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.core.MethodRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 	private static <T> ILuaObject wrap(EntityLivingBase entity, T object) {
 		if (object == null) return null;
 
-		return MethodRegistry.instance.makeContext(
+		return PlethoraAPI.instance().methodRegistry().makeContext(
 			id(object),
 			CostHelpers.getCostHandler(entity),
 			entity(entity)

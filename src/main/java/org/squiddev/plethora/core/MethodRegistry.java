@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.IdentityReference;
@@ -133,7 +134,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
 
 		Object initialTarget = initialBaked.getTarget();
-		for (Object obj : ConverterRegistry.instance.convertAll(initialTarget)) {
+		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
 			IUnbakedContext<?> ctx;
 			IContext<?> ctxBaked;
 

@@ -8,8 +8,10 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodBuilder;
+import org.squiddev.plethora.api.method.IMethodRegistry;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -124,6 +126,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 	@SuppressWarnings("unchecked")
 	private <T extends Annotation> void loadAsm(ASMDataTable asmDataTable, Class<T> annotation, IMethodBuilder<T> builder) {
+		IMethodRegistry methodRegistry = PlethoraAPI.instance().methodRegistry();
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(annotation.getName())) {
 			String className = asmData.getClassName();
 			String methodWhole = asmData.getObjectName();
@@ -151,7 +154,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 				T meta = method.getAnnotation(annotation);
 				Class<? extends IMethod> builtClass = loadMethod(method, meta, builder);
-				MethodRegistry.instance.registerMethod(builder.getTarget(method, meta), builtClass.newInstance());
+				methodRegistry.registerMethod(builder.getTarget(method, meta), builtClass.newInstance());
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + className + "#" + methodWhole, e);
