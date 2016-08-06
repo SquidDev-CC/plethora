@@ -43,7 +43,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 			ICostHandler handler = registry.getCostHandler(te);
 			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, new WorldLocation(world, blockPos));
-			IContext<TileEntity> baked = new Context<TileEntity>(null, te, handler, new WorldLocation(world, blockPos));
+			IContext<TileEntity> baked = new Context<TileEntity>(null, te, handler, new Object[]{new WorldLocation(world, blockPos)});
 
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {

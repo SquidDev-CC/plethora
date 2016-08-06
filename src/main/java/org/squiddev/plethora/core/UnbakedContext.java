@@ -22,7 +22,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<?>[] context;
 	private final ICostHandler handler;
 
-	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>... context) {
+	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;

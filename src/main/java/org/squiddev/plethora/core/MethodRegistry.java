@@ -15,6 +15,7 @@ import org.squiddev.plethora.api.reference.IdentityReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.integration.MethodDocumentation;
+import org.squiddev.plethora.integration.MethodTransferLocations;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -153,7 +154,11 @@ public final class MethodRegistry implements IMethodRegistry {
 		}
 
 		if (methods.size() > 0) {
+			// TODO: Allow anyone to add to this
 			methods.add(new MethodDocumentation(methods));
+			contexts.add(initialContext);
+
+			methods.add(new MethodTransferLocations());
 			contexts.add(initialContext);
 		}
 

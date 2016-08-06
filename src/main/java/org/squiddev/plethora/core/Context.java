@@ -1,17 +1,22 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.util.Tuple;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.transfer.ITransferRegistry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Set;
 
 import static org.squiddev.plethora.core.UnbakedContext.arrayCopy;
 
@@ -21,7 +26,7 @@ public class Context<T> implements IContext<T> {
 	private final Object[] context;
 	private final ICostHandler handler;
 
-	public Context(IUnbakedContext<T> parent, T target, ICostHandler handler, Object... context) {
+	public Context(IUnbakedContext<T> parent, T target, ICostHandler handler, Object[] context) {
 		this.parent = parent;
 		this.target = target;
 		this.handler = handler;
@@ -104,5 +109,37 @@ public class Context<T> implements IContext<T> {
 	@Override
 	public ICostHandler getCostHandler() {
 		return handler;
+	}
+
+	@Nullable
+	@Override
+	public Object getTransferLocation(@Nonnull String key) {
+		Preconditions.checkNotNull(key, "key cannot be null");
+
+		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
+		Object object = registry.getTransferLocation(target, key);
+		if (object != null) return object;
+
+		for (int i = context.length - 1; i >= 0; i--) {
+			object = registry.getTransferLocation(context[i], key);
+			if (object != null) return object;
+		}
+
+		return null;
+	}
+
+	@Nonnull
+	@Override
+	public Set<String> getTransferLocations() {
+		Set<String> out = Sets.newHashSet();
+
+		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
+
+		out.addAll(registry.getTransferLocations(target));
+		for (int i = context.length - 1; i >= 0; i--) {
+			out.addAll(registry.getTransferLocations(context[i]));
+		}
+
+		return out;
 	}
 }
