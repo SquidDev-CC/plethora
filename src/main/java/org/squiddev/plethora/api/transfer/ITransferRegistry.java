@@ -60,6 +60,17 @@ public interface ITransferRegistry {
 	Object getTransferLocation(@Nonnull Object object, @Nonnull String key);
 
 	/**
+	 * Get a transfer location for a single "part" of the path
+	 *
+	 * @param object    The object to get locations from
+	 * @param part      The lookup for transfer locations
+	 * @param secondary Use the secondary transfer providers
+	 * @return The valid transfer location or {@code null} if none exists.
+	 */
+	@Nullable
+	Object getTransferPart(@Nonnull Object object, @Nonnull String part, boolean secondary);
+
+	/**
 	 * Get all primary transfer locations
 	 *
 	 * @param object The object to get locations from

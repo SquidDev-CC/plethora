@@ -116,16 +116,30 @@ public class Context<T> implements IContext<T> {
 	public Object getTransferLocation(@Nonnull String key) {
 		Preconditions.checkNotNull(key, "key cannot be null");
 
-		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
-		Object object = registry.getTransferLocation(target, key);
-		if (object != null) return object;
+		String[] parts = key.split("\\.");
+		String primary = parts[0];
 
-		for (int i = context.length - 1; i >= 0; i--) {
-			object = registry.getTransferLocation(context[i], key);
-			if (object != null) return object;
+		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
+
+		// Lookup the primary
+		Object found = registry.getTransferPart(target, primary, false);
+		if (found == null) {
+			for (int i = context.length - 1; i >= 0; i--) {
+				found = registry.getTransferPart(context[i], primary, false);
+				if (found != null) break;
+			}
+
+			if (found == null) return null;
 		}
 
-		return null;
+		// Lookup the secondary from the primary.
+		// This means that the root object is consistent: "<x>.<y>" will always target a sub-part of "<x>".
+		for (int i = 1; i < parts.length; i++) {
+			found = registry.getTransferPart(found, parts[i], true);
+			if (found == null) return null;
+		}
+
+		return found;
 	}
 
 	@Nonnull

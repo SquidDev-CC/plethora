@@ -61,7 +61,7 @@ public final class TransferRegistry implements ITransferRegistry {
 		String[] parts = key.split("\\.");
 
 		for (String part : parts) {
-			Object next = getTransferPart(object, key, map);
+			Object next = getTransferPart(object, part, map);
 			if (next == null) {
 				return null;
 			} else {
@@ -71,6 +71,12 @@ public final class TransferRegistry implements ITransferRegistry {
 		}
 
 		return object;
+	}
+
+	@Nullable
+	@Override
+	public Object getTransferPart(@Nonnull Object object, @Nonnull String part, boolean secondary) {
+		return getTransferPart(object, part, secondary ? this.secondary : this.primary);
 	}
 
 	@SuppressWarnings("unchecked")
