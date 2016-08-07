@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -22,6 +23,8 @@ import org.squiddev.plethora.core.capabilities.DefaultModuleHandler;
 import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
 import org.squiddev.plethora.core.capabilities.DefaultStorage;
 import org.squiddev.plethora.core.docdump.CommandDump;
+import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
@@ -31,6 +34,7 @@ public class PlethoraCore {
 	public static final String NAME = "Plethora Core";
 	public static final String VERSION = "${mod_version}";
 	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},)";
+	public static final ResourceLocation PERIPHERAL_HANDLER_KEY = new ResourceLocation(Plethora.ID, "peripheralHandler");
 
 	private ASMDataTable asmData;
 
@@ -50,6 +54,9 @@ public class PlethoraCore {
 		// Various event handlers
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new PeripheralCapabilitiesProvider());
+
+		// Integration modules
+		IntegrationVanilla.setup();
 	}
 
 	@Mod.EventHandler

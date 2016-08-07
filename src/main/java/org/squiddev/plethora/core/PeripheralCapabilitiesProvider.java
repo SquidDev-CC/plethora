@@ -5,7 +5,6 @@ import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
 import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -14,7 +13,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
 
@@ -22,14 +20,12 @@ import javax.annotation.Nonnull;
  * Provides various peripherals for ComputerCraft items
  */
 public class PeripheralCapabilitiesProvider {
-	private static final ResourceLocation PERIPHERAL_HANDLER_KEY = new ResourceLocation(Plethora.ID, "peripheralHandler");
-
 	@SubscribeEvent
 	public void onAttachItemCapabilities(AttachCapabilitiesEvent.Item event) {
 		ItemStack stack = event.getItemStack();
 
 		if (event.getItem() instanceof ItemPeripheralBase) {
-			event.addCapability(PERIPHERAL_HANDLER_KEY, new PeripheralCapabilityProvider(stack));
+			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new PeripheralCapabilityProvider(stack));
 		}
 	}
 
