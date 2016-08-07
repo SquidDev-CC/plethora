@@ -4,20 +4,31 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraftforge.fml.common.Optional;
+import org.squiddev.cctweaks.api.network.INetworkAccess;
+import org.squiddev.cctweaks.api.network.INetworkedPeripheral;
+import org.squiddev.cctweaks.api.network.Packet;
+import org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted;
+import org.squiddev.cctweaks.core.network.NetworkAccessDelegate;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.reference.IReference;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Handles integration with a {@link IPeripheral}
  */
-public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral {
+@Optional.Interface(iface = "org.squiddev.cctweaks.api.network.INetworkedPeripheral", modid = "CCTweaks")
+public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral, INetworkedPeripheral, IPeripheralTargeted {
 	private final Object owner;
 	private final String type;
+
+	private Object delegate;
 
 	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
 		this(owner.getClass().getName(), owner, methods, contexts);
@@ -36,7 +47,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		IUnbakedContext context = getContext(method).withContext(id(access), id(luaContext));
+		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
 		return unwrap(result, access, luaContext);
@@ -57,4 +68,50 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 		return owner == ((MethodWrapperPeripheral) other).owner;
 	}
+
+	//region CCTweaks
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	protected IReference<?>[] getReferences(IComputerAccess access, ILuaContext context) {
+		return new IReference[]{id(access), id(context), id(getDelegate())};
+	}
+
+	@Optional.Method(modid = "CCTweaks")
+	private NetworkAccessDelegate getDelegate() {
+		NetworkAccessDelegate delegate = (NetworkAccessDelegate) this.delegate;
+		if (delegate == null) {
+			this.delegate = delegate = new NetworkAccessDelegate();
+		}
+
+		return delegate;
+	}
+
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	public void attachToNetwork(INetworkAccess network, String name) {
+		getDelegate().add(network);
+	}
+
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	public void detachFromNetwork(INetworkAccess network, String name) {
+		getDelegate().remove(network);
+	}
+
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	public void networkInvalidated(INetworkAccess network, Map<String, IPeripheral> oldPeripherals, Map<String, IPeripheral> newPeripherals) {
+	}
+
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	public void receivePacket(INetworkAccess network, Packet packet, double distanceTravelled) {
+	}
+
+	@Override
+	@Optional.Method(modid = "CCTweaks")
+	public Object getTarget() {
+		return owner;
+	}
+	//endregion
 }

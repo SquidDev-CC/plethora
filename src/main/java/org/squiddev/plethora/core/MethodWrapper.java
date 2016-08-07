@@ -7,10 +7,13 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Handles the base for various Lua objects
@@ -44,6 +47,10 @@ public class MethodWrapper {
 
 	public IUnbakedContext<?> getContext(int i) {
 		return contexts.get(i);
+	}
+
+	protected IReference<?>[] getReferences(IComputerAccess access, ILuaContext context) {
+		return new IReference[]{id(access), id(context)};
 	}
 
 	@SuppressWarnings("unchecked")

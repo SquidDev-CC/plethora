@@ -10,8 +10,6 @@ import org.squiddev.plethora.api.method.MethodResult;
 
 import java.util.List;
 
-import static org.squiddev.plethora.api.reference.Reference.id;
-
 /**
  * Handles integration with a {@link ILuaObject}.
  */
@@ -25,7 +23,7 @@ public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject 
 
 	@Override
 	public Object[] callMethod(ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		IUnbakedContext context = getContext(method).withContext(id(access), id(luaContext));
+		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
 		return unwrap(result, access, luaContext);
