@@ -6,6 +6,7 @@ import org.squiddev.plethora.core.ConfigCoreForgeLoader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Config(languagePrefix = "gui.config.plethora.")
 public final class ConfigCore {
@@ -85,6 +86,13 @@ public final class ConfigCore {
 		 */
 		@RequiresRestart
 		public static ArrayList<String> blacklistTileEntities;
+
+		/**
+		 * List of mods to block.
+		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables custom mod interaction.
+		 */
+		@RequiresRestart
+		public static HashSet<String> blacklistMods;
 	}
 
 	public static class Testing {

@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import java.io.File;
@@ -212,6 +213,6 @@ public class Helpers {
 	}
 
 	public static boolean modLoaded(String mod) {
-		return Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod);
+		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod);
 	}
 }

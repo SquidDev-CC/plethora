@@ -1,6 +1,7 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -142,11 +143,16 @@ public final class MethodTypeBuilder extends ClassLoader {
 					continue;
 				}
 
+				String modName = (String) asmData.getAnnotationInfo().get("modId");
+				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
+					DebugLogger.debug("Skipping " + className + "#" + modName + " as " + modName + " is not loaded or is blacklisted");
+				}
+
 				Class<?> klass = Class.forName(className);
 				Method method = findMethod(methodWhole, klass);
 
 				if (method == null) {
-					DebugLogger.warn("Cannot find method" + className + "#" + methodWhole + ". This has probably been removed through @Optional.");
+					DebugLogger.warn("Cannot find method" + className + "#" + methodWhole + ". Try to use the injection annotation's modId field instead of @Optional.");
 					continue;
 				}
 

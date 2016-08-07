@@ -82,7 +82,7 @@ public class ConverterRegistry implements IConverterRegistry {
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				String modName = (String) info.get("modId");
 				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
-					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded");
+					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded or is blacklisted");
 					continue;
 				}
 

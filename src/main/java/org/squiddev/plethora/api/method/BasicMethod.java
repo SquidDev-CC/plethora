@@ -65,7 +65,8 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
 	 * {@link IMethod#canApply(IContext)} you should use a normal {@link IMethod} instead.
 	 *
-	 * Use {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to be loaded.
+	 * Use {@link #modId()} instead of {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to
+	 * be loaded. This allows us to blacklist mods in the config.
 	 */
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
@@ -107,5 +108,14 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 		 * @see IMethod#getDocString()
 		 */
 		String doc() default "";
+
+		/**
+		 * Set if this method depends on a mod
+		 *
+		 * @return The mod's id
+		 * @see net.minecraftforge.fml.common.Optional.Method
+		 * @see net.minecraftforge.fml.common.Optional.Interface
+		 */
+		String modId() default "";
 	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * A method to {@link IMethod} instance converters.
  *
+ * @param <T> The annotation to target. This must have a modId field.
  * @see MethodBuilder
  * @see IMethodRegistry#registerMethodBuilder(Class, IMethodBuilder)
  */
