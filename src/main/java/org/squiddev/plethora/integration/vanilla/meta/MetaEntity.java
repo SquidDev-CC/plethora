@@ -2,10 +2,9 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -23,7 +22,7 @@ public class MetaEntity extends BasicMetaProvider<Entity> {
 		HashMap<Object, Object> result = Maps.newHashMap();
 		result.put("id", entity.getUniqueID().toString());
 
-		result.put("name", getName(entity));
+		result.put("name", Helpers.getName(entity));
 		result.put("displayName", entity.getName());
 
 		result.put("motionX", entity.motionX);
@@ -36,18 +35,4 @@ public class MetaEntity extends BasicMetaProvider<Entity> {
 		return result;
 	}
 
-	public static String getName(Entity entity) {
-		String name = EntityList.getEntityString(entity);
-		if (name == null) {
-			if (entity instanceof EntityPlayer) {
-				return entity.getName();
-			} else if (entity.hasCustomName()) {
-				return entity.getCustomNameTag();
-			} else {
-				return "unknown";
-			}
-		} else {
-			return name;
-		}
-	}
 }

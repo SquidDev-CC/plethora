@@ -1,16 +1,22 @@
 package org.squiddev.plethora.utils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
@@ -19,9 +25,11 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.StringUtils;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.gameplay.Plethora;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -214,5 +222,65 @@ public class Helpers {
 
 	public static boolean modLoaded(String mod) {
 		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod);
+	}
+
+	@Nonnull
+	public static String getName(Entity entity) {
+		String name = EntityList.getEntityString(entity);
+		if (name == null) {
+			if (entity instanceof EntityPlayer) {
+				return entity.getName();
+			} else if (entity.hasCustomName()) {
+				return entity.getCustomNameTag();
+			} else {
+				return "unknown";
+			}
+		} else {
+			return name;
+		}
+	}
+
+	public static String getName(ItemStack stack) {
+		String name = stack.getUnlocalizedName();
+
+		if (!Strings.isNullOrEmpty(name)) {
+			name = StringUtils.removeStart(name, "tile.");
+			name = StringUtils.removeStart(name, "item.");
+			name = StringUtils.removeEnd(name, ".name");
+			return name;
+		} else {
+			return stack.getItem().getRegistryName();
+		}
+	}
+
+	@Nonnull
+	public static String getName(Object owner) {
+		if (owner == null) {
+			return "null";
+		} else if (owner instanceof ItemStack) {
+			return getName((ItemStack) owner);
+		} else if (owner instanceof Item) {
+			return ((Item) owner).getRegistryName();
+		} else if (owner instanceof Entity) {
+			return getName((Entity) owner);
+		} else if (owner instanceof Block) {
+			return ((Block) owner).getRegistryName();
+		} else if (owner instanceof TileEntity) {
+			TileEntity te = (TileEntity) owner;
+
+			String name = TileEntity.classToNameMap.get(te.getClass());
+			if (name != null) return name;
+
+			Block block = te.getBlockType();
+			int meta = te.getBlockMetadata();
+
+			if (block != null) {
+				return getName(new ItemStack(block, 1, meta));
+			} else {
+				return te.getClass().getSimpleName();
+			}
+		} else {
+			return owner.getClass().getSimpleName();
+		}
 	}
 }

@@ -47,7 +47,6 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {
-				// TODO: Get registry name?
 				return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond());
 			}
 		}

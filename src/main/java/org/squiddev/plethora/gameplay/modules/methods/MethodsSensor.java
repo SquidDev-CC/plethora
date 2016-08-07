@@ -17,6 +17,7 @@ import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,7 +137,7 @@ public final class MethodsSensor {
 	private static Entity findEntityByName(IWorldLocation location, String name) throws LuaException {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
-			if (MetaEntity.getName(entity).equals(name)) return entity;
+			if (Helpers.getName(entity).equals(name)) return entity;
 		}
 
 		return null;

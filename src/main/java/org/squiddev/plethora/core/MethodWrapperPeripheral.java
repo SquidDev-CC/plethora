@@ -14,6 +14,8 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
 import java.util.Map;
@@ -31,13 +33,22 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	private Object delegate;
 
 	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
-		this(owner.getClass().getName(), owner, methods, contexts);
+		this(tryGetName(owner), owner, methods, contexts);
 	}
 
 	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
 		super(methods, contexts);
 		this.owner = owner;
 		this.type = name;
+	}
+
+	private static String tryGetName(Object owner) {
+		try {
+			return Helpers.getName(owner);
+		} catch (Throwable e) {
+			DebugLogger.error("Error getting data for " + owner.getClass().getName(), e);
+			return owner.getClass().getSimpleName();
+		}
 	}
 
 	@Override
