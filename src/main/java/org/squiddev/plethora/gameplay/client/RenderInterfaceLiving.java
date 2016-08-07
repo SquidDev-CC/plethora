@@ -18,24 +18,49 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
-		// Chickens look stupid :(
-		// So do baby animals
+		/**
+		 * Anything small looks stupid. We don't allow attaching to baby animals.
+		 * We don't render endermites, silverfish, bats or chickens.
+		 *
+		 * See {@link RenderManager} for entity to model mappings
+		 */
 
+		/**
+		 * @see net.minecraft.entity.monster
+		 */
 		inject(EntityBlaze.class, 0, 3, 0);
-		inject(EntityCow.class, 0, 4, -2);
+		inject(EntityCaveSpider.class, 0, 2, -3); // Same as normal spider
 		inject(EntityCreeper.class, 0, -1, 0);
+		inject(EntityEnderman.class, 0, 0, 0);
+		// IGNORE: Endermite
+		inject(EntityGhast.class, 1, 12, -4);
+		inject(EntityGuardian.class, -1, 20.5f, -4); // Move to eye?
 		inject(EntityIronGolem.class, 0, -2, -1);
+		inject(EntityMagmaCube.class, 0, 23, 0);
+		// PigZombie renders armor
+		// IGNORE: Silverfish
+		// Skeleton renders armor
+		inject(EntitySlime.class, 0, 23, 0); // This scales on size. I love it.
+		inject(EntitySnowman.class, 1, -3, -1);
+		inject(EntitySpider.class, 0, 2, -3);
+		inject(EntityWitch.class, 0, 0, 0);
+		// Zombie renders armor
+
+		/**
+		 * @see net.minecraft.entity.passive
+		 */
+		// IGNORE: Bat
+		// IGNORE: Chicken
+		inject(EntityCow.class, 0, 4, -2);
+		// IGNORE: Horse: the eyes are on the side of the face
 		inject(EntityMooshroom.class, 0, 4, -2);
 		inject(EntityOcelot.class, -1, 3, 0);
 		inject(EntityPig.class, 0, 4, -4);
+		inject(EntityRabbit.class, 0, 1, -1);
 		inject(EntitySheep.class, 0, 2, -2);
-		inject(EntitySnowman.class, 1, -3, -1);
 		inject(EntitySquid.class, 2, 3, -2);
 		inject(EntityVillager.class, 0, 0, 0);
-		inject(EntityWitch.class, 0, 0, 0);
 		inject(EntityWolf.class, 0, 4, 3);
-
-		// TODO: Rabbit, Magma Cube, Slime, Guardian, Spider, Enderman
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -83,6 +108,18 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 			return ((ModelOcelot) model).ocelotHead;
 		} else if (model instanceof ModelEnderman) {
 			return ((ModelEnderman) model).bipedHeadwear;
+		} else if (model instanceof ModelGuardian) {
+			return ((ModelGuardian) model).guardianBody;
+		} else if (model instanceof ModelRabbit) {
+			return ((ModelRabbit) model).rabbitHead;
+		} else if (model instanceof ModelSlime) {
+			return ((ModelSlime) model).slimeBodies;
+		} else if (model instanceof ModelMagmaCube) {
+			return ((ModelMagmaCube) model).core;
+		} else if (model instanceof ModelSpider) {
+			return ((ModelSpider) model).spiderHead;
+		} else if (model instanceof ModelGhast) {
+			return ((ModelGhast) model).body;
 		} else {
 			return null;
 		}
