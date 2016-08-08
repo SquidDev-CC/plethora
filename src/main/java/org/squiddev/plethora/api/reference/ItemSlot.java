@@ -49,8 +49,8 @@ public class ItemSlot implements IReference<ItemSlot> {
 	 *
 	 * @param count Number of items to extract
 	 */
-	public void extract(int count) {
-		inventory.extractItem(slot, count, false);
+	public ItemStack extract(int count) {
+		return inventory.extractItem(slot, count, false);
 	}
 
 	/**

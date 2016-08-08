@@ -20,7 +20,10 @@ import java.util.concurrent.Callable;
  * TODO: Convert to use TargetedModuleObjectMethod once I've got generation working
  */
 public class MethodsDaylightSensor {
-	@TargetedModuleMethod.Inject(module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class)
+	@TargetedModuleMethod.Inject(
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
+		doc = "function():boolean -- Whether this world has a sky."
+	)
 	public static MethodResult hasSky(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -31,7 +34,10 @@ public class MethodsDaylightSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class)
+	@TargetedModuleMethod.Inject(
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
+		doc = "function():int -- The light level from the sun"
+	)
 	public static MethodResult getSkyLight(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -48,7 +54,10 @@ public class MethodsDaylightSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class)
+	@TargetedModuleMethod.Inject(
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
+		doc = "function():int -- The light level from surrounding blocks"
+	)
 	public static MethodResult getBlockLight(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
