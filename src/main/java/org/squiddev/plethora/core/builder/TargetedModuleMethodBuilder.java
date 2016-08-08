@@ -3,6 +3,7 @@ package org.squiddev.plethora.core.builder;
 import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodBuilder;
@@ -42,7 +43,7 @@ public class TargetedModuleMethodBuilder extends MethodBuilder<TargetedModuleMet
 		mv.visitLdcInsn(module);
 		mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/util/ResourceLocation", "<init>", "(Ljava/lang/String;)V", false);
 
-		mv.visitLdcInsn(annotation.target());
+		mv.visitLdcInsn(Type.getType(annotation.target()));
 
 		mv.visitLdcInsn(annotation.priority());
 
@@ -53,7 +54,7 @@ public class TargetedModuleMethodBuilder extends MethodBuilder<TargetedModuleMet
 			mv.visitLdcInsn(doc);
 		}
 
-		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/TargetedModuleMethod", "<init>", "(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Class;ZILjava/lang/String;)V", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/TargetedModuleMethod", "<init>", "(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Class;ILjava/lang/String;)V", false);
 		mv.visitInsn(RETURN);
 
 		mv.visitMaxs(6, 1);

@@ -51,7 +51,7 @@ public class ModuleMethodBuilder extends MethodBuilder<ModuleMethod.Inject> {
 			mv.visitLdcInsn(doc);
 		}
 
-		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/ModuleMethod", "<init>", "(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;ZILjava/lang/String;)V", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/ModuleMethod", "<init>", "(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;ILjava/lang/String;)V", false);
 		mv.visitInsn(RETURN);
 
 		mv.visitMaxs(6, 1);
