@@ -8,10 +8,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,6 +24,7 @@ public class MethodsInventoryTransfer {
 		value = IItemHandler.class,
 		doc = "function(to:string, fromSlot:int[, limit:int [, toSlot:int]]):int -- Push items from this inventory to another inventory. Returns the amount transferred."
 	)
+	@MarkerInterfaces(ITransferMethod.class)
 	public static MethodResult pushItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
 		final String toName = getString(args, 0);
 		final int fromSlot = getInt(args, 1);
@@ -62,6 +60,7 @@ public class MethodsInventoryTransfer {
 		value = IItemHandler.class,
 		doc = "function(from:string, fromSlot:int[, limit:int [, toSlot:int]]):int -- Pull items to this inventory from another inventory. Returns the amount transferred."
 	)
+	@MarkerInterfaces(ITransferMethod.class)
 	public static MethodResult pullItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
 		final String fromName = getString(args, 0);
 		final int fromSlot = getInt(args, 1);

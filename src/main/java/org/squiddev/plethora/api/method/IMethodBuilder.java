@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A method to {@link IMethod} instance converters.
@@ -19,12 +20,13 @@ public interface IMethodBuilder<T extends Annotation> {
 	 * You should generate an 0 argument constructor and all other required methods (such as delegating to the
 	 * actual method).
 	 *
-	 * @param method     The method being generated
-	 * @param annotation The annotation data for this method
-	 * @param name       The internal name of the class to generate
+	 * @param method           The method being generated
+	 * @param annotation       The annotation data for this method
+	 * @param markerInterfaces Interfaces which should be added to this class
+	 * @param name             The internal name of the class to generate
 	 */
 	@Nonnull
-	byte[] writeClass(@Nonnull Method method, @Nonnull T annotation, @Nonnull String name);
+	byte[] writeClass(@Nonnull Method method, @Nonnull T annotation, @Nonnull Set<Class<?>> markerInterfaces, @Nonnull String name);
 
 	/**
 	 * Validate the method

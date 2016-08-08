@@ -133,6 +133,7 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
+		boolean requiresTransfer = false;
 
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
@@ -148,6 +149,10 @@ public final class MethodRegistry implements IMethodRegistry {
 			}
 
 			for (IMethod method : getMethods(ctxBaked)) {
+				if (!requiresTransfer && method instanceof ITransferMethod) {
+					requiresTransfer = true;
+				}
+
 				methods.add(method);
 				contexts.add(ctx);
 			}
@@ -158,8 +163,10 @@ public final class MethodRegistry implements IMethodRegistry {
 			methods.add(new MethodDocumentation(methods));
 			contexts.add(initialContext);
 
-			methods.add(new MethodTransferLocations());
-			contexts.add(initialContext);
+			if (requiresTransfer) {
+				methods.add(new MethodTransferLocations());
+				contexts.add(initialContext);
+			}
 		}
 
 		return new Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>>(methods, contexts);

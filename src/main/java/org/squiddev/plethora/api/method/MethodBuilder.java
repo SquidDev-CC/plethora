@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api.method;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -8,7 +9,9 @@ import org.objectweb.asm.Type;
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -49,9 +52,15 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 
 	@Nonnull
 	@Override
-	public final byte[] writeClass(@Nonnull Method method, @Nonnull T annotation, @Nonnull String name) {
+	public final byte[] writeClass(@Nonnull Method method, @Nonnull T annotation, @Nonnull Set<Class<?>> markerInterfaces, @Nonnull String name) {
+		Set<String> allInterfaces = Sets.newHashSetWithExpectedSize(markerInterfaces.size() + interfaces.length);
+		Collections.addAll(allInterfaces, interfaces);
+		for (Class<?> klass : markerInterfaces) {
+			allInterfaces.add(Type.getInternalName(klass));
+		}
+
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-		writer.visit(V1_6, ACC_PUBLIC | ACC_FINAL, name, null, superName, interfaces);
+		writer.visit(V1_6, ACC_PUBLIC | ACC_FINAL, name, null, superName, allInterfaces.toArray(new String[allInterfaces.size()]));
 
 		MethodVisitor invoke = writer.visitMethod(ACC_PUBLIC, this.method.getName(), methodSignature, null, exceptions);
 		invoke.visitCode();

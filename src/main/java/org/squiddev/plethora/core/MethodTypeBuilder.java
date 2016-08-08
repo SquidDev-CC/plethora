@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
@@ -13,6 +14,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IMethodRegistry;
+import org.squiddev.plethora.api.method.MarkerInterfaces;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -21,9 +23,7 @@ import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Builds classes based off of types
@@ -77,7 +77,10 @@ public final class MethodTypeBuilder extends ClassLoader {
 		String dottedName = DOTTED_PREFIX + classPart;
 		String internalName = INTERNAL_PREFIX + classPart;
 
-		Class<?> klass = add(dottedName, builder.writeClass(method, meta, internalName));
+		MarkerInterfaces markerInterfacesAnnot = method.getAnnotation(MarkerInterfaces.class);
+		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.<Class<?>>emptySet() : Sets.<Class<?>>newHashSet(markerInterfacesAnnot.value());
+
+		Class<?> klass = add(dottedName, builder.writeClass(method, meta, markerInterfaces, internalName));
 		if (!IMethod.class.isAssignableFrom(klass)) {
 			throw new IllegalStateException("Issues encountered loading " + method + " from " + builder + ": " + klass + " is not assignable to IMethod");
 		}
