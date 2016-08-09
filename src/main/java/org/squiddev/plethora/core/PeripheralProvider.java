@@ -64,7 +64,10 @@ public class PeripheralProvider implements IPeripheralProvider {
 		String name = klass.getName();
 
 		if (blacklist.contains(name)) return true;
-		if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, klass)) return true;
+		if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, name)) {
+			blacklist.add(name);
+			return true;
+		}
 
 		try {
 			klass.getField("PLETHORA_IGNORE");

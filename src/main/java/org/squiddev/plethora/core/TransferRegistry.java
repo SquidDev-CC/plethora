@@ -190,10 +190,15 @@ public final class TransferRegistry implements ITransferRegistry {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(ITransferProvider.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
+				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
+					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
+					continue;
+				}
+
 				Map<String, Object> info = asmData.getAnnotationInfo();
-				String modName = (String) info.get("modId");
-				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
-					DebugLogger.debug("Skipping " + name + " as " + modName + " is not loaded or is blacklisted");
+				String modId = (String) info.get("modId");
+				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
+					DebugLogger.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
 					continue;
 				}
 

@@ -208,16 +208,13 @@ public class Helpers {
 		for (String prefix : blacklist) {
 			if (prefix.endsWith(".")) {
 				if (name.startsWith(prefix)) return true;
-			} else if (name.equals(prefix)) {
+			} else if (name.equals(prefix) || name.startsWith(prefix + "$") || name.startsWith(prefix + "#")) {
+				// Include exact classes, child classes (trailing $) or child methods (trailing #).
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	public static boolean classBlacklisted(Iterable<String> blacklist, Class<?> klass) {
-		return classBlacklisted(blacklist, klass.getName());
 	}
 
 	public static boolean modLoaded(String mod) {

@@ -60,36 +60,32 @@ public final class ConfigCore {
 	 */
 	public static class Blacklist {
 		/**
-		 * List of methods classes or packages which are blacklisted.
-		 * For example use "org.squiddev.plethora.integration.vanilla.methods."
-		 * to disable all vanilla methods
+		 * List of provider classes, packages or methods which are blacklisted.
+		 * This will blacklist all converters, methods and transfer and meta providers
+		 * matching a pattern.
 		 *
-		 * This only applies to classes registered through @Method
+		 * This only applies to classes registered through annotations and does not blacklist
+		 * method builders.
+		 *
+		 * Valid forms:
+		 * - "foo.bar." - All classes in package (note trailing period).
+		 * - "foo.bar.Provider" - This class, all its member and nested classes
+		 * - "foo.bar.Provider#method(Ljava/lang/Object;)V" - A particular method with ASM style signature.
 		 */
 		@RequiresRestart
-		public static ArrayList<String> blacklistMethods;
-
-		/**
-		 * List of meta provider classes or packages which are blacklisted.
-		 * For example use "org.squiddev.plethora.integration.vanilla.meta."
-		 * to disable all vanilla meta providers.
-		 *
-		 * This only applies to classes registered through @MetaProvider
-		 */
-		@RequiresRestart
-		public static ArrayList<String> blacklistMeta;
+		public static ArrayList<String> blacklistProviders;
 
 		/**
 		 * List of tile entity classes or packages which will not be wrapped
 		 * as peripherals. For example use "net.minecraft." to disable wrapping
-		 * any vanilla peripheral. This does not blacklist subclasses
+		 * any vanilla peripheral. This does not blacklist subclasses.
 		 */
 		@RequiresRestart
 		public static ArrayList<String> blacklistTileEntities;
 
 		/**
 		 * List of mods to block.
-		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables custom mod interaction.
+		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables custom mod specific integration.
 		 */
 		@RequiresRestart
 		public static HashSet<String> blacklistMods;
