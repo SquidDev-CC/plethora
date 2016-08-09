@@ -22,13 +22,6 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
  * Various methods for mobs
  */
 public final class MethodsKineticEntity {
-	/*
-		TODO: `walk(x, y, z)` path find to position
-		TODO: `shoot(x, y, z)` for skeletons with bows
-		TODO: `swing()` Swing hand to dig/attack (requires fake player)
-		TODO: `activate()` Right click to activate (requires fake player)
-	*/
-
 	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
 		public MethodEntityLook() {

@@ -2,10 +2,7 @@ package org.squiddev.plethora.integration;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,7 +13,8 @@ import java.util.concurrent.Callable;
 /**
  * Lists all available transfer locations
  */
-public class MethodTransferLocations implements IMethod<Object> {
+@IMethod.Inject(IMethodCollection.class)
+public class MethodTransferLocations implements IMethod<IMethodCollection> {
 	@Nonnull
 	@Override
 	public String getName() {
@@ -35,13 +33,13 @@ public class MethodTransferLocations implements IMethod<Object> {
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<Object> context) {
-		return true;
+	public boolean canApply(@Nonnull IContext<IMethodCollection> context) {
+		return context.getTarget().has(ITransferMethod.class);
 	}
 
 	@Nonnull
 	@Override
-	public MethodResult apply(@Nonnull final IUnbakedContext<Object> context, @Nonnull Object[] args) throws LuaException {
+	public MethodResult apply(@Nonnull final IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {

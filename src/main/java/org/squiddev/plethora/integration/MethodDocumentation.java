@@ -12,12 +12,10 @@ import java.util.Map;
 /**
  * Custom method which provides documentation
  */
-public class MethodDocumentation extends BasicMethod {
-	private final List<IMethod<?>> methods;
-
-	public MethodDocumentation(List<IMethod<?>> methods) {
+@IMethod.Inject(IMethodCollection.class)
+public class MethodDocumentation extends BasicMethod<IMethodCollection> {
+	public MethodDocumentation() {
 		super("getDocs");
-		this.methods = methods;
 	}
 
 	@Nullable
@@ -28,8 +26,9 @@ public class MethodDocumentation extends BasicMethod {
 
 	@Nonnull
 	@Override
-	public MethodResult apply(@Nonnull IUnbakedContext context, @Nonnull Object[] args) throws LuaException {
+	public MethodResult apply(@Nonnull IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
 		String name = ArgumentHelper.optString(args, 0, null);
+		List<IMethod<?>> methods = context.bake().getTarget().methods();
 		if (name == null) {
 			Map<String, String> out = Maps.newHashMap();
 			for (IMethod method : methods) {

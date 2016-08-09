@@ -11,11 +11,9 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.api.reference.IdentityReference;
+import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.SortedMultimap;
-import org.squiddev.plethora.integration.MethodDocumentation;
-import org.squiddev.plethora.integration.MethodTransferLocations;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -25,6 +23,7 @@ import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
+	private final IReference<?>[] emptyReference = new IReference[0];
 
 	private final SortedMultimap<Class<?>, IMethod<?>> providers = SortedMultimap.create(new Comparator<IMethod<?>>() {
 		@Override
@@ -133,24 +132,22 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
-		boolean requiresTransfer = false;
 
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
-			IUnbakedContext<?> ctx;
+			IUnbakedContext<?> ctx = null;
 			IContext<?> ctxBaked;
 
 			if (obj == initialTarget) {
-				ctx = initialContext;
 				ctxBaked = initialBaked;
 			} else {
-				ctx = initialContext.makeChild(new IdentityReference<Object>(obj));
 				ctxBaked = initialBaked.makeBakedChild(obj);
 			}
 
 			for (IMethod method : getMethods(ctxBaked)) {
-				if (!requiresTransfer && method instanceof ITransferMethod) {
-					requiresTransfer = true;
+				// Lazy load context
+				if (ctx == null) {
+					ctx = initialTarget == obj ? initialContext : initialContext.makeChild(Reference.id(obj));
 				}
 
 				methods.add(method);
@@ -159,13 +156,16 @@ public final class MethodRegistry implements IMethodRegistry {
 		}
 
 		if (methods.size() > 0) {
-			// TODO: Allow anyone to add to this
-			methods.add(new MethodDocumentation(methods));
-			contexts.add(initialContext);
+			IMethodCollection collection = new MethodCollection(methods);
+			IUnbakedContext<IMethodCollection> context = null;
+			IContext<IMethodCollection> baked = new Context<IMethodCollection>(null, collection, initialBaked.getCostHandler(), emptyReference);
+			for (IMethod method : getMethods(baked)) {
+				if (context == null) {
+					context = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference);
+				}
 
-			if (requiresTransfer) {
-				methods.add(new MethodTransferLocations());
-				contexts.add(initialContext);
+				methods.add(method);
+				contexts.add(context);
 			}
 		}
 
