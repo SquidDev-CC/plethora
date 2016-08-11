@@ -32,7 +32,7 @@ public interface ITransferProvider<T> {
 	 * Get all primary transfer locations
 	 *
 	 * @param object The object to get locations from
-	 * @return All valid locations. This can be empty for secondary providers.
+	 * @return All valid locations.
 	 */
 	@Nonnull
 	Set<String> getTransferLocations(@Nonnull T object);
