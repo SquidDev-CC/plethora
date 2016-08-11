@@ -4,12 +4,14 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A default peripheral implementation called "plethora:default_peripheral".
@@ -52,6 +54,6 @@ public final class DefaultPeripheral implements IPeripheral, IPeripheralHandler 
 	}
 
 	@Override
-	public void update(@Nonnull World world, @Nonnull Vec3 position) {
+	public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
 	}
 }

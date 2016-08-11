@@ -25,7 +25,10 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 /**
  * Handles integration with a {@link IPeripheral}
  */
-@Optional.Interface(iface = "org.squiddev.cctweaks.api.network.INetworkedPeripheral", modid = "CCTweaks")
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "org.squiddev.cctweaks.api.network.INetworkedPeripheral", modid = "CCTweaks"),
+	@Optional.Interface(iface = "org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted", modid = "CCTweaks")
+})
 public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral, INetworkedPeripheral, IPeripheralTargeted {
 	private final Object owner;
 	private final String type;

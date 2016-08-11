@@ -24,6 +24,7 @@ import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
 import org.squiddev.plethora.core.capabilities.DefaultStorage;
 import org.squiddev.plethora.core.docdump.CommandDump;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
@@ -57,6 +58,7 @@ public class PlethoraCore {
 
 		// Integration modules
 		IntegrationVanilla.setup();
+		IntegrationCCTweaks.setup();
 	}
 
 	@Mod.EventHandler

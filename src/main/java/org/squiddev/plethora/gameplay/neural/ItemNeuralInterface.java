@@ -140,7 +140,8 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 					if (peripheralHandler != null) {
 						peripheralHandler.update(
 							player.worldObj,
-							new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ)
+							new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ),
+							player
 						);
 					}
 				}

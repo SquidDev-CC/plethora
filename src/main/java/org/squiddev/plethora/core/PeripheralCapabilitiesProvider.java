@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
 import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
@@ -15,6 +16,7 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Provides various peripherals for ComputerCraft items
@@ -104,7 +106,7 @@ public class PeripheralCapabilitiesProvider {
 		}
 
 		@Override
-		public void update(@Nonnull World world, @Nonnull Vec3 position) {
+		public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
 			this.position = position;
 
 			if (this.world != world) {
