@@ -9,7 +9,7 @@ import org.squiddev.plethora.core.ConfigCore;
 
 /**
  * Facade to the basic logger, which also forces debug calls
- * if {@link ConfigCore.Testing.debug} is enabled
+ * if {@link ConfigCore.Testing#debug} is enabled
  */
 public class DebugLogger {
 	private static final Logger logger = LogManager.getLogger("Plethora");

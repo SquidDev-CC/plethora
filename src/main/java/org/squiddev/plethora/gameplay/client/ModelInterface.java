@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.client;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -40,7 +41,13 @@ public class ModelInterface extends ModelBiped {
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+
+		GlStateManager.pushMatrix();
+		if (entity.isSneaking()) GlStateManager.translate(0, 0.2f, 0);
+
 		bipedHeadwear.render(f5);
+
+		GlStateManager.popMatrix();
 	}
 
 	public static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
