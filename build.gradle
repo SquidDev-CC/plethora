@@ -40,9 +40,23 @@ jar {
 
 repositories {
 	jcenter()
+
+	// JEI + Tinker's
 	maven { url "http://dvs1.progwml6.com/files/maven" }
+
+	// ComputerCraft
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2291/384/[module][revision](.[ext])" }
+
+	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
+
+	// IC2 API
+	maven { url = "http://maven.ic2.player.to/" }
+
+	// Buildcraft
+	ivy {
+		artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision](-[classifier]).[ext]"
+	}
 }
 
 dependencies {
@@ -50,6 +64,9 @@ dependencies {
 	deobfCompile "mezz.jei:jei_${project.mc_version}:2.28.9.177"
 
 	provided "org.squiddev:CCTweaks:${project.mc_version}-1.0.1:dev"
+	provided "net.industrial-craft:industrialcraft-2:2.6.9-ex110:dev"
+	provided "slimeknights:TConstruct:${project.mc_version}-2.2.1.jenkins1005:deobf"
+	provided "buildcraft:buildcraft:7.2.7:dev"
 
 	provided('org.squiddev:ConfigGen:1.2.4') { exclude group: 'net.minecraftforge' }
 }
