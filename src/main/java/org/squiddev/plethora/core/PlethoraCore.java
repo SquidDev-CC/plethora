@@ -86,7 +86,6 @@ public class PlethoraCore {
 	@Mod.EventHandler
 	public void onServerStart(FMLServerStartedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-			TaskHandler.reset();
 			DefaultCostHandler.reset();
 		}
 	}
@@ -94,7 +93,6 @@ public class PlethoraCore {
 	@Mod.EventHandler
 	public void onServerStopped(FMLServerStoppedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-			TaskHandler.reset();
 			DefaultCostHandler.reset();
 		}
 	}
@@ -113,7 +111,6 @@ public class PlethoraCore {
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
-			TaskHandler.update();
 			DefaultCostHandler.update();
 		}
 	}

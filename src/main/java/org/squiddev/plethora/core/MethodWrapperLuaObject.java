@@ -17,6 +17,7 @@ public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject 
 	private final IComputerAccess access;
 
 	public MethodWrapperLuaObject(List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IComputerAccess access) {
+		// TODO: Can we remove IComputerAccess?
 		super(methods, contexts);
 		this.access = access;
 	}
@@ -26,6 +27,6 @@ public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject 
 		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
-		return unwrap(result, access, luaContext);
+		return unwrap(result, luaContext);
 	}
 }

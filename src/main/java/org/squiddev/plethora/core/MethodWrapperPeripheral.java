@@ -64,7 +64,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
-		return unwrap(result, access, luaContext);
+		return unwrap(result, luaContext);
 	}
 
 	@Override

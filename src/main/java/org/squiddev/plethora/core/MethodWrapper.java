@@ -106,21 +106,24 @@ public class MethodWrapper {
 		}
 	}
 
-	protected static Object[] unwrap(MethodResult result, IComputerAccess access, ILuaContext context) throws LuaException, InterruptedException {
+	protected static Object[] unwrap(MethodResult result, ILuaContext context) throws LuaException, InterruptedException {
 		if (result.isFinal()) {
 			return result.getResult();
 		} else {
-			if (access == null) {
-				// This is a horrible hack. As we don't have a computer access, we cannot queue events.
-				// Instead we issue a task n number of times until everything has executed.
-				Task task = new Task(result);
-				while (!task.done()) {
-					context.executeMainThreadTask(task);
-				}
-				return task.returnValue;
-			} else {
-				return TaskHandler.addTask(access, context, result.getCallback(), result.getDelay());
+			/**
+			 * This is a horrible hack. Ideally we'd be able to have our own task manager. However
+			 * {@link IComputerAccess#queueEvent(String, Object[])} requires being attached to a computer which we may
+			 * no longer be. This results in this throwing an exception, so we never receive the event we are waiting
+			 * for, resulting in the computer hanging until the terminate event is fired.
+			 *
+			 * To avoid this we queue the task each tick until the delay has elapsed. Most of the time this doesn't
+			 * matter as there will be a zero tick delay.
+			 */
+			Task task = new Task(result);
+			while (!task.done()) {
+				context.executeMainThreadTask(task);
 			}
+			return task.returnValue;
 		}
 	}
 }
