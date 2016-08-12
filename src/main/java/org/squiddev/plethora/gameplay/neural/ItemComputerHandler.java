@@ -83,7 +83,7 @@ public final class ItemComputerHandler {
 			}
 
 			tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
-			tag.setLong(ENTITY_MOST, owner.getPersistentID().getLeastSignificantBits());
+			tag.setLong(ENTITY_MOST, owner.getPersistentID().getMostSignificantBits());
 		}
 		tag.setByte(DIRTY, (byte) 0);
 	}
