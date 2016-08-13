@@ -148,7 +148,8 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 				String modName = (String) asmData.getAnnotationInfo().get("modId");
 				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
-					DebugLogger.debug("Skipping " + className + "#" + modName + " as " + modName + " is not loaded or is blacklisted");
+					DebugLogger.debug("Skipping " + className + "#" + methodWhole + " as " + modName + " is not loaded or is blacklisted");
+					continue;
 				}
 
 				Class<?> klass = Class.forName(className);
