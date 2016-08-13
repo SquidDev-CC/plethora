@@ -69,8 +69,8 @@ public final class ConfigCore {
 		 *
 		 * Valid forms:
 		 * - "foo.bar." - All classes in package (note trailing period).
-		 * - "foo.bar.Provider" - This class, all its member and nested classes
-		 * - "foo.bar.Provider#method(Ljava/lang/Object;)V" - A particular method with ASM style signature.
+		 * - "foo.bar.Provider" - This class, all its members and nested classes
+		 * - "foo.bar.Provider#method" - A particular method with a name
 		 */
 		@RequiresRestart
 		public static ArrayList<String> blacklistProviders;
@@ -85,7 +85,8 @@ public final class ConfigCore {
 
 		/**
 		 * List of mods to block.
-		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables custom mod specific integration.
+		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables
+		 * custom mod specific integration.
 		 */
 		@RequiresRestart
 		public static HashSet<String> blacklistMods;
@@ -111,5 +112,12 @@ public final class ConfigCore {
 		 */
 		@DefaultBoolean(false)
 		public static boolean bytecodeVerify;
+
+		/**
+		 * Issue an an error if a method isn't documented. If strict is turned on this will
+		 * throw an exception.
+		 */
+		@DefaultBoolean(false)
+		public static boolean likeDocs;
 	}
 }

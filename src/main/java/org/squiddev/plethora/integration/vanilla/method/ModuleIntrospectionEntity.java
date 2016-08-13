@@ -62,7 +62,7 @@ public class ModuleIntrospectionEntity {
 	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityPlayerGetEnder extends ModuleObjectMethod {
 		public MethodEntityPlayerGetEnder() {
-			super("getEnder", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's ender chest.");
+			super("getEnder", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's ender chest");
 		}
 
 		@Nullable

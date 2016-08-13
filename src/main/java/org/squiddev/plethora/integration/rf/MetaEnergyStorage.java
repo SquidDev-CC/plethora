@@ -15,7 +15,7 @@ public class MetaEnergyStorage extends BasicMetaProvider<IEnergyStorage> {
 	public Map<Object, Object> getMeta(@Nonnull IEnergyStorage object) {
 		Map<Object, Object> out = Maps.newHashMap();
 		out.put("stored", object.getEnergyStored());
-		out.put("max", object.getMaxEnergyStored());
+		out.put("capacity", object.getMaxEnergyStored());
 		return out;
 	}
 }

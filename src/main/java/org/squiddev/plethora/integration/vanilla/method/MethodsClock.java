@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 public class MethodsClock {
 	@TargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
-		doc = "function():integer -- The game time in ticks."
+		doc = "function():integer -- The game time in ticks"
 	)
 	public static MethodResult getTime(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
@@ -44,7 +44,7 @@ public class MethodsClock {
 
 	@TargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
-		doc = "function():number -- Get the angle the sun or moon lies at in degrees. 0 is directly overhead."
+		doc = "function():number -- The angle the sun or moon lies at in degrees. 0 is directly overhead."
 	)
 	public static MethodResult getCelestialAngle(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
@@ -58,7 +58,7 @@ public class MethodsClock {
 
 	@TargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
-		doc = "function():number -- Get the current phase of the moon"
+		doc = "function():number -- The current phase of the moon"
 	)
 	public static MethodResult getMoonPhase(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {

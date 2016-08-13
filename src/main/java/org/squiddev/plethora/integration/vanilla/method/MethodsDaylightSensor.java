@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 public class MethodsDaylightSensor {
 	@TargetedModuleMethod.Inject(
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
-		doc = "function():boolean -- Whether this world has a sky."
+		doc = "function():boolean -- Whether this world has a sky"
 	)
 	public static MethodResult hasSky(final IUnbakedContext<IModule> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {

@@ -37,7 +37,7 @@ public final class MethodsInventory {
 
 	@BasicMethod.Inject(
 		value = IItemHandler.class,
-		doc = "function(slot:integer):table|nil -- Get the item in a slot. The slot number starts from 1."
+		doc = "function(slot:integer):table|nil -- The item in the specified slot. The slot number starts from 1."
 	)
 	public static MethodResult getItem(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		final int slot = getInt(args, 0);
@@ -62,7 +62,7 @@ public final class MethodsInventory {
 
 	@BasicObjectMethod.Inject(
 		value = IItemHandler.class, worldThread = true,
-		doc = "function():integer -- Get the size of the inventory"
+		doc = "function():integer -- The size of the inventory"
 	)
 	public static Object[] size(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		return new Object[]{context.getTarget().getSlots()};
@@ -70,7 +70,7 @@ public final class MethodsInventory {
 
 	@BasicMethod.Inject(
 		value = IItemHandler.class,
-		doc = "function(slot:integer):table|nil -- Get the metadata of the item in a slot. The slot number starts from 1."
+		doc = "function(slot:integer):table|nil -- The metadata of the item in the specified slot. The slot number starts from 1."
 	)
 	public static MethodResult getMetadata(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		final int slot = getInt(args, 0);

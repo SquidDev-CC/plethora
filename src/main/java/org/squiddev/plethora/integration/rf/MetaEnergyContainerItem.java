@@ -21,7 +21,7 @@ public class MetaEnergyContainerItem extends BasicMetaProvider<ItemStack> {
 			Map<Object, Object> out = Maps.newHashMap();
 			IEnergyContainerItem handler = (IEnergyContainerItem) item;
 			out.put("stored", handler.getEnergyStored(object));
-			out.put("max", handler.getMaxEnergyStored(object));
+			out.put("capacity", handler.getMaxEnergyStored(object));
 			return out;
 		} else {
 			return Collections.emptyMap();

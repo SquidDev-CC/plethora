@@ -15,7 +15,7 @@ public final class MethodsIntrospection {
 	@IMethod.Inject(IModule.class)
 	public static final class MethodEntityGetID extends ModuleObjectMethod {
 		public MethodEntityGetID() {
-			super("getID", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's UUID.");
+			super("getID", PlethoraModules.INTROSPECTION, true, "function():string -- Get this entity's UUID");
 		}
 
 		@Nullable

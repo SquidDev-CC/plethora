@@ -40,6 +40,15 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(method, "method cannot be null");
 
 		providers.put(target, method);
+
+		if (ConfigCore.Testing.likeDocs && method.getDocString() == null) {
+			String message = "Method " + method + " (" + method.getName() + ") has no documentation. This isn't a bug but you really should add one.";
+			if (ConfigCore.Testing.strict) {
+				throw new IllegalArgumentException(message);
+			} else {
+				DebugLogger.error(message);
+			}
+		}
 	}
 
 	@Nonnull
