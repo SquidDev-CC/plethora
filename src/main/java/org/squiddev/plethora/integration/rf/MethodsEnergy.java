@@ -17,7 +17,7 @@ public class MethodsEnergy {
 		value = IEnergyStorage.class, modId = "CoFHAPI|energy", worldThread = true, name = "getEnergyStored",
 		doc = "function():int -- Get the amount of RF currently stored"
 	)
-	public Object[] getEnergyStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
+	public static Object[] getEnergyStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
 		return new Object[]{context.getTarget().getEnergyStored()};
 	}
 
@@ -25,7 +25,7 @@ public class MethodsEnergy {
 		value = IEnergyStorage.class, modId = "CoFHAPI|energy", worldThread = true, name = "getMaxEnergyStored",
 		doc = "function():int -- Get the maximum amount of RF that can be stored"
 	)
-	public Object[] getMaxEnergyStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
+	public static Object[] getMaxEnergyStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
 		return new Object[]{context.getTarget().getMaxEnergyStored()};
 	}
 
@@ -33,7 +33,7 @@ public class MethodsEnergy {
 		value = IEnergyHandler.class, modId = "CoFHAPI|energy", name = "getEnergyStored",
 		doc = "function([side:string]):int -- Get the amount of RF currently stored"
 	)
-	public MethodResult getEnergyStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
+	public static MethodResult getEnergyStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
 		final EnumFacing facing = parseFacing(ArgumentHelper.optString(args, 0, null));
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
@@ -48,7 +48,7 @@ public class MethodsEnergy {
 		value = IEnergyHandler.class, modId = "CoFHAPI|energy", name = "getMaxEnergyStored",
 		doc = "function([side:string]):int -- Get the maximum amount of RF that can be stored"
 	)
-	public MethodResult getMaxEnergyStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
+	public static MethodResult getMaxEnergyStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
 		final EnumFacing facing = parseFacing(ArgumentHelper.optString(args, 0, null));
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {

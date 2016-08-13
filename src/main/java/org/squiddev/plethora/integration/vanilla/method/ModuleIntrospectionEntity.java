@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
- * org.squiddev.plethora.integration.vanilla.method (plethora
+ * Various introspection modules which rely on Vanilla classes.
  */
 public class ModuleIntrospectionEntity {
 	@IMethod.Inject(IModule.class)
