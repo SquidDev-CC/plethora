@@ -72,7 +72,7 @@ public final class MethodsInventory {
 		value = IItemHandler.class,
 		doc = "function(slot:integer):table|nil -- The metadata of the item in the specified slot. The slot number starts from 1."
 	)
-	public static MethodResult getMetadata(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult getItemMeta(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		final int slot = getInt(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {

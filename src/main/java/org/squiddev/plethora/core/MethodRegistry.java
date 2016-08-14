@@ -41,6 +41,13 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		providers.put(target, method);
 
+		if (target == Object.class && !(method instanceof IConverterExcludeMethod)) {
+			DebugLogger.warn(
+				"You're registering a method (" + method + ") targeting the base class (Object). Converters will " +
+					"probably mask the original object: it is recommended that you implement IConverterExcludeMethod to avoid this."
+			);
+		}
+
 		if (ConfigCore.Testing.likeDocs && method.getDocString() == null) {
 			String message = "Method " + method + " (" + method.getName() + ") has no documentation. This isn't a bug but you really should add one.";
 			if (ConfigCore.Testing.strict) {
@@ -147,16 +154,22 @@ public final class MethodRegistry implements IMethodRegistry {
 			IUnbakedContext<?> ctx = null;
 			IContext<?> ctxBaked;
 
-			if (obj == initialTarget) {
+			boolean isInitial = obj == initialTarget;
+			if (isInitial) {
 				ctxBaked = initialBaked;
 			} else {
 				ctxBaked = initialBaked.makeBakedChild(obj);
 			}
 
 			for (IMethod method : getMethods(ctxBaked)) {
+				// Skip IConverterExclude methods
+				if (!isInitial && method instanceof IConverterExcludeMethod) {
+					continue;
+				}
+
 				// Lazy load context
 				if (ctx == null) {
-					ctx = initialTarget == obj ? initialContext : initialContext.makeChild(Reference.id(obj));
+					ctx = isInitial ? initialContext : initialContext.makeChild(Reference.id(obj));
 				}
 
 				methods.add(method);
