@@ -80,7 +80,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		if (this == other) return true;
 		if (other == null || !(other instanceof MethodWrapperPeripheral)) return false;
 
-		return owner == ((MethodWrapperPeripheral) other).owner;
+		MethodWrapperPeripheral otherP = (MethodWrapperPeripheral) other;
+		return owner == otherP.owner && equalMethods(otherP);
 	}
 
 	//region CCTweaks

@@ -20,7 +20,9 @@ public class ConverterInventory implements IConverter<IInventory, IItemHandler> 
 	@Nullable
 	@Override
 	public IItemHandler convert(@Nonnull IInventory from) {
-		if (from instanceof IItemHandler) return (IItemHandler) from;
+		if (from instanceof IItemHandler) {
+			return (IItemHandler) from;
+		}
 
 		if (from instanceof ICapabilityProvider && ((ICapabilityProvider) from).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
 			return null;

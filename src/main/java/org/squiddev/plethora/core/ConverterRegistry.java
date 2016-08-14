@@ -11,10 +11,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public class ConverterRegistry implements IConverterRegistry {
 	public static final ConverterRegistry instance = new ConverterRegistry();
@@ -36,9 +33,11 @@ public class ConverterRegistry implements IConverterRegistry {
 		Preconditions.checkNotNull(in, "in cannot be null");
 
 		List<Object> result = Lists.newArrayList();
+		Set<Object> allConverted = Sets.newHashSet();
 
 		Queue<Object> toConvert = Queues.newArrayDeque();
 		toConvert.add(in);
+		allConverted.add(in);
 
 		while (toConvert.size() > 0) {
 			Object target = toConvert.remove();
@@ -55,7 +54,9 @@ public class ConverterRegistry implements IConverterRegistry {
 				Class<?> klass = toVisit.poll();
 				for (IConverter<?, ?> converter : converters.get(klass)) {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
-					if (converted != null) toConvert.add(converted);
+					if (converted != null && allConverted.add(converted)) {
+						toConvert.add(converted);
+					}
 				}
 
 				Class<?> parent = klass.getSuperclass();

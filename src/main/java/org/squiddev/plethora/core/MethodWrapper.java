@@ -53,6 +53,31 @@ public class MethodWrapper {
 		return new IReference[]{id(access), id(context)};
 	}
 
+	/**
+	 * Check if the methods are the same on both.
+	 *
+	 * This isn't a perfect test for equality: it doesn't check contexts are the same
+	 *
+	 * @param other The item to match against
+	 * @return Whether the methods are equal
+	 */
+	public boolean equalMethods(MethodWrapper other) {
+		// Do the easy version: check they are the same items with same order.
+		if (methods.equals(other.methods)) return true;
+
+		if (methods.size() != other.methods.size()) return false;
+
+		/*
+			Doubt this is possible but better safe than sorry?
+			We *could* make a hash set but this path is not going to be visited much, also not sure if there would be
+			any efficiency gain: the method count is pretty small.
+		  */
+		for (IMethod method : methods) {
+			if (!other.methods.contains(method)) return false;
+		}
+		return true;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected static MethodResult doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
 		try {
