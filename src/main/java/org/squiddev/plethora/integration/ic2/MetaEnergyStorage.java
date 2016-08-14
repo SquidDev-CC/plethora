@@ -1,0 +1,25 @@
+package org.squiddev.plethora.integration.ic2;
+
+import com.google.common.collect.Maps;
+import ic2.api.tile.IEnergyStorage;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+
+/**
+ * Provider for EU storage
+ */
+@IMetaProvider.Inject(value = IEnergyStorage.class, namespace = "eu_storage", modId = "IC2API")
+public class MetaEnergyStorage extends BasicMetaProvider<IEnergyStorage> {
+	@Nonnull
+	@Override
+	public Map<Object, Object> getMeta(@Nonnull IEnergyStorage object) {
+		Map<Object, Object> out = Maps.newHashMap();
+		out.put("stored", object.getStored());
+		out.put("capacity", object.getCapacity());
+		out.put("output", object.getOutputEnergyUnitsPerTick());
+		return out;
+	}
+}
