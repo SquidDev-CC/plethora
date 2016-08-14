@@ -21,20 +21,18 @@ public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
-		if (item instanceof IComputerItem) {
-			Map<Object, Object> data = Maps.newHashMap();
-			IComputerItem cItem = (IComputerItem) item;
+		if (!(item instanceof IComputerItem)) return Collections.emptyMap();
 
-			int id = cItem.getComputerID(stack);
-			if (id > 0) data.put("id", id);
+		IComputerItem cItem = (IComputerItem) item;
+		Map<Object, Object> data = Maps.newHashMap();
 
-			String label = cItem.getLabel(stack);
-			if (!Strings.isNullOrEmpty(label)) data.put("label", label);
-			data.put("family", cItem.getFamily(stack).toString());
+		int id = cItem.getComputerID(stack);
+		if (id > 0) data.put("id", id);
 
-			return data;
-		} else {
-			return Collections.emptyMap();
-		}
+		String label = cItem.getLabel(stack);
+		if (!Strings.isNullOrEmpty(label)) data.put("label", label);
+		data.put("family", cItem.getFamily(stack).toString());
+
+		return data;
 	}
 }

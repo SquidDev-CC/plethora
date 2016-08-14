@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core;
+package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
@@ -8,12 +8,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
+import org.squiddev.plethora.core.PlethoraCore;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,9 +24,16 @@ import javax.annotation.Nullable;
 /**
  * Provides various peripherals for ComputerCraft items
  */
-public class PeripheralCapabilitiesProvider {
+public class IntegrationComputerCraft {
+	public static void setup() {
+		if (Helpers.modLoaded("ComputerCraft")) {
+			IntegrationComputerCraft instance = new IntegrationComputerCraft();
+			MinecraftForge.EVENT_BUS.register(instance);
+		}
+	}
+
 	@SubscribeEvent
-	public void onAttachItemCapabilities(AttachCapabilitiesEvent.Item event) {
+	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
 		ItemStack stack = event.getItemStack();
 
 		if (event.getItem() instanceof ItemPeripheralBase) {

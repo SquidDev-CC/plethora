@@ -25,6 +25,7 @@ import org.squiddev.plethora.core.capabilities.DefaultStorage;
 import org.squiddev.plethora.core.docdump.CommandDump;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
+import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
@@ -54,11 +55,11 @@ public class PlethoraCore {
 
 		// Various event handlers
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new PeripheralCapabilitiesProvider());
 
-		// Integration modules
-		IntegrationVanilla.setup();
+		// Integration modules. Generally just listen to capability events
 		IntegrationCCTweaks.setup();
+		IntegrationComputerCraft.setup();
+		IntegrationVanilla.setup();
 	}
 
 	@Mod.EventHandler
