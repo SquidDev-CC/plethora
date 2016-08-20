@@ -37,9 +37,7 @@ public class MethodDocumentation extends BasicMethod<IMethodCollection> {
 
 			return MethodResult.result(out);
 		} else {
-			// Iterate in reverse
-			for (int i = methods.size() - 1; i >= 0; i--) {
-				IMethod method = methods.get(i);
+			for (IMethod method : methods) {
 				if (method.getName().equals(name)) return MethodResult.result(method.getDocString());
 			}
 

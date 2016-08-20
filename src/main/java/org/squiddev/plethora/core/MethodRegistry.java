@@ -13,7 +13,6 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
-import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -25,14 +24,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
 	private final IReference<?>[] emptyReference = new IReference[0];
 
-	private final SortedMultimap<Class<?>, IMethod<?>> providers = SortedMultimap.create(new Comparator<IMethod<?>>() {
-		@Override
-		public int compare(IMethod<?> o1, IMethod<?> o2) {
-			int p1 = o1.getPriority();
-			int p2 = o2.getPriority();
-			return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
-		}
-	});
+	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
 	@Override
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
@@ -109,13 +101,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Nonnull
 	@Override
 	public Multimap<Class<?>, IMethod<?>> getMethods() {
-		Multimap<Class<?>, IMethod<?>> map = MultimapBuilder.hashKeys().arrayListValues().build();
-
-		for (Map.Entry<Class<?>, Collection<IMethod<?>>> item : providers.items().entrySet()) {
-			map.putAll(item.getKey(), item.getValue());
-		}
-
-		return map;
+		return MultimapBuilder.hashKeys().arrayListValues().build(providers);
 	}
 
 	@Nonnull
@@ -144,10 +130,9 @@ public final class MethodRegistry implements IMethodRegistry {
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {
-		// TODO: Handle priority correctly.
-
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
+		HashMap<String, Integer> methodLookup = new HashMap<String, Integer>();
 
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
@@ -172,22 +157,42 @@ public final class MethodRegistry implements IMethodRegistry {
 					ctx = isInitial ? initialContext : initialContext.makeChild(Reference.id(obj));
 				}
 
-				methods.add(method);
-				contexts.add(ctx);
+				Integer existing = methodLookup.get(method.getName());
+				if (existing != null) {
+					int index = existing;
+					if (method.getPriority() > methods.get(index).getPriority()) {
+						methods.set(index, method);
+						contexts.set(index, ctx);
+					}
+				} else {
+					methods.add(method);
+					contexts.add(ctx);
+					methodLookup.put(method.getName(), methods.size() - 1);
+				}
 			}
 		}
 
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
-			IUnbakedContext<IMethodCollection> context = null;
+			IUnbakedContext<IMethodCollection> ctx = null;
 			IContext<IMethodCollection> baked = new Context<IMethodCollection>(null, collection, initialBaked.getCostHandler(), emptyReference);
 			for (IMethod method : getMethods(baked)) {
-				if (context == null) {
-					context = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference);
+				if (ctx == null) {
+					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference);
 				}
 
-				methods.add(method);
-				contexts.add(context);
+				Integer existing = methodLookup.get(method.getName());
+				if (existing != null) {
+					int index = existing;
+					if (method.getPriority() > methods.get(index).getPriority()) {
+						methods.set(index, method);
+						contexts.set(index, ctx);
+					}
+				} else {
+					methods.add(method);
+					contexts.add(ctx);
+					methodLookup.put(method.getName(), methods.size() - 1);
+				}
 			}
 		}
 
