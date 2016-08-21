@@ -13,11 +13,13 @@ import javax.annotation.Nullable;
 /**
  * Gets the tile from a particular position
  */
-@IConverter.Inject(TileEntity.class)
+@IConverter.Inject(value = TileEntity.class, modId = "IC2API")
 public class ConverterEnergyTile implements IConverter<TileEntity, IEnergyTile> {
 	@Nullable
 	@Override
 	public IEnergyTile convert(@Nonnull TileEntity from) {
+		if (EnergyNet.instance == null) return null;
+
 		World world = from.getWorld();
 		if (world == null) return null;
 
