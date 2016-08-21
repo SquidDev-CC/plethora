@@ -7,6 +7,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 
+import java.util.UUID;
+
 /**
  * Various constants for working with Plethora
  */
@@ -14,11 +16,25 @@ public class Constants {
 	/**
 	 * IMC command for blacklisting a tile entity or package (must have a trailing '.').
 	 *
-	 * Blacklisted tile entities will not be wrapped as peripherals
+	 * Blacklisted tile entities will not be wrapped as peripherals. This should be done before the postInit stage.
 	 *
-	 * Parameters: class name or package prefix
+	 * Parameters: class name or package prefix.
 	 */
-	public static final String IMC_BLACKLIST = "blacklistTileEntity";
+	public static final String IMC_BLACKLIST_PERIPHERAL = "blacklistPeripheral";
+
+	/**
+	 * IMC command for blacklisting specific mod integration.
+	 *
+	 * This should be done before the postInit stage.
+	 *
+	 * Parameters: Mod or API ID.
+	 */
+	public static final String IMC_BLACKLIST_MOD = "blacklistMod";
+
+	/**
+	 * UUID for Plethora's fake player
+	 */
+	public static final UUID FAKEPLAYER_UUID = UUID.fromString("ebcda071-3ef5-4f4a-849d-c078264010c4");
 
 	/**
 	 * Capability for cost handlers.

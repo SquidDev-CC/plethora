@@ -217,8 +217,14 @@ public class Helpers {
 		return false;
 	}
 
+	private static final Set<String> blacklistedMods = Sets.newHashSet();
+
 	public static boolean modLoaded(String mod) {
-		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod);
+		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod) && !blacklistedMods.contains(mod);
+	}
+
+	public static void blacklistMod(String mod) {
+		blacklistedMods.add(mod);
 	}
 
 	@Nonnull

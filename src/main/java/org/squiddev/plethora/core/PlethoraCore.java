@@ -27,6 +27,8 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
+import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.Helpers;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
@@ -102,8 +104,12 @@ public class PlethoraCore {
 	public void onMessageReceived(FMLInterModComms.IMCEvent event) {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
 			if (m.isStringMessage()) {
-				if (Constants.IMC_BLACKLIST.equalsIgnoreCase(m.key)) {
+				if (Constants.IMC_BLACKLIST_PERIPHERAL.equalsIgnoreCase(m.key)) {
+					DebugLogger.debug("Blacklisting peripheral " + m.getStringValue() + " due to IMC from " + m.getSender());
 					PeripheralProvider.addToBlacklist(m.getStringValue());
+				} else if (Constants.IMC_BLACKLIST_MOD.equalsIgnoreCase(m.key)) {
+					DebugLogger.debug("Blacklisting mod " + m.getStringValue() + " due to IMC from " + m.getSender());
+					Helpers.blacklistMod(m.getStringValue());
 				}
 			}
 		}

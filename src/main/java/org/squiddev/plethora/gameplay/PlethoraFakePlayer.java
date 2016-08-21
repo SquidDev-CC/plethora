@@ -6,11 +6,10 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
-
-import java.util.UUID;
+import org.squiddev.plethora.api.Constants;
 
 public class PlethoraFakePlayer extends FakePlayer {
-	private static final GameProfile profile = new GameProfile(UUID.fromString("ebcda071-3ef5-4f4a-849d-c078264010c4"), "[" + Plethora.ID + "]");
+	private static final GameProfile profile = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
 
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
