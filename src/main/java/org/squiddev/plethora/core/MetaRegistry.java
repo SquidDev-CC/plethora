@@ -39,6 +39,8 @@ public final class MetaRegistry implements IMetaRegistry {
 		Preconditions.checkNotNull(provider, "provider cannot be null");
 
 		providers.put(target, provider);
+
+		// TODO: Can we walk .getGenericSubclass/.getGenericInterface to check that target type is correct?
 	}
 
 	@Override

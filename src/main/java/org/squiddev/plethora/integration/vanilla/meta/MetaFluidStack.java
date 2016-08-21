@@ -12,8 +12,8 @@ import java.util.Map;
 /**
  * Basic properties for fluid stacks
  */
-@IMetaProvider.Inject(FluidStack.class)
-public class MetaFluid extends BasicMetaProvider<FluidStack> {
+@IMetaProvider.Inject(value = FluidStack.class, namespace = "fluid")
+public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull FluidStack fluidStack) {
