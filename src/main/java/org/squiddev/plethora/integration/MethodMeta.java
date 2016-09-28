@@ -30,7 +30,6 @@ public class MethodMeta extends BasicObjectMethod<Object> implements IConverterE
 
 	@Override
 	public Object[] apply(@Nonnull IContext<Object> context, @Nonnull Object[] args) throws LuaException {
-		IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
-		return new Object[]{registry.getMeta(context.getTarget())};
+		return new Object[]{context.getMeta()};
 	}
 }

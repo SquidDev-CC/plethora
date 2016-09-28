@@ -5,8 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
@@ -36,11 +34,11 @@ public class MethodFluidHandler extends BasicMethod<IFluidHandler> {
 			@Override
 			public MethodResult call() throws Exception {
 				Map<Integer, Object> out = Maps.newHashMap();
-				FluidTankInfo[] info = context.bake().getTarget().getTankInfo(facing);
+				IPartialContext<IFluidHandler> baked = context.bake();
+				FluidTankInfo[] info = baked.getTarget().getTankInfo(facing);
 
-				IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
 				for (int i = 0; i < info.length; i++) {
-					out.put(i + 1, registry.getMeta(info[0]));
+					out.put(i + 1, baked.makePartialChild(info[i]).getMeta());
 				}
 
 				return MethodResult.result(out);

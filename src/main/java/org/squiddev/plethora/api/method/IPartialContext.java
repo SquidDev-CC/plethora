@@ -2,6 +2,7 @@ package org.squiddev.plethora.api.method;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,7 +47,7 @@ public interface IPartialContext<T> {
 	 * @return The child context
 	 */
 	@Nonnull
-	<U> IPartialContext<U> makeBakedChild(@Nonnull U target, @Nonnull Object... context);
+	<U> IPartialContext<U> makePartialChild(@Nonnull U target, @Nonnull Object... context);
 
 	/**
 	 * Get the cost handler associated with this object.
@@ -70,4 +71,13 @@ public interface IPartialContext<T> {
 	 */
 	@Nonnull
 	Set<String> getTransferLocations();
+
+	/**
+	 * Get the metadata for this object
+	 *
+	 * @return The object's metadata
+	 * @see org.squiddev.plethora.api.meta.IMetaRegistry#getMeta(IPartialContext)
+	 */
+	@Nonnull
+	Map<Object, Object> getMeta();
 }

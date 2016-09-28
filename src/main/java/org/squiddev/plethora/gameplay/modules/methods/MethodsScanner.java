@@ -7,8 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -86,17 +84,17 @@ public final class MethodsScanner {
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
 				public MethodResult call() throws Exception {
-					IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+					IContext<IModule> baked = context.bake();
+					IWorldLocation location = baked.getContext(IWorldLocation.class);
 					BlockPos pos = location.getPos().add(x, y, z);
 					World world = location.getWorld();
 
 					IBlockState block = world.getBlockState(pos);
-					IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
-					Map<Object, Object> meta = registry.getMeta(block);
+					Map<Object, Object> meta = baked.makePartialChild(block).getMeta();
 
 					TileEntity te = world.getTileEntity(pos);
 					if (te != null) {
-						meta.putAll(registry.getMeta(block));
+						meta.putAll(baked.makePartialChild(te).getMeta());
 					}
 
 					return MethodResult.result(meta);

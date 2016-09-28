@@ -12,8 +12,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -51,21 +50,19 @@ public final class MetaRegistry implements IMetaRegistry {
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<Object, Object> getMeta(@Nonnull Object object) {
-		Preconditions.checkNotNull(object, "object cannot be null");
-		if (object instanceof IContext || object instanceof IUnbakedContext) {
-			throw new IllegalArgumentException("Trying to get instance of context. This is probably a bug");
-		}
+	public Map<Object, Object> getMeta(@Nonnull IPartialContext<?> context) {
+		Preconditions.checkNotNull(context, "context cannot be null");
 
 		// TODO: Handle priority across each conversion correctly
 
 		HashMap<Object, Object> out = Maps.newHashMap();
 
-		List<?> objects = PlethoraAPI.instance().converterRegistry().convertAll(object);
+		List<?> objects = PlethoraAPI.instance().converterRegistry().convertAll(context.getTarget());
 		Collections.reverse(objects);
 		for (Object child : objects) {
+			IPartialContext<?> childContext = context.makePartialChild(child);
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
-				out.putAll(provider.getMeta(child));
+				out.putAll(provider.getMeta(childContext));
 			}
 		}
 

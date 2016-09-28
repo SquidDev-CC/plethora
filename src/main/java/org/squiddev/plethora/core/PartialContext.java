@@ -9,6 +9,7 @@ import org.squiddev.plethora.api.transfer.ITransferRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Set;
 
 import static org.squiddev.plethora.core.UnbakedContext.arrayCopy;
@@ -61,7 +62,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Nonnull
 	@Override
-	public <U> IPartialContext<U> makeBakedChild(@Nonnull U newTarget, @Nonnull Object... newContext) {
+	public <U> IPartialContext<U> makePartialChild(@Nonnull U newTarget, @Nonnull Object... newContext) {
 		Preconditions.checkNotNull(newTarget, "target cannot be null");
 		Preconditions.checkNotNull(newContext, "context cannot be null");
 
@@ -123,5 +124,11 @@ public class PartialContext<T> implements IPartialContext<T> {
 		}
 
 		return out;
+	}
+
+	@Nonnull
+	@Override
+	public Map<Object, Object> getMeta() {
+		return MetaRegistry.instance.getMeta(this);
 	}
 }

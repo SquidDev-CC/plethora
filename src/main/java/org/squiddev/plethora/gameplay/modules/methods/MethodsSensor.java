@@ -7,7 +7,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -42,17 +41,13 @@ public final class MethodsSensor {
 		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
-			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
 			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
 
 			int i = 0;
 			HashMap<Integer, Object> map = Maps.newHashMap();
 			for (Entity entity : entities) {
-				Map<Object, Object> data = MetaEntity.getBasicProperties(entity);
-				data.put("x", entity.posX - x);
-				data.put("y", entity.posY - y);
-				data.put("z", entity.posZ - z);
+				Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
 				map.put(++i, data);
 			}
 
@@ -79,11 +74,12 @@ public final class MethodsSensor {
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
 				public MethodResult call() throws Exception {
-					Entity entity = findEntityByUUID(context.bake().getContext(IWorldLocation.class), uuid);
+					IContext<IModule> baked = context.bake();
+					Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
 					if (entity == null) {
 						return MethodResult.empty();
 					} else {
-						return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+						return MethodResult.result(baked.makePartialChild(entity).getMeta());
 					}
 				}
 			});
@@ -104,11 +100,12 @@ public final class MethodsSensor {
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
 				public MethodResult call() throws Exception {
-					Entity entity = findEntityByName(context.bake().getContext(IWorldLocation.class), name);
+					IContext<IModule> baked = context.bake();
+					Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
 					if (entity == null) {
 						return MethodResult.empty();
 					} else {
-						return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(entity));
+						return MethodResult.result(baked.makePartialChild(entity).getMeta());
 					}
 				}
 			});

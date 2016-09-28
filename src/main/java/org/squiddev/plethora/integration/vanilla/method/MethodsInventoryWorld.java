@@ -101,7 +101,7 @@ public class MethodsInventoryWorld {
 
 	@IMethod.Inject(IItemHandler.class)
 	public static class MethodItemHandlerSuck extends BasicMethod<IItemHandler> {
-		public static final double RADIUS = 1;
+		private static final double RADIUS = 1;
 
 		public MethodItemHandlerSuck() {
 			super("suck", "function([slot:int], [limit:int]):int -- Suck an item from the ground");

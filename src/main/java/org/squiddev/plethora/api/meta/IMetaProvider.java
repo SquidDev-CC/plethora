@@ -1,5 +1,7 @@
 package org.squiddev.plethora.api.meta;
 
+import org.squiddev.plethora.api.method.IPartialContext;
+
 import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +21,7 @@ public interface IMetaProvider<T> {
 	 * @return The gathered data. Do not return {@code null}.
 	 */
 	@Nonnull
-	Map<Object, Object> getMeta(@Nonnull T object);
+	Map<Object, Object> getMeta(@Nonnull IPartialContext<T> object);
 
 	/**
 	 * Get the priority of this provider

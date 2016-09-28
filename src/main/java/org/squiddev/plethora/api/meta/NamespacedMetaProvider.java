@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api.meta;
 
 import com.google.common.base.Preconditions;
+import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.util.Map;
  *
  * @see IMetaRegistry#registerMetaProvider(Class, String, IMetaProvider)
  */
-public class NamespacedMetaProvider<T> extends BasicMetaProvider<T> {
+public class NamespacedMetaProvider<T> extends BaseMetaProvider<T> {
 	private final String namespace;
 	private final IMetaProvider<T> delegate;
 
@@ -31,7 +32,7 @@ public class NamespacedMetaProvider<T> extends BasicMetaProvider<T> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull T object) {
+	public Map<Object, Object> getMeta(@Nonnull IPartialContext<T> object) {
 		Map<Object, Object> data = delegate.getMeta(object);
 		if (data.size() > 0) {
 			return Collections.<Object, Object>singletonMap(namespace, data);

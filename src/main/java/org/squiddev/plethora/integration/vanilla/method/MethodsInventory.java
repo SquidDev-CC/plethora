@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
@@ -78,7 +77,8 @@ public final class MethodsInventory {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IItemHandler inventory = context.bake().getTarget();
+				IContext<IItemHandler> baked = context.bake();
+				IItemHandler inventory = baked.getTarget();
 
 				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
@@ -86,7 +86,7 @@ public final class MethodsInventory {
 				if (stack == null) {
 					return MethodResult.empty();
 				} else {
-					return MethodResult.result(PlethoraAPI.instance().metaRegistry().getMeta(stack));
+					return MethodResult.result(baked.makePartialChild(stack).getMeta());
 				}
 			}
 		});

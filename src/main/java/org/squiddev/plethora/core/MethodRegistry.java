@@ -143,7 +143,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			if (isInitial) {
 				ctxBaked = initialBaked;
 			} else {
-				ctxBaked = initialBaked.makeBakedChild(obj);
+				ctxBaked = initialBaked.makePartialChild(obj);
 			}
 
 			for (IMethod method : getMethods(ctxBaked)) {
