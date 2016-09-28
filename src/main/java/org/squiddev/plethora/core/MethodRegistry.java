@@ -53,7 +53,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> List<IMethod<T>> getMethods(@Nonnull IContext<T> context) {
+	public <T> List<IMethod<T>> getMethods(@Nonnull IPartialContext<T> context) {
 		Preconditions.checkNotNull(context, "context cannot be null");
 
 		List<IMethod<T>> methods = Lists.newArrayList();
@@ -129,7 +129,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		MethodTypeBuilder.instance.addBuilder(klass, builder);
 	}
 
-	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IContext<?> initialBaked) {
+	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
 		HashMap<String, Integer> methodLookup = new HashMap<String, Integer>();
@@ -137,7 +137,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
 			IUnbakedContext<?> ctx = null;
-			IContext<?> ctxBaked;
+			IPartialContext<?> ctxBaked;
 
 			boolean isInitial = obj == initialTarget;
 			if (isInitial) {
@@ -175,7 +175,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
 			IUnbakedContext<IMethodCollection> ctx = null;
-			IContext<IMethodCollection> baked = new Context<IMethodCollection>(null, collection, initialBaked.getCostHandler(), emptyReference);
+			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference);
 			for (IMethod method : getMethods(baked)) {
 				if (ctx == null) {
 					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference);

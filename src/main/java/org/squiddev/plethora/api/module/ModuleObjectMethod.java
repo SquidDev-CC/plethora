@@ -2,7 +2,7 @@ package org.squiddev.plethora.api.module;
 
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +30,7 @@ public abstract class ModuleObjectMethod extends BasicObjectMethod<IModule> impl
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<IModule> context) {
+	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
 		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
 	}
 

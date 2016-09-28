@@ -67,7 +67,7 @@ public interface IMethod<T> {
 	 * @return If this function can be applied.
 	 * @see IContext#hasContext(Class)
 	 */
-	boolean canApply(@Nonnull IContext<T> context);
+	boolean canApply(@Nonnull IPartialContext<T> context);
 
 	/**
 	 * Apply the method

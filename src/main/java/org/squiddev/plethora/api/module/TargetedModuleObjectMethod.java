@@ -3,6 +3,7 @@ package org.squiddev.plethora.api.module;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
 
 import javax.annotation.Nonnull;
@@ -32,7 +33,7 @@ public abstract class TargetedModuleObjectMethod<T> extends ModuleObjectMethod i
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<IModule> context) {
+	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
 		return super.canApply(context) && context.hasContext(klass);
 	}
 

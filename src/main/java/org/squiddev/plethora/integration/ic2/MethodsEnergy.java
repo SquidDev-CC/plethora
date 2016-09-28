@@ -11,10 +11,7 @@ import ic2.api.item.ISpecialElectricItem;
 import ic2.api.tile.IEnergyStorage;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -131,7 +128,7 @@ public class MethodsEnergy {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<ItemStack> context) {
+		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 
@@ -158,7 +155,7 @@ public class MethodsEnergy {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<ItemStack> context) {
+		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 

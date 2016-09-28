@@ -33,7 +33,7 @@ public class MethodTransferLocations implements IMethod<IMethodCollection> {
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<IMethodCollection> context) {
+	public boolean canApply(@Nonnull IPartialContext<IMethodCollection> context) {
 		return context.getTarget().has(ITransferMethod.class);
 	}
 

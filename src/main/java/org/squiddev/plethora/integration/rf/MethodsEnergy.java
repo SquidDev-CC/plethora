@@ -78,7 +78,7 @@ public class MethodsEnergy {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<ItemStack> context) {
+		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 
@@ -103,7 +103,7 @@ public class MethodsEnergy {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<ItemStack> context) {
+		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 

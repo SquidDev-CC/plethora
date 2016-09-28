@@ -29,7 +29,7 @@ public interface IMethodRegistry {
 	 * @return List of valid methods
 	 */
 	@Nonnull
-	<T> List<IMethod<T>> getMethods(@Nonnull IContext<T> context);
+	<T> List<IMethod<T>> getMethods(@Nonnull IPartialContext<T> context);
 
 	/**
 	 * Get all methods targeting a class

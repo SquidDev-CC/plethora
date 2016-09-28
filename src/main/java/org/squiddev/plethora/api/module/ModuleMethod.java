@@ -2,8 +2,8 @@ package org.squiddev.plethora.api.module;
 
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 
 import javax.annotation.Nonnull;
@@ -36,7 +36,7 @@ public abstract class ModuleMethod extends BasicMethod<IModule> implements IModu
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<IModule> context) {
+	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
 		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
 	}
 
@@ -51,7 +51,7 @@ public abstract class ModuleMethod extends BasicMethod<IModule> implements IModu
 	 *
 	 * The method should be a public and static with the same signature as {@link ModuleMethod#apply(IUnbakedContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
-	 * {@link IMethod#canApply(IContext)} you should use a normal {@link IMethod} instead.
+	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
 	 * Use {@link #modId()} instead of {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to
 	 * be loaded. This allows us to blacklist mods in the config.

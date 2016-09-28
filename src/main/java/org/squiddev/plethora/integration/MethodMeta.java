@@ -3,10 +3,7 @@ package org.squiddev.plethora.integration;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IConverterExcludeMethod;
-import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +14,7 @@ public class MethodMeta extends BasicObjectMethod<Object> implements IConverterE
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<Object> context) {
+	public boolean canApply(@Nonnull IPartialContext<Object> context) {
 		IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
 		Object target = context.getTarget();
 

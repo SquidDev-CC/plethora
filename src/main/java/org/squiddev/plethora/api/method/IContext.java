@@ -12,37 +12,7 @@ import java.util.Set;
  *
  * This tracks the current object and all parent/associated objects
  */
-public interface IContext<T> {
-	/**
-	 * Get the target for this context.
-	 *
-	 * @return The target for this context.
-	 */
-	@Nonnull
-	T getTarget();
-
-	/**
-	 * Get surrounding context for an object.
-	 * This is generally "parent" objects: an inventory might have a tile entity in its context.
-	 * This does not include the target.
-	 *
-	 * @param klass The type of the klass to get.
-	 * @return The context object or {@code null} if it doesn't exist.
-	 * @see #hasContext(Class)
-	 */
-	<V> V getContext(@Nonnull Class<V> klass);
-
-	/**
-	 * Check if a context exists.
-	 * This is generally "parent" objects: an inventory might have a tile entity in its context.
-	 * This does not include the target.
-	 *
-	 * @param klass The type of the klass to get.
-	 * @return If this context exists. It is more performant to check if {@link #getContext(Class)} returns null.
-	 * @see #getContext(Class)
-	 */
-	<V> boolean hasContext(@Nonnull Class<V> klass);
-
+public interface IContext<T> extends IPartialContext<T> {
 	/**
 	 * Make a child context
 	 *
@@ -52,16 +22,6 @@ public interface IContext<T> {
 	 */
 	@Nonnull
 	<U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context);
-
-	/**
-	 * Make a child context
-	 *
-	 * @param target  The child's target
-	 * @param context Additional context items
-	 * @return The child context
-	 */
-	@Nonnull
-	<U> IContext<U> makeBakedChild(@Nonnull U target, @Nonnull Object... context);
 
 	/**
 	 * Include additional properties in this context

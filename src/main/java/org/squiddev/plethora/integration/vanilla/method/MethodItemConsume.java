@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
 import javax.annotation.Nonnull;
@@ -23,7 +24,7 @@ public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<ItemSlot> context) {
+	public boolean canApply(@Nonnull IPartialContext<ItemSlot> context) {
 		if (!context.getTarget().canReplace()) return false;
 
 		ItemStack stack = context.getTarget().getStack();

@@ -68,7 +68,7 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 	 *
 	 * The method should be a public and static with the same signature as {@link BasicObjectMethod#apply(IContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
-	 * {@link IMethod#canApply(IContext)} you should use a normal {@link IMethod} instead.
+	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
 	 * Use {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to be loaded.
 	 */

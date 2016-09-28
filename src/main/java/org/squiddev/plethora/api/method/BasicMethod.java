@@ -42,7 +42,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IContext<T> context) {
+	public boolean canApply(@Nonnull IPartialContext<T> context) {
 		return true;
 	}
 
@@ -63,7 +63,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 	 *
 	 * The method should be a public and static with the same signature as {@link BasicMethod#apply(IUnbakedContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
-	 * {@link IMethod#canApply(IContext)} you should use a normal {@link IMethod} instead.
+	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
 	 * Use {@link #modId()} instead of {@link net.minecraftforge.fml.common.Optional.Method} if you require a mod to
 	 * be loaded. This allows us to blacklist mods in the config.

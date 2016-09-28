@@ -29,7 +29,7 @@ public class MethodsInventoryWorld {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<IItemHandler> context) {
+		public boolean canApply(@Nonnull IPartialContext<IItemHandler> context) {
 			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
@@ -63,7 +63,7 @@ public class MethodsInventoryWorld {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<ItemSlot> context) {
+		public boolean canApply(@Nonnull IPartialContext<ItemSlot> context) {
 			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 
@@ -108,7 +108,7 @@ public class MethodsInventoryWorld {
 		}
 
 		@Override
-		public boolean canApply(@Nonnull IContext<IItemHandler> context) {
+		public boolean canApply(@Nonnull IPartialContext<IItemHandler> context) {
 			return super.canApply(context) && context.hasContext(IWorldLocation.class);
 		}
 

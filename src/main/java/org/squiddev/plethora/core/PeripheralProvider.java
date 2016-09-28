@@ -9,9 +9,9 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -43,7 +43,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 			ICostHandler handler = registry.getCostHandler(te);
 			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, new WorldLocation(world, blockPos));
-			IContext<TileEntity> baked = new Context<TileEntity>(null, te, handler, new Object[]{new WorldLocation(world, blockPos)});
+			IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)});
 
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {
