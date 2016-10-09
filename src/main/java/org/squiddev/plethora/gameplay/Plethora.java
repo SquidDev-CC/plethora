@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import static org.squiddev.plethora.gameplay.Plethora.*;
@@ -35,6 +36,8 @@ public class Plethora {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigGameplay.init(event.getSuggestedConfigurationFile());
+
+		EntityRegistry.registerModEntity(PlethoraFakePlayer.class, ID + ":fakePlayer", 0, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
 
 		tab = new PlethoraCreativeTab();
 		Registry.setup();
