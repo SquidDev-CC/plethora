@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,7 +35,6 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
-import org.squiddev.plethora.integration.vanilla.method.MethodsKinetic;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -152,7 +153,7 @@ public final class ItemModule extends ItemBase {
 				break;
 			}
 			case KINETIC_ID: {
-				MethodsKinetic.launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * kineticLaunchMax);
+				launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * kineticLaunchMax);
 				break;
 			}
 			default:
@@ -345,4 +346,15 @@ public final class ItemModule extends ItemBase {
 			return null;
 		}
 	}
+
+	public static void launch(EntityLivingBase entity, float yaw, float pitch, float power) {
+		float motionX = -MathHelper.sin(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
+		float motionZ = MathHelper.cos(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
+		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
+
+		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
+		entity.addVelocity(motionX * power, motionY * power, motionZ * power);
+		entity.velocityChanged = true;
+	}
+
 }
