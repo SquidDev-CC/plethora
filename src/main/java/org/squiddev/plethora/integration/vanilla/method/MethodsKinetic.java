@@ -13,6 +13,7 @@ import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.vanilla.DisableAI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,9 +60,12 @@ public final class MethodsKinetic {
 		@Nullable
 		@Override
 		public Object[] apply(@Nonnull EntityLiving entity, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			// TODO: Call this every tick
-			clearTasks(entity.tasks);
-			clearTasks(entity.targetTasks);
+			DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
+			if (disable == null) throw new LuaException("Cannot disable AI");
+
+			disable.setDisabled(true);
+			DisableAI.maybeClear(entity);
+
 			return null;
 		}
 
