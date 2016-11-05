@@ -67,7 +67,7 @@ public final class MethodsKinetic {
 	@TargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLiving.class,
-		doc = "function(x:number, y:number, z:number]) -- Walk to a coordinate"
+		doc = "function(x:number, y:number, z:number]):boolean, string|nil -- Walk to a coordinate"
 	)
 	@Nonnull
 	public static MethodResult walk(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {

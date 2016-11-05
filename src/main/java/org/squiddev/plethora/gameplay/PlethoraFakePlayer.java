@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.Vec3;
@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.utils.FakeNetHandler;
 
 import java.util.WeakHashMap;
 
@@ -21,6 +22,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
+		playerNetServerHandler = new FakeNetHandler(this);
 	}
 
 	@Override
@@ -50,10 +52,10 @@ public class PlethoraFakePlayer extends FakePlayer {
 		return new Vec3(posX, posY, posZ);
 	}
 
-	public void load(EntityLiving from, boolean sneaking) {
+	public void load(EntityLivingBase from) {
 		worldObj = from.worldObj;
 		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
-		setSneaking(sneaking);
+		setSneaking(from.isSneaking());
 
 		inventory.currentItem = 0;
 
@@ -71,7 +73,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 		inventory.markDirty();
 	}
 
-	public void unload(EntityLiving from) {
+	public void unload(EntityLivingBase from) {
 		inventory.currentItem = 0;
 
 		for (int i = 0; i < 5; i++) {
@@ -101,7 +103,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 		inventory.markDirty();
 	}
 
-	public PlethoraFakePlayer getPlayer(WorldServer world, Entity entity) {
+	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity) {
 		PlethoraFakePlayer fake = registeredPlayers.get(entity);
 		if (fake == null) {
 			fake = new PlethoraFakePlayer(world);

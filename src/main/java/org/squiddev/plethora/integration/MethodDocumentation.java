@@ -21,7 +21,7 @@ public class MethodDocumentation extends BasicMethod<IMethodCollection> {
 	@Nullable
 	@Override
 	public String getDocString() {
-		return "function([name:string]):string|nil -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.";
+		return "function([name:string]):table|string|nil -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.";
 	}
 
 	@Nonnull

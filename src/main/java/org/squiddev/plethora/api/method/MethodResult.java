@@ -105,6 +105,22 @@ public final class MethodResult {
 	}
 
 	/**
+	 * Get a final method MethodResult which will finish after a number of ticks
+	 *
+	 * @param delay The number of ticks to sit idle before executing. 0 will result in the method being executed n
+	 * @param args  The arguments to return
+	 * @return The built MethodResult
+	 */
+	public static MethodResult delayedResult(int delay, final Object... args) {
+		return new MethodResult(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				return MethodResult.result(args);
+			}
+		}, delay);
+	}
+
+	/**
 	 * Get a final MethodResult representing a failure
 	 *
 	 * @param message The failure message
