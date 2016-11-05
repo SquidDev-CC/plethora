@@ -48,11 +48,11 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.*;
 
 public final class ItemModule extends ItemBase {
-	public static final String INTROSPECTION = "moduleIntrospection";
-	public static final String LASER = "moduleLaser";
-	public static final String SCANNER = "moduleScanner";
-	public static final String SENSOR = "moduleSensor";
-	public static final String KINETIC = "moduleKinetic";
+	public static final String INTROSPECTION = "introspection";
+	public static final String LASER = "laser";
+	public static final String SCANNER = "scanner";
+	public static final String SENSOR = "sensor";
+	public static final String KINETIC = "kinetic";
 
 	public static final int INTROSPECTION_ID = 0;
 	public static final int LASER_ID = 1;
@@ -97,7 +97,7 @@ public final class ItemModule extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return super.getUnlocalizedName() + "." + getName(stack.getItemDamage());
+		return super.getUnlocalizedName() + ".module_" + getName(stack.getItemDamage());
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public final class ItemModule extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
 		for (int i = 0; i < MODULES; i++) {
-			Helpers.setupModel(this, i, getName(i));
+			Helpers.setupModel(this, i, "module_" + getName(i));
 		}
 	}
 
@@ -302,7 +302,7 @@ public final class ItemModule extends ItemBase {
 			// Cache the ID
 			ResourceLocation id = moduleId;
 			if (id == null) {
-				return this.moduleId = PlethoraModules.toResource(getName(stack.getItemDamage()));
+				return this.moduleId = new ResourceLocation(Plethora.RESOURCE_DOMAIN, getName(stack.getItemDamage()));
 			} else {
 				return id;
 			}

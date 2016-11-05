@@ -64,42 +64,39 @@ public final class MethodsScanner {
 		}
 	}
 
-	@IMethod.Inject(IModule.class)
-	public static final class MethodMetaBlock extends TargetedModuleMethod<IWorldLocation> {
-		public MethodMetaBlock() {
-			super("getBlockMeta", PlethoraModules.SCANNER, IWorldLocation.class, "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block");
-		}
+	@TargetedModuleMethod.Inject(
+		module = PlethoraModules.SCANNER_S,
+		target = IWorldLocation.class,
+		doc = "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block"
+	)
+	@Nonnull
+	public static MethodResult getBlockMeta(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		final int x = getInt(args, 0);
+		final int y = getInt(args, 1);
+		final int z = getInt(args, 2);
 
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final int x = getInt(args, 0);
-			final int y = getInt(args, 1);
-			final int z = getInt(args, 2);
+		assertBetween(x, -scannerRadius, scannerRadius, "X coordinate out of bounds (%s)");
+		assertBetween(y, -scannerRadius, scannerRadius, "Y coordinate out of bounds (%s)");
+		assertBetween(z, -scannerRadius, scannerRadius, "Z coordinate out of bounds (%s)");
 
-			assertBetween(x, -scannerRadius, scannerRadius, "X coordinate out of bounds (%s)");
-			assertBetween(y, -scannerRadius, scannerRadius, "Y coordinate out of bounds (%s)");
-			assertBetween(z, -scannerRadius, scannerRadius, "Z coordinate out of bounds (%s)");
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModule> baked = context.bake();
+				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				BlockPos pos = location.getPos().add(x, y, z);
+				World world = location.getWorld();
 
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<IModule> baked = context.bake();
-					IWorldLocation location = baked.getContext(IWorldLocation.class);
-					BlockPos pos = location.getPos().add(x, y, z);
-					World world = location.getWorld();
+				IBlockState block = world.getBlockState(pos);
+				Map<Object, Object> meta = baked.makePartialChild(block).getMeta();
 
-					IBlockState block = world.getBlockState(pos);
-					Map<Object, Object> meta = baked.makePartialChild(block).getMeta();
-
-					TileEntity te = world.getTileEntity(pos);
-					if (te != null) {
-						meta.putAll(baked.makePartialChild(te).getMeta());
-					}
-
-					return MethodResult.result(meta);
+				TileEntity te = world.getTileEntity(pos);
+				if (te != null) {
+					meta.putAll(baked.makePartialChild(te).getMeta());
 				}
-			});
-		}
+
+				return MethodResult.result(meta);
+			}
+		});
 	}
 }

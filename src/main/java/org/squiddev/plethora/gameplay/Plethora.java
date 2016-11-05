@@ -18,11 +18,11 @@ import static org.squiddev.plethora.gameplay.Plethora.*;
 
 @Mod(modid = ID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = "org.squiddev.plethora.gameplay.client.gui.GuiConfigGameplay")
 public class Plethora {
-	public static final String ID = "Plethora";
-	public static final String NAME = ID;
+	public static final String ID = "plethora";
+	public static final String NAME = "Plethora";
 	public static final String VERSION = "${mod_version}";
 	public static final String RESOURCE_DOMAIN = "plethora";
-	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},);required-after:Plethora-Core";
+	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},);required-after:plethora-core";
 
 	public static CreativeTabs getCreativeTab() {
 		return tab;

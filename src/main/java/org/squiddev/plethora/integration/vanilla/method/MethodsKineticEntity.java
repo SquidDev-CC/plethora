@@ -22,33 +22,30 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
  * Various methods for mobs
  */
 public final class MethodsKineticEntity {
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityLook extends TargetedModuleMethod<EntityLivingBase> {
-		public MethodEntityLook() {
-			super("look", PlethoraModules.KINETIC, EntityLivingBase.class, "function(yaw:number, pitch:number) -- Look in a set direction");
-		}
+	@TargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S,
+		target = EntityLivingBase.class,
+		doc = "function(yaw:number, pitch:number) -- Look in a set direction"
+	)
+	@Nonnull
+	public static MethodResult look(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		final double yaw = ArgumentHelper.getNumber(args, 0);
+		final double pitch = ArgumentHelper.getNumber(args, 1);
 
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final double yaw = ArgumentHelper.getNumber(args, 0);
-			final double pitch = ArgumentHelper.getNumber(args, 1);
-
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
-					if (target instanceof EntityPlayerMP) {
-						NetHandlerPlayServer handler = ((EntityPlayerMP) target).playerNetServerHandler;
-						handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
-					} else {
-						target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
-						target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
-					}
-					return MethodResult.empty();
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
+				if (target instanceof EntityPlayerMP) {
+					NetHandlerPlayServer handler = ((EntityPlayerMP) target).playerNetServerHandler;
+					handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
+				} else {
+					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
+					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
 				}
-			});
-		}
+				return MethodResult.empty();
+			}
+		});
 	}
 
 	@IMethod.Inject(IModule.class)

@@ -1,28 +1,28 @@
-# Modules
-item.plethora.module.moduleIntrospection.name=Introspection Module
-item.plethora.module.moduleIntrospection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
+# module_s
+item.plethora.module.module_introspection.name=Introspection Module
+item.plethora.module.module_introspection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
 
-item.plethora.module.moduleLaser.name=Frickin' laser beam
-item.plethora.module.moduleLaser.desc=It fires lasers. 'nough said
+item.plethora.module.module_laser.name=Frickin' laser beam
+item.plethora.module.module_laser.desc=It fires lasers. 'nough said
 
 death.attack.laser=%1$s was vapourised by %2$s
 death.attack.laser.item=%1$s was vapourised by %2$s using %3$s
 entity.Plethora.laser.name=Laser
 
-item.plethora.module.moduleScanner.name=Block Scanner
-item.plethora.module.moduleScanner.desc=Allows scanning blocks in the vicinity
+item.plethora.module.module_scanner.name=Block Scanner
+item.plethora.module.module_scanner.desc=Allows scanning blocks in the vicinity
 
-item.plethora.module.moduleSensor.name=Entity Sensor
-item.plethora.module.moduleSensor.desc=Detects nearby entities, gathering data about them
+item.plethora.module.module_sensor.name=Entity Sensor
+item.plethora.module.module_sensor.desc=Detects nearby entities, gathering data about them
 
-item.plethora.module.moduleKinetic.name=Kinetic Augment
-item.plethora.module.moduleKinetic.desc=Allows controlling your body via the neural interface
+item.plethora.module.module_kinetic.name=Kinetic Augment
+item.plethora.module.module_kinetic.desc=Allows controlling your body via the neural interface
 
-item.plethora.module.unknown.name=Unknown module
-item.plethora.module.unknown.desc=What did you break this time?
+item.plethora.module.module_unknown.name=Unknown module
+item.plethora.module.module_unknown.desc=What did you break this time?
 
 tile.plethora.manipulator.name=Manipulator
-tile.plethora.manipulator.desc=Used to interface with modules from a computer
+tile.plethora.manipulator.desc=Used to interface with module_s from a computer
 
 # Neural interface/connector
 item.plethora.neuralConnector.name=Neural Connector
@@ -45,10 +45,10 @@ gui.config.plethora.blacklist.blacklistMeta=Blacklisted meta providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
 
 # Gameplay config
-gui.config.plethora.modules=Modules
-gui.config.plethora.modules.laserMinimum=Laser minimum
-gui.config.plethora.modules.laserMaximum=Laser maximum
-gui.config.plethora.modules.laserCost=Laser cost
-gui.config.plethora.modules.kineticLaunchMax=Kinetic launch max
-gui.config.plethora.modules.scannerRadius=Scanner radius
-gui.config.plethora.modules.sensorRadius=Sensor radius
+gui.config.plethora.module_s=module_s
+gui.config.plethora.module_s.laserMinimum=Laser minimum
+gui.config.plethora.module_s.laserMaximum=Laser maximum
+gui.config.plethora.module_s.laserCost=Laser cost
+gui.config.plethora.module_s.kineticLaunchMax=Kinetic launch max
+gui.config.plethora.module_s.scannerRadius=Scanner radius
+gui.config.plethora.module_s.sensorRadius=Sensor radius

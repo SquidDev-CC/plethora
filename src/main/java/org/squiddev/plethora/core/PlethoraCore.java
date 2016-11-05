@@ -34,7 +34,7 @@ import static org.squiddev.plethora.core.PlethoraCore.*;
 
 @Mod(modid = ID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = "org.squiddev.plethora.core.client.gui.GuiConfigCore")
 public class PlethoraCore {
-	public static final String ID = "Plethora-Core";
+	public static final String ID = "plethora-core";
 	public static final String NAME = "Plethora Core";
 	public static final String VERSION = "${mod_version}";
 	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},)";

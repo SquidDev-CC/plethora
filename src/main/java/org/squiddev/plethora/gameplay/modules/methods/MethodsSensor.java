@@ -55,61 +55,54 @@ public final class MethodsSensor {
 		}
 	}
 
-	@IMethod.Inject(IModule.class)
-	public static final class GetMetaUUIDMethod extends TargetedModuleMethod<IWorldLocation> {
-		public GetMetaUUIDMethod() {
-			super("getMetaByID", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by UUID");
+	@TargetedModuleMethod.Inject(
+		module = PlethoraModules.SENSOR_S,
+		target = IWorldLocation.class,
+		doc = "function():table|nil -- Find a nearby entity by UUID"
+	)
+	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		final UUID uuid;
+		try {
+			uuid = UUID.fromString(getString(args, 0));
+		} catch (IllegalArgumentException e) {
+			throw new LuaException("Invalid UUID");
 		}
 
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final UUID uuid;
-			try {
-				uuid = UUID.fromString(getString(args, 0));
-			} catch (IllegalArgumentException e) {
-				throw new LuaException("Invalid UUID");
-			}
-
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<IModule> baked = context.bake();
-					Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
-					if (entity == null) {
-						return MethodResult.empty();
-					} else {
-						return MethodResult.result(baked.makePartialChild(entity).getMeta());
-					}
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModule> baked = context.bake();
+				Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
+				if (entity == null) {
+					return MethodResult.empty();
+				} else {
+					return MethodResult.result(baked.makePartialChild(entity).getMeta());
 				}
-			});
-		}
+			}
+		});
 	}
 
-	@IMethod.Inject(IModule.class)
-	public static final class GetMetaNameMethod extends TargetedModuleMethod<IWorldLocation> {
-		public GetMetaNameMethod() {
-			super("getMetaByName", PlethoraModules.SENSOR, IWorldLocation.class, "function():table|nil -- Find a nearby entity by name");
-		}
+	@TargetedModuleMethod.Inject(
+		module = PlethoraModules.SENSOR_S,
+		target = IWorldLocation.class,
+		doc = "function():table|nil -- Find a nearby entity by name"
+	)
+	@Nonnull
+	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		final String name = getString(args, 0);
 
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
-			final String name = getString(args, 0);
-
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<IModule> baked = context.bake();
-					Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
-					if (entity == null) {
-						return MethodResult.empty();
-					} else {
-						return MethodResult.result(baked.makePartialChild(entity).getMeta());
-					}
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModule> baked = context.bake();
+				Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
+				if (entity == null) {
+					return MethodResult.empty();
+				} else {
+					return MethodResult.result(baked.makePartialChild(entity).getMeta());
 				}
-			});
-		}
+			}
+		});
 	}
 
 	private static AxisAlignedBB getBox(BlockPos pos) {
