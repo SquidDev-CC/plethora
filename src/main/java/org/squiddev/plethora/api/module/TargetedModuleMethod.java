@@ -84,6 +84,13 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod implements IS
 		Class<?> target();
 
 		/**
+		 * A collection of objects that should be in the context for the method to run.
+		 *
+		 * @return Valid objects that should be in the context.
+		 */
+		Class<?>[] requirements() default {};
+
+		/**
 		 * The priority of the method.
 		 *
 		 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Methods
