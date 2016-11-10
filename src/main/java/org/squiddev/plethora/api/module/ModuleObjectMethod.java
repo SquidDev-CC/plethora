@@ -7,9 +7,9 @@ import org.squiddev.plethora.api.method.IPartialContext;
 import javax.annotation.Nonnull;
 
 /**
- * A method bound to a specific module
+ * A method that requires a module to execute.
  */
-public abstract class ModuleObjectMethod extends BasicObjectMethod<IModule> implements IModuleMethod {
+public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> implements IModuleMethod<T> {
 	protected final ResourceLocation module;
 
 	public ModuleObjectMethod(String name, ResourceLocation module, boolean worldThread) {
@@ -30,8 +30,8 @@ public abstract class ModuleObjectMethod extends BasicObjectMethod<IModule> impl
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
-		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
+	public boolean canApply(@Nonnull IPartialContext<T> context) {
+		return super.canApply(context) && context.hasModule(module);
 	}
 
 	@Nonnull

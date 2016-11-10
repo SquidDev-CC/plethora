@@ -4,7 +4,7 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
@@ -18,7 +18,7 @@ public class MethodsClock {
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():integer -- The game time in ticks"
 	)
-	public static MethodResult getTime(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getTime(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
@@ -32,7 +32,7 @@ public class MethodsClock {
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():integer -- The current day of this world"
 	)
-	public static MethodResult getDay(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getDay(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
@@ -46,7 +46,7 @@ public class MethodsClock {
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():number -- The angle the sun or moon lies at in degrees. 0 is directly overhead."
 	)
-	public static MethodResult getCelestialAngle(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getCelestialAngle(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
@@ -60,7 +60,7 @@ public class MethodsClock {
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():number -- The current phase of the moon"
 	)
-	public static MethodResult getMoonPhase(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getMoonPhase(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {

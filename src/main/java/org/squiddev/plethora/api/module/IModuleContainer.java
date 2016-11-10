@@ -1,8 +1,8 @@
 package org.squiddev.plethora.api.module;
 
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -13,7 +13,6 @@ import java.util.Set;
  * do not target a specific object.
  */
 public interface IModuleContainer {
-
 	/**
 	 * Get a list of collection of all modules.
 	 *
@@ -23,5 +22,5 @@ public interface IModuleContainer {
 	 * @return A reference to the module collection. When evaluated this should return a constant value.
 	 */
 	@Nonnull
-	IReference<Set<ResourceLocation>> getModules();
+	Set<ResourceLocation> getModules() throws LuaException;
 }

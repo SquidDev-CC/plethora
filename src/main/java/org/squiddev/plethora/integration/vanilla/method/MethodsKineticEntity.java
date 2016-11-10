@@ -7,7 +7,7 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -28,7 +28,7 @@ public final class MethodsKineticEntity {
 		doc = "function(yaw:number, pitch:number) -- Look in a set direction"
 	)
 	@Nonnull
-	public static MethodResult look(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult look(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final double yaw = ArgumentHelper.getNumber(args, 0);
 		final double pitch = ArgumentHelper.getNumber(args, 1);
 
@@ -48,7 +48,7 @@ public final class MethodsKineticEntity {
 		});
 	}
 
-	@IMethod.Inject(IModule.class)
+	@IMethod.Inject(IModuleContainer.class)
 	public static final class MethodEntityCreeperExplode extends TargetedModuleObjectMethod<EntityCreeper> {
 		public MethodEntityCreeperExplode() {
 			super("explode", PlethoraModules.KINETIC, EntityCreeper.class, true, "function() -- Explode this creeper");
@@ -56,13 +56,13 @@ public final class MethodsKineticEntity {
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull EntityCreeper target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) {
+		public Object[] apply(@Nonnull EntityCreeper target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 			target.explode();
 			return null;
 		}
 	}
 
-	@IMethod.Inject(IModule.class)
+	@IMethod.Inject(IModuleContainer.class)
 	public static final class MethodEntityEndermanTeleport extends TargetedModuleObjectMethod<EntityEnderman> {
 		public MethodEntityEndermanTeleport() {
 			super("teleport", PlethoraModules.KINETIC, EntityEnderman.class, true, "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one");
@@ -70,7 +70,7 @@ public final class MethodsKineticEntity {
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull EntityEnderman target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull EntityEnderman target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			double x = getNumber(args, 0);
 			double y = getNumber(args, 1);
 			double z = getNumber(args, 2);

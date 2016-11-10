@@ -10,7 +10,7 @@ import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.ModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
@@ -23,15 +23,15 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  * Various introspection modules which rely on Vanilla classes.
  */
 public class ModuleIntrospectionEntity {
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityPlayerInventory extends ModuleObjectMethod {
+	@IMethod.Inject(IModuleContainer.class)
+	public static final class MethodEntityPlayerInventory extends ModuleObjectMethod<IModuleContainer> {
 		public MethodEntityPlayerInventory() {
 			super("getInventory", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's inventory");
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
 			if (player == null) throw new LuaException("Player not found");
 
@@ -41,15 +41,15 @@ public class ModuleIntrospectionEntity {
 		}
 	}
 
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityEquipment extends ModuleObjectMethod {
+	@IMethod.Inject(IModuleContainer.class)
+	public static final class MethodEntityEquipment extends ModuleObjectMethod<IModuleContainer> {
 		public MethodEntityEquipment() {
 			super("getEquipment", PlethoraModules.INTROSPECTION, true, "function():table -- Get this entity's held item and armor");
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			EntityLivingBase entity = context.getContext(EntityLivingBase.class);
 			if (entity == null) throw new LuaException("Entity not found");
 
@@ -59,15 +59,15 @@ public class ModuleIntrospectionEntity {
 		}
 	}
 
-	@IMethod.Inject(IModule.class)
-	public static final class MethodEntityPlayerGetEnder extends ModuleObjectMethod {
+	@IMethod.Inject(IModuleContainer.class)
+	public static final class MethodEntityPlayerGetEnder extends ModuleObjectMethod<IModuleContainer> {
 		public MethodEntityPlayerGetEnder() {
 			super("getEnder", PlethoraModules.INTROSPECTION, true, "function():table -- Get this player's ender chest");
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			EntityPlayer player = context.getContext(EntityPlayer.class);
 			if (player == null) throw new LuaException("Player not found");
 

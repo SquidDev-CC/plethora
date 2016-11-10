@@ -8,7 +8,7 @@ import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodBuilder;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class TargetedModuleMethodBuilder extends MethodBuilder<TargetedModuleMet
 
 	@Override
 	public Class<?> getTarget(@Nonnull Method method, @Nonnull TargetedModuleMethod.Inject annotation) {
-		return IModule.class;
+		return IModuleContainer.class;
 	}
 
 	@Override

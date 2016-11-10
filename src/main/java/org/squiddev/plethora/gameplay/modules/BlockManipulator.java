@@ -24,7 +24,7 @@ import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
@@ -38,6 +38,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.squiddev.plethora.api.reference.Reference.tile;
 
@@ -106,22 +107,17 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		IUnbakedContext<IModule> context = MethodRegistry.instance.makeContext(new IReference<IModule>() {
+		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(Reference.<IModuleContainer>id(new IModuleContainer() {
 			@Nonnull
 			@Override
-			public IModule get() throws LuaException {
+			public Set<ResourceLocation> getModules() throws LuaException {
 				if (!ItemStack.areItemStacksEqual(manipulator.getStack(), stack)) {
 					throw new LuaException("The module has been removed");
 				}
-				return new IModule() {
-					@Nonnull
-					@Override
-					public ResourceLocation getModuleId() {
-						return module;
-					}
-				};
+
+				return Collections.singleton(module);
 			}
-		}, CostHelpers.getCostHandler(stack), Reference.id(Collections.singleton(module)), contextData);
+		}), CostHelpers.getCostHandler(stack), Reference.id(Collections.singleton(module)), contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {

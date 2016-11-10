@@ -6,7 +6,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
@@ -28,7 +28,7 @@ public final class MethodsLaser {
 		doc = "function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction"
 	)
 	@Nonnull
-	public static MethodResult fire(@Nonnull final IUnbakedContext<IModule> unbaked, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
 		final double yaw = getNumber(args, 0);
 		final double pitch = getNumber(args, 1);
 		final float potency = (float) getNumber(args, 2);
@@ -44,7 +44,7 @@ public final class MethodsLaser {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<IModule> context = unbaked.bake();
+				IContext<IModuleContainer> context = unbaked.bake();
 				IWorldLocation location = context.getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos();
 

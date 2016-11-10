@@ -13,9 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A module method that targets a separate class
+ * A top-level module method which requires a particular context object to execute.
  */
-public abstract class TargetedModuleMethod<T> extends ModuleMethod implements ISubTargetedMethod<IModule, T> {
+public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
 	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass) {
@@ -36,7 +36,7 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod implements IS
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
+	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
 		return super.canApply(context) && context.hasContext(klass);
 	}
 
