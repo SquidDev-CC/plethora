@@ -107,17 +107,24 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(Reference.<IModuleContainer>id(new IModuleContainer() {
+		IModuleContainer container = new IModuleContainer() {
 			@Nonnull
 			@Override
-			public Set<ResourceLocation> getModules() throws LuaException {
+			public Set<ResourceLocation> get() throws LuaException {
 				if (!ItemStack.areItemStacksEqual(manipulator.getStack(), stack)) {
 					throw new LuaException("The module has been removed");
 				}
 
 				return Collections.singleton(module);
 			}
-		}), CostHelpers.getCostHandler(stack), Reference.id(Collections.singleton(module)), contextData);
+		};
+
+		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
+			Reference.id(container),
+			CostHelpers.getCostHandler(stack),
+			container,
+			contextData
+		);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {

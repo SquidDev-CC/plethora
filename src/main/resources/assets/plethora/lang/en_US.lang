@@ -31,6 +31,9 @@ item.plethora.neuralConnector.desc=Used to connect to Neural Interfaces
 item.plethora.neuralInterface.name=Neural Interface
 item.plethora.neuralInterface.desc=Goes in your helmet slot. Connect with the neural connector.
 
+gui.plethora.neuralInterface.peripherals=View peripherals
+gui.plethora.neuralInterface.modules=View modules
+
 # Creative tab
 itemGroup.plethora=Plethora
 
