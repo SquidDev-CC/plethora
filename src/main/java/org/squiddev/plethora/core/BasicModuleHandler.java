@@ -34,8 +34,8 @@ public class BasicModuleHandler implements IModule, IModuleHandler, ICapabilityP
 
 	@Nonnull
 	@Override
-	public IModule getModule() {
-		return this;
+	public ResourceLocation getModule() {
+		return getModuleId();
 	}
 
 	@Nonnull

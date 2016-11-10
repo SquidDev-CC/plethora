@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -106,11 +107,11 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<?>... context) {
+	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules, @Nonnull IReference<?>... context) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 		Preconditions.checkNotNull(context, "context cannot be null");
-		return new UnbakedContext<T>(target, handler, context);
+		return new UnbakedContext<T>(target, handler, context, modules);
 	}
 
 	@Nonnull
@@ -175,10 +176,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
 			IUnbakedContext<IMethodCollection> ctx = null;
-			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference);
+			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference, initialBaked.getModules());
 			for (IMethod method : getMethods(baked)) {
 				if (ctx == null) {
-					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference);
+					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference, Reference.id(Collections.<ResourceLocation>emptySet()));
 				}
 
 				Integer existing = methodLookup.get(method.getName());

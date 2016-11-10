@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
@@ -13,6 +14,7 @@ import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A context which doesn't have solidified references.
@@ -21,11 +23,13 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<T> target;
 	private final IReference<?>[] context;
 	private final ICostHandler handler;
+	protected final IReference<Set<ResourceLocation>> modules;
 
-	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context) {
+	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<Set<ResourceLocation>> modules) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;
+		this.modules = modules;
 	}
 
 	@Nonnull
@@ -38,7 +42,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			baked[i] = context[i].get();
 		}
 
-		return new Context<T>(this, value, handler, baked);
+		return new Context<T>(this, value, handler, baked, modules.get());
 	}
 
 	@Nonnull
@@ -52,7 +56,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new UnbakedContext<U>(newTarget, handler, wholeContext);
+		return new UnbakedContext<U>(newTarget, handler, wholeContext, modules);
 	}
 
 	@Nonnull
@@ -64,7 +68,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(newContext, wholeContext, 0);
 		arrayCopy(context, wholeContext, newContext.length);
 
-		return new UnbakedContext<T>(target, handler, wholeContext);
+		return new UnbakedContext<T>(target, handler, wholeContext, modules);
 	}
 
 	@Nonnull

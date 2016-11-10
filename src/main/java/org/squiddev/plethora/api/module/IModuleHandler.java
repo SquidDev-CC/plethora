@@ -2,6 +2,7 @@ package org.squiddev.plethora.api.module;
 
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,7 +22,7 @@ public interface IModuleHandler {
 	 * @return The module.
 	 */
 	@Nonnull
-	IModule getModule();
+	ResourceLocation getModule();
 
 	/**
 	 * Used to get additional context from a stack

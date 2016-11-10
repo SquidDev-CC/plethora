@@ -32,8 +32,8 @@ public final class DefaultModuleHandler implements IModuleHandler, IModule {
 
 	@Nonnull
 	@Override
-	public IModule getModule() {
-		return this;
+	public ResourceLocation getModule() {
+		return getModuleId();
 	}
 
 	@Nonnull

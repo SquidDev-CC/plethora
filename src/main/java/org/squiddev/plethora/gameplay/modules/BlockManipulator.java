@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -26,6 +27,7 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
 import org.squiddev.plethora.core.UnbakedContext;
@@ -34,6 +36,7 @@ import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.squiddev.plethora.api.reference.Reference.tile;
@@ -95,7 +98,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		IModuleHandler item = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 		if (item == null) return null;
 
-		final IModule module = item.getModule();
+		final ResourceLocation module = item.getModule();
 		Collection<IReference<?>> additionalContext = item.getAdditionalContext();
 
 		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
@@ -110,13 +113,19 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 				if (!ItemStack.areItemStacksEqual(manipulator.getStack(), stack)) {
 					throw new LuaException("The module has been removed");
 				}
-				return module;
+				return new IModule() {
+					@Nonnull
+					@Override
+					public ResourceLocation getModuleId() {
+						return module;
+					}
+				};
 			}
-		}, CostHelpers.getCostHandler(stack), contextData);
+		}, CostHelpers.getCostHandler(stack), Reference.id(Collections.singleton(module)), contextData);
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral(module.getModuleId().toString(), stack, paired.getFirst(), paired.getSecond());
+			return new MethodWrapperPeripheral(module.toString(), stack, paired.getFirst(), paired.getSecond());
 		} else {
 			return null;
 		}

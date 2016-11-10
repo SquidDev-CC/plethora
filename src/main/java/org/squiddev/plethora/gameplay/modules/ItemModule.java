@@ -310,8 +310,8 @@ public final class ItemModule extends ItemBase {
 
 		@Nonnull
 		@Override
-		public IModule getModule() {
-			return this;
+		public ResourceLocation getModule() {
+			return getModuleId();
 		}
 
 		@Nonnull

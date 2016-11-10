@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  * @see IModuleHandler
  * @see ModuleMethod
  */
+@Deprecated
 public interface IModule {
 	/**
 	 * Get the ID for this module
