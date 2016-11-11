@@ -30,8 +30,8 @@ public class Context<T> extends PartialContext<T> implements IContext<T> {
 
 	@Nonnull
 	@Override
-	public IUnbakedContext<T> withContext(@Nonnull IReference<?>... context) {
-		return parent.withContext(context);
+	public IUnbakedContext<T> unbake() {
+		return parent;
 	}
 
 	@Nonnull

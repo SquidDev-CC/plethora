@@ -1,11 +1,11 @@
 package org.squiddev.plethora.integration;
 
 import com.google.common.collect.Sets;
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.Reference;
 
@@ -32,10 +32,10 @@ public class MethodsModules {
 		return new Object[]{context.hasModule(module)};
 	}
 
-	/*@BasicObjectMethod.Inject(
+	@BasicObjectMethod.Inject(
 		value = IModuleContainer.class, worldThread = true,
 		doc = "function(names:string...):table -- Gets the methods which require these modules"
-	)*/
+	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final ResourceLocation[] modules = new ResourceLocation[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -56,9 +56,16 @@ public class MethodsModules {
 			}
 		};
 
-		// FIXME: This doesn't actually work, we need to pass it to the primary module reference too.
-		IUnbakedContext<IModuleContainer> selected = context.makeChild(Reference.id(filteredContainer));
+		ILuaObject object = context
+			.unbake()
+			.makeChild(Reference.id(filteredContainer))
+			.withHandlers(context.getCostHandler(), filteredContainer)
+			.getObject();
 
-		return new Object[]{selected.getObject()};
+		if (object.getMethodNames().length == 0) {
+			return null;
+		} else {
+			return new Object[]{object};
+		}
 	}
 }

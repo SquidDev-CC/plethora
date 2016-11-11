@@ -71,6 +71,14 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		return new UnbakedContext<T>(target, handler, wholeContext, modules);
 	}
 
+	@Override
+	public IUnbakedContext<T> withHandlers(@Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules) {
+		Preconditions.checkNotNull(handler, "handler cannot be null");
+		Preconditions.checkNotNull(modules, "modules cannot be null");
+
+		return new UnbakedContext<T>(target, handler, context, modules);
+	}
+
 	@Nonnull
 	@Override
 	public ILuaObject getObject() {
