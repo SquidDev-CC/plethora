@@ -2,7 +2,7 @@
 	"textures": {
 		"particle": "plethora:blocks/manipulatorSide",
 		"bottom": "plethora:blocks/manipulatorBottom",
-		"top": "plethora:blocks/manipulatorTop",
+		"top": "plethora:blocks/manipulatorTop1",
 		"side": "plethora:blocks/manipulatorSide"
 	},
 	"elements": [

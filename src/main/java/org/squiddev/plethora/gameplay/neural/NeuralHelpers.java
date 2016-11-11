@@ -72,7 +72,7 @@ public final class NeuralHelpers {
 
 	public static IPeripheral buildModules(final IItemHandler handler, Entity owner) {
 		final ItemStack[] stacks = new ItemStack[MODULE_SIZE];
-		ResourceLocation[] modules = new ResourceLocation[MODULE_SIZE];
+		Set<ResourceLocation> modules = Sets.newHashSet();
 
 		List<IReference<?>> additionalContext = Lists.newArrayList();
 
@@ -85,7 +85,7 @@ public final class NeuralHelpers {
 			if (moduleHandler == null) continue;
 
 			exists = true;
-			modules[i] = moduleHandler.getModule();
+			modules.add(moduleHandler.getModule());
 			additionalContext.addAll(moduleHandler.getAdditionalContext());
 		}
 
@@ -96,7 +96,7 @@ public final class NeuralHelpers {
 		contextData[contextData.length - 2] = entity(owner);
 		contextData[contextData.length - 1] = new EntityWorldLocation(owner);
 
-		final Set<ResourceLocation> moduleSet = Collections.unmodifiableSet(Sets.newHashSet(modules));
+		final Set<ResourceLocation> moduleSet = Collections.unmodifiableSet(modules);
 
 		IModuleContainer container = new IModuleContainer() {
 			@Nonnull

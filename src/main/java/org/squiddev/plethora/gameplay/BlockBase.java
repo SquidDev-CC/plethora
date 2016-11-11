@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -66,7 +67,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileBase tile = getTile(world, pos);
-		return tile != null && tile.onActivated(player, side);
+		return tile != null && tile.onActivated(player, side, new Vec3(hitX, hitY, hitZ));
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
-		out.add(StatCollector.translateToLocal(getUnlocalizedName() + ".desc"));
+		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
 	}
 
 	@Override
@@ -112,6 +113,10 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	public void preInit() {
 		GameRegistry.registerBlock(this, ItemBlockBase.class, name);
 		GameRegistry.registerTileEntity(klass, Plethora.RESOURCE_DOMAIN + ":" + name);
+	}
+
+	public String getUnlocalizedName(int meta) {
+		return getUnlocalizedName();
 	}
 
 	@Override

@@ -20,7 +20,8 @@
 			"neuralInterface": "plethora:items/neuralInterface"
 		},
 		"itemblock": {
-			"manipulator": "manipulator"
+			"manipulator.mark_1": "manipulator.mark_1",
+			"manipulator.mark_2": "manipulator.mark_2"
 		}
 	}
 }

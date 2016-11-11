@@ -1,5 +1,10 @@
 {
 	"variants": {
-		"normal": { "model": "plethora:manipulator" }
+		"type=mark_1": {
+			"model": "plethora:manipulator.mark_1"
+		},
+		"type=mark_2": {
+			"model": "plethora:manipulator.mark_2"
+		}
 	}
 }

@@ -3,19 +3,46 @@ package org.squiddev.plethora.gameplay.modules;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
+import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
+import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class TileManipulator extends TileBase {
-	private ItemStack stack;
+	private ManipulatorType type;
+	private ItemStack[] stacks;
 
 	// Lazily loaded render options
 	private double offset = -1;
 	private long tick;
+
+	public TileManipulator() {
+	}
+
+	public TileManipulator(ManipulatorType type) {
+		setType(type);
+	}
+
+	private void setType(ManipulatorType type) {
+		if (this.type != null) return;
+
+		this.type = type;
+		stacks = new ItemStack[type.size()];
+	}
+
+	public ManipulatorType getType() {
+		return type;
+	}
+
+	public ItemStack getStack(int slot) {
+		return stacks[slot];
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -31,62 +58,92 @@ public final class TileManipulator extends TileBase {
 
 	@Override
 	protected boolean writeDescription(NBTTagCompound tag) {
-		if (stack != null) {
-			tag.setTag("stack", stack.serializeNBT());
-		} else {
-			tag.removeTag("stack");
+		if (type == null) return true;
+
+		tag.setInteger("type", type.ordinal());
+		for (int i = 0; i < stacks.length; i++) {
+			ItemStack stack = stacks[i];
+			if (stack != null) {
+				tag.setTag("stack" + i, stack.serializeNBT());
+			} else {
+				tag.removeTag("stack" + i);
+			}
 		}
 		return true;
 	}
 
 	@Override
 	protected void readDescription(NBTTagCompound tag) {
-		if (tag.hasKey("stack")) {
-			stack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("stack"));
-		} else {
-			stack = null;
+		if (tag.hasKey("type") && type == null) {
+			int meta = tag.getInteger("type");
+			setType(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
+		}
+
+		if (type == null) return;
+
+		for (int i = 0; i < stacks.length; i++) {
+			if (tag.hasKey("stack" + i)) {
+				stacks[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("stack" + i));
+			} else {
+				stacks[i] = null;
+			}
 		}
 	}
 
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumFacing side) {
+	public boolean onActivated(EntityPlayer player, EnumFacing side, Vec3 hit) {
+		if (side != EnumFacing.UP) return false;
 		if (player.worldObj.isRemote) return true;
 
-		ItemStack newStack = player.getHeldItem();
-		if (newStack == null && stack != null) {
-			if (!player.capabilities.isCreativeMode) {
-				Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
-			}
-
-			stack = null;
-			markForUpdate();
-
-			return true;
-		} else if (stack == null && newStack != null && newStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
-			stack = newStack.copy();
-			stack.stackSize = 1;
-
-			if (!player.capabilities.isCreativeMode && --newStack.stackSize <= 0) {
-				player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-			}
-
-			markForUpdate();
-
-			return true;
-		} else {
-			return false;
+		if (type == null) {
+			int meta = getBlockMetadata();
+			setType(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
 		}
+
+		for (int i = 0; i < type.size(); i++) {
+			AxisAlignedBB box = type.boxes[i];
+			if (hit.yCoord > OFFSET - PIX &&
+				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
+				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
+
+				final ItemStack stack = stacks[i];
+				ItemStack heldStack = player.getHeldItem();
+				if (heldStack == null && stack != null) {
+					if (!player.capabilities.isCreativeMode) {
+						Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+					}
+
+					stacks[i] = null;
+					markForUpdate();
+
+					break;
+				} else if (stack == null && heldStack != null && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
+					stacks[i] = heldStack.copy();
+					stacks[i].stackSize = 1;
+
+					if (!player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					}
+
+					markForUpdate();
+
+					break;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	@Override
 	public void onBroken() {
-		if (stack != null) {
-			Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
-		}
-	}
+		if (stacks == null) return;
 
-	public ItemStack getStack() {
-		return stack;
+		for (ItemStack stack : stacks) {
+			if (stack != null) {
+				Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+			}
+		}
 	}
 
 	public double incrementRotation() {

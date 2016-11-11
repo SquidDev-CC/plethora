@@ -21,8 +21,10 @@ item.plethora.module.module_kinetic.desc=Allows controlling your body via the ne
 item.plethora.module.module_unknown.name=Unknown module
 item.plethora.module.module_unknown.desc=What did you break this time?
 
-tile.plethora.manipulator.name=Manipulator
-tile.plethora.manipulator.desc=Used to interface with module_s from a computer
+tile.plethora.manipulator.mark_1.name=Manipulator Mk I
+tile.plethora.manipulator.mark_2.name=Manipulator Mk II
+tile.plethora.manipulator.mark_1.desc=Used to interface with a module from a computer
+tile.plethora.manipulator.mark_2.desc=Used to interface with multiple modules from a computer
 
 # Neural interface/connector
 item.plethora.neuralConnector.name=Neural Connector
