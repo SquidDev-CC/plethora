@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
  *
  * This has no functionality: it is simply here for metadata collection
  */
-public interface IModuleMethod extends IMethod<IModule> {
+public interface IModuleMethod<T> extends IMethod<T> {
 	/**
 	 * Get the module that this method targets
 	 *

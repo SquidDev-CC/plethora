@@ -2,20 +2,25 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import dan200.computercraft.shared.peripheral.common.IPeripheralTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,14 +41,20 @@ public class PeripheralProvider implements IPeripheralProvider {
 			IPeripheral capability = te.getCapability(Constants.PERIPHERAL_CAPABILITY, enumFacing);
 			if (capability != null) return capability;
 
+			IPeripheralHandler periphHandler = te.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, enumFacing);
+			if (periphHandler != null) return periphHandler.getPeripheral();
+
+			// Simple blacklisting
+			if (te instanceof IPeripheralTile) return null;
+
 			Class<?> klass = te.getClass();
 			if (isBlacklisted(klass)) return null;
 
 			MethodRegistry registry = MethodRegistry.instance;
 
 			ICostHandler handler = registry.getCostHandler(te);
-			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, new WorldLocation(world, blockPos));
-			IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)});
+			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, Reference.id(Collections.<ResourceLocation>emptySet()), new WorldLocation(world, blockPos));
+			IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)}, Collections.<ResourceLocation>emptySet());
 
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {

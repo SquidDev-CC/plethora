@@ -11,7 +11,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -27,7 +27,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.scannerRadius;
 
 public final class MethodsScanner {
-	@IMethod.Inject(IModule.class)
+	@IMethod.Inject(IModuleContainer.class)
 	public static final class MethodScanBlocks extends TargetedModuleObjectMethod<IWorldLocation> {
 		public MethodScanBlocks() {
 			super("scan", PlethoraModules.SCANNER, IWorldLocation.class, true, "function() -- Scan all blocks in the vicinity");
@@ -35,7 +35,7 @@ public final class MethodsScanner {
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -70,7 +70,7 @@ public final class MethodsScanner {
 		doc = "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block"
 	)
 	@Nonnull
-	public static MethodResult getBlockMeta(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult getBlockMeta(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final int x = getInt(args, 0);
 		final int y = getInt(args, 1);
 		final int z = getInt(args, 2);
@@ -82,7 +82,7 @@ public final class MethodsScanner {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<IModule> baked = context.bake();
+				IContext<IModuleContainer> baked = context.bake();
 				IWorldLocation location = baked.getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos().add(x, y, z);
 				World world = location.getWorld();

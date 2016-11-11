@@ -24,13 +24,12 @@ public interface IContext<T> extends IPartialContext<T> {
 	<U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context);
 
 	/**
-	 * Include additional properties in this context
+	 * Get the unbaked context for this context.
 	 *
-	 * @param context The additional context items
-	 * @return The new context
+	 * @return The unbaked context.
 	 */
 	@Nonnull
-	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
+	IUnbakedContext<T> unbake();
 
 	/**
 	 * Get a lua object from this context

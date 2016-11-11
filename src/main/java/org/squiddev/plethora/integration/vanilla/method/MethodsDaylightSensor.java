@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
@@ -24,7 +24,7 @@ public class MethodsDaylightSensor {
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():boolean -- Whether this world has a sky"
 	)
-	public static MethodResult hasSky(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult hasSky(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
@@ -38,7 +38,7 @@ public class MethodsDaylightSensor {
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from the sun"
 	)
-	public static MethodResult getSkyLight(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getSkyLight(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
@@ -58,7 +58,7 @@ public class MethodsDaylightSensor {
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from surrounding blocks"
 	)
-	public static MethodResult getBlockLight(final IUnbakedContext<IModule> context, Object[] args) {
+	public static MethodResult getBlockLight(final IUnbakedContext<IModuleContainer> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {

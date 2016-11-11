@@ -7,6 +7,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 
 /**
  * Base tile for all TileEntities
@@ -55,9 +56,10 @@ public abstract class TileBase extends TileEntity {
 	 *
 	 * @param player The player who triggered this
 	 * @param side   The side the block is activated on
+	 * @param hit    The position the hit occurred
 	 * @return If the event succeeded
 	 */
-	public boolean onActivated(EntityPlayer player, EnumFacing side) {
+	public boolean onActivated(EntityPlayer player, EnumFacing side, Vec3 hit) {
 		return false;
 	}
 

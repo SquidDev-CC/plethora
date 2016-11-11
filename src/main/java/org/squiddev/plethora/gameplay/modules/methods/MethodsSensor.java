@@ -11,7 +11,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -30,15 +30,15 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.sensorRadius;
 
 public final class MethodsSensor {
-	@IMethod.Inject(IModule.class)
-	public static final class ScanEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
-		public ScanEntitiesMethod() {
-			super("scan", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
+	@IMethod.Inject(IModuleContainer.class)
+	public static final class SenseEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
+		public SenseEntitiesMethod() {
+			super("sense", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
 		}
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 			final World world = location.getWorld();
 			final BlockPos pos = location.getPos();
 
@@ -60,7 +60,7 @@ public final class MethodsSensor {
 		target = IWorldLocation.class,
 		doc = "function():table|nil -- Find a nearby entity by UUID"
 	)
-	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final UUID uuid;
 		try {
 			uuid = UUID.fromString(getString(args, 0));
@@ -71,7 +71,7 @@ public final class MethodsSensor {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<IModule> baked = context.bake();
+				IContext<IModuleContainer> baked = context.bake();
 				Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
 				if (entity == null) {
 					return MethodResult.empty();
@@ -88,13 +88,13 @@ public final class MethodsSensor {
 		doc = "function():table|nil -- Find a nearby entity by name"
 	)
 	@Nonnull
-	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final String name = getString(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<IModule> baked = context.bake();
+				IContext<IModuleContainer> baked = context.bake();
 				Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
 				if (entity == null) {
 					return MethodResult.empty();

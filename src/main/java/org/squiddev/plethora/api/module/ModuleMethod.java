@@ -13,9 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A method bound to a specific module
+ * A method that requires a module to execute.
  */
-public abstract class ModuleMethod extends BasicMethod<IModule> implements IModuleMethod {
+public abstract class ModuleMethod<T> extends BasicMethod<T> implements IModuleMethod<T> {
 	protected final ResourceLocation module;
 
 	public ModuleMethod(String name, ResourceLocation module) {
@@ -36,8 +36,8 @@ public abstract class ModuleMethod extends BasicMethod<IModule> implements IModu
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
-		return super.canApply(context) && context.getTarget().getModuleId().equals(module);
+	public boolean canApply(@Nonnull IPartialContext<T> context) {
+		return super.canApply(context) && context.hasModule(module);
 	}
 
 	@Nonnull

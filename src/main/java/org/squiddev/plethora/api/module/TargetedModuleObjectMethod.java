@@ -10,9 +10,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * A module method that targets a separate class
+ * A top-level module method which requires a particular context object to execute.
  */
-public abstract class TargetedModuleObjectMethod<T> extends ModuleObjectMethod implements ISubTargetedMethod<IModule, T> {
+public abstract class TargetedModuleObjectMethod<T> extends ModuleObjectMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
 	public TargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread) {
@@ -33,19 +33,18 @@ public abstract class TargetedModuleObjectMethod<T> extends ModuleObjectMethod i
 	}
 
 	@Override
-	public boolean canApply(@Nonnull IPartialContext<IModule> context) {
+	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
 		return super.canApply(context) && context.hasContext(klass);
 	}
 
 	@Nullable
 	@Override
-	public final Object[] apply(@Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public final Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		return apply(context.getContext(klass), context, args);
 	}
 
 	@Nullable
-	public abstract Object[] apply(@Nonnull T target, @Nonnull IContext<IModule> context, @Nonnull Object[] args) throws LuaException;
-
+	public abstract Object[] apply(@Nonnull T target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException;
 
 	@Nonnull
 	@Override

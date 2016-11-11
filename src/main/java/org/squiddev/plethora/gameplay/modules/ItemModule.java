@@ -28,7 +28,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
@@ -277,7 +276,7 @@ public final class ItemModule extends ItemBase {
 		return new ItemModuleHandler(stack);
 	}
 
-	private static final class ItemModuleHandler implements IModuleHandler, IModule, ICapabilityProvider {
+	private static final class ItemModuleHandler implements IModuleHandler, ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
 
@@ -298,7 +297,7 @@ public final class ItemModule extends ItemBase {
 
 		@Nonnull
 		@Override
-		public ResourceLocation getModuleId() {
+		public ResourceLocation getModule() {
 			// Cache the ID
 			ResourceLocation id = moduleId;
 			if (id == null) {
@@ -306,12 +305,6 @@ public final class ItemModule extends ItemBase {
 			} else {
 				return id;
 			}
-		}
-
-		@Nonnull
-		@Override
-		public IModule getModule() {
-			return this;
 		}
 
 		@Nonnull

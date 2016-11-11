@@ -8,7 +8,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.module.IModule;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.utils.Helpers;
@@ -23,7 +22,7 @@ import java.util.Collections;
  * A basic module handler which serves as a capability provider too.
  * Used for {@link net.minecraftforge.event.AttachCapabilitiesEvent}.
  */
-public class BasicModuleHandler implements IModule, IModuleHandler, ICapabilityProvider {
+public class BasicModuleHandler implements IModuleHandler, ICapabilityProvider {
 	private final ItemStack stack;
 	private final ResourceLocation id;
 
@@ -34,8 +33,8 @@ public class BasicModuleHandler implements IModule, IModuleHandler, ICapabilityP
 
 	@Nonnull
 	@Override
-	public IModule getModule() {
-		return this;
+	public ResourceLocation getModule() {
+		return id;
 	}
 
 	@Nonnull
@@ -54,12 +53,6 @@ public class BasicModuleHandler implements IModule, IModuleHandler, ICapabilityP
 			Helpers.getMesher().getItemModel(stack),
 			matrix
 		);
-	}
-
-	@Nonnull
-	@Override
-	public ResourceLocation getModuleId() {
-		return id;
 	}
 
 	@Override

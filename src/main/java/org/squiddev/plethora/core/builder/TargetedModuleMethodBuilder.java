@@ -2,12 +2,13 @@ package org.squiddev.plethora.core.builder;
 
 import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodBuilder;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 
 import javax.annotation.Nonnull;
@@ -23,7 +24,7 @@ public class TargetedModuleMethodBuilder extends MethodBuilder<TargetedModuleMet
 
 	@Override
 	public Class<?> getTarget(@Nonnull Method method, @Nonnull TargetedModuleMethod.Inject annotation) {
-		return IModule.class;
+		return IModuleContainer.class;
 	}
 
 	@Override
@@ -59,5 +60,33 @@ public class TargetedModuleMethodBuilder extends MethodBuilder<TargetedModuleMet
 
 		mv.visitMaxs(6, 1);
 		mv.visitEnd();
+
+		if (annotation.requirements().length > 0) {
+			MethodVisitor req = writer.visitMethod(ACC_PUBLIC, "canApply", "(Lorg/squiddev/plethora/api/method/IPartialContext;)Z", null, null);
+			req.visitCode();
+
+			Label exit = new Label();
+			req.visitVarInsn(ALOAD, 0);
+			req.visitVarInsn(ALOAD, 1);
+			req.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/TargetedModuleMethod", "canApply", "(Lorg/squiddev/plethora/api/method;)Z", false);
+			req.visitJumpInsn(IFEQ, exit);
+
+			for (Class<?> klass : annotation.requirements()) {
+				req.visitVarInsn(ALOAD, 1);
+				req.visitLdcInsn(klass);
+				req.visitMethodInsn(INVOKEINTERFACE, "org/squiddev/plethora/api/method/IPartialContext", "hasContext", "(Ljava/lang/Class;)Z", false);
+				req.visitJumpInsn(IFEQ, exit);
+			}
+
+			req.visitInsn(ICONST_1);
+			req.visitInsn(IRETURN);
+
+			req.visitLabel(exit);
+			req.visitInsn(ICONST_0);
+			req.visitInsn(IRETURN);
+
+			req.visitMaxs(2, 2);
+			req.visitEnd();
+		}
 	}
 }

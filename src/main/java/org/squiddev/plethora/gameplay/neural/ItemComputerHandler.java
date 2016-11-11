@@ -13,6 +13,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import static org.squiddev.plethora.gameplay.ItemBase.getTag;
+import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
 /**
  * Attempt to get computer's from items
@@ -78,9 +79,12 @@ public final class ItemComputerHandler {
 			}
 		} else {
 			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
-				computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, owner));
+			for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
+				// We skip the "back" slot
+				computer.setPeripheral(slot < BACK ? slot : slot + 1, NeuralHelpers.buildPeripheral(handler, slot));
 			}
+
+			computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, owner));
 
 			tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
 			tag.setLong(ENTITY_MOST, owner.getPersistentID().getMostSignificantBits());

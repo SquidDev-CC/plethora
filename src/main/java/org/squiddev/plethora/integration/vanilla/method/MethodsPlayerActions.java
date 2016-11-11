@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.module.IModule;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -36,7 +36,7 @@ public final class MethodsPlayerActions {
 		target = EntityLivingBase.class,
 		doc = "function([duration: integer]):boolean, string|nil -- Right click with this item"
 	)
-	public static MethodResult use(@Nonnull final IUnbakedContext<IModule> context, @Nonnull Object[] args) throws LuaException {
+	public static MethodResult use(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final int duration = optInt(args, 0, 0);
 
 		if (duration < 0) throw new LuaException("Duration out of range (must be >= 0)");

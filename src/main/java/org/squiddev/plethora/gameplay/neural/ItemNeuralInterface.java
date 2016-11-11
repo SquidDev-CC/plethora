@@ -48,6 +48,7 @@ import java.util.List;
 
 import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
+import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0);
@@ -133,7 +134,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 			// Force an update on each peripheral item
 			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
+			for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
 				ItemStack module = handler.getStackInSlot(slot);
 				if (module != null) {
 					IPeripheralHandler peripheralHandler = module.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);
@@ -148,15 +149,22 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			}
 
 			// Sync peripherals
-			if (tag.getByte(DIRTY) != 0) {
-				byte dirtyStatus = tag.getByte(DIRTY);
-				tag.setByte(DIRTY, (byte) 0);
+			if (tag.getShort(DIRTY) != 0) {
+				short dirtyStatus = tag.getShort(DIRTY);
+				tag.setShort(DIRTY, (short) 0);
 				dirty = true;
 
-				for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
+				for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
 					if ((dirtyStatus & (1 << slot)) == 1 << slot) {
-						computer.setPeripheral(slot, NeuralHelpers.buildPeripheral(handler, slot, player));
+						// We skip the "back" slot
+						computer.setPeripheral(slot < BACK ? slot : slot + 1, NeuralHelpers.buildPeripheral(handler, slot));
 					}
+				}
+
+				// If the modules have changed.
+				dirtyStatus >>= NeuralHelpers.PERIPHERAL_SIZE;
+				if (dirtyStatus != 0) {
+					computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, player));
 				}
 			}
 
@@ -174,11 +182,16 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		private final IItemHandler inv = new ItemStackHandler(NeuralHelpers.INV_SIZE) {
 			@Override
 			public ItemStack insertItem(int slot, ItemStack toInsert, boolean simulate) {
-				if (toInsert != null && getStackInSlot(slot) == null && (
-					toInsert.hasCapability(MODULE_HANDLER_CAPABILITY, null) ||
-						toInsert.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
-						toInsert.hasCapability(PERIPHERAL_CAPABILITY, null)
-				)) {
+				if (toInsert == null || getStackInSlot(slot) != null) return toInsert;
+
+				if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
+					if (toInsert.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
+						toInsert.hasCapability(PERIPHERAL_CAPABILITY, null)) {
+						return super.insertItem(slot, toInsert, simulate);
+					} else {
+						return toInsert;
+					}
+				} else if (toInsert.hasCapability(MODULE_HANDLER_CAPABILITY, null)) {
 					return super.insertItem(slot, toInsert, simulate);
 				} else {
 					return toInsert;
@@ -195,7 +208,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				super.onContentsChanged(slot);
 
 				NBTTagCompound tag = ItemBase.getTag(stack);
-				tag.setByte(DIRTY, (byte) (tag.getByte("dirty") | 1 << slot));
+				tag.setShort(DIRTY, (byte) (tag.getByte("dirty") | 1 << slot));
 			}
 		};
 
