@@ -1,8 +1,10 @@
 -- When the player shifts, this fires a laser in the direction the player is looking
 
-local sensor = peripheral.find("plethora:sensor")
-local intro = peripheral.find("plethora:introspection")
-local laser = peripheral.find("plethora:laser")
+local modules = assert(peripheral.find("plethora:modules"), "Cannot find modules")
+
+local sensor = modules.filterModules("plethora:sensor")
+local intro = modules.filterModules("plethora:introspection")
+local laser = modules.filterModules("plethora:laser")
 
 local id = intro.getID()
 

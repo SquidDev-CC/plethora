@@ -1,6 +1,8 @@
 -- Fires lasers in a circle
 
-local laser = assert(peripheral.find("plethora:laser"), "Cannot find laser")
+local modules = assert(peripheral.find("plethora:modules"), "Cannot find modules")
+
+local laser = assert(modules.filterModules("plethora:laser"), "Cannot find laser")
 
 local angle = 0
 local deltaAngle = math.pi * 2 / 20
