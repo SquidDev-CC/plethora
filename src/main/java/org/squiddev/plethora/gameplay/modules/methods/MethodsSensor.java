@@ -31,9 +31,9 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.sensorRadius
 
 public final class MethodsSensor {
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class ScanEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
-		public ScanEntitiesMethod() {
-			super("scan", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
+	public static final class SenseEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
+		public SenseEntitiesMethod() {
+			super("sense", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
 		}
 
 		@Nullable
