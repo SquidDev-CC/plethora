@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
@@ -40,9 +39,6 @@ public class PeripheralProvider implements IPeripheralProvider {
 			// Check for capability first
 			IPeripheral capability = te.getCapability(Constants.PERIPHERAL_CAPABILITY, enumFacing);
 			if (capability != null) return capability;
-
-			IPeripheralHandler periphHandler = te.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, enumFacing);
-			if (periphHandler != null) return periphHandler.getPeripheral();
 
 			// Simple blacklisting
 			if (te instanceof IPeripheralTile) return null;
