@@ -46,7 +46,7 @@ public final class DefaultCostHandler implements ICostHandler {
 
 	@Override
 	public synchronized boolean consume(double amount) {
-		Preconditions.checkArgument(amount > 0, "amount must be > 0");
+		Preconditions.checkArgument(amount >= 0, "amount must be >= 0");
 		if (amount > value) return false;
 
 		value -= amount;

@@ -16,7 +16,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
 /**
  * Various methods for mobs
@@ -75,9 +77,14 @@ public final class MethodsKineticEntity {
 			double y = getNumber(args, 1);
 			double z = getNumber(args, 2);
 
-			if (x < -32 || x > 32) throw new LuaException("X coordinate out of bounds (+-32");
-			if (y < -32 || y > 32) throw new LuaException("Y coordinate out of bounds (+-32");
-			if (z < -32 || z > 32) throw new LuaException("Z coordinate out of bounds (+-32");
+			assertBetween(x, -Kinetic.teleportRange, Kinetic.teleportRange, "X coordinate out of bounds (%s)");
+			assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
+			assertBetween(z, -Kinetic.teleportRange, Kinetic.teleportRange, "Z coordinate out of bounds (%s)");
+
+			CostHelpers.checkCost(
+				context.getCostHandler(),
+				Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost
+			);
 
 			return new Object[]{target.teleportTo(target.posX + x, target.posY + y, target.posZ + z)};
 		}

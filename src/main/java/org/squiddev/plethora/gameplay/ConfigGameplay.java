@@ -23,9 +23,9 @@ public final class ConfigGameplay {
 	}
 
 	/**
-	 * Config options for the various modules
+	 * Config options for the laser module
 	 */
-	public static class Modules {
+	public static class Laser {
 		/**
 		 * The minimum power of a laser.
 		 */
@@ -41,33 +41,82 @@ public final class ConfigGameplay {
 		public static double laserMaximum;
 
 		/**
-		 * The fuel cost of a laser
+		 * The fuel cost per potency for a laser.
 		 * See Plethora.cfg#CostSystem for more info
 		 */
 		@DefaultDouble(10)
 		@Range(min = 0)
 		public static double laserCost;
 
+	}
+
+	public static class Kinetic {
 		/**
-		 * The maximum velocity the kinetic manipulator
-		 * can apply to you.
+		 * The maximum velocity the kinetic manipulator can apply to you.
 		 */
 		@DefaultInt(4)
 		@Range(min = 0)
-		public static int kineticLaunchMax;
+		public static int launchMax;
 
+		/**
+		 * The cost per launch power
+		 */
+		@DefaultInt(0)
+		@Range(min = 0)
+		public static int launchCost;
+
+		/**
+		 * The maximum range that the entity can path find to.
+		 */
+		@DefaultInt(32)
+		@Range(min = 1)
+		public static int walkRange;
+
+		/**
+		 * The maximum speed that the entity can walk at.
+		 */
+		@DefaultInt(3)
+		@Range(min = 1)
+		public static int walkSpeed;
+
+		/**
+		 * The cost of walking.
+		 * This is multiplied by the distance and speed walked.
+		 */
+		@DefaultInt(0)
+		@Range(min = 0)
+		public static int walkCost;
+
+		/**
+		 * The maximum range that endermen can teleport to.
+		 */
+		@DefaultInt(32)
+		@Range(min = 1)
+		public static int teleportRange;
+
+		/**
+		 * The cost per block teleported
+		 */
+		@DefaultInt(0)
+		@Range(min = 0)
+		public static int teleportCost;
+	}
+
+	public static class Scanner {
 		/**
 		 * The radius scanners can get blocks in
 		 */
 		@DefaultInt(8)
 		@Range(min = 0)
-		public static int scannerRadius;
+		public static int radius;
+	}
 
+	public static class Sensor {
 		/**
 		 * The radius sensors can get entities in
 		 */
 		@DefaultInt(16)
 		@Range(min = 0)
-		public static int sensorRadius;
+		public static int radius;
 	}
 }

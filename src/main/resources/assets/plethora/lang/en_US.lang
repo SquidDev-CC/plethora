@@ -48,12 +48,26 @@ gui.config.plethora.blacklist=Blacklist
 gui.config.plethora.blacklist.blacklistMethods=Blacklisted methods
 gui.config.plethora.blacklist.blacklistMeta=Blacklisted meta providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
+gui.config.plethora.baseCosts=Base Method Cost
+gui.config.plethora.testing=Testing
 
 # Gameplay config
-gui.config.plethora.module_s=module_s
-gui.config.plethora.module_s.laserMinimum=Laser minimum
-gui.config.plethora.module_s.laserMaximum=Laser maximum
-gui.config.plethora.module_s.laserCost=Laser cost
-gui.config.plethora.module_s.kineticLaunchMax=Kinetic launch max
-gui.config.plethora.module_s.scannerRadius=Scanner radius
-gui.config.plethora.module_s.sensorRadius=Sensor radius
+gui.config.plethora.laser=Frickin' laser beam
+gui.config.plethora.laser.laserMinimum=Laser minimum
+gui.config.plethora.laser.laserMaximum=Laser maximum
+gui.config.plethora.laser.laserCost=Laser cost
+
+gui.config.plethora.kinetic=Kinetic Augment
+gui.config.plethora.kinetic.launchMax=Maximum launch factor
+gui.config.plethora.kinetic.launchCost=Maximum launch factor
+gui.config.plethora.kinetic.walkRange=Maximum walk range
+gui.config.plethora.kinetic.walkSpeed=Maximum walk speed
+gui.config.plethora.kinetic.walkCost=Walk cost
+gui.config.plethora.kinetic.teleportRange=Maximum teleport range
+gui.config.plethora.kinetic.teleportCost=Teleport cost
+
+gui.config.plethora.scanner=Entity Sensor
+gui.config.plethora.scanner.radius=Scan radius
+
+gui.config.plethora.sensor=Entity Sensor
+gui.config.plethora.sensor.radius=Sense radius

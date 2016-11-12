@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import org.squiddev.configgen.*;
 import org.squiddev.plethora.core.ConfigCoreForgeLoader;
@@ -12,9 +13,13 @@ import java.util.HashSet;
 public final class ConfigCore {
 	public static Configuration configuration;
 
+	public static ConfigCategory baseCosts;
+
 	public static void init(File file) {
 		ConfigCoreForgeLoader.init(file);
 		configuration = ConfigCoreForgeLoader.getConfiguration();
+
+		baseCosts = configuration.getCategory("basecosts");
 	}
 
 	public static void sync() {
@@ -26,7 +31,7 @@ public final class ConfigCore {
 	 * consume a set amount of fuel from their owner.
 	 * This level regenerates over time.
 	 *
-	 * *Note* These values only apply to the default handler.
+	 * *Note:* These values only apply to the default handler.
 	 * Other mods may add custom handlers.
 	 */
 	public static class CostSystem {
@@ -92,6 +97,9 @@ public final class ConfigCore {
 		public static HashSet<String> blacklistMods;
 	}
 
+	/**
+	 * Various options for debugging and testing this mod
+	 */
 	public static class Testing {
 		/**
 		 * Enable strict loading mode: crash when an error is encountered
@@ -119,5 +127,11 @@ public final class ConfigCore {
 		 */
 		@DefaultBoolean(false)
 		public static boolean likeDocs;
+	}
+
+	/**
+	 * The base costs for all methods.
+	 */
+	public static class BaseCosts {
 	}
 }

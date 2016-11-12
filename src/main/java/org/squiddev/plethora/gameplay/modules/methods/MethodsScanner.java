@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.scannerRadius;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
 	@IMethod.Inject(IModuleContainer.class)
@@ -42,9 +42,9 @@ public final class MethodsScanner {
 
 			int i = 0;
 			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (int oX = x - scannerRadius; oX <= x + scannerRadius; oX++) {
-				for (int oY = y - scannerRadius; oY <= y + scannerRadius; oY++) {
-					for (int oZ = z - scannerRadius; oZ <= z + scannerRadius; oZ++) {
+			for (int oX = x - radius; oX <= x + radius; oX++) {
+				for (int oY = y - radius; oY <= y + radius; oY++) {
+					for (int oZ = z - radius; oZ <= z + radius; oZ++) {
 						BlockPos newPos = new BlockPos(oX, oY, oZ);
 						IBlockState block = world.getBlockState(newPos);
 
@@ -75,9 +75,9 @@ public final class MethodsScanner {
 		final int y = getInt(args, 1);
 		final int z = getInt(args, 2);
 
-		assertBetween(x, -scannerRadius, scannerRadius, "X coordinate out of bounds (%s)");
-		assertBetween(y, -scannerRadius, scannerRadius, "Y coordinate out of bounds (%s)");
-		assertBetween(z, -scannerRadius, scannerRadius, "Z coordinate out of bounds (%s)");
+		assertBetween(x, -radius, radius, "X coordinate out of bounds (%s)");
+		assertBetween(y, -radius, radius, "Y coordinate out of bounds (%s)");
+		assertBetween(z, -radius, radius, "Z coordinate out of bounds (%s)");
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override

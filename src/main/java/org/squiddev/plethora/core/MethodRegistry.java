@@ -6,6 +6,7 @@ import com.google.common.collect.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
@@ -31,6 +32,8 @@ public final class MethodRegistry implements IMethodRegistry {
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
+
+		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, null, 0, Integer.MAX_VALUE);
 
 		providers.put(target, method);
 
@@ -128,6 +131,17 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(builder, "builder cannot be null");
 
 		MethodTypeBuilder.instance.addBuilder(klass, builder);
+	}
+
+	@Override
+	public int getBaseMethodCost(IMethod method) {
+		Property property = ConfigCore.baseCosts.get(method.getClass().getName());
+		if (property == null) {
+			DebugLogger.warn("Cannot find cost for " + method.getClass().getName() + ", this may have been registered incorrectly");
+			return 0;
+		}
+
+		return property.getInt();
 	}
 
 	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {

@@ -44,7 +44,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.*;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMaximum;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMinimum;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -152,7 +154,7 @@ public final class ItemModule extends ItemBase {
 				break;
 			}
 			case KINETIC_ID: {
-				launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * kineticLaunchMax);
+				launch(player, player.rotationYaw, player.rotationPitch, (ticks / USE_TICKS) * launchMax);
 				break;
 			}
 			default:

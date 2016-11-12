@@ -4,9 +4,8 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.utils.DebugLogger;
 
@@ -78,9 +77,12 @@ public class MethodWrapper {
 		return true;
 	}
 
+	private static final IMethodRegistry registry = PlethoraAPI.instance().methodRegistry();
+
 	@SuppressWarnings("unchecked")
 	protected static MethodResult doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
 		try {
+			CostHelpers.checkCost(context.getCostHandler(), registry.getBaseMethodCost(method));
 			return method.apply(context, args);
 		} catch (LuaException e) {
 			throw e;

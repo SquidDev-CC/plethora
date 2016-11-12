@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.scannerRadius;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.sensorRadius;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
 
 /**
  * Renders overlays for various modules
@@ -119,8 +119,8 @@ public class RenderOverlay extends Module implements IClientModule {
 					// Gather all entities and render them
 					Vec3 position = player.getPositionEyes(event.partialTicks);
 					List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(
-						position.xCoord - sensorRadius, position.yCoord - sensorRadius, position.zCoord - sensorRadius,
-						position.xCoord + sensorRadius, position.yCoord + sensorRadius, position.zCoord + sensorRadius
+						position.xCoord - Sensor.radius, position.yCoord - Sensor.radius, position.zCoord - Sensor.radius,
+						position.xCoord + Sensor.radius, position.yCoord + Sensor.radius, position.zCoord + Sensor.radius
 					));
 
 					for (EntityLivingBase entity : entities) {
@@ -137,9 +137,9 @@ public class RenderOverlay extends Module implements IClientModule {
 					// Try to find all ore blocks and render them
 					BlockPos pos = player.getPosition();
 					final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-					for (int oX = x - scannerRadius; oX <= x + scannerRadius; oX++) {
-						for (int oY = y - scannerRadius; oY <= y + scannerRadius; oY++) {
-							for (int oZ = z - scannerRadius; oZ <= z + scannerRadius; oZ++) {
+					for (int oX = x - Scanner.radius; oX <= x + Scanner.radius; oX++) {
+						for (int oY = y - Scanner.radius; oY <= y + Scanner.radius; oY++) {
+							for (int oZ = z - Scanner.radius; oZ <= z + Scanner.radius; oZ++) {
 								IBlockState state = world.getBlockState(new BlockPos(oX, oY, oZ));
 								Block block = state.getBlock();
 

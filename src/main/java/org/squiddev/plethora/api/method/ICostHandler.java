@@ -27,7 +27,7 @@ public interface ICostHandler {
 	/**
 	 * Consume a set amount of fuel
 	 *
-	 * @param amount The amount to consume. This must be > 0.
+	 * @param amount The amount to consume. This must be >= 0.
 	 * @return If there is sufficient fuel
 	 */
 	boolean consume(double amount);

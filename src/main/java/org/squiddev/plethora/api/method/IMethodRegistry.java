@@ -78,4 +78,13 @@ public interface IMethodRegistry {
 	 * @param builder The builder to register
 	 */
 	<T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder);
+
+	/**
+	 * Gets the base cost of a method. This is subtracted when the method is executed.
+	 *
+	 * @param method The method to get the base cost of.
+	 * @return The base cost of the method.
+	 * @see ICostHandler
+	 */
+	int getBaseMethodCost(IMethod method);
 }

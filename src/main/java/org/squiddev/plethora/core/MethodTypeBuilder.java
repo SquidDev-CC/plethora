@@ -29,8 +29,8 @@ import java.util.*;
  * Builds classes based off of types
  */
 public final class MethodTypeBuilder extends ClassLoader {
-	private static final String DOTTED_PREFIX = "org.squiddev.plethora.generated.";
-	private static final String INTERNAL_PREFIX = "org/squiddev/plethora/generated/";
+	private static final String DOTTED_PREFIX = "";
+	private static final String INTERNAL_PREFIX = "";
 
 	public static final MethodTypeBuilder instance = new MethodTypeBuilder();
 
@@ -73,9 +73,9 @@ public final class MethodTypeBuilder extends ClassLoader {
 			}
 		}
 
-		String classPart = (method.getDeclaringClass().getName() + "$" + method.getName()).replace('.', '_');
+		String classPart = (method.getDeclaringClass().getName() + "$" + method.getName());
 		String dottedName = DOTTED_PREFIX + classPart;
-		String internalName = INTERNAL_PREFIX + classPart;
+		String internalName = INTERNAL_PREFIX + classPart.replace('.', '/');
 
 		MarkerInterfaces markerInterfacesAnnot = method.getAnnotation(MarkerInterfaces.class);
 		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.<Class<?>>emptySet() : Sets.<Class<?>>newHashSet(markerInterfacesAnnot.value());

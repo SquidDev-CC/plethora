@@ -17,9 +17,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
-import static org.squiddev.plethora.api.method.ArgumentHelper.optNumber;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.kineticLaunchMax;
+import static org.squiddev.plethora.api.method.ArgumentHelper.*;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
 public final class MethodsKinetic {
 	@Nonnull
@@ -33,7 +32,12 @@ public final class MethodsKinetic {
 		final float pitch = (float) getNumber(args, 1);
 		final float power = (float) getNumber(args, 2);
 
-		ArgumentHelper.assertBetween(power, 0, kineticLaunchMax, "Power out of range (%s).");
+		assertBetween(power, 0, Kinetic.launchMax, "Power out of range (%s).");
+
+		CostHelpers.checkCost(
+			context.getCostHandler(),
+			power * Kinetic.launchCost
+		);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -77,13 +81,18 @@ public final class MethodsKinetic {
 
 		final double speed = optNumber(args, 3, 1);
 
-		if (x < -32 || x > 32) throw new LuaException("X coordinate out of bounds (+-32");
-		if (y < -32 || y > 32) throw new LuaException("Y coordinate out of bounds (+-32");
-		if (z < -32 || z > 32) throw new LuaException("Z coordinate out of bounds (+-32");
+		assertBetween(x, -Kinetic.walkRange, Kinetic.walkRange, "X coordinate out of bounds (%s)");
+		assertBetween(y, -Kinetic.walkRange, Kinetic.walkRange, "Y coordinate out of bounds (%s)");
+		assertBetween(z, -Kinetic.walkRange, Kinetic.walkRange, "Z coordinate out of bounds (%s)");
 
-		if (!Double.isNaN(speed) && speed < 1 || speed > 3) {
-			throw new LuaException("Speed out of bounds (1 <= speed <= 3)");
+		if (!Double.isNaN(speed)) {
+			assertBetween(speed, 1, Kinetic.walkSpeed, "Speed coordinate out of bounds (%s)");
 		}
+
+		CostHelpers.checkCost(
+			context.getCostHandler(),
+			Math.sqrt(x * x + y * y + z * z) * Kinetic.walkCost
+		);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override

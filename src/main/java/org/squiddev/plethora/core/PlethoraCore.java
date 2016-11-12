@@ -74,6 +74,8 @@ public class PlethoraCore {
 		ConverterRegistry.instance.loadAsm(asmData);
 		MethodTypeBuilder.instance.loadAsm(asmData);
 		TransferRegistry.instance.loadAsm(asmData);
+
+		ConfigCore.configuration.save();
 	}
 
 	@Mod.EventHandler

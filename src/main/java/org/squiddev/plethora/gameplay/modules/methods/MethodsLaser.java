@@ -8,7 +8,6 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
 import org.squiddev.plethora.gameplay.modules.EntityLaser;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -18,8 +17,7 @@ import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMaximum;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Modules.laserMinimum;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
 public final class MethodsLaser {
 	@TargetedModuleMethod.Inject(
@@ -35,7 +33,7 @@ public final class MethodsLaser {
 
 		ArgumentHelper.assertBetween(potency, laserMinimum, laserMaximum, "Potency out of range (%s).");
 
-		CostHelpers.checkCost(unbaked.getCostHandler(), potency * ConfigGameplay.Modules.laserCost);
+		CostHelpers.checkCost(unbaked.getCostHandler(), potency * laserCost);
 
 		final double motionX = -Math.sin(yaw) * Math.cos(pitch);
 		final double motionZ = Math.cos(yaw) * Math.cos(pitch);
