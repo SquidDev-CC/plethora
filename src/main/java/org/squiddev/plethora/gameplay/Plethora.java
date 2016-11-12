@@ -37,7 +37,7 @@ public class Plethora {
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigGameplay.init(event.getSuggestedConfigurationFile());
 
-		EntityRegistry.registerModEntity(PlethoraFakePlayer.class, ID + ":fakePlayer", 0, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
+		EntityRegistry.registerModEntity(PlethoraFakePlayer.class, ID + ":fakePlayer", 1, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
 
 		tab = new PlethoraCreativeTab();
 		Registry.setup();
