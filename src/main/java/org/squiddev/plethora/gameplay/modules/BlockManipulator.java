@@ -107,12 +107,24 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		// Prevent wrapping by accident
 		FMLInterModComms.sendMessage(PlethoraCore.ID, Constants.IMC_BLACKLIST_PERIPHERAL, TileManipulator.class.getName());
 
-		GameRegistry.addShapedRecipe(new ItemStack(this),
-			"GGG",
-			"IMI",
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, 0),
+			"GCG",
+			"RMR",
 			"III",
 			'G', new ItemStack(Blocks.glass),
+			'C', new ItemStack(Items.gold_ingot),
+			'R', new ItemStack(Items.redstone),
 			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
+			'I', new ItemStack(Items.iron_ingot)
+		);
+
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, 1),
+			"CCC",
+			"RMR",
+			"III",
+			'C', new ItemStack(Items.gold_ingot),
+			'R', new ItemStack(Items.redstone),
+			'M', new ItemStack(this, 1, 0),
 			'I', new ItemStack(Items.iron_ingot)
 		);
 	}
