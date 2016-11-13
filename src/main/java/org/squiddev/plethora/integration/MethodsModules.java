@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
@@ -10,6 +11,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.Set;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
@@ -20,7 +22,12 @@ public class MethodsModules {
 		doc = "function():table -- Lists all modules available"
 	)
 	public static Object[] listModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		return new Object[]{context.getModules().toArray()};
+		Map<Integer, String> modules = Maps.newHashMap();
+		int i = 0;
+		for (ResourceLocation module : context.getModules()) {
+			modules.put(++i, module.toString());
+		}
+		return new Object[]{modules};
 	}
 
 	@BasicObjectMethod.Inject(
@@ -38,9 +45,13 @@ public class MethodsModules {
 	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final ResourceLocation[] modules = new ResourceLocation[args.length];
+		boolean any = false;
 		for (int i = 0; i < args.length; i++) {
-			modules[i] = new ResourceLocation(getString(args, i));
+			ResourceLocation module = modules[i] = new ResourceLocation(getString(args, i));
+			if (context.hasModule(module)) any = true;
 		}
+
+		if (!any) return null;
 
 		final IModuleContainer container = context.getTarget();
 		IModuleContainer filteredContainer = new IModuleContainer() {

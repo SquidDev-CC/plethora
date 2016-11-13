@@ -164,8 +164,10 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		List<IReference<?>> additionalContext = Lists.newArrayList();
 		for (int i = 0; i < size; i++) {
-			ItemStack stack = stacks[i] = manipulator.getStack(i);
+			ItemStack stack = manipulator.getStack(i);
 			if (stack == null) continue;
+
+			stack = stacks[i] = stack.copy();
 
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
@@ -189,9 +191,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			@Override
 			public Set<ResourceLocation> get() throws LuaException {
 				for (int i = 0; i < size; i++) {
+					ItemStack oldStack = stacks[i];
 					ItemStack newStack = manipulator.getStack(i);
-					if (!ItemStack.areItemStacksEqual(stacks[i], newStack)) {
-						throw new LuaException("The module has been removed");
+					if (oldStack != null && !ItemStack.areItemStacksEqual(stacks[i], newStack)) {
+						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
 				}
 

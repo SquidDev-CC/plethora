@@ -78,8 +78,10 @@ public final class NeuralHelpers {
 
 		boolean exists = false;
 		for (int i = 0; i < MODULE_SIZE; i++) {
-			ItemStack stack = stacks[i] = handler.getStackInSlot(PERIPHERAL_SIZE + i);
+			ItemStack stack = handler.getStackInSlot(PERIPHERAL_SIZE + i);
 			if (stack == null) continue;
+
+			stack = stacks[i] = stack.copy();
 
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
@@ -103,9 +105,11 @@ public final class NeuralHelpers {
 			@Override
 			public Set<ResourceLocation> get() throws LuaException {
 				for (int i = 0; i < MODULE_SIZE; i++) {
+					ItemStack oldStack = stacks[i];
 					ItemStack newStack = handler.getStackInSlot(PERIPHERAL_SIZE + i);
-					if (!ItemStack.areItemStacksEqual(stacks[i], newStack)) {
-						throw new LuaException("The module has been removed");
+					if (oldStack != null && !ItemStack.areItemStacksEqual(stacks[i], newStack)) {
+						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
 				}
 				return moduleSet;
