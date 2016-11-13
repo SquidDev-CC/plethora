@@ -11,6 +11,9 @@ buildscript {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
 	}
 }
+
+buildDir = "build-${mc_version}"
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply from: 'gradle/scripts/jsonGen.gradle'
 
@@ -20,7 +23,7 @@ archivesBaseName = "plethora"
 
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}-${project.mc_version}"
-	runDir = "run"
+	runDir = "run-${project.mc_version}"
 	mappings = "stable_20"
 
 	replace '${mod_version}', project.mod_version
