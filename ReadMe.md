@@ -1,4 +1,4 @@
-# Plethora [![Build Status](https://travis-ci.org/SquidDev-CC/plethora.svg?branch=master)](https://travis-ci.org/SquidDev-CC/plethora)
+# Plethora [![Build Status](https://travis-ci.org/SquidDev-CC/plethora.svg?branch=minecraft-1.8.9)](https://travis-ci.org/SquidDev-CC/plethora)
 
 Plethora is a ComputerCraft peirpheral provider for Minecraft 1.8.9+. It aims to provide both metadata and peripherals
 for most main-stream mods, in addition to vanilla Minecraft.
