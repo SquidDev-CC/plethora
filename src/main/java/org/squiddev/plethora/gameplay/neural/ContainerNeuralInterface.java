@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
 import org.squiddev.plethora.utils.Vec2i;
 
@@ -98,5 +99,47 @@ public class ContainerNeuralInterface extends Container {
 		}
 
 		return stack;
+	}
+
+	/**
+	 * Merges provided ItemStack with the first available one in the container/player inventor between minIndex
+	 * (included) and maxIndex (excluded). Args : stack, minIndex, maxIndex, reverseDirection.
+	 *
+	 * @see net.minecraftforge.items.ItemStackHandler#insertItem(int, ItemStack, boolean)
+	 */
+	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+		boolean flag = false;
+		int i = reverseDirection ? endIndex - 1 : startIndex;
+
+		while (stack.stackSize > 0 && (reverseDirection ? i >= startIndex : i < endIndex)) {
+			Slot slot = inventorySlots.get(i);
+			ItemStack existing = slot.getStack();
+
+			i += reverseDirection ? -1 : 1;
+
+			if (!slot.isItemValid(stack)) continue;
+
+			int limit = slot.getItemStackLimit(stack);
+			if (existing != null) {
+				if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) continue;
+				limit -= existing.stackSize;
+			}
+
+			if (limit <= 0) continue;
+
+			boolean reachedLimit = stack.stackSize > limit;
+
+			if (existing == null) {
+				slot.putStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack.copy());
+			} else {
+				existing.stackSize += reachedLimit ? limit : stack.stackSize;
+			}
+			slot.onSlotChanged();
+
+			stack.stackSize = reachedLimit ? stack.stackSize - limit : 0;
+			flag = true;
+		}
+
+		return flag;
 	}
 }
