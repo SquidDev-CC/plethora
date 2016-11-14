@@ -23,9 +23,6 @@ public class TransferNetworkAccess implements ITransferProvider<INetworkAccess> 
 		if (peripheral == null) return null;
 
 		IPeripheralHelpers helpers = CCTweaksAPI.instance().peripheralHelpers();
-
-		Object target = helpers.getTarget(peripheral);
-		if (target != null) return target;
 		return helpers.getBasePeripheral(peripheral);
 	}
 

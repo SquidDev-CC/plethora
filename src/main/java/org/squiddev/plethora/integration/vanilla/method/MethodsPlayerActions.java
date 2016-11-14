@@ -105,7 +105,12 @@ public final class MethodsPlayerActions {
 			}
 
 			if (using || !ItemStack.areItemStacksEqual(old, result)) {
-				player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
+				if (result == null || result.stackSize <= 0) {
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack));
+				} else {
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
+				}
 				return MethodResult.delayedResult(duration, true, "item", "use");
 			} else {
 				return MethodResult.delayedResult(duration, false);
@@ -163,6 +168,7 @@ public final class MethodsPlayerActions {
 			stack.setItemDamage(stackMetadata);
 			stack.stackSize = stackSize;
 		} else if (stack.stackSize <= 0) {
+			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
 			MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack));
 		}
 
