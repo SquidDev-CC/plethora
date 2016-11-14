@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules;
 
 import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -229,10 +230,18 @@ public final class EntityLaser extends Entity implements IProjectile {
 							}
 						}
 
-						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
-						if (drops != null) {
-							for (ItemStack stack : drops) {
-								WorldUtil.dropItemStack(stack, world, position);
+						if (block == Blocks.tnt) {
+							((BlockTNT) block).explode(
+								world, position,
+								blockState.withProperty(BlockTNT.EXPLODE, Boolean.valueOf(true)),
+								getShooter()
+							);
+						} else {
+							List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
+							if (drops != null) {
+								for (ItemStack stack : drops) {
+									WorldUtil.dropItemStack(stack, world, position);
+								}
 							}
 						}
 						world.setBlockToAir(position);
