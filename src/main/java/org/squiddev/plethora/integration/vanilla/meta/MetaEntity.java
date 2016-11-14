@@ -33,8 +33,8 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 		result.put("motionY", entity.motionY);
 		result.put("motionZ", entity.motionZ);
 
-		result.put("pitch", Math.toRadians(entity.rotationPitch));
-		result.put("yaw", Math.toRadians(entity.rotationYaw));
+		result.put("pitch", entity.rotationPitch);
+		result.put("yaw", entity.rotationYaw);
 
 		if (location != null && location.getWorld() == entity.worldObj) {
 			BlockPos pos = location.getPos();

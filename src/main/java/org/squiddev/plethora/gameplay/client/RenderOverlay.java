@@ -87,8 +87,8 @@ public class RenderOverlay extends Module implements IClientModule {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void renderOverlay(RenderWorldLastEvent event) {
 		ticks += 1;
 		if (ticks > Math.PI * 2 * 1000) ticks = 0;
@@ -228,6 +228,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		GlStateManager.popMatrix();
 	}
 
+	@SideOnly(Side.CLIENT)
 	private void renderQuad(Tessellator tessellator, float size) {
 		WorldRenderer buffer = tessellator.getWorldRenderer();
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

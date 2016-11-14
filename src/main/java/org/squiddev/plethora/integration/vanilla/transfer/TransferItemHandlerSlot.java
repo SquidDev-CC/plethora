@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Transfer location that allows accessing child slots
  */
-@ITransferProvider.Inject(value = IItemHandler.class, primary = false)
+@ITransferProvider.Inject(value = IItemHandler.class)
 public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> {
 	@Nullable
 	@Override

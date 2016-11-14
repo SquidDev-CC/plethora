@@ -6,13 +6,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.core.registry.Registry;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.utils.Helpers;
 
 public class IntegrationCCTweaks {
 	public static void setup() {
-		if (Helpers.modLoaded("CCTweaks")) {
+		if (Helpers.modLoaded(CCTweaks.ID)) {
 			IntegrationCCTweaks instance = new IntegrationCCTweaks();
 			MinecraftForge.EVENT_BUS.register(instance);
 		}

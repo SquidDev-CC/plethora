@@ -64,7 +64,7 @@ public class Plethora {
 		}
 	}
 
-	public static class PlethoraCreativeTab extends CreativeTabs {
+	private static class PlethoraCreativeTab extends CreativeTabs {
 		public PlethoraCreativeTab() {
 			super(RESOURCE_DOMAIN);
 		}

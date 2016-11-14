@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.cctweaks;
 
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.network.INetworkController;
 import org.squiddev.cctweaks.core.network.modem.BasicModemPeripheral;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
@@ -12,7 +13,7 @@ import java.util.Set;
 /**
  * Get all nodes from a modem peripheral.
  */
-@ITransferProvider.Inject(value = BasicModemPeripheral.class, primary = false, modId = "CCTweaks")
+@ITransferProvider.Inject(value = BasicModemPeripheral.class, modId = CCTweaks.ID)
 public class TransferNetworkNode implements ITransferProvider<BasicModemPeripheral> {
 	@Nullable
 	@Override

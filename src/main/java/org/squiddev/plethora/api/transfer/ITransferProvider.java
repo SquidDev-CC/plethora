@@ -70,5 +70,12 @@ public interface ITransferProvider<T> {
 		 * @return If this is a primary converter
 		 */
 		boolean primary() default true;
+
+		/**
+		 * Whether this converter is a secondary converter
+		 *
+		 * @return If this is a secondary converter
+		 */
+		boolean secondary() default true;
 	}
 }

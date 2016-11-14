@@ -3,7 +3,6 @@ package org.squiddev.plethora.integration.computercraft;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
-import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.turtle.items.ITurtleItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ public class MetaItemTurtle extends BasicMetaProvider<ItemStack> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
 		Item item = object.getItem();
-		if (!(item instanceof IComputerItem)) return Collections.emptyMap();
+		if (!(item instanceof ITurtleItem)) return Collections.emptyMap();
 
 		ITurtleItem turtle = (ITurtleItem) item;
 		Map<Object, Object> out = Maps.newHashMap();

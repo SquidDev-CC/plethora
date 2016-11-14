@@ -106,13 +106,13 @@ public class EquipmentInvWrapper implements IItemHandlerModifiable {
 		}
 	}
 
-	protected void validateSlotIndex(int slot) {
+	private void validateSlotIndex(int slot) {
 		if (slot < 0 || slot >= SLOTS) {
 			throw new RuntimeException("Slot " + slot + " not in valid range - [0, " + SLOTS + "]");
 		}
 	}
 
-	protected void onContentsChanged(int slot) {
+	private void onContentsChanged(int slot) {
 		if (entity instanceof EntityLiving) {
 			((EntityLiving) entity).setEquipmentDropChance(slot, 1.1f);
 		} else if (entity instanceof EntityPlayer) {

@@ -1,8 +1,12 @@
 package org.squiddev.plethora.gameplay.neural;
 
 import com.google.common.base.Objects;
+import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.filesystem.IMount;
+import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
+import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
@@ -50,7 +54,7 @@ import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
-public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor {
+public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -177,6 +181,59 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return new InvProvider(stack);
 	}
 
+	@Override
+	public boolean setLabel(ItemStack stack, String name) {
+		if (name == null) {
+			stack.clearCustomName();
+		} else {
+			stack.setStackDisplayName(name);
+		}
+		return true;
+	}
+
+	@Override
+	public String getAudioTitle(ItemStack stack) {
+		return null;
+	}
+
+	@Override
+	public String getAudioRecordName(ItemStack stack) {
+		return null;
+	}
+
+	@Override
+	public IMount createDataMount(ItemStack stack, World world) {
+		int id = getComputerID(stack);
+		if (id >= 0) {
+			return ComputerCraft.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit);
+		}
+
+		return null;
+	}
+
+	@Override
+	public int getComputerID(ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(COMPUTER_ID)) {
+			return stack.getTagCompound().getInteger(COMPUTER_ID);
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public String getLabel(ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("display", 10)) {
+			NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
+			if (nbttagcompound.hasKey("Name", 8)) return nbttagcompound.getString("Name");
+		}
+		return null;
+	}
+
+	@Override
+	public ComputerFamily getFamily(ItemStack stack) {
+		return ComputerFamily.Advanced;
+	}
+
 	private static class InvProvider implements ICapabilitySerializable<NBTBase> {
 		private final ItemStack stack;
 		private final IItemHandler inv = new ItemStackHandler(NeuralHelpers.INV_SIZE) {
@@ -208,7 +265,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				super.onContentsChanged(slot);
 
 				NBTTagCompound tag = ItemBase.getTag(stack);
-				tag.setShort(DIRTY, (byte) (tag.getByte("dirty") | 1 << slot));
+				tag.setShort(DIRTY, (short) (tag.getShort("dirty") | 1 << slot));
 			}
 		};
 

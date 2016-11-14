@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.fml.common.Optional;
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.network.INetworkAccess;
 import org.squiddev.cctweaks.api.network.INetworkedPeripheral;
 import org.squiddev.cctweaks.api.network.Packet;
@@ -26,8 +27,8 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  * Handles integration with a {@link IPeripheral}
  */
 @Optional.InterfaceList({
-	@Optional.Interface(iface = "org.squiddev.cctweaks.api.network.INetworkedPeripheral", modid = "CCTweaks"),
-	@Optional.Interface(iface = "org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted", modid = "CCTweaks")
+	@Optional.Interface(iface = "org.squiddev.cctweaks.api.network.INetworkedPeripheral", modid = CCTweaks.ID),
+	@Optional.Interface(iface = "org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted", modid = CCTweaks.ID)
 })
 public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral, INetworkedPeripheral, IPeripheralTargeted {
 	private final Object owner;
@@ -47,10 +48,10 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	private static String tryGetName(Object owner) {
 		try {
-			return Helpers.getName(owner);
+			return Helpers.getName(owner).replace('.', '_');
 		} catch (Throwable e) {
 			DebugLogger.error("Error getting data for " + owner.getClass().getName(), e);
-			return owner.getClass().getSimpleName();
+			return owner.getClass().getSimpleName().replace('.', '_');
 		}
 	}
 
@@ -86,12 +87,12 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	//region CCTweaks
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	protected IReference<?>[] getReferences(IComputerAccess access, ILuaContext context) {
 		return new IReference[]{id(access), id(context), id(getDelegate())};
 	}
 
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	private NetworkAccessDelegate getDelegate() {
 		NetworkAccessDelegate delegate = (NetworkAccessDelegate) this.delegate;
 		if (delegate == null) {
@@ -102,29 +103,29 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	}
 
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	public void attachToNetwork(INetworkAccess network, String name) {
 		getDelegate().add(network);
 	}
 
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	public void detachFromNetwork(INetworkAccess network, String name) {
 		getDelegate().remove(network);
 	}
 
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	public void networkInvalidated(INetworkAccess network, Map<String, IPeripheral> oldPeripherals, Map<String, IPeripheral> newPeripherals) {
 	}
 
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	public void receivePacket(INetworkAccess network, Packet packet, double distanceTravelled) {
 	}
 
 	@Override
-	@Optional.Method(modid = "CCTweaks")
+	@Optional.Method(modid = CCTweaks.ID)
 	public Object getTarget() {
 		return owner;
 	}

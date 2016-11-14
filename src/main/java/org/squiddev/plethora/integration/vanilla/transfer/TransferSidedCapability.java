@@ -15,35 +15,34 @@ import java.util.Set;
 /**
  * Transfer location that provides one side of a capability provider
  */
-@ITransferProvider.Inject(value = ICapabilityProvider.class, primary = false)
+@ITransferProvider.Inject(value = ICapabilityProvider.class)
 public class TransferSidedCapability implements ITransferProvider<ICapabilityProvider> {
 	private final Map<String, EnumFacing> mappings;
 
 	public TransferSidedCapability() {
 		Map<String, EnumFacing> mappings = this.mappings = Maps.newHashMap();
-		mappings.put("bottom", EnumFacing.DOWN);
-		mappings.put("top", EnumFacing.UP);
+		mappings.put("bottom_side", EnumFacing.DOWN);
+		mappings.put("top_side", EnumFacing.UP);
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			mappings.put(facing.getName() + "_side", facing);
+		}
 	}
 
 	@Nullable
 	@Override
 	public Object getTransferLocation(final @Nonnull ICapabilityProvider object, @Nonnull String key) {
-		EnumFacing facing = EnumFacing.byName(key);
-		if (facing == null) {
-			facing = mappings.get(key.toLowerCase());
-		}
+		final EnumFacing facing = mappings.get(key.toLowerCase());
 
 		if (facing != null) {
-			final EnumFacing primeFacing = facing;
 			return new ICapabilityProvider() {
 				@Override
 				public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
-					return (enumFacing == primeFacing || enumFacing == null) && object.hasCapability(capability, primeFacing);
+					return (enumFacing == facing || enumFacing == null) && object.hasCapability(capability, facing);
 				}
 
 				@Override
 				public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
-					return (enumFacing == primeFacing || enumFacing == null) ? object.getCapability(capability, primeFacing) : null;
+					return (enumFacing == facing || enumFacing == null) ? object.getCapability(capability, facing) : null;
 				}
 			};
 		}

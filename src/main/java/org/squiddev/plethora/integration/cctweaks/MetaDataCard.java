@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.cctweaks;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.IDataCard;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -10,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "dataCard", modId = "CCTweaks")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "dataCard", modId = CCTweaks.ID)
 public class MetaDataCard extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

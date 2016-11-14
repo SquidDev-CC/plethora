@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.cctweaks;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.CCTweaksAPI;
 import org.squiddev.cctweaks.api.network.INetworkAccess;
 import org.squiddev.cctweaks.api.peripheral.IPeripheralHelpers;
@@ -13,7 +14,7 @@ import java.util.Set;
 /**
  * Get all directions a method can be transferred
  */
-@ITransferProvider.Inject(value = INetworkAccess.class, modId = "CCTweaks")
+@ITransferProvider.Inject(value = INetworkAccess.class, modId = CCTweaks.ID)
 public class TransferNetworkAccess implements ITransferProvider<INetworkAccess> {
 	@Nullable
 	@Override

@@ -26,8 +26,7 @@ public class DisableAI {
 		CapabilityManager.INSTANCE.register(IDisableAIHandler.class, new Capability.IStorage<IDisableAIHandler>() {
 			@Override
 			public NBTBase writeNBT(Capability<IDisableAIHandler> capability, IDisableAIHandler instance, EnumFacing side) {
-				if (instance.isDisabled()) return new NBTTagByte((byte) 1);
-				return null;
+				return new NBTTagByte(instance.isDisabled() ? (byte) 1 : (byte) 0);
 			}
 
 			@Override
@@ -91,7 +90,7 @@ public class DisableAI {
 				tag.setBoolean("disabled", true);
 				return tag;
 			} else {
-				return null;
+				return new NBTTagCompound();
 			}
 		}
 

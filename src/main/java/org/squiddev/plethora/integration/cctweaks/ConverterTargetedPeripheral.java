@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.cctweaks;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
+import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.CCTweaksAPI;
 import org.squiddev.plethora.api.converter.IConverter;
 
@@ -10,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * Unwraps peripherals and returns their target
  */
-@IConverter.Inject(value = IPeripheral.class, modId = "CCTweaks")
+@IConverter.Inject(value = IPeripheral.class, modId = CCTweaks.ID)
 public class ConverterTargetedPeripheral implements IConverter<IPeripheral, Object> {
 	@Nullable
 	@Override

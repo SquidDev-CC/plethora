@@ -212,7 +212,10 @@ public final class TransferRegistry implements ITransferRegistry {
 				Boolean primary = (Boolean) info.get("primary");
 				if (primary == null || primary) {
 					registerPrimary(target, instance);
-				} else {
+				}
+
+				Boolean secondary = (Boolean) info.get("secondary");
+				if (secondary == null || secondary) {
 					registerSecondary(target, instance);
 				}
 			} catch (Throwable e) {

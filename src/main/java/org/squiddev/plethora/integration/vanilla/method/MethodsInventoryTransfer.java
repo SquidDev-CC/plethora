@@ -1,13 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
@@ -94,14 +93,13 @@ public class MethodsInventoryTransfer {
 
 	@Nullable
 	private static IItemHandler extractHandler(@Nonnull Object object) {
-		if (object instanceof IItemHandler) return (IItemHandler) object;
-		if (object instanceof ICapabilityProvider) {
-			IItemHandler handler = ((ICapabilityProvider) object).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (handler != null) return handler;
-		}
+		for (Object child : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
+			if (child instanceof IItemHandler) return (IItemHandler) child;
 
-		if (object instanceof IInventory) {
-			return new InvWrapper((IInventory) object);
+			if (object instanceof ICapabilityProvider) {
+				IItemHandler handler = ((ICapabilityProvider) object).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+				if (handler != null) return handler;
+			}
 		}
 
 		return null;

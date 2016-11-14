@@ -35,9 +35,9 @@ public final class MethodsLaser {
 
 		CostHelpers.checkCost(unbaked.getCostHandler(), potency * laserCost);
 
-		final double motionX = -Math.sin(yaw) * Math.cos(pitch);
-		final double motionZ = Math.cos(yaw) * Math.cos(pitch);
-		final double motionY = -Math.sin(pitch);
+		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
+		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
+		final double motionY = -Math.sin(pitch / 180.0f * (float) Math.PI);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
