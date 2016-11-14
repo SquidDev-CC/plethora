@@ -19,7 +19,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -30,7 +29,6 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -39,7 +37,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
@@ -50,7 +47,6 @@ import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
 
-import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
@@ -234,43 +230,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return ComputerFamily.Advanced;
 	}
 
-	private static class InvProvider implements ICapabilitySerializable<NBTBase> {
-		private final ItemStack stack;
-		private final IItemHandler inv = new ItemStackHandler(NeuralHelpers.INV_SIZE) {
-			@Override
-			public ItemStack insertItem(int slot, ItemStack toInsert, boolean simulate) {
-				if (toInsert == null || getStackInSlot(slot) != null) return toInsert;
-
-				if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
-					if (toInsert.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
-						toInsert.hasCapability(PERIPHERAL_CAPABILITY, null)) {
-						return super.insertItem(slot, toInsert, simulate);
-					} else {
-						return toInsert;
-					}
-				} else if (toInsert.hasCapability(MODULE_HANDLER_CAPABILITY, null)) {
-					return super.insertItem(slot, toInsert, simulate);
-				} else {
-					return toInsert;
-				}
-			}
-
-			@Override
-			protected int getStackLimit(int slot, ItemStack stack) {
-				return 1;
-			}
-
-			@Override
-			protected void onContentsChanged(int slot) {
-				super.onContentsChanged(slot);
-
-				NBTTagCompound tag = ItemBase.getTag(stack);
-				tag.setShort(DIRTY, (short) (tag.getShort("dirty") | 1 << slot));
-			}
-		};
+	private static class InvProvider implements ICapabilityProvider {
+		private final IItemHandler inv;
 
 		private InvProvider(ItemStack stack) {
-			this.stack = stack;
+			this.inv = new NeuralItemHandler(stack);
 		}
 
 		@Override
@@ -286,18 +250,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			} else {
 				return null;
 			}
-		}
-
-		@Override
-		public NBTBase serializeNBT() {
-			Capability<IItemHandler> capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-			return capability.getStorage().writeNBT(capability, inv, null);
-		}
-
-		@Override
-		public void deserializeNBT(NBTBase nbt) {
-			Capability<IItemHandler> capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-			capability.getStorage().readNBT(capability, inv, null, nbt);
 		}
 	}
 
