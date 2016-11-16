@@ -85,7 +85,7 @@ public class PlethoraCore {
 
 	@Mod.EventHandler
 	public void onSeverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandDump(event.getServer().isDedicatedServer()));
+		event.registerServerCommand(new CommandDump());
 	}
 
 	@Mod.EventHandler
@@ -126,7 +126,7 @@ public class PlethoraCore {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if (eventArgs.modID.equals(PlethoraCore.ID)) {
+		if (eventArgs.getModID().equals(PlethoraCore.ID)) {
 			ConfigCore.sync();
 		}
 	}

@@ -26,19 +26,21 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("deprecation") // Use AttachCapabilities<T> in the future
 	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
 		Item item = event.getItem();
-		if (item == Items.clock) {
+		if (item == Items.CLOCK) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new BasicModuleHandler(clock, event.getItemStack()));
 		} else if (item instanceof ItemBlock) {
 			Block block = ((ItemBlock) item).getBlock();
-			if (block == Blocks.daylight_detector) {
+			if (block == Blocks.DAYLIGHT_DETECTOR) {
 				event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new BasicModuleHandler(daylightSensor, event.getItemStack()));
 			}
 		}
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("deprecation")
 	public void attachCapabilities(AttachCapabilitiesEvent.Entity event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof EntityLiving) {
@@ -48,7 +50,7 @@ public class IntegrationVanilla {
 
 	@SubscribeEvent
 	public void entityTick(LivingEvent.LivingUpdateEvent event) {
-		EntityLivingBase livingBase = event.entityLiving;
+		EntityLivingBase livingBase = event.getEntityLiving();
 		if (livingBase instanceof EntityLiving) {
 			DisableAI.maybeClear((EntityLiving) livingBase);
 		}

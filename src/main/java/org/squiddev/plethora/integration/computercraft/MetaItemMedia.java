@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.media.IMedia;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
@@ -25,7 +26,9 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 		Map<Object, Object> out = Maps.newHashMap();
 		out.put("label", media.getLabel(object));
 		out.put("recordTitle", media.getAudioTitle(object));
-		out.put("recordName", media.getAudioRecordName(object));
+
+		SoundEvent soundEvent = media.getAudio(object);
+		if (soundEvent != null) out.put("recordName", soundEvent.getSoundName().toString());
 
 		return out;
 	}

@@ -1,13 +1,19 @@
 package org.squiddev.plethora.gameplay;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Base tile for all TileEntities
@@ -31,14 +37,29 @@ public abstract class TileBase extends TileEntity {
 	protected void readDescription(NBTTagCompound tag) {
 	}
 
+	@Nonnull
 	@Override
-	public final Packet<?> getDescriptionPacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		return writeDescription(tag) ? new S35PacketUpdateTileEntity(pos, 0, tag) : null;
+	public NBTTagCompound getUpdateTag() {
+		NBTTagCompound tag = super.getUpdateTag();
+		writeDescription(tag);
+		return tag;
 	}
 
 	@Override
-	public final void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+	public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
+		super.handleUpdateTag(tag);
+		readDescription(tag);
+	}
+
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		NBTTagCompound tag = new NBTTagCompound();
+		writeDescription(tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+	}
+
+	@Override
+	public final void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
 		readDescription(packet.getNbtCompound());
 	}
 
@@ -47,19 +68,23 @@ public abstract class TileBase extends TileEntity {
 	 */
 	public void markForUpdate() {
 		markDirty();
-		worldObj.markBlockForUpdate(pos);
+		BlockPos pos = getPos();
+		IBlockState state = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 		worldObj.notifyNeighborsOfStateChange(pos, blockType);
 	}
 
 	/**
 	 * Called when the block is activated
 	 *
-	 * @param player The player who triggered this
-	 * @param side   The side the block is activated on
-	 * @param hit    The position the hit occurred
+	 * @param player    The player who triggered this
+	 * @param hand      The hand it was clicked with
+	 * @param heldStack The stack the player is holding
+	 * @param side      The side the block is activated on
+	 * @param hit       The position the hit occurred
 	 * @return If the event succeeded
 	 */
-	public boolean onActivated(EntityPlayer player, EnumFacing side, Vec3 hit) {
+	public boolean onActivated(EntityPlayer player, EnumHand hand, @Nullable ItemStack heldStack, EnumFacing side, Vec3d hit) {
 		return false;
 	}
 

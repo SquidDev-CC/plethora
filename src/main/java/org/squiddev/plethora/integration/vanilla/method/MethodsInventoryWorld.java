@@ -3,9 +3,9 @@ package org.squiddev.plethora.integration.vanilla.method;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -141,7 +141,7 @@ public class MethodsInventoryWorld {
 
 					int inserted = 0;
 
-					for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.selectAnything)) {
+					for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
 						ItemStack original = item.getEntityItem();
 						// TODO: Obey limit when inserting
 

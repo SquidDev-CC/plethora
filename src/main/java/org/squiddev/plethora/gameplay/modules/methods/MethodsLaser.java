@@ -2,8 +2,8 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -55,7 +55,7 @@ public final class MethodsLaser {
 					);
 				} else if (context.hasContext(EntityLivingBase.class)) {
 					EntityLivingBase entity = context.getContext(EntityLivingBase.class);
-					Vec3 vector = entity.getPositionVector();
+					Vec3d vector = entity.getPositionVector();
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 					laser.setPosition(

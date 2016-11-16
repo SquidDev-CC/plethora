@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,7 +38,7 @@ public abstract class ItemBase extends Item implements IClientModule {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
-		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".desc"));
+		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public abstract class ItemBase extends Item implements IClientModule {
 
 	@Override
 	public void preInit() {
-		GameRegistry.registerItem(this, name);
+		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
 	}
 
 	@Override

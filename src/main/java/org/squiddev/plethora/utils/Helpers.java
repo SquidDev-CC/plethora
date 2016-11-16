@@ -8,8 +8,8 @@ import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
@@ -47,6 +47,7 @@ public class Helpers {
 	 * @param strings The strings to try to translate
 	 * @return The first translateable string
 	 */
+	@SuppressWarnings("deprecation")
 	public static String translateAny(String... strings) {
 		return translateOrDefault(strings[strings.length - 1], strings);
 	}
@@ -58,12 +59,18 @@ public class Helpers {
 	 * @param strings The strings to try to translate
 	 * @return The first translateable string or the default
 	 */
+	@SuppressWarnings("deprecation")
 	public static String translateOrDefault(String def, String... strings) {
 		for (String string : strings) {
-			if (StatCollector.canTranslate(string)) return StatCollector.translateToLocal(string);
+			if (I18n.canTranslate(string)) return I18n.translateToLocal(string);
 		}
 
 		return def;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static String translateToLocal(String key) {
+		return I18n.translateToLocal(key);
 	}
 
 	public static void twoWayCrafting(ItemStack a, ItemStack b) {
@@ -134,7 +141,7 @@ public class Helpers {
 	public static void setupModel(Item item, int damage, String name) {
 		name = Plethora.RESOURCE_DOMAIN + ":" + name;
 
-		ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
+		net.minecraft.client.renderer.block.model.ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
 		ModelBakery.registerItemVariants(item, res);
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, damage, res);
 	}
@@ -252,7 +259,7 @@ public class Helpers {
 			name = StringUtils.removeEnd(name, ".name");
 			return name;
 		} else {
-			return stack.getItem().getRegistryName();
+			return stack.getItem().getRegistryName().toString();
 		}
 	}
 
@@ -263,11 +270,11 @@ public class Helpers {
 		} else if (owner instanceof ItemStack) {
 			return getName((ItemStack) owner);
 		} else if (owner instanceof Item) {
-			return ((Item) owner).getRegistryName();
+			return ((Item) owner).getRegistryName().toString();
 		} else if (owner instanceof Entity) {
 			return getName((Entity) owner);
 		} else if (owner instanceof Block) {
-			return ((Block) owner).getRegistryName();
+			return ((Block) owner).getRegistryName().toString();
 		} else if (owner instanceof TileEntity) {
 			TileEntity te = (TileEntity) owner;
 

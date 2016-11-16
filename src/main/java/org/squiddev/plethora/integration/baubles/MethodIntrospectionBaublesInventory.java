@@ -4,7 +4,6 @@ import baubles.api.BaublesApi;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -29,7 +28,7 @@ public class MethodIntrospectionBaublesInventory extends TargetedModuleObjectMet
 	@Nullable
 	@Override
 	public Object[] apply(@Nonnull EntityPlayer target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		IItemHandler inventory = new InvWrapper(BaublesApi.getBaubles(target));
+		IItemHandler inventory = BaublesApi.getBaublesHandler(target);
 		IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
 		return new Object[]{newContext.getObject()};
 	}

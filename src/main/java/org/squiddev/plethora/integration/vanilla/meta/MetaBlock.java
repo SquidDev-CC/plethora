@@ -16,7 +16,7 @@ public class MetaBlock extends BasicMetaProvider<Block> {
 	public Map<Object, Object> getMeta(@Nonnull Block block) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
-		String name = block.getRegistryName();
+		String name = block.getRegistryName().toString();
 		data.put("name", name == null ? "unknown" : name);
 
 		data.put("displayName", block.getLocalizedName());

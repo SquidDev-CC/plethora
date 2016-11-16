@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -33,7 +34,7 @@ import java.util.Set;
 import static org.squiddev.plethora.api.reference.Reference.entity;
 
 public final class NeuralHelpers {
-	public static final int ARMOR_SLOT = 4;
+	public static final EntityEquipmentSlot ARMOR_SLOT = EntityEquipmentSlot.HEAD;
 
 	private NeuralHelpers() {
 		throw new IllegalStateException("Cannot instantiate");
@@ -48,7 +49,7 @@ public final class NeuralHelpers {
 
 
 	public static ItemStack getStack(EntityLivingBase entity) {
-		ItemStack stack = entity.getEquipmentInSlot(ARMOR_SLOT);
+		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
 		if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
 			return stack;

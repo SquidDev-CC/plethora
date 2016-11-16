@@ -5,7 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -54,6 +54,6 @@ public final class DefaultPeripheral implements IPeripheral, IPeripheralHandler 
 	}
 
 	@Override
-	public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
+	public void update(@Nonnull World world, @Nonnull Vec3d position, @Nullable EntityLivingBase entity) {
 	}
 }

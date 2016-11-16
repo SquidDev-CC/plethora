@@ -34,7 +34,7 @@ public class MetaItemEnchantment extends BasicMetaProvider<ItemStack> {
 
 			for (int i = 0; i < enchants.tagCount(); i++) {
 				NBTTagCompound tag = enchants.getCompoundTagAt(i);
-				Enchantment enchantment = Enchantment.getEnchantmentById(tag.getShort("id"));
+				Enchantment enchantment = Enchantment.getEnchantmentByID(tag.getShort("id"));
 				if (enchantment != null) {
 					HashMap<String, Object> enchant = Maps.newHashMap();
 					enchant.put("name", enchantment.getName());

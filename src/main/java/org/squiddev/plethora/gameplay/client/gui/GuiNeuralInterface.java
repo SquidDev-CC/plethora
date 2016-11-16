@@ -7,12 +7,12 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.Vec2i;
 
 import java.io.IOException;
@@ -126,7 +126,7 @@ public class GuiNeuralInterface extends GuiContainer {
 			GlStateManager.enableLighting();
 			GlStateManager.enableDepth();
 
-			drawHoveringText(Collections.singletonList(StatCollector.translateToLocal(peripherals ?
+			drawHoveringText(Collections.singletonList(Helpers.translateToLocal(peripherals ?
 				"gui.plethora.neuralInterface.modules" :
 				"gui.plethora.neuralInterface.peripherals"
 			)), x, y);

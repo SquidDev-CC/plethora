@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -31,7 +32,7 @@ public class DisableAI {
 
 			@Override
 			public void readNBT(Capability<IDisableAIHandler> capability, IDisableAIHandler instance, EnumFacing side, NBTBase nbt) {
-				instance.setDisabled(nbt != null && nbt instanceof NBTBase.NBTPrimitive && ((NBTBase.NBTPrimitive) nbt).getByte() == 1);
+				instance.setDisabled(nbt != null && nbt instanceof NBTPrimitive && ((NBTPrimitive) nbt).getByte() == 1);
 			}
 		}, DefaultDisableAI.class);
 	}

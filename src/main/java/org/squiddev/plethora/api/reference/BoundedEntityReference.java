@@ -2,7 +2,7 @@ package org.squiddev.plethora.api.reference;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.api.IWorldLocation;
 
 import javax.annotation.Nonnull;

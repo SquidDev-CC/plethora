@@ -8,10 +8,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -20,6 +22,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -41,9 +45,10 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	public BlockBase(String name, Class<T> klass) {
-		this(name, Material.rock, klass);
+		this(name, Material.ROCK, klass);
 	}
 
+	@Nullable
 	@SuppressWarnings("unchecked")
 	public T getTile(IBlockAccess world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
@@ -59,20 +64,22 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 		return getMetaFromState(state);
 	}
 
+	@Nonnull
 	@Override
-	public int getRenderType() {
-		return 3;
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileBase tile = getTile(world, pos);
-		return tile != null && tile.onActivated(player, side, new Vec3(hitX, hitY, hitZ));
+		return tile != null && tile.onActivated(player, hand, heldItem, side, new Vec3d(hitX, hitY, hitZ));
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
-		super.onNeighborBlockChange(world, pos, state, neighborBlock);
+	@SuppressWarnings("deprecation")
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock) {
+		super.neighborChanged(state, world, pos, neighborBlock);
 
 		if (world.isRemote) return;
 
@@ -91,7 +98,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos block, IBlockState state) {
+	public void breakBlock(World world, @Nonnull BlockPos block, @Nonnull IBlockState state) {
 		if (!world.isRemote) {
 			T tile = getTile(world, block);
 			if (tile != null) tile.onBroken();
@@ -101,7 +108,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
-		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
+		out.add(Helpers.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
 	}
 
 	@Override
@@ -111,7 +118,8 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 
 	@Override
 	public void preInit() {
-		GameRegistry.registerBlock(this, ItemBlockBase.class, name);
+		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
+		GameRegistry.register(new ItemBlockBase(this), new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
 		GameRegistry.registerTileEntity(klass, Plethora.RESOURCE_DOMAIN + ":" + name);
 	}
 

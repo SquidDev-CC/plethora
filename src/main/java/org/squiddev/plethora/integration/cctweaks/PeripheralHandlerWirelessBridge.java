@@ -9,9 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,7 +46,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 	}
 
 	@Override
-	public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
+	public void update(@Nonnull World world, @Nonnull Vec3d position, @Nullable EntityLivingBase entity) {
 		this.world = world;
 		this.pos = new BlockPos(position);
 		this.entity = entity;
@@ -174,7 +175,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 								}
 							}
 						} else {
-							ItemStack stack = entity.getHeldItem();
+							ItemStack stack = entity.getHeldItem(EnumHand.MAIN_HAND);
 							if (stack != null && stack.getItem() instanceof IDataCard) {
 								IDataCard card = (IDataCard) stack.getItem();
 								if (PocketBinding.this.load(stack, card)) {
@@ -202,7 +203,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 								}
 							}
 						} else {
-							ItemStack stack = entity.getHeldItem();
+							ItemStack stack = entity.getHeldItem(EnumHand.MAIN_HAND);
 							if (stack != null && stack.getItem() instanceof IDataCard) {
 								IDataCard card = (IDataCard) stack.getItem();
 								PocketBinding.this.save(stack, card);

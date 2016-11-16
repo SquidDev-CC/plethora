@@ -9,7 +9,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -17,7 +17,14 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,21 +66,28 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	public static final double OFFSET = 10.0 / 16.0;
 	public static final double PIX = 1 / 16.0;
 
+	private static final AxisAlignedBB BOX = new AxisAlignedBB(0, 0, 0, 1, (float) OFFSET, 1);
+
 	public BlockManipulator() {
 		super("manipulator", TileManipulator.class);
-		setBlockBounds(0, 0, 0, 1, (float) OFFSET, 1);
 		setDefaultState(getBlockState().getBaseState().withProperty(TYPE, ManipulatorType.MARK_1));
 	}
 
+	@Override
+	@SuppressWarnings({"NullableProblems", "deprecation"})
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return BOX;
+	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> itemStacks) {
+	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, List<ItemStack> itemStacks) {
 		for (ManipulatorType type : VALUES) {
 			itemStacks.add(new ItemStack(this, 1, type.ordinal()));
 		}
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public IBlockState getStateFromMeta(int meta) {
 		IBlockState state = super.getStateFromMeta(meta);
 		return state.withProperty(TYPE, VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
@@ -84,9 +98,10 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		return state.getValue(TYPE).ordinal();
 	}
 
+	@Nonnull
 	@Override
-	protected BlockState createBlockState() {
-		return new BlockState(this, TYPE);
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, TYPE);
 	}
 
 	@Override
@@ -94,8 +109,9 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		return getUnlocalizedName() + "." + VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta].getName();
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
 		return new TileManipulator(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
 	}
 
@@ -111,21 +127,21 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			"GCG",
 			"RMR",
 			"III",
-			'G', new ItemStack(Blocks.glass),
-			'C', new ItemStack(Items.gold_ingot),
-			'R', new ItemStack(Items.redstone),
+			'G', new ItemStack(Blocks.GLASS),
+			'C', new ItemStack(Items.GOLD_INGOT),
+			'R', new ItemStack(Items.REDSTONE),
 			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
-			'I', new ItemStack(Items.iron_ingot)
+			'I', new ItemStack(Items.IRON_INGOT)
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, 1),
 			"CCC",
 			"RMR",
 			"III",
-			'C', new ItemStack(Items.gold_ingot),
-			'R', new ItemStack(Items.redstone),
+			'C', new ItemStack(Items.GOLD_INGOT),
+			'R', new ItemStack(Items.REDSTONE),
 			'M', new ItemStack(this, 1, 0),
-			'I', new ItemStack(Items.iron_ingot)
+			'I', new ItemStack(Items.IRON_INGOT)
 		);
 	}
 
@@ -142,12 +158,14 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	public boolean isFullBlock() {
+	@SuppressWarnings("deprecation")
+	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	@SuppressWarnings("deprecation")
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
@@ -221,21 +239,21 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void drawHighlight(DrawBlockHighlightEvent event) {
-		if (event.target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return;
+		if (event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
 
-		BlockPos blockPos = event.target.getBlockPos();
+		BlockPos blockPos = event.getTarget().getBlockPos();
 
-		IBlockState state = event.player.worldObj.getBlockState(blockPos);
+		IBlockState state = event.getPlayer().worldObj.getBlockState(blockPos);
 		if (state.getBlock() != this) return;
 
-		Vec3 hit = event.target.hitVec.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+		Vec3d hit = event.getTarget().hitVec.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 		ManipulatorType type = state.getValue(TYPE);
 		for (AxisAlignedBB box : type.boxes) {
 			if (hit.yCoord > OFFSET - PIX &&
 				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
 				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
 
-				RenderHelper.renderBoundingBox(event.player, box, event.target.getBlockPos(), event.partialTicks);
+				RenderHelper.renderBoundingBox(event.getPlayer(), box, event.getTarget().getBlockPos(), event.getPartialTicks());
 				event.setCanceled(true);
 				break;
 			}

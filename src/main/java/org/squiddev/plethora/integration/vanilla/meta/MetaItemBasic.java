@@ -38,7 +38,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull ItemStack stack) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
-		data.put("name", Item.itemRegistry.getNameForObject(stack.getItem()).toString());
+		data.put("name", Item.REGISTRY.getNameForObject(stack.getItem()).toString());
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.stackSize);
 

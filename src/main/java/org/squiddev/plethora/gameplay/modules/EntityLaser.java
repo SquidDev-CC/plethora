@@ -11,7 +11,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -144,10 +146,10 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		super.onUpdate();
 
-		Vec3 position = new Vec3(posX, posY, posZ);
-		Vec3 nextPosition = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
+		Vec3d position = new Vec3d(posX, posY, posZ);
+		Vec3d nextPosition = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
 
-		MovingObjectPosition collision = worldObj.rayTraceBlocks(position, nextPosition);
+		RayTraceResult collision = worldObj.rayTraceBlocks(position, nextPosition);
 		if (collision != null) nextPosition = collision.hitVec;
 
 		if (!worldObj.isRemote) {
@@ -161,7 +163,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 				if (other.canBeCollidedWith() && (other != shooter || ticksExisted >= 5) && other instanceof EntityLivingBase) {
 					float size = 0.3f;
 					AxisAlignedBB singleCollision = other.getEntityBoundingBox().expand(size, size, size);
-					MovingObjectPosition hit = singleCollision.calculateIntercept(position, nextPosition);
+					RayTraceResult hit = singleCollision.calculateIntercept(position, nextPosition);
 
 					if (hit != null) {
 						double distanceSq = position.squareDistanceTo(hit.hitVec);
@@ -174,7 +176,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 			}
 
 			if (closestEntity != null) {
-				collision = new MovingObjectPosition(closestEntity);
+				collision = new RayTraceResult(closestEntity);
 			}
 		}
 
@@ -188,7 +190,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		// Handle collision
 		if (collision != null) {
-			if (collision.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(collision.getBlockPos()).getBlock() == Blocks.portal) {
+			if (collision.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(collision.getBlockPos()).getBlock() == Blocks.PORTAL) {
 				setPortal(collision.getBlockPos());
 			} else {
 				onImpact(collision);
@@ -200,7 +202,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		}
 	}
 
-	private void onImpact(MovingObjectPosition collision) {
+	private void onImpact(RayTraceResult collision) {
 		if (worldObj.isRemote) return;
 
 		switch (collision.typeOfHit) {
@@ -210,8 +212,8 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 				IBlockState blockState = world.getBlockState(position);
 				Block block = blockState.getBlock();
-				if (!block.isAir(world, position) && !block.getMaterial().isLiquid()) {
-					float hardness = block.getBlockHardness(world, position);
+				if (!block.isAir(blockState, world, position) && !blockState.getMaterial().isLiquid()) {
+					float hardness = blockState.getBlockHardness(world, position);
 					if (hardness > -1 && hardness <= potency) {
 						potency -= hardness;
 
@@ -230,7 +232,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 							}
 						}
 
-						if (block == Blocks.tnt) {
+						if (block == Blocks.TNT) {
 							((BlockTNT) block).explode(
 								world, position,
 								blockState.withProperty(BlockTNT.EXPLODE, Boolean.valueOf(true)),

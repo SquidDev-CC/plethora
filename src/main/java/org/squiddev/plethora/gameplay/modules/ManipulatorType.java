@@ -1,7 +1,7 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;

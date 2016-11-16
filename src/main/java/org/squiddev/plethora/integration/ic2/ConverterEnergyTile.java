@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.ic2;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergyTile;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.converter.IConverter;
 

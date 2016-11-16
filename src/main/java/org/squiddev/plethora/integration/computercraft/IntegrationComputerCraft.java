@@ -6,7 +6,7 @@ import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,6 +33,7 @@ public class IntegrationComputerCraft {
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("deprecation") // Latest Forge uses a more generic method
 	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
 		ItemStack stack = event.getItemStack();
 
@@ -87,7 +88,7 @@ public class IntegrationComputerCraft {
 	private static final class PeripheralHandlerModem extends WirelessModemPeripheral implements IPeripheralHandler {
 		private final ItemStack stack;
 		private World world;
-		private Vec3 position;
+		private Vec3d position;
 
 		public PeripheralHandlerModem(boolean advanced, ItemStack stack) {
 			super(advanced);
@@ -100,7 +101,7 @@ public class IntegrationComputerCraft {
 		}
 
 		@Override
-		protected Vec3 getPosition() {
+		protected Vec3d getPosition() {
 			return world == null ? null : position;
 		}
 
@@ -116,7 +117,7 @@ public class IntegrationComputerCraft {
 		}
 
 		@Override
-		public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
+		public void update(@Nonnull World world, @Nonnull Vec3d position, @Nullable EntityLivingBase entity) {
 			this.position = position;
 
 			if (this.world != world) {

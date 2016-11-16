@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.*;
 import net.minecraft.network.play.client.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 
 import javax.crypto.SecretKey;
@@ -41,7 +41,7 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 		}
 
 		@Override
-		public void closeChannel(IChatComponent channel) {
+		public void closeChannel(ITextComponent channel) {
 		}
 
 		@Override
@@ -65,7 +65,7 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 		}
 
 		@Override
-		public IChatComponent getExitMessage() {
+		public ITextComponent getExitMessage() {
 			return null;
 		}
 
@@ -93,11 +93,11 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void processInput(C0CPacketInput packet) {
+	public void processInput(CPacketInput packet) {
 	}
 
 	@Override
-	public void processPlayer(C03PacketPlayer packet) {
+	public void processPlayer(CPacketPlayer packet) {
 	}
 
 	@Override
@@ -105,15 +105,15 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void processPlayerDigging(C07PacketPlayerDigging packet) {
+	public void processPlayerDigging(CPacketPlayerDigging packet) {
 	}
 
 	@Override
-	public void processPlayerBlockPlacement(C08PacketPlayerBlockPlacement packet) {
+	public void processPlayerBlockPlacement(CPacketPlayerTryUseItem packetIn) {
 	}
 
 	@Override
-	public void onDisconnect(IChatComponent chat) {
+	public void onDisconnect(ITextComponent chat) {
 	}
 
 	@Override
@@ -123,66 +123,66 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void processHeldItemChange(C09PacketHeldItemChange packet) {
+	public void processHeldItemChange(CPacketHeldItemChange packet) {
 	}
 
 	@Override
-	public void processChatMessage(C01PacketChatMessage packet) {
+	public void processChatMessage(CPacketChatMessage packet) {
 	}
 
 	@Override
-	public void processEntityAction(C0BPacketEntityAction packet) {
+	public void processEntityAction(CPacketEntityAction packet) {
 	}
 
 	@Override
-	public void processUseEntity(C02PacketUseEntity packet) {
+	public void processUseEntity(CPacketUseEntity packet) {
 	}
 
 	@Override
-	public void processClientStatus(C16PacketClientStatus packet) {
+	public void processClientStatus(CPacketClientStatus packet) {
 	}
 
 	@Override
-	public void processCloseWindow(C0DPacketCloseWindow packet) {
+	public void processCloseWindow(CPacketCloseWindow packet) {
 	}
 
 	@Override
-	public void processClickWindow(C0EPacketClickWindow packet) {
+	public void processClickWindow(CPacketClickWindow packet) {
 	}
 
 	@Override
-	public void processEnchantItem(C11PacketEnchantItem packet) {
+	public void processEnchantItem(CPacketEnchantItem packet) {
 	}
 
 	@Override
-	public void processCreativeInventoryAction(C10PacketCreativeInventoryAction packet) {
+	public void processCreativeInventoryAction(CPacketCreativeInventoryAction packet) {
 	}
 
 	@Override
-	public void processConfirmTransaction(C0FPacketConfirmTransaction packet) {
+	public void processConfirmTransaction(CPacketConfirmTransaction packet) {
 	}
 
 	@Override
-	public void processUpdateSign(C12PacketUpdateSign packet) {
+	public void processUpdateSign(CPacketUpdateSign packet) {
 	}
 
 	@Override
-	public void processKeepAlive(C00PacketKeepAlive packet) {
+	public void processKeepAlive(CPacketKeepAlive packet) {
 	}
 
 	@Override
-	public void processPlayerAbilities(C13PacketPlayerAbilities packet) {
+	public void processPlayerAbilities(CPacketPlayerAbilities packet) {
 	}
 
 	@Override
-	public void processTabComplete(C14PacketTabComplete packet) {
+	public void processTabComplete(CPacketTabComplete packet) {
 	}
 
 	@Override
-	public void processClientSettings(C15PacketClientSettings packet) {
+	public void processClientSettings(CPacketClientSettings packet) {
 	}
 
 	@Override
-	public void processVanilla250Packet(C17PacketCustomPayload packet) {
+	public void processCustomPayload(CPacketCustomPayload packetIn) {
 	}
 }

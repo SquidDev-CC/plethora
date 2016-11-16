@@ -41,6 +41,8 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		inject(EntityIronGolem.class, 0, -2, -1);
 		inject(EntityMagmaCube.class, 0, 23, 0);
 		// PigZombie renders armor
+		inject(EntityPolarBear.class, 0, 3.5f, 1);
+		injectMonocle(EntityShulker.class, 0.1f, 7, 1, 0, 0, 0);
 		injectMonocle(EntitySilverfish.class, -0.5f, 4f, 3.1f, 0, 0, 0);
 		// Skeleton renders armor
 		inject(EntitySlime.class, 0, 23, 0); // This scales on size. I love it.
@@ -149,6 +151,8 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		} else if (model instanceof ModelEnderMite) {
 			ModelRenderer[] renderers = ObfuscationReflectionHelper.getPrivateValue(ModelEnderMite.class, (ModelEnderMite) model, "field_178713_d");
 			return renderers[0];
+		} else if(model instanceof ModelShulker) {
+			return ((ModelShulker) model).head;
 		} else {
 			return null;
 		}

@@ -20,6 +20,7 @@ public class IntegrationCCTweaks {
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("deprecation")
 	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
 		Item item = event.getItem();
 		if (item instanceof ItemBlock) {

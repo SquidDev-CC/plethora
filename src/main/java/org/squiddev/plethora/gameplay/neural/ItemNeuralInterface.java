@@ -17,13 +17,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,35 +45,37 @@ import org.squiddev.plethora.gameplay.client.ModelInterface;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
+import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia {
-	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0);
+	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
 
 	public ItemNeuralInterface() {
-		super(FAKE_ARMOUR, 0, 0);
+		super(FAKE_ARMOUR, 0, ARMOR_SLOT);
 
 		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + NAME);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
 		if (entity.isChild() || entity instanceof EntityPlayer) return false;
 
-		if (entity.getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
+		if (entity.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
 			if (!player.worldObj.isRemote) {
-				entity.setCurrentItemOrArmor(NeuralHelpers.ARMOR_SLOT, stack.copy());
+				entity.setItemStackToSlot(NeuralHelpers.ARMOR_SLOT, stack.copy());
 
 				// Force dropping when killed
 				if (entity instanceof EntityLiving) {
 					EntityLiving living = (EntityLiving) entity;
-					living.setEquipmentDropChance(NeuralHelpers.ARMOR_SLOT, 2);
+					living.setDropChance(NeuralHelpers.ARMOR_SLOT, 2);
 					living.enablePersistence();
 				}
 
@@ -141,7 +143,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 					if (peripheralHandler != null) {
 						peripheralHandler.update(
 							player.worldObj,
-							new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ),
+							new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ),
 							player
 						);
 					}
@@ -193,7 +195,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public String getAudioRecordName(ItemStack stack) {
+	public SoundEvent getAudio(ItemStack stack) {
 		return null;
 	}
 
@@ -271,7 +273,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean additional) {
 		super.addInformation(stack, player, out, additional);
-		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".desc"));
+		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));
 
 		if (additional) {
 			if (stack.hasTagCompound() && stack.getTagCompound().hasKey(COMPUTER_ID)) {
@@ -294,15 +296,16 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 	}
 
-
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, int slot, ModelBiped existing) {
+	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot, ModelBiped existing) {
 		return ModelInterface.getNormal();
 	}
 
+	@Nonnull
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String existing) {
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String existing) {
 		return Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
 	}
 
@@ -314,11 +317,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	 */
 	@SubscribeEvent
 	public void onEntityLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer) return;
+		if (event.getEntityLiving() instanceof EntityPlayer) return;
 
-		ItemStack stack = NeuralHelpers.getStack(event.entityLiving);
+		ItemStack stack = NeuralHelpers.getStack(event.getEntityLiving());
 		if (stack != null) {
-			onUpdate(stack, event.entityLiving, true);
+			onUpdate(stack, event.getEntityLiving(), true);
 		}
 	}
 	//endregion
@@ -330,7 +333,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public void preInit() {
-		GameRegistry.registerItem(this, NAME);
+		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -340,9 +343,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			"  G",
 			"IPR",
 			" GM",
-			'G', new ItemStack(Items.gold_ingot),
-			'I', new ItemStack(Items.iron_ingot),
-			'R', new ItemStack(Items.redstone),
+			'G', new ItemStack(Items.GOLD_INGOT),
+			'I', new ItemStack(Items.IRON_INGOT),
+			'R', new ItemStack(Items.REDSTONE),
 			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
 			'P', PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false)
 		);

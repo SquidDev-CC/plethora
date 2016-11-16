@@ -39,7 +39,7 @@ public final class MethodsKineticEntity {
 			public MethodResult call() throws Exception {
 				EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
 				if (target instanceof EntityPlayerMP) {
-					NetHandlerPlayServer handler = ((EntityPlayerMP) target).playerNetServerHandler;
+					NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
 					handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
 				} else {
 					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);

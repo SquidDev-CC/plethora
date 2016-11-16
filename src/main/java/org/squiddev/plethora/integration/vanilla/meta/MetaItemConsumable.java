@@ -1,19 +1,17 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,27 +36,31 @@ public class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 			HashMap<Object, Object> data = Maps.newHashMap();
 			ItemPotion itemPotion = (ItemPotion) item;
 
-			data.put("splash", ItemPotion.isSplash(stack.getItemDamage()));
+			if (itemPotion instanceof ItemSplashPotion) {
+				data.put("splash", true);
+				data.put("type", "splash");
+			} else if (itemPotion instanceof ItemLingeringPotion) {
+				data.put("splash", false);
+				data.put("type", "lingering");
+			} else {
+				data.put("type", "normal");
+			}
 
 			Map<Integer, Map<String, Object>> effectsInfo = Maps.newHashMap();
 
-			@SuppressWarnings("unchecked")
-			List<PotionEffect> effects = itemPotion.getEffects(stack);
-			if (effects != null && effects.size() > 0) {
+			PotionType effects = PotionUtils.getPotionFromItem(stack);
+			if (effects.getEffects().size() > 0) {
 				int i = 0;
-				for (PotionEffect effect : effects) {
+				for (PotionEffect effect : effects.getEffects()) {
 					Map<String, Object> entry = Maps.newHashMap();
 
 					entry.put("duration", effect.getDuration() / 20); // ticks!
 					entry.put("amplifier", effect.getAmplifier());
-					int potionId = effect.getPotionID();
-					if (potionId >= 0 && potionId < Potion.potionTypes.length) {
 
-						Potion potion = Potion.potionTypes[potionId];
-						data.put("name", potion.getName());
-						data.put("instant", potion.isInstant());
-						data.put("color", potion.getLiquidColor());
-					}
+					Potion potion = effect.getPotion();
+					data.put("name", potion.getName());
+					data.put("instant", potion.isInstant());
+					data.put("color", potion.getLiquidColor());
 
 					effectsInfo.put(i + 1, entry);
 					i++;

@@ -7,14 +7,19 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -95,7 +100,15 @@ public class RenderOverlay extends Module implements IClientModule {
 
 		Minecraft minecraft = Minecraft.getMinecraft();
 		EntityPlayer player = minecraft.thePlayer;
-		ItemStack stack = player.getHeldItem();
+		for (EnumHand hand : EnumHand.values()) {
+			renderOverlay(event, player.getHeldItem(hand));
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void renderOverlay(RenderWorldLastEvent event, ItemStack stack) {
+		Minecraft minecraft = Minecraft.getMinecraft();
+		EntityPlayer player = minecraft.thePlayer;
 		World world = player.worldObj;
 
 		if (stack != null && stack.getItem() == Registry.itemModule) {
@@ -117,7 +130,7 @@ public class RenderOverlay extends Module implements IClientModule {
 			switch (stack.getItemDamage()) {
 				case ItemModule.SENSOR_ID: {
 					// Gather all entities and render them
-					Vec3 position = player.getPositionEyes(event.partialTicks);
+					Vec3d position = player.getPositionEyes(event.getPartialTicks());
 					List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(
 						position.xCoord - Sensor.radius, position.yCoord - Sensor.radius, position.zCoord - Sensor.radius,
 						position.xCoord + Sensor.radius, position.yCoord + Sensor.radius, position.zCoord + Sensor.radius
@@ -230,7 +243,7 @@ public class RenderOverlay extends Module implements IClientModule {
 
 	@SideOnly(Side.CLIENT)
 	private void renderQuad(Tessellator tessellator, float size) {
-		WorldRenderer buffer = tessellator.getWorldRenderer();
+		VertexBuffer buffer = tessellator.getBuffer();
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
 		buffer.pos(-size, -size, 0).tex(0, 1).endVertex();

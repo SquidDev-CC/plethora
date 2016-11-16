@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.vanilla.method;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -100,7 +100,7 @@ public final class MethodsKinetic {
 				EntityLiving living = context.bake().getContext(EntityLiving.class);
 				PathNavigate navigator = living.getNavigator();
 
-				PathEntity path = navigator.getPathToXYZ(
+				Path path = navigator.getPathToXYZ(
 					x + living.posX,
 					y + living.posY,
 					z + living.posZ

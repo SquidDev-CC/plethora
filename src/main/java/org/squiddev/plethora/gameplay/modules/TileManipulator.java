@@ -3,12 +3,15 @@ package org.squiddev.plethora.gameplay.modules;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
+
+import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
@@ -51,9 +54,10 @@ public final class TileManipulator extends TileBase {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		tag = super.writeToNBT(tag);
 		writeDescription(tag);
+		return tag;
 	}
 
 	@Override
@@ -91,7 +95,7 @@ public final class TileManipulator extends TileBase {
 	}
 
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumFacing side, Vec3 hit) {
+	public boolean onActivated(EntityPlayer player, EnumHand hand, @Nullable ItemStack heldStack, EnumFacing side, Vec3d hit) {
 		if (side != EnumFacing.UP) return false;
 		if (player.worldObj.isRemote) return true;
 
@@ -107,7 +111,6 @@ public final class TileManipulator extends TileBase {
 				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
 
 				final ItemStack stack = stacks[i];
-				ItemStack heldStack = player.getHeldItem();
 				if (heldStack == null && stack != null) {
 					if (!player.capabilities.isCreativeMode) {
 						Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);

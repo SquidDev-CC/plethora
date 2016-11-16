@@ -18,6 +18,7 @@ import java.util.Map;
 public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
+	@SuppressWarnings("deprecation")
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (!item.getToolClasses(stack).isEmpty()) {

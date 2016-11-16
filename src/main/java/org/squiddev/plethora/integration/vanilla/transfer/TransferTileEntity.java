@@ -3,8 +3,8 @@ package org.squiddev.plethora.integration.vanilla.transfer;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 

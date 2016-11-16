@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.gameplay.Plethora.*;
 
 @Mod(modid = ID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = "org.squiddev.plethora.gameplay.client.gui.GuiConfigGameplay")
@@ -59,7 +61,7 @@ public class Plethora {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if (eventArgs.modID.equals(Plethora.ID)) {
+		if (eventArgs.getModID().equals(Plethora.ID)) {
 			ConfigGameplay.sync();
 		}
 	}
@@ -69,6 +71,7 @@ public class Plethora {
 			super(RESOURCE_DOMAIN);
 		}
 
+		@Nonnull
 		@Override
 		public Item getTabIconItem() {
 			return Registry.itemNeuralInterface;

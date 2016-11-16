@@ -3,7 +3,7 @@ package org.squiddev.plethora.api;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;

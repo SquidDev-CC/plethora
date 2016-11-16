@@ -3,9 +3,10 @@ package org.squiddev.plethora.gameplay;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.IItemHandler;
@@ -22,7 +23,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
-		playerNetServerHandler = new FakeNetHandler(this);
+		connection = new FakeNetHandler(this);
 	}
 
 	@Override
@@ -36,10 +37,6 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	@Override
-	public void mountEntity(Entity entity) {
-	}
-
-	@Override
 	public void dismountEntity(Entity entity) {
 	}
 
@@ -48,8 +45,8 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	@Override
-	public Vec3 getPositionVector() {
-		return new Vec3(posX, posY, posZ);
+	public Vec3d getPositionVector() {
+		return new Vec3d(posX, posY, posZ);
 	}
 
 	public void load(EntityLivingBase from) {
@@ -59,14 +56,14 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 		inventory.currentItem = 0;
 
-		for (int i = 0; i < 5; i++) {
-			ItemStack stack = from.getEquipmentInSlot(i);
+		for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+			ItemStack stack = from.getItemStackFromSlot(slot);
 
 			if (stack != null) {
-				setCurrentItemOrArmor(i, stack.copy());
-				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers());
+				setItemStackToSlot(slot, stack.copy());
+				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
 			} else {
-				setCurrentItemOrArmor(i, null);
+				setItemStackToSlot(slot, null);
 			}
 		}
 
@@ -76,11 +73,11 @@ public class PlethoraFakePlayer extends FakePlayer {
 	public void unload(EntityLivingBase from) {
 		inventory.currentItem = 0;
 
-		for (int i = 0; i < 5; i++) {
-			ItemStack stack = getEquipmentInSlot(i);
-			from.setCurrentItemOrArmor(i, stack);
+		for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+			ItemStack stack = getItemStackFromSlot(slot);
+			from.setItemStackToSlot(slot, stack);
 			if (stack != null) {
-				getAttributeMap().removeAttributeModifiers(stack.getAttributeModifiers());
+				getAttributeMap().removeAttributeModifiers(stack.getAttributeModifiers(slot));
 			}
 		}
 

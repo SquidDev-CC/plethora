@@ -3,6 +3,7 @@ package org.squiddev.plethora;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -10,8 +11,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 /**
  * The entity this references
  */
-public class EquipmentInvWrapper implements IItemHandlerModifiable {
-	private static final int SLOTS = 5;
+public final class EquipmentInvWrapper implements IItemHandlerModifiable {
+	private static final EntityEquipmentSlot[] VALUES = EntityEquipmentSlot.values();
+	private static final int SLOTS = 6;
 
 	private final EntityLivingBase entity;
 
@@ -22,7 +24,7 @@ public class EquipmentInvWrapper implements IItemHandlerModifiable {
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack) {
 		validateSlotIndex(slot);
-		entity.setCurrentItemOrArmor(slot, stack);
+		entity.setItemStackToSlot(VALUES[slot], stack);
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class EquipmentInvWrapper implements IItemHandlerModifiable {
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		validateSlotIndex(slot);
-		return entity.getEquipmentInSlot(slot);
+		return entity.getItemStackFromSlot(VALUES[slot]);
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class EquipmentInvWrapper implements IItemHandlerModifiable {
 		if (stack != null && stack.stackSize != 0) {
 			validateSlotIndex(slot);
 
-			if (slot > 0 && !stack.getItem().isValidArmor(stack, 4 - slot, entity)) {
+			if (slot > 1 && !stack.getItem().isValidArmor(stack, VALUES[slot], entity)) {
 				return stack;
 			}
 
@@ -114,7 +116,7 @@ public class EquipmentInvWrapper implements IItemHandlerModifiable {
 
 	private void onContentsChanged(int slot) {
 		if (entity instanceof EntityLiving) {
-			((EntityLiving) entity).setEquipmentDropChance(slot, 1.1f);
+			((EntityLiving) entity).setDropChance(VALUES[slot], 1.1f);
 		} else if (entity instanceof EntityPlayer) {
 			((EntityPlayer) entity).inventory.markDirty();
 		}

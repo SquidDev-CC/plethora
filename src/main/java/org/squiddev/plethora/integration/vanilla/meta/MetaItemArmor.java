@@ -17,21 +17,6 @@ import java.util.Map;
  */
 @IMetaProvider.Inject(ItemStack.class)
 public class MetaItemArmor extends BasicMetaProvider<ItemStack> {
-	private static String convertArmorType(int armorType) {
-		switch (armorType) {
-			case 0:
-				return "helmet";
-			case 1:
-				return "plate";
-			case 2:
-				return "legs";
-			case 3:
-				return "boots";
-			default:
-				return "unknown";
-		}
-	}
-
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
@@ -39,7 +24,7 @@ public class MetaItemArmor extends BasicMetaProvider<ItemStack> {
 		if (item instanceof ItemArmor) {
 			ItemArmor armor = (ItemArmor) item;
 			HashMap<Object, Object> data = Maps.newHashMap();
-			data.put("armorType", convertArmorType(armor.armorType));
+			data.put("armorType", armor.armorType.getName());
 
 			int color = armor.getColor(stack);
 			if (color >= 0) data.put("color", color);

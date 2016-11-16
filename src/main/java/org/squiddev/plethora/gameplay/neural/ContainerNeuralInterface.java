@@ -12,6 +12,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
 import org.squiddev.plethora.utils.Vec2i;
 
+import javax.annotation.Nullable;
+
 public class ContainerNeuralInterface extends Container {
 	private static final int START_Y = 134;
 
@@ -68,8 +70,8 @@ public class ContainerNeuralInterface extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
-		return player != null && player.isEntityAlive() && parent.isEntityAlive() && stack == parent.getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT);
+	public boolean canInteractWith(@Nullable EntityPlayer player) {
+		return player != null && player.isEntityAlive() && parent.isEntityAlive() && stack == parent.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT);
 	}
 
 	public ItemStack getStack() {

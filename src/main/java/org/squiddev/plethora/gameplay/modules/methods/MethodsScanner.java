@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
@@ -52,8 +52,8 @@ public final class MethodsScanner {
 						data.put("x", oX - x);
 						data.put("y", oY - y);
 						data.put("z", oZ - z);
-						String name = block.getBlock().getRegistryName();
-						data.put("name", name == null ? "unknown" : name);
+						String name = block.getBlock().getRegistryName().toString();
+						data.put("name", name);
 
 						map.put(++i, data);
 					}

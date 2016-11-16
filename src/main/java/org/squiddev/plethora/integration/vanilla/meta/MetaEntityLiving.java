@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
@@ -31,14 +32,15 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 
 		{
 			Map<String, Object> armor = Maps.newHashMap();
-			armor.put("boots", wrap(target, target.getEquipmentInSlot(1)));
-			armor.put("leggings", wrap(target, target.getEquipmentInSlot(2)));
-			armor.put("chestplate", wrap(target, target.getEquipmentInSlot(3)));
-			armor.put("helmet", wrap(target, target.getEquipmentInSlot(4)));
+			armor.put("boots", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
+			armor.put("leggings", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
+			armor.put("chestplate", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
+			armor.put("helmet", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
 			map.put("armor", armor);
 		}
 
-		map.put("heldItem", wrap(target, target.getEquipmentInSlot(0)));
+		map.put("heldItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
+		map.put("offhandItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
 
 		{
 			Map<Object, String> potionEffects = Maps.newHashMap();

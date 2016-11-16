@@ -2,19 +2,13 @@ package org.squiddev.plethora.gameplay.client.tile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.Constants;
@@ -23,7 +17,6 @@ import org.squiddev.plethora.gameplay.modules.ManipulatorType;
 import org.squiddev.plethora.gameplay.modules.TileManipulator;
 
 import javax.vecmath.Matrix4f;
-import java.util.List;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.utils.Helpers.getMesher;
@@ -71,9 +64,11 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 				}
 
 				GlStateManager.scale(type.scale, type.scale, type.scale);
-				GlStateManager.translate(-0.5f, -0.7f, -0.5f);
+				GlStateManager.translate(0, -0.2, 0);
 
-				renderModel(model);
+				Minecraft mc = Minecraft.getMinecraft();
+				mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+				mc.getRenderItem().renderItem(stack, model);
 
 				GlStateManager.popMatrix();
 			}
@@ -81,34 +76,5 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
-	}
-
-	private void renderModel(IBakedModel model) {
-		if (model instanceof IFlexibleBakedModel) {
-			this.renderModel((IFlexibleBakedModel) model);
-		} else {
-			this.renderModel(new IFlexibleBakedModel.Wrapper(model, DefaultVertexFormats.ITEM));
-		}
-	}
-
-	private void renderModel(IFlexibleBakedModel model) {
-		Minecraft mc = Minecraft.getMinecraft();
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-
-		renderer.begin(GL11.GL_QUADS, model.getFormat());
-		for (EnumFacing facing : EnumFacing.VALUES) {
-			renderQuads(renderer, model.getFaceQuads(facing));
-		}
-
-		renderQuads(renderer, model.getGeneralQuads());
-		tessellator.draw();
-	}
-
-	private void renderQuads(WorldRenderer renderer, List<BakedQuad> quads) {
-		for (BakedQuad quad : quads) {
-			LightUtil.renderQuadColor(renderer, quad, -1);
-		}
 	}
 }

@@ -1,5 +1,5 @@
 {
-	"parent": "plethora:item/flat",
+	"parent": "item/generated",
 	"textures": {
 		"layer0": "${texture}"
 	}

@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
+import net.minecraft.init.MobEffects;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 
 public class LayerInterface implements LayerRenderer<EntityLivingBase> {
@@ -35,7 +35,7 @@ public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 
 	@Override
 	public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-		if (NeuralHelpers.getStack(entity) == null || entity.isPotionActive(Potion.invisibility)) {
+		if (NeuralHelpers.getStack(entity) == null || entity.isPotionActive(MobEffects.INVISIBILITY)) {
 			return;
 		}
 

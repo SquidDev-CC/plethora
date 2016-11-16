@@ -1,4 +1,5 @@
 {
+	"parent": "block/block",
 	"textures": {
 		"particle": "plethora:blocks/manipulatorSide",
 		"bottom": "plethora:blocks/manipulatorBottom",

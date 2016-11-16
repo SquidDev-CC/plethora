@@ -47,7 +47,7 @@ public class MetaItemCrop extends BasicMetaProvider<ItemStack> {
 		CropProperties properties = card.getProperties();
 
 		if (level >= 1) {
-			out.put("name", card.getName());
+			out.put("name", card.getUnlocalizedName());
 			out.put("owner", card.getOwner());
 		}
 

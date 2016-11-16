@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay.client.entity;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -25,7 +25,7 @@ public class RenderLaser extends Render<EntityLaser> {
 		GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * ticks, 0.0f, 0.0f, 1.0f);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
+		VertexBuffer renderer = tessellator.getBuffer();
 
 		GlStateManager.disableTexture2D();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);

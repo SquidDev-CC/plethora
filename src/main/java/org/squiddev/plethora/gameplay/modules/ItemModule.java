@@ -1,8 +1,8 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,10 +13,8 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -26,6 +24,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.server.FMLServerHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -97,20 +96,22 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		return super.getUnlocalizedName() + ".module_" + getName(stack.getItemDamage());
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> out) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs tab, List<ItemStack> out) {
 		for (int i = 0; i < MODULES; i++) {
 			out.add(new ItemStack(this, 1, i));
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
 				if (!world.isRemote) {
@@ -126,18 +127,18 @@ public final class ItemModule extends ItemBase {
 					}
 				}
 
-				return stack;
+				return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 			case LASER_ID:
 			case KINETIC_ID:
-				player.setItemInUse(stack, MAX_TICKS);
-				return stack;
+				player.setActiveHand(hand);
+				return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 			default:
-				return stack;
+				return ActionResult.newResult(EnumActionResult.PASS, stack);
 		}
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int remaining) {
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int remaining) {
 		if (world.isRemote) return;
 
 		// Get the number of ticks the laser has been used for
@@ -163,6 +164,7 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
 		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
@@ -225,19 +227,19 @@ public final class ItemModule extends ItemBase {
 			"GCG",
 			"CHC",
 			"GCG",
-			'G', new ItemStack(Items.gold_ingot),
-			'H', new ItemStack(Items.skull),
-			'C', new ItemStack(Blocks.ender_chest)
+			'G', new ItemStack(Items.GOLD_INGOT),
+			'H', new ItemStack(Items.SKULL),
+			'C', new ItemStack(Blocks.ENDER_CHEST)
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
 			"III",
 			"GDR",
 			"  I",
-			'D', new ItemStack(Items.diamond),
-			'I', new ItemStack(Items.iron_ingot),
-			'G', new ItemStack(Blocks.glass),
-			'R', new ItemStack(Items.redstone)
+			'D', new ItemStack(Items.DIAMOND),
+			'I', new ItemStack(Items.IRON_INGOT),
+			'G', new ItemStack(Blocks.GLASS),
+			'R', new ItemStack(Items.REDSTONE)
 		);
 
 
@@ -245,30 +247,30 @@ public final class ItemModule extends ItemBase {
 			"EDE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.glass),
-			'I', new ItemStack(Items.iron_ingot),
-			'E', new ItemStack(Items.ender_pearl),
-			'D', new ItemStack(Blocks.dirt)
+			'G', new ItemStack(Blocks.GLASS),
+			'I', new ItemStack(Items.IRON_INGOT),
+			'E', new ItemStack(Items.ENDER_PEARL),
+			'D', new ItemStack(Blocks.DIRT)
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SENSOR_ID),
 			"ERE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.glass),
-			'I', new ItemStack(Items.iron_ingot),
-			'E', new ItemStack(Items.ender_pearl),
-			'R', new ItemStack(Items.rotten_flesh)
+			'G', new ItemStack(Blocks.GLASS),
+			'I', new ItemStack(Items.IRON_INGOT),
+			'E', new ItemStack(Items.ENDER_PEARL),
+			'R', new ItemStack(Items.ROTTEN_FLESH)
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, KINETIC_ID),
 			"RGR",
 			"PBP",
 			"RGR",
-			'G', new ItemStack(Items.gold_ingot),
-			'R', new ItemStack(Items.redstone),
-			'P', new ItemStack(Blocks.piston),
-			'B', new ItemStack(Blocks.redstone_block)
+			'G', new ItemStack(Items.GOLD_INGOT),
+			'R', new ItemStack(Items.REDSTONE),
+			'P', new ItemStack(Blocks.PISTON),
+			'B', new ItemStack(Blocks.REDSTONE_BLOCK)
 		);
 	}
 
@@ -337,7 +339,7 @@ public final class ItemModule extends ItemBase {
 	private static Entity getEntity(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
-			return MinecraftServer.getServer().getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
+			return FMLServerHandler.instance().getServer().getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
 		} else {
 			return null;
 		}
