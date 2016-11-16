@@ -12,6 +12,10 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'com.matthewprenger.cursegradle' version '1.0.5'
+}
+
 buildDir = "build-${mc_version}"
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -100,5 +104,19 @@ processResources {
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
 		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes"
+	}
+}
+
+curseforge {
+	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
+
+	project {
+		id = '248425'
+		releaseType = 'beta'
+		changelog = ''
+
+		relations {
+			requiredLibrary 'computercraft'
+		}
 	}
 }
