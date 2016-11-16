@@ -66,6 +66,13 @@ public final class ConfigGameplay {
 		public static int launchCost;
 
 		/**
+		 * The value to scale the y velocity by, helps limit how high the player can go.
+		 */
+		@DefaultDouble(0.5)
+		@Range(min = 0)
+		public static double launchYScale;
+
+		/**
 		 * The maximum range that the entity can path find to.
 		 */
 		@DefaultInt(32)

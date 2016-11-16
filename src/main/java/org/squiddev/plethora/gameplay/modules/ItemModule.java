@@ -31,6 +31,7 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
@@ -348,7 +349,7 @@ public final class ItemModule extends ItemBase {
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
 
 		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
-		entity.addVelocity(motionX * power, motionY * power, motionZ * power);
+		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);
 		entity.velocityChanged = true;
 	}
 
