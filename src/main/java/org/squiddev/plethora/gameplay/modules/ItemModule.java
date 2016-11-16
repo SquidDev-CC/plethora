@@ -351,6 +351,8 @@ public final class ItemModule extends ItemBase {
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
 
 		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
+		if (entity.isElytraFlying()) power *= ConfigGameplay.Kinetic.launchElytraScale;
+
 		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);
 		entity.velocityChanged = true;
 	}

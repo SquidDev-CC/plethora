@@ -1,11 +1,8 @@
 package org.squiddev.plethora.gameplay;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 
 public class ItemBlockBase extends ItemBlock {
@@ -17,12 +14,6 @@ public class ItemBlockBase extends ItemBlock {
 
 		setHasSubtypes(true);
 		setMaxDamage(0);
-	}
-
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
-		super.addInformation(stack, player, out, um);
-		((BlockBase<?>) block).addInformation(stack, player, out, um);
 	}
 
 	@Override

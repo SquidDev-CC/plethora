@@ -73,6 +73,13 @@ public final class ConfigGameplay {
 		public static double launchYScale;
 
 		/**
+		 * The value to scale the velocity by when flying, helps limit how fast the player can go.
+		 */
+		@DefaultDouble(0.4)
+		@Range(min = 0)
+		public static double launchElytraScale;
+
+		/**
 		 * The maximum range that the entity can path find to.
 		 */
 		@DefaultInt(32)
