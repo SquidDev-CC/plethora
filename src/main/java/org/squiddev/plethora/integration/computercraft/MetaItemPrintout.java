@@ -28,7 +28,7 @@ public class MetaItemPrintout extends BasicMetaProvider<ItemStack> {
 
 		Map<Integer, String> lines = Maps.newHashMap();
 		String[] lineArray = ItemPrintout.getText(object);
-		for (int i = 0; i < lines.size(); i++) {
+		for (int i = 0; i < lineArray.length; i++) {
 			lines.put(i + 1, lineArray[i]);
 		}
 		out.put("lines", lines);

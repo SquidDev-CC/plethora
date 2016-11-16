@@ -55,9 +55,9 @@ public class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 					if (potionId >= 0 && potionId < Potion.potionTypes.length) {
 
 						Potion potion = Potion.potionTypes[potionId];
-						data.put("name", potion.getName());
-						data.put("instant", potion.isInstant());
-						data.put("color", potion.getLiquidColor());
+						entry.put("name", potion.getName());
+						entry.put("instant", potion.isInstant());
+						entry.put("color", potion.getLiquidColor());
 					}
 
 					effectsInfo.put(i + 1, entry);
