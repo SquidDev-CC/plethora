@@ -298,7 +298,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, int slot, ModelBiped existing) {
-		return ModelInterface.get();
+		return ModelInterface.getNormal();
 	}
 
 	@Override

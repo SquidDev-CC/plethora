@@ -14,28 +14,48 @@ public class ModelInterface extends ModelBiped {
 	public static String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
 	public static ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
 
-	private static ModelInterface instance;
+	private static ModelInterface normalInstance;
+	private static ModelInterface monocleInstance;
 
-	public static ModelInterface get() {
-		if (instance == null) return instance = new ModelInterface();
-		return instance;
+	public static ModelInterface getNormal() {
+		ModelInterface model = normalInstance;
+		if (model == null) {
+			model = normalInstance = new ModelInterface();
+
+			ModelRenderer main = new ModelRenderer(model, 0, 0);
+			main.setRotationPoint(0.0F, 0.0F, 0.0F);
+			main.addBox(-0.1F, -5.5F, -5.1F, 5, 3, 1, 0.0F);
+
+			ModelRenderer side = new ModelRenderer(model, 5, 0);
+			side.setRotationPoint(0.0F, 0.0F, 0.0F);
+			side.addBox(3.9F, -5.5F, -4.1F, 1, 2, 7, 0.0F);
+
+			model.bipedHeadwear.addChild(main);
+			model.bipedHeadwear.addChild(side);
+		}
+
+		return model;
+	}
+
+	public static ModelInterface getMonocle() {
+		ModelInterface model = monocleInstance;
+		if (model == null) {
+			model = monocleInstance = new ModelInterface();
+
+			ModelRenderer main = new ModelRenderer(model, 14, 0);
+			main.setRotationPoint(0.0F, 0.0F, 0.0F);
+			main.addBox(-0.1F, -5.5F, -5.1F, 3, 3, 1, 0.0F);
+
+			model.bipedHeadwear.addChild(main);
+		}
+
+		return model;
 	}
 
 	private ModelInterface() {
-		this.textureWidth = 21;
-		this.textureHeight = 9;
-
-		ModelRenderer main = new ModelRenderer(this, 0, 0);
-		main.setRotationPoint(0.0F, 0.0F, 0.0F);
-		main.addBox(-0.1F, -5.5F, -5.1F, 5, 3, 1, 0.0F);
-
-		ModelRenderer side = new ModelRenderer(this, 5, 0);
-		side.setRotationPoint(0.0F, 0.0F, 0.0F);
-		side.addBox(3.9F, -5.5F, -4.1F, 1, 2, 7, 0.0F);
-
+		textureWidth = 22;
+		textureHeight = 9;
 		bipedHeadwear = new ModelRenderer(this, 0, 0);
-		bipedHeadwear.addChild(main);
-		bipedHeadwear.addChild(side);
 	}
 
 	@Override
