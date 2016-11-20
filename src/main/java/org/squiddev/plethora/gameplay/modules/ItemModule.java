@@ -120,6 +120,7 @@ public final class ItemModule extends ItemBase {
 							NBTTagCompound compound = getTag(stack);
 							compound.setLong("id_lower", id.getLeastSignificantBits());
 							compound.setLong("id_upper", id.getMostSignificantBits());
+							compound.setString("bound_name", player.getName());
 						}
 					} else {
 						player.displayGUIChest(player.getInventoryEnderChest());
@@ -185,9 +186,9 @@ public final class ItemModule extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
 
-		Entity entity = getEntity(stack);
+		String entity = getEntityName(stack);
 		if (entity != null) {
-			out.add("Bound to " + entity.getName());
+			out.add("Bound to " + entity);
 		}
 	}
 
@@ -337,7 +338,18 @@ public final class ItemModule extends ItemBase {
 	private static Entity getEntity(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
-			return MinecraftServer.getServer().getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
+			MinecraftServer server = MinecraftServer.getServer();
+			if (server == null) return null;
+			return server.getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
+		} else {
+			return null;
+		}
+	}
+
+	private static String getEntityName(ItemStack stack) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("bound_name", 8)) {
+			return tag.getString("bound_name");
 		} else {
 			return null;
 		}
