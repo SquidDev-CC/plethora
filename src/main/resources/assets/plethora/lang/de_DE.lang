@@ -46,10 +46,17 @@ gui.config.plethora.costsystem.regen=Regeneration
 gui.config.plethora.costsystem.limit=Grenze
 gui.config.plethora.blacklist=Sperrliste
 gui.config.plethora.blacklist.blacklistMethods=Gesperrte Methoden
-gui.config.plethora.blacklist.blacklistMeta=Gesperrte meta provider
+gui.config.plethora.blacklist.blacklistMods=Gesperrte Mods
+gui.config.plethora.blacklist.blacklistMeta=Gesperrte Meta Provider
+gui.config.plethora.blacklist.blacklistProviders=Gesperrte Provider
 gui.config.plethora.blacklist.blacklistTileEntities=Gesperrte TileEntities
-gui.config.plethora.baseCosts=Grundpreis für Methoden
-gui.config.plethora.testing=Prüfen
+gui.config.plethora.baseCosts=Methodengrundpreis
+gui.config.plethora.basecosts=Methodengrundpreis
+gui.config.plethora.testing=Testen
+gui.config.plethora.testing.bytecodeVerify=Bytecode überprüfen
+gui.config.plethora.testing.debug=Debuggen
+gui.config.plethora.testing.likeDocs=Dokumentation verlangen
+gui.config.plethora.testing.strict=Strenge Validierung
 
 # Gameplay config
 gui.config.plethora.laser=Verdammter Laserstrahl
@@ -60,6 +67,7 @@ gui.config.plethora.laser.laserCost=Laserpreis
 gui.config.plethora.kinetic=Kinetischer Verstärker
 gui.config.plethora.kinetic.launchMax=Maximaler Schleuderfaktor
 gui.config.plethora.kinetic.launchCost=Maximaler Schleuderpreis
+gui.config.plethora.kinetic.launchYScale=Y-Achsenschleuderfaktor
 gui.config.plethora.kinetic.launchElytraScale=Elytrenschleuderfaktor
 gui.config.plethora.kinetic.walkRange=Maximale Laufreichweite
 gui.config.plethora.kinetic.walkSpeed=Maximale Laufgeschwindigkeit
@@ -67,7 +75,7 @@ gui.config.plethora.kinetic.walkCost=Laufkosten
 gui.config.plethora.kinetic.teleportRange=Maximale Teleportationsreichweite
 gui.config.plethora.kinetic.teleportCost=Teleportationspreis
 
-gui.config.plethora.scanner=Entityscanner
+gui.config.plethora.scanner=Blockscanner
 gui.config.plethora.scanner.radius=Abtastradius
 
 gui.config.plethora.sensor=Entitysensor
