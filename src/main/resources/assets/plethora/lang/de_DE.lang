@@ -60,6 +60,7 @@ gui.config.plethora.laser.laserCost=Laserpreis
 gui.config.plethora.kinetic=Kinetischer Verstärker
 gui.config.plethora.kinetic.launchMax=Maximaler Schleuderfaktor
 gui.config.plethora.kinetic.launchCost=Maximaler Schleuderpreis
+gui.config.plethora.kinetic.launchElytraScale=Elytrenschleuderfaktor
 gui.config.plethora.kinetic.walkRange=Maximale Laufreichweite
 gui.config.plethora.kinetic.walkSpeed=Maximale Laufgeschwindigkeit
 gui.config.plethora.kinetic.walkCost=Laufkosten
