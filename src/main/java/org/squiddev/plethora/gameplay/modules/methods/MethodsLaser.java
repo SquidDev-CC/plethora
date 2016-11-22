@@ -46,7 +46,7 @@ public final class MethodsLaser {
 				IWorldLocation location = context.getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos();
 
-				EntityLaser laser = new EntityLaser(location.getWorld());
+				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
 				if (context.hasContext(TileManipulator.class)) {
 					laser.setPosition(
 						pos.getX() + 0.5,
@@ -58,6 +58,7 @@ public final class MethodsLaser {
 					Vec3 vector = entity.getPositionVector();
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+					laser.setShooter(entity);
 					laser.setPosition(
 						vector.xCoord + motionX / length * offset,
 						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,

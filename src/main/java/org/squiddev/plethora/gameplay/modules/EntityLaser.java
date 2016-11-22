@@ -11,15 +11,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
+import org.squiddev.plethora.utils.WorldPosition;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,6 +36,9 @@ public final class EntityLaser extends Entity implements IProjectile {
 	@Nullable
 	private UUID shooterId;
 
+	@Nullable
+	private WorldPosition shooterPos;
+
 	private float potency = 0.0f;
 
 	public EntityLaser(World world) {
@@ -42,15 +46,12 @@ public final class EntityLaser extends Entity implements IProjectile {
 		setSize(0.25f, 0.25f);
 	}
 
-	@Override
-	protected void entityInit() {
-	}
-
+	@Nullable
 	public EntityLaser(World world, EntityLivingBase shooter, float inaccuracy, float potency) {
 		this(world);
 
 		this.potency = potency;
-		this.shooter = shooter;
+		setShooter(shooter);
 
 		setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
 
@@ -63,6 +64,29 @@ public final class EntityLaser extends Entity implements IProjectile {
 		motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
 		motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
 		setThrowableHeading(motionX, motionY, motionZ, 1.5f, inaccuracy);
+	}
+
+	public EntityLaser(World world, Vec3 shooter) {
+		this(world);
+		setShooter(new WorldPosition(world, shooter));
+	}
+
+	public EntityLaser(World world, BlockPos shooter) {
+		this(world);
+		this.shooterPos = new WorldPosition(world, shooter);
+	}
+
+	public void setShooter(EntityLivingBase shooter) {
+		this.shooter = shooter;
+		this.shooterId = shooter.getPersistentID();
+	}
+
+	public void setShooter(WorldPosition position) {
+		this.shooterPos = position;
+	}
+
+	@Override
+	protected void entityInit() {
 	}
 
 	public void setPotency(float potency) {
@@ -111,11 +135,14 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tag) {
-		if (shooterId == null && shooter instanceof EntityPlayer && !(shooter instanceof FakePlayer)) {
-			shooterId = shooter.getPersistentID();
+		if (shooterId != null) {
+			tag.setString("shooterId", shooterId.toString());
 		}
 
-		tag.setString("shooterId", shooterId == null ? "" : shooterId.toString());
+		if (shooterPos != null) {
+			tag.setTag("shooterPos", shooterPos.serializeNBT());
+		}
+
 		tag.setFloat("potency", potency);
 	}
 
@@ -125,12 +152,15 @@ public final class EntityLaser extends Entity implements IProjectile {
 		shooterId = null;
 		shooterPlayer = null;
 
-		String shooterName = tag.getString("shooterId");
-		if (shooterName != null && shooterName.length() > 0) {
+		if (tag.hasKey("shooterId", 8)) {
 			try {
-				shooterId = UUID.fromString(shooterName);
+				shooterId = UUID.fromString(tag.getString("shooterId"));
 			} catch (IllegalArgumentException ignored) {
 			}
+		}
+
+		if (tag.hasKey("shooterPos", 10)) {
+			shooterPos = WorldPosition.deserializeNBT(tag.getCompoundTag("shooterPos"));
 		}
 
 		potency = tag.getFloat("potency");
@@ -144,58 +174,79 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		super.onUpdate();
 
-		Vec3 position = new Vec3(posX, posY, posZ);
-		Vec3 nextPosition = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
-
-		MovingObjectPosition collision = worldObj.rayTraceBlocks(position, nextPosition);
-		if (collision != null) nextPosition = collision.hitVec;
-
 		if (!worldObj.isRemote) {
-			List<Entity> collisions = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1, 1, 1));
-			EntityLivingBase shooter = getShooter();
+			double remaining = 1;
+			int ticks = 5; // Maximum of 5 steps. This limit should never be reached but you never know.
 
-			double closestDistance = Double.POSITIVE_INFINITY;
-			EntityLivingBase closestEntity = null;
+			// Raytrace to the next collision and set our position to there
+			while (remaining >= 1e-2 && potency > 0 && --ticks >= 0) {
+				Vec3 position = new Vec3(posX, posY, posZ);
+				Vec3 nextPosition = new Vec3(
+					posX + motionX * remaining,
+					posY + motionY * remaining,
+					posZ + motionZ * remaining
+				);
 
-			for (Entity other : collisions) {
-				if (other.canBeCollidedWith() && (other != shooter || ticksExisted >= 5) && other instanceof EntityLivingBase) {
-					float size = 0.3f;
-					AxisAlignedBB singleCollision = other.getEntityBoundingBox().expand(size, size, size);
-					MovingObjectPosition hit = singleCollision.calculateIntercept(position, nextPosition);
+				MovingObjectPosition collision = worldObj.rayTraceBlocks(position, nextPosition);
+				if (collision != null) nextPosition = collision.hitVec;
 
-					if (hit != null) {
-						double distanceSq = position.squareDistanceTo(hit.hitVec);
-						if (distanceSq < closestDistance || closestDistance == 0.0) {
-							closestEntity = (EntityLivingBase) other;
-							closestDistance = distanceSq;
+				List<Entity> collisions = worldObj
+					.getEntitiesWithinAABBExcludingEntity(this,
+						getEntityBoundingBox()
+							.addCoord(motionX * remaining, motionY * remaining, motionZ * remaining)
+							.expand(1, 1, 1)
+					);
+				EntityLivingBase shooter = getShooter();
+
+				double closestDistance = nextPosition.squareDistanceTo(position);
+				EntityLivingBase closestEntity = null;
+
+				for (Entity other : collisions) {
+					if (other.canBeCollidedWith() && (other != shooter || ticksExisted >= 5) && other instanceof EntityLivingBase) {
+						float size = 0.3f;
+						AxisAlignedBB singleCollision = other.getEntityBoundingBox().expand(size, size, size);
+						MovingObjectPosition hit = singleCollision.calculateIntercept(position, nextPosition);
+
+						if (hit != null) {
+							double distanceSq = position.squareDistanceTo(hit.hitVec);
+							if (distanceSq < closestDistance) {
+								closestEntity = (EntityLivingBase) other;
+								closestDistance = distanceSq;
+								nextPosition = hit.hitVec;
+							}
 						}
 					}
 				}
-			}
 
-			if (closestEntity != null) {
-				collision = new MovingObjectPosition(closestEntity);
+				if (closestEntity != null) {
+					collision = new MovingObjectPosition(closestEntity);
+				}
+
+				remaining -= position.distanceTo(nextPosition) / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+
+				// Set position
+				setPosition(nextPosition.xCoord, nextPosition.yCoord, nextPosition.zCoord);
+				syncPositions(false);
+
+				// Handle collision
+				if (collision != null) {
+					if (collision.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(collision.getBlockPos()).getBlock() == Blocks.portal) {
+						setPortal(collision.getBlockPos());
+					} else {
+						onImpact(collision);
+					}
+				}
 			}
+		} else {
+			// Set position
+			posX += motionX;
+			posY += motionY;
+			posZ += motionZ;
+
+			setPosition(posX, posY, posZ);
 		}
 
-		// Set position
-		posX += motionX;
-		posY += motionY;
-		posZ += motionZ;
-
-		setPosition(posX, posY, posZ);
-		syncPositions();
-
-		// Handle collision
-		if (collision != null) {
-			if (collision.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(collision.getBlockPos()).getBlock() == Blocks.portal) {
-				setPortal(collision.getBlockPos());
-			} else {
-				onImpact(collision);
-			}
-		}
-
-		if (!worldObj.isRemote && (potency < 0 || ticksExisted > TICKS_EXISTED)) {
+		if (!worldObj.isRemote && (potency <= 0 || ticksExisted > TICKS_EXISTED)) {
 			setDead();
 		}
 	}
@@ -216,24 +267,43 @@ public final class EntityLaser extends Entity implements IProjectile {
 						potency -= hardness;
 
 						EntityPlayer player = getShooterPlayer();
-						if (player != null) {
-							if (!world.isBlockModifiable(player, position)) {
-								potency = -1;
-								return;
-							}
+						if (player == null) return;
 
-							BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, position, blockState, player);
-							MinecraftForge.EVENT_BUS.post(event);
-							if (event.isCanceled()) {
-								potency = -1;
-								return;
-							}
+						// Ensure the player is setup correctly
+						syncPositions(true);
+
+						if (!world.isBlockModifiable(player, position)) {
+							potency = -1;
+							return;
 						}
+
+						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, position, blockState, player);
+						MinecraftForge.EVENT_BUS.post(event);
+						if (event.isCanceled()) {
+							potency = -1;
+							return;
+						}
+
+						world.setBlockToAir(position);
+						if (world.getBlockState(position).getBlock() == block) {
+							/*
+							 If the block wasn't broken despite everything we've been told (*cough* Sponge *cough*) then
+							 give up. This doesn't actually work but at least we tried :).
+
+							 The issue here is that when breaking the block we can't pass in the cause and so Sponge/
+							 GriefPrevention doesn't know whether we have permission or not.
+
+							 Soon we'll be able to specify custom causes and so this shouldn't be a problem but til' then.
+							  */
+							potency = -1;
+							return;
+						}
+
 
 						if (block == Blocks.tnt) {
 							((BlockTNT) block).explode(
 								world, position,
-								blockState.withProperty(BlockTNT.EXPLODE, Boolean.valueOf(true)),
+								blockState.withProperty(BlockTNT.EXPLODE, Boolean.TRUE),
 								getShooter()
 							);
 						} else {
@@ -244,7 +314,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 								}
 							}
 						}
-						world.setBlockToAir(position);
+
 					} else {
 						potency = -1;
 					}
@@ -254,6 +324,9 @@ public final class EntityLaser extends Entity implements IProjectile {
 			case ENTITY: {
 				Entity entity = collision.entityHit;
 				if (entity instanceof EntityLivingBase) {
+					// Ensure the player is setup correctly
+					syncPositions(true);
+
 					DamageSource source = new EntityDamageSourceIndirect("laser", this, getShooter()).setProjectile();
 					entity.attackEntityFrom(source, potency * 3);
 					potency = -1;
@@ -275,18 +348,16 @@ public final class EntityLaser extends Entity implements IProjectile {
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
-		if (shooterId == null) {
-			shooter = new PlethoraFakePlayer(world);
-			syncPositions();
-			return shooter;
+		if (shooterId != null) {
+			Entity newShooter = world.getEntityFromUuid(shooterId);
+			if (newShooter instanceof EntityLivingBase) {
+				return shooter = (EntityLivingBase) newShooter;
+			} else {
+				return null;
+			}
 		}
 
-		Entity newShooter = world.getEntityFromUuid(shooterId);
-		if (newShooter instanceof EntityLivingBase) {
-			return shooter = (EntityLivingBase) newShooter;
-		} else {
-			return null;
-		}
+		return shooter = shooterPlayer = new PlethoraFakePlayer(world);
 	}
 
 	/**
@@ -304,22 +375,42 @@ public final class EntityLaser extends Entity implements IProjectile {
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
-		shooterPlayer = new PlethoraFakePlayer(world);
-		syncPositions();
-		return shooterPlayer;
+		return shooterPlayer = new PlethoraFakePlayer(world);
 	}
 
-	private void syncPositions() {
+	private void syncPositions(boolean force) {
+		EntityPlayer fakePlayer = this.shooterPlayer;
 		EntityLivingBase shooter = this.shooter;
+		if (!(fakePlayer instanceof PlethoraFakePlayer)) return;
 
-		if (shooter != null && shooter instanceof PlethoraFakePlayer) {
-			shooter.setPositionAndRotation(posX, posY, posZ, rotationYaw, rotationPitch);
-		}
+		if (shooter != null && shooter != fakePlayer) {
+			syncFromEntity(fakePlayer, shooter);
+		} else if (shooterPos != null) {
+			World current = fakePlayer.worldObj;
 
-		if (shooterPlayer != null) {
-			Entity from = shooter == null ? this : shooter;
-			shooterPlayer.worldObj = from.worldObj;
-			shooterPlayer.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
+			if (current == null || current.provider.getDimensionId() != shooterPos.getDimension()) {
+				// Don't load another dimension unless we have to
+				World replace = force ? shooterPos.getWorld(MinecraftServer.getServer()) : shooterPos.getWorld();
+
+				if (replace == null) {
+					syncFromEntity(fakePlayer, this);
+				} else {
+					syncFromPos(fakePlayer, shooterPos.getPos(), rotationYaw, rotationPitch);
+				}
+			} else {
+				syncFromPos(fakePlayer, shooterPos.getPos(), rotationYaw, rotationPitch);
+			}
+		} else {
+			syncFromEntity(fakePlayer, this);
 		}
+	}
+
+	private static void syncFromEntity(EntityPlayer player, Entity from) {
+		player.worldObj = from.worldObj;
+		player.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
+	}
+
+	private static void syncFromPos(EntityPlayer player, Vec3 pos, float yaw, float pitch) {
+		player.setPositionAndRotation(pos.xCoord, pos.yCoord, pos.zCoord, yaw, pitch);
 	}
 }
