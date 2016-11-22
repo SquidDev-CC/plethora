@@ -8,6 +8,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.gameplay.ItemBase;
 
 import static org.squiddev.plethora.api.Constants.*;
+import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.DIRTY;
 
 /**
  * A horrible item handler implementation that saves to the item's NBT
@@ -40,7 +41,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		validateSlotIndex(slot);
 
 		NBTTagCompound tag = ItemBase.getTag(this.stack);
-		NBTTagCompound items = null;
+		NBTTagCompound items;
 		if (tag.hasKey("items", 10)) {
 			items = tag.getCompoundTag("items");
 		} else {
@@ -52,6 +53,8 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		} else {
 			items.setTag("item" + slot, stack.serializeNBT());
 		}
+
+		tag.setShort(DIRTY, (short) (tag.getShort(DIRTY) | 1 << slot));
 	}
 
 	@Override
