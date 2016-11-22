@@ -57,9 +57,10 @@ gui.config.plethora.testing.strict=Strict validation
 
 # Gameplay config
 gui.config.plethora.laser=Frickin' laser beam
-gui.config.plethora.laser.laserMinimum=Laser minimum
-gui.config.plethora.laser.laserMaximum=Laser maximum
-gui.config.plethora.laser.laserCost=Laser cost
+gui.config.plethora.laser.minimumPotency=Minimum potency
+gui.config.plethora.laser.maximumPotency=Maximum potency
+gui.config.plethora.laser.cost=Cost
+gui.config.plethora.laser.damage=Damage
 
 gui.config.plethora.kinetic=Kinetic Augment
 gui.config.plethora.kinetic.launchMax=Maximum launch factor

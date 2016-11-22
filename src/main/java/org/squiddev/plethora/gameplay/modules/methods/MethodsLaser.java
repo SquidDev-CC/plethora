@@ -31,9 +31,9 @@ public final class MethodsLaser {
 		final double pitch = getNumber(args, 1);
 		final float potency = (float) getNumber(args, 2);
 
-		ArgumentHelper.assertBetween(potency, laserMinimum, laserMaximum, "Potency out of range (%s).");
+		ArgumentHelper.assertBetween(potency, minimumPotency, maximumPotency, "Potency out of range (%s).");
 
-		CostHelpers.checkCost(unbaked.getCostHandler(), potency * laserCost);
+		CostHelpers.checkCost(unbaked.getCostHandler(), potency * cost);
 
 		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);

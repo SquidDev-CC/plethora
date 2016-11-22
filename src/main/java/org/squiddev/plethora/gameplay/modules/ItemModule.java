@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMaximum;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMinimum;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -149,7 +149,7 @@ public final class ItemModule extends ItemBase {
 
 		switch (stack.getItemDamage()) {
 			case LASER_ID: {
-				double potency = (ticks / USE_TICKS) * (laserMaximum - laserMinimum) + laserMaximum;
+				double potency = (ticks / USE_TICKS) * (maximumPotency - minimumPotency) + minimumPotency;
 				double inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
 
 				world.spawnEntityInWorld(new EntityLaser(world, player, (float) inaccuracy, (float) potency));

@@ -60,9 +60,10 @@ gui.config.plethora.testing.strict=Strenge Validierung
 
 # Gameplay config
 gui.config.plethora.laser=Verdammter Laserstrahl
-gui.config.plethora.laser.laserMinimum=Laser Minimum
-gui.config.plethora.laser.laserMaximum=Laser Maximum
-gui.config.plethora.laser.laserCost=Laserpreis
+gui.config.plethora.laser.minimumPotency=Laser Minimum
+gui.config.plethora.laser.maximumPotency=Laser Maximum
+gui.config.plethora.laser.cost=Laserpreis
+gui.config.plethora.laser.damage=Schaden
 
 gui.config.plethora.kinetic=Kinetischer Verstärker
 gui.config.plethora.kinetic.launchMax=Maximaler Schleuderfaktor

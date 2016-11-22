@@ -19,6 +19,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.utils.WorldPosition;
 
@@ -328,7 +329,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					syncPositions(true);
 
 					DamageSource source = new EntityDamageSourceIndirect("laser", this, getShooter()).setProjectile();
-					entity.attackEntityFrom(source, potency * 3);
+					entity.attackEntityFrom(source, (float) (potency * ConfigGameplay.Laser.damage));
 					potency = -1;
 				}
 				break;
