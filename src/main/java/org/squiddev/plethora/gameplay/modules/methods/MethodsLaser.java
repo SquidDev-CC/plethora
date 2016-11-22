@@ -31,9 +31,9 @@ public final class MethodsLaser {
 		final double pitch = getNumber(args, 1);
 		final float potency = (float) getNumber(args, 2);
 
-		ArgumentHelper.assertBetween(potency, laserMinimum, laserMaximum, "Potency out of range (%s).");
+		ArgumentHelper.assertBetween(potency, minimumPotency, maximumPotency, "Potency out of range (%s).");
 
-		CostHelpers.checkCost(unbaked.getCostHandler(), potency * laserCost);
+		CostHelpers.checkCost(unbaked.getCostHandler(), potency * cost);
 
 		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
@@ -46,7 +46,7 @@ public final class MethodsLaser {
 				IWorldLocation location = context.getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos();
 
-				EntityLaser laser = new EntityLaser(location.getWorld());
+				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
 				if (context.hasContext(TileManipulator.class)) {
 					laser.setPosition(
 						pos.getX() + 0.5,
@@ -58,6 +58,7 @@ public final class MethodsLaser {
 					Vec3d vector = entity.getPositionVector();
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+					laser.setShooter(entity);
 					laser.setPosition(
 						vector.xCoord + motionX / length * offset,
 						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,

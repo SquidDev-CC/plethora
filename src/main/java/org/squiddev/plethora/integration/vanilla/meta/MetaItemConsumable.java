@@ -58,9 +58,9 @@ public class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 					entry.put("amplifier", effect.getAmplifier());
 
 					Potion potion = effect.getPotion();
-					data.put("name", potion.getName());
-					data.put("instant", potion.isInstant());
-					data.put("color", potion.getLiquidColor());
+					entry.put("name", potion.getName());
+					entry.put("instant", potion.isInstant());
+					entry.put("color", potion.getLiquidColor());
 
 					effectsInfo.put(i + 1, entry);
 					i++;

@@ -13,6 +13,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -45,8 +46,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMaximum;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.laserMinimum;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
+import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -121,6 +122,7 @@ public final class ItemModule extends ItemBase {
 							NBTTagCompound compound = getTag(stack);
 							compound.setLong("id_lower", id.getLeastSignificantBits());
 							compound.setLong("id_upper", id.getMostSignificantBits());
+							compound.setString("bound_name", player.getName());
 						}
 					} else {
 						player.displayGUIChest(player.getInventoryEnderChest());
@@ -149,7 +151,7 @@ public final class ItemModule extends ItemBase {
 
 		switch (stack.getItemDamage()) {
 			case LASER_ID: {
-				double potency = (ticks / USE_TICKS) * (laserMaximum - laserMinimum) + laserMaximum;
+				double potency = (ticks / USE_TICKS) * (maximumPotency - minimumPotency) + minimumPotency;
 				double inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
 
 				world.spawnEntityInWorld(new EntityLaser(world, player, (float) inaccuracy, (float) potency));
@@ -187,9 +189,9 @@ public final class ItemModule extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
 
-		Entity entity = getEntity(stack);
+		String entity = getEntityName(stack);
 		if (entity != null) {
-			out.add("Bound to " + entity.getName());
+			out.add("Bound to " + entity);
 		}
 	}
 
@@ -339,7 +341,21 @@ public final class ItemModule extends ItemBase {
 	private static Entity getEntity(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
-			return FMLServerHandler.instance().getServer().getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
+			FMLServerHandler handler = FMLServerHandler.instance();
+			if (handler == null) return null;
+
+			MinecraftServer server = handler.getServer();
+			if (server == null) return null;
+			return server.getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
+		} else {
+			return null;
+		}
+	}
+
+	private static String getEntityName(ItemStack stack) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("bound_name", 8)) {
+			return tag.getString("bound_name");
 		} else {
 			return null;
 		}

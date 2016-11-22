@@ -31,14 +31,14 @@ public final class ConfigGameplay {
 		 */
 		@DefaultDouble(0.5)
 		@Range(min = 0)
-		public static double laserMinimum;
+		public static double minimumPotency;
 
 		/**
 		 * The maximum power of a laser.
 		 */
 		@DefaultDouble(5)
 		@Range(min = 0)
-		public static double laserMaximum;
+		public static double maximumPotency;
 
 		/**
 		 * The fuel cost per potency for a laser.
@@ -46,7 +46,14 @@ public final class ConfigGameplay {
 		 */
 		@DefaultDouble(10)
 		@Range(min = 0)
-		public static double laserCost;
+		public static double cost;
+
+		/**
+		 * The damage done to an entity by a laser per potency.
+		 */
+		@DefaultDouble(4)
+		@Range(min = 0)
+		public static double damage;
 
 	}
 

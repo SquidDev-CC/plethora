@@ -45,21 +45,27 @@ gui.config.plethora.costsystem.initial=Initial level
 gui.config.plethora.costsystem.regen=Regen
 gui.config.plethora.costsystem.limit=Limit
 gui.config.plethora.blacklist=Blacklist
-gui.config.plethora.blacklist.blacklistMethods=Blacklisted methods
-gui.config.plethora.blacklist.blacklistMeta=Blacklisted meta providers
+gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
+gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
-gui.config.plethora.baseCosts=Base Method Cost
+gui.config.plethora.basecosts=Base Method Cost
 gui.config.plethora.testing=Testing
+gui.config.plethora.testing.bytecodeVerify=Verify bytecode
+gui.config.plethora.testing.debug=Debug
+gui.config.plethora.testing.likeDocs=Require documentation
+gui.config.plethora.testing.strict=Strict validation
 
 # Gameplay config
 gui.config.plethora.laser=Frickin' laser beam
-gui.config.plethora.laser.laserMinimum=Laser minimum
-gui.config.plethora.laser.laserMaximum=Laser maximum
-gui.config.plethora.laser.laserCost=Laser cost
+gui.config.plethora.laser.minimumPotency=Minimum potency
+gui.config.plethora.laser.maximumPotency=Maximum potency
+gui.config.plethora.laser.cost=Cost
+gui.config.plethora.laser.damage=Damage
 
 gui.config.plethora.kinetic=Kinetic Augment
 gui.config.plethora.kinetic.launchMax=Maximum launch factor
-gui.config.plethora.kinetic.launchCost=Maximum launch factor
+gui.config.plethora.kinetic.launchCost=Launch cost
+gui.config.plethora.kinetic.launchYScale=Launch Y scale
 gui.config.plethora.kinetic.launchElytraScale=Launch Elytra scale
 gui.config.plethora.kinetic.walkRange=Maximum walk range
 gui.config.plethora.kinetic.walkSpeed=Maximum walk speed
@@ -67,7 +73,7 @@ gui.config.plethora.kinetic.walkCost=Walk cost
 gui.config.plethora.kinetic.teleportRange=Maximum teleport range
 gui.config.plethora.kinetic.teleportCost=Teleport cost
 
-gui.config.plethora.scanner=Entity Sensor
+gui.config.plethora.scanner=Block Scanner
 gui.config.plethora.scanner.radius=Scan radius
 
 gui.config.plethora.sensor=Entity Sensor
