@@ -5,8 +5,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -14,9 +17,11 @@ import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
 import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
-public final class TileManipulator extends TileBase {
+public final class TileManipulator extends TileBase implements ITickable {
 	private ManipulatorType type;
 	private ItemStack[] stacks;
+
+	private final DelayedExecutor executor = new DelayedExecutor();
 
 	// Lazily loaded render options
 	private double offset = -1;
@@ -152,5 +157,20 @@ public final class TileManipulator extends TileBase {
 		if (offset < 0) offset = this.offset = Helpers.RANDOM.nextDouble() * (2 * Math.PI);
 
 		return (tick / 100.0) + offset;
+	}
+
+	@Override
+	public void update() {
+		executor.update();
+	}
+
+	public IExecutorFactory getFactory() {
+		return executor;
+	}
+
+	@Override
+	public void onUnload() {
+		super.onUnload();
+		executor.reset();
 	}
 }

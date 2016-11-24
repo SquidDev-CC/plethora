@@ -14,6 +14,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import static org.squiddev.plethora.gameplay.ItemBase.getTag;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
+import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.getExecutor;
 
 /**
  * Attempt to get computer's from items
@@ -84,7 +85,7 @@ public final class ItemComputerHandler {
 				computer.setPeripheral(slot < BACK ? slot : slot + 1, NeuralHelpers.buildPeripheral(handler, slot));
 			}
 
-			computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, owner));
+			computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, owner, getExecutor(computer)));
 
 			tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
 			tag.setLong(ENTITY_MOST, owner.getPersistentID().getMostSignificantBits());

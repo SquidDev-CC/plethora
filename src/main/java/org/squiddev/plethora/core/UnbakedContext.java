@@ -3,13 +3,9 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -24,12 +20,14 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<?>[] context;
 	private final ICostHandler handler;
 	protected final IReference<Set<ResourceLocation>> modules;
+	private final IResultExecutor executor;
 
-	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<Set<ResourceLocation>> modules) {
+	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<Set<ResourceLocation>> modules, IResultExecutor executor) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;
 		this.modules = modules;
+		this.executor = executor;
 	}
 
 	@Nonnull
@@ -56,7 +54,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new UnbakedContext<U>(newTarget, handler, wholeContext, modules);
+		return new UnbakedContext<U>(newTarget, handler, wholeContext, modules, executor);
 	}
 
 	@Nonnull
@@ -68,15 +66,25 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(newContext, wholeContext, 0);
 		arrayCopy(context, wholeContext, newContext.length);
 
-		return new UnbakedContext<T>(target, handler, wholeContext, modules);
+		return new UnbakedContext<T>(target, handler, wholeContext, modules, executor);
 	}
 
 	@Override
-	public IUnbakedContext<T> withHandlers(@Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules) {
+	public IUnbakedContext<T> withCostHandler(@Nonnull ICostHandler handler) {
 		Preconditions.checkNotNull(handler, "handler cannot be null");
-		Preconditions.checkNotNull(modules, "modules cannot be null");
+		return new UnbakedContext<T>(target, handler, context, modules, executor);
+	}
 
-		return new UnbakedContext<T>(target, handler, context, modules);
+	@Override
+	public IUnbakedContext<T> withModules(@Nonnull IReference<Set<ResourceLocation>> modules) {
+		Preconditions.checkNotNull(modules, "modules cannot be null");
+		return new UnbakedContext<T>(target, handler, context, modules, executor);
+	}
+
+	@Override
+	public IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor) {
+		Preconditions.checkNotNull(executor, "executor cannot be null");
+		return new UnbakedContext<T>(target, handler, context, modules, executor);
 	}
 
 	@Nonnull
@@ -85,13 +93,19 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		IContext<T> baked = tryBake(this);
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(this, baked);
 
-		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond(), baked.getContext(IComputerAccess.class));
+		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond());
 	}
 
 	@Nonnull
 	@Override
 	public ICostHandler getCostHandler() {
 		return handler;
+	}
+
+	@Nonnull
+	@Override
+	public IResultExecutor getExecutor() {
+		return executor;
 	}
 
 	public static void arrayCopy(Object[] src, Object[] to, int start) {

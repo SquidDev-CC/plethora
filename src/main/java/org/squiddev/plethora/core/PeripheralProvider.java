@@ -16,6 +16,7 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -54,7 +55,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 			if (paired.getFirst().size() > 0) {
-				return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond());
+				return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond(), DefaultExecutor.INSTANCE);
 			}
 		}
 

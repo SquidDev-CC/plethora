@@ -12,9 +12,11 @@ import org.squiddev.cctweaks.api.network.Packet;
 import org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted;
 import org.squiddev.cctweaks.core.network.NetworkAccessDelegate;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -33,17 +35,19 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral, INetworkedPeripheral, IPeripheralTargeted {
 	private final Object owner;
 	private final String type;
+	private final IExecutorFactory factory;
 
 	private Object delegate;
 
-	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
-		this(tryGetName(owner), owner, methods, contexts);
+	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
+		this(tryGetName(owner), owner, methods, contexts, factory);
 	}
 
-	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts) {
+	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
 		super(methods, contexts);
 		this.owner = owner;
 		this.type = name;
+		this.factory = factory;
 	}
 
 	private static String tryGetName(Object owner) {
@@ -62,10 +66,13 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
-		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
-		MethodResult result = doCallMethod(getMethod(method), context, args);
+		IResultExecutor executor = factory.createExecutor(access);
 
-		return unwrap(result, luaContext);
+		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
+		context = context.withExecutor(executor);
+
+		MethodResult result = doCallMethod(getMethod(method), context, args);
+		return executor.execute(result, luaContext);
 	}
 
 	@Override
