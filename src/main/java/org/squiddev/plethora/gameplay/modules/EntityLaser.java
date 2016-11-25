@@ -329,6 +329,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					syncPositions(true);
 
 					DamageSource source = new EntityDamageSourceIndirect("laser", this, getShooter()).setProjectile();
+					entity.setFire(5);
 					entity.attackEntityFrom(source, (float) (potency * ConfigGameplay.Laser.damage));
 					potency = -1;
 				}
