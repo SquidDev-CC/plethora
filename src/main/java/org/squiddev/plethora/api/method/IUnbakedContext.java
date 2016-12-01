@@ -42,13 +42,29 @@ public interface IUnbakedContext<T> {
 	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
 
 	/**
-	 * Create a new context with different handlers but the same context
+	 * Create a new context with a different cost handler but the same context
 	 *
 	 * @param handler The cost handler for this object
+	 * @return The new context using the specified handlers
+	 */
+	IUnbakedContext<T> withCostHandler(@Nonnull ICostHandler handler);
+
+	/**
+	 * Create a new context with different modules but the same context
+	 *
 	 * @param modules A reference which will all modules for this context. This must return a constant value.
 	 * @return The new context using the specified handlers
 	 */
-	IUnbakedContext<T> withHandlers(@Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules);
+	IUnbakedContext<T> withModules(@Nonnull IReference<Set<ResourceLocation>> modules);
+
+
+	/**
+	 * Create a new context with a different executor the same context
+	 *
+	 * @param executor The result executor for this object
+	 * @return The new context using the specified executor
+	 */
+	IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor);
 
 	/**
 	 * Get a lua object from this context
@@ -66,4 +82,12 @@ public interface IUnbakedContext<T> {
 	 */
 	@Nonnull
 	ICostHandler getCostHandler();
+
+	/**
+	 * Get the result executor for this context
+	 *
+	 * @return The context's result executor
+	 */
+	@Nonnull
+	IResultExecutor getExecutor();
 }

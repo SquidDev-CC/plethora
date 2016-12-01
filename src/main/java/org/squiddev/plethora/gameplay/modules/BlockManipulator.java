@@ -230,7 +230,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral("plethora:modules", te, paired.getFirst(), paired.getSecond());
+			return new MethodWrapperPeripheral("plethora:modules", te, paired.getFirst(), paired.getSecond(), manipulator.getFactory());
 		} else {
 			return null;
 		}

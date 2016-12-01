@@ -99,4 +99,19 @@ public abstract class TileBase extends TileEntity {
 	 */
 	public void onBroken() {
 	}
+
+	public void onUnload() {
+	}
+
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		onUnload();
+	}
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		onUnload();
+	}
 }

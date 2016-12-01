@@ -15,6 +15,7 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
+import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -114,7 +115,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 		Preconditions.checkNotNull(context, "context cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules);
+		return new UnbakedContext<T>(target, handler, context, modules, DefaultExecutor.INSTANCE);
 	}
 
 	@Nonnull
@@ -193,7 +194,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference, initialBaked.getModules());
 			for (IMethod method : getMethods(baked)) {
 				if (ctx == null) {
-					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference, Reference.id(Collections.<ResourceLocation>emptySet()));
+					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference, Reference.id(Collections.<ResourceLocation>emptySet()), initialContext.getExecutor());
 				}
 
 				Integer existing = methodLookup.get(method.getName());

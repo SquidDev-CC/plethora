@@ -39,6 +39,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
+import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
@@ -105,6 +106,8 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				if (computer == null) return;
 			}
 
+			DelayedExecutor executor = NeuralHelpers.getExecutor(computer);
+
 			boolean dirty = false;
 
 			// Sync entity
@@ -166,11 +169,12 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				// If the modules have changed.
 				dirtyStatus >>= NeuralHelpers.PERIPHERAL_SIZE;
 				if (dirtyStatus != 0) {
-					computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, player));
+					computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, player, executor));
 				}
 			}
 
 			if (dirty && inventory != null) inventory.markDirty();
+			executor.update();
 		}
 	}
 

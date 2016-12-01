@@ -70,7 +70,7 @@ public class MethodsModules {
 		ILuaObject object = context
 			.unbake()
 			.makeChild(Reference.id(filteredContainer))
-			.withHandlers(context.getCostHandler(), filteredContainer)
+			.withModules(filteredContainer)
 			.getObject();
 
 		if (object.getMethodNames().length == 0) {
