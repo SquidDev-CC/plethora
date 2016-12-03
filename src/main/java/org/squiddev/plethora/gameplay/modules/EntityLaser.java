@@ -204,6 +204,13 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 				for (Entity other : collisions) {
 					if (other.canBeCollidedWith() && (other != shooter || ticksExisted >= 5) && other instanceof EntityLivingBase) {
+						if (
+							other instanceof EntityPlayer && shooter instanceof EntityPlayer &&
+								!((EntityPlayer) shooter).canAttackPlayer((EntityPlayer) other)
+							) {
+							continue;
+						}
+
 						float size = 0.3f;
 						AxisAlignedBB singleCollision = other.getEntityBoundingBox().expand(size, size, size);
 						MovingObjectPosition hit = singleCollision.calculateIntercept(position, nextPosition);
@@ -286,20 +293,6 @@ public final class EntityLaser extends Entity implements IProjectile {
 						}
 
 						world.setBlockToAir(position);
-						if (world.getBlockState(position).getBlock() == block) {
-							/*
-							 If the block wasn't broken despite everything we've been told (*cough* Sponge *cough*) then
-							 give up. This doesn't actually work but at least we tried :).
-
-							 The issue here is that when breaking the block we can't pass in the cause and so Sponge/
-							 GriefPrevention doesn't know whether we have permission or not.
-
-							 Soon we'll be able to specify custom causes and so this shouldn't be a problem but til' then.
-							  */
-							potency = -1;
-							return;
-						}
-
 
 						if (block == Blocks.tnt) {
 							((BlockTNT) block).explode(
@@ -328,7 +321,13 @@ public final class EntityLaser extends Entity implements IProjectile {
 					// Ensure the player is setup correctly
 					syncPositions(true);
 
-					DamageSource source = new EntityDamageSourceIndirect("laser", this, getShooter()).setProjectile();
+					EntityLivingBase shooter = getShooter();
+					DamageSource source = shooter == null || shooter instanceof PlethoraFakePlayer ?
+						new EntityDamageSource("laser", this) :
+						new EntityDamageSourceIndirect("laser", this, shooter);
+
+					source.setProjectile();
+
 					entity.setFire(5);
 					entity.attackEntityFrom(source, (float) (potency * ConfigGameplay.Laser.damage));
 					potency = -1;

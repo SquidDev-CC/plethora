@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.Vec3;
@@ -23,6 +24,11 @@ public class PlethoraFakePlayer extends FakePlayer {
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
 		playerNetServerHandler = new FakeNetHandler(this);
+	}
+
+	@Override
+	public boolean canAttackPlayer(EntityPlayer player) {
+		return true;
 	}
 
 	@Override
