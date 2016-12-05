@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
@@ -44,14 +43,14 @@ public final class MethodsLaser {
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
 				IWorldLocation location = context.getContext(IWorldLocation.class);
-				BlockPos pos = location.getPos();
+				Vec3d pos = location.getLoc();
 
 				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
 				if (context.hasContext(TileManipulator.class)) {
 					laser.setPosition(
-						pos.getX() + 0.5,
-						motionY < 0 ? pos.getY() - 0.3 : pos.getY() + BlockManipulator.OFFSET + 0.1,
-						pos.getZ() + 0.5
+						pos.xCoord,
+						motionY < 0 ? pos.yCoord - 0.5 - 0.3 : pos.yCoord - 0.3 + BlockManipulator.OFFSET + 0.1,
+						pos.yCoord
 					);
 				} else if (context.hasContext(EntityLivingBase.class)) {
 					EntityLivingBase entity = context.getContext(EntityLivingBase.class);
@@ -63,12 +62,6 @@ public final class MethodsLaser {
 						vector.xCoord + motionX / length * offset,
 						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,
 						vector.zCoord + motionZ / length * offset
-					);
-				} else {
-					laser.setPosition(
-						pos.getX() + 0.5,
-						pos.getY() + 0.5,
-						pos.getZ() + 0.5
 					);
 				}
 

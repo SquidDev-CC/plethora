@@ -7,16 +7,12 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.items.IComputerItem;
-import dan200.computercraft.shared.peripheral.PeripheralType;
-import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
-import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -37,6 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.RecipeSorter;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.core.executor.DelayedExecutor;
@@ -343,16 +340,14 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public void init() {
-		GameRegistry.addShapedRecipe(new ItemStack(this),
-			"  G",
-			"IPR",
-			" GM",
-			'G', new ItemStack(Items.GOLD_INGOT),
-			'I', new ItemStack(Items.IRON_INGOT),
-			'R', new ItemStack(Items.REDSTONE),
-			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
-			'P', PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false)
+		RecipeSorter.register(
+			Plethora.RESOURCE_DOMAIN + ":neural_interface_crafting",
+			CraftingNeuralInterface.class,
+			RecipeSorter.Category.SHAPED,
+			"after:minecraft:shaped"
 		);
+
+		GameRegistry.addRecipe(new CraftingNeuralInterface());
 	}
 
 	@Override

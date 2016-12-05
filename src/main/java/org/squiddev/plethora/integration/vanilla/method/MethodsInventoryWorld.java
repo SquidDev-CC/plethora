@@ -4,8 +4,10 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -25,7 +27,7 @@ public class MethodsInventoryWorld {
 	@IMethod.Inject(IItemHandler.class)
 	public static class MethodItemHandlerDrop extends BasicMethod<IItemHandler> {
 		public MethodItemHandlerDrop() {
-			super("drop", "function(slot:int[, limit:int]):int -- Drop an item on the ground. Returns the number of items dropped");
+			super("drop", "function(slot:int[, limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
 		}
 
 		@Override
@@ -41,6 +43,8 @@ public class MethodsInventoryWorld {
 
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
 
+			final EnumFacing direction = getDirection(optString(args, 2, null));
+
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
 				public MethodResult call() throws Exception {
@@ -50,7 +54,7 @@ public class MethodsInventoryWorld {
 					assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
 					ItemStack stack = handler.extractItem(slot - 1, limit, false);
-					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack));
+					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
 				}
 			});
 		}
@@ -59,7 +63,7 @@ public class MethodsInventoryWorld {
 	@IMethod.Inject(ItemSlot.class)
 	public static class MethodItemDrop extends BasicMethod<ItemSlot> {
 		public MethodItemDrop() {
-			super("drop", "function([limit:int]):int -- Drop an item on the ground. Returns the number of items dropped");
+			super("drop", "function([limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
 		}
 
 		@Override
@@ -72,6 +76,7 @@ public class MethodsInventoryWorld {
 		public MethodResult apply(@Nonnull final IUnbakedContext<ItemSlot> context, @Nonnull Object[] args) throws LuaException {
 			final int limit = optInt(args, 0, Integer.MAX_VALUE);
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
+			final EnumFacing direction = getDirection(optString(args, 1, null));
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
@@ -80,19 +85,35 @@ public class MethodsInventoryWorld {
 					ItemSlot slot = baked.getTarget();
 
 					ItemStack stack = slot.extract(limit);
-					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack));
+					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
 				}
 			});
 		}
 	}
 
-	private static int dropItem(IWorldLocation location, ItemStack stack) {
+	private static EnumFacing getDirection(String name) throws LuaException {
+		if (name == null) return null;
+
+		EnumFacing direction = EnumFacing.byName(name);
+
+		if (direction == null) throw new LuaException("Unknown direction '" + name + "'");
+		return direction;
+	}
+
+	private static int dropItem(IWorldLocation location, ItemStack stack, EnumFacing direction) {
 		if (stack == null || stack.stackSize == 0) return 0;
 
 		World world = location.getWorld();
-		BlockPos pos = location.getPos();
+		Vec3d pos = location.getLoc();
+		if (direction != null) {
+			pos = pos.addVector(
+				direction.getFrontOffsetX() * 0.6,
+				direction.getFrontOffsetY() * 0.6,
+				direction.getFrontOffsetZ() * 0.6
+			);
+		}
 
-		EntityItem entity = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), stack.copy());
+		EntityItem entity = new EntityItem(world, pos.xCoord, pos.yCoord, pos.zCoord, stack.copy());
 		entity.setDefaultPickupDelay();
 		world.spawnEntityInWorld(entity);
 

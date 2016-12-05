@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
+import dan200.computercraft.shared.util.Colour;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
@@ -19,8 +20,11 @@ public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 	public Map<Object, Object> getMeta(@Nonnull ITurtleTile object) {
 		Map<Object, Object> out = Maps.newHashMap();
 
-		out.put("color", object.getColour().toString());
-		out.put("colour", object.getColour().toString()); // For those who can spell :p
+		Colour colour = object.getColour();
+		if (colour != null) {
+			out.put("color", colour.toString());
+			out.put("colour", colour.toString()); // For those who can spell :p
+		}
 		out.put("fuel", object.getAccess().getFuelLevel());
 
 		out.put("left", getUpgrade(object.getUpgrade(TurtleSide.Left)));

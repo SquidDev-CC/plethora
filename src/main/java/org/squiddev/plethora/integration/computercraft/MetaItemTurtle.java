@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.items.ITurtleItem;
+import dan200.computercraft.shared.util.Colour;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -24,8 +25,11 @@ public class MetaItemTurtle extends BasicMetaProvider<ItemStack> {
 		ITurtleItem turtle = (ITurtleItem) item;
 		Map<Object, Object> out = Maps.newHashMap();
 
-		out.put("color", turtle.getColour(object).toString());
-		out.put("colour", turtle.getColour(object).toString()); // For those who can spell :p
+		Colour colour = turtle.getColour(object);
+		if (colour != null) {
+			out.put("color", colour.toString());
+			out.put("colour", colour.toString()); // For those who can spell :p
+		}
 		out.put("fuel", turtle.getFuelLevel(object));
 
 		out.put("left", getUpgrade(turtle.getUpgrade(object, TurtleSide.Left)));
