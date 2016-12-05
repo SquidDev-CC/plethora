@@ -2,7 +2,7 @@ package org.squiddev.plethora.api.reference;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 
 import javax.annotation.Nonnull;
@@ -27,11 +27,11 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 
 		if (entity.worldObj != location.getWorld()) throw new LuaException("The entity has gone");
 
-		BlockPos pos = entity.getPosition().subtract(location.getPos());
+		Vec3 pos = entity.getLookVec().subtract(location.getLoc());
 		if (
-			pos.getX() < -radius || pos.getX() > radius ||
-				pos.getY() < -radius || pos.getY() > radius ||
-				pos.getZ() < -radius || pos.getZ() > radius
+			pos.xCoord < -radius || pos.xCoord > radius ||
+				pos.yCoord < -radius || pos.yCoord > radius ||
+				pos.zCoord < -radius || pos.zCoord > radius
 			) {
 			throw new LuaException("The entity is out of range");
 		}

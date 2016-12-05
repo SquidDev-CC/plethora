@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,12 @@ public class EntityWorldLocation implements IWorldLocation {
 	@Override
 	public BlockPos getPos() {
 		return entity.getPosition();
+	}
+
+	@Nonnull
+	@Override
+	public Vec3 getLoc() {
+		return entity.getPositionVector();
 	}
 
 	@Nonnull
