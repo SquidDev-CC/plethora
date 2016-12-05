@@ -69,4 +69,26 @@ public class MethodsDaylightSensor {
 			}
 		});
 	}
+
+	@TargetedModuleMethod.Inject(
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
+		doc = "function():string -- The weather in the current world"
+	)
+	public static MethodResult getWeather(final IUnbakedContext<IModuleContainer> context, Object[] args) {
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				World world = context.bake().getContext(IWorldLocation.class).getWorld();
+				if (world.isRaining()) {
+					if (world.isThundering()) {
+						return MethodResult.result("thunder");
+					} else {
+						return MethodResult.result("rain");
+					}
+				} else {
+					return MethodResult.result("clear");
+				}
+			}
+		});
+	}
 }
