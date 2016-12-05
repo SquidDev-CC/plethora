@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.cctweaks.api.lua.ILuaEnvironment;
 import org.squiddev.patcher.Logger;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -22,6 +21,8 @@ import java.util.concurrent.Callable;
  * to be added.
  */
 public final class DelayedExecutor implements IExecutorFactory {
+	private static final String EVENT_NAME = "plethora_task";
+
 	private static final int MAX_TASKS_TOTAL = 5000;
 	private static final int MAX_TASKS_TICK = 50;
 
@@ -156,11 +157,11 @@ public final class DelayedExecutor implements IExecutorFactory {
 		}
 
 		private void yieldSuccess() {
-			access.queueEvent(ILuaEnvironment.EVENT_NAME, new Object[]{id, true});
+			access.queueEvent(EVENT_NAME, new Object[]{id, true});
 		}
 
 		private void yieldFailure(String message) {
-			access.queueEvent("task_complete", new Object[]{id, false, message});
+			access.queueEvent(EVENT_NAME, new Object[]{id, false, message});
 		}
 
 		private void update() {
@@ -200,7 +201,7 @@ public final class DelayedExecutor implements IExecutorFactory {
 			Object[] response;
 			try {
 				do {
-					response = context.pullEvent(ILuaEnvironment.EVENT_NAME);
+					response = context.pullEvent(EVENT_NAME);
 				}
 				while (response.length < 3 || !(response[1] instanceof Number) || !(response[2] instanceof Boolean) || (long) ((Number) response[1]).intValue() != id);
 			} catch (InterruptedException e) {
