@@ -16,6 +16,7 @@ public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> {
 	public BasicMetaProvider() {
 	}
 
+	@Nonnull
 	public abstract Map<Object, Object> getMeta(@Nonnull T object);
 
 	@Nonnull
