@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
@@ -32,12 +33,16 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 				NBTTagCompound patternTag = nbttaglist.getCompoundTagAt(i);
 
 				EnumDyeColor color = EnumDyeColor.byDyeDamage(patternTag.getInteger("Color"));
-				TileEntityBanner.EnumBannerPattern pattern = TileEntityBanner.EnumBannerPattern.getPatternByID(patternTag.getString("Pattern"));
+				TileEntityBanner.EnumBannerPattern pattern = getPatternByID(patternTag.getString("Pattern"));
 
 				if (pattern != null) {
 					Map<String, String> entry = Maps.newHashMap();
 					entry.put("id", pattern.getPatternID());
-					entry.put("name", pattern.getPatternName());
+
+					// patternName
+					String name = ObfuscationReflectionHelper.getPrivateValue(TileEntityBanner.EnumBannerPattern.class, pattern, "field_177284_N");
+					entry.put("name", name);
+
 					entry.put("colour", color.toString());
 					entry.put("color", color.toString());
 
@@ -47,5 +52,13 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 		}
 
 		return out;
+	}
+
+	private static TileEntityBanner.EnumBannerPattern getPatternByID(String id) {
+		for (TileEntityBanner.EnumBannerPattern pattern : TileEntityBanner.EnumBannerPattern.values()) {
+			if (pattern.getPatternID().equals(id)) return pattern;
+		}
+
+		return null;
 	}
 }
