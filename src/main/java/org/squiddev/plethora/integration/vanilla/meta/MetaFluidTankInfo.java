@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = FluidTankInfo.class, namespace = "fluid_tank")
+@IMetaProvider.Inject(value = FluidTankInfo.class, namespace = "fluidTank")
 public class MetaFluidTankInfo extends BasicMetaProvider<FluidTankInfo> {
 	@Nonnull
 	@Override
