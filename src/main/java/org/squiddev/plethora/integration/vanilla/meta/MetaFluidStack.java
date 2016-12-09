@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Basic properties for fluid stacks
  */
-@IMetaProvider.Inject(value = FluidStack.class, namespace = "fluid")
+@IMetaProvider.Inject(value = FluidStack.class)
 public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 	@Nonnull
 	@Override
