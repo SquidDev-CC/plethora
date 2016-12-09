@@ -34,7 +34,7 @@ public final class MethodsPlayerActions {
 	@TargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLivingBase.class,
-		doc = "function([duration: integer]):boolean, string|nil -- Right click with this item"
+		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item"
 	)
 	public static MethodResult use(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final int duration = optInt(args, 0, 0);

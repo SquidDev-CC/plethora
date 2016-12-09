@@ -21,7 +21,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.*;
 public class MethodsInventoryTransfer {
 	@BasicMethod.Inject(
 		value = IItemHandler.class,
-		doc = "function(to:string, fromSlot:int[, limit:int [, toSlot:int]]):int -- Push items from this inventory to another inventory. Returns the amount transferred."
+		doc = "function(to:string, fromSlot:int[, limit:int] [, toSlot:int]):int -- Push items from this inventory to another inventory. Returns the amount transferred."
 	)
 	@MarkerInterfaces(ITransferMethod.class)
 	public static MethodResult pushItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
@@ -57,7 +57,7 @@ public class MethodsInventoryTransfer {
 
 	@BasicMethod.Inject(
 		value = IItemHandler.class,
-		doc = "function(from:string, fromSlot:int[, limit:int [, toSlot:int]]):int -- Pull items to this inventory from another inventory. Returns the amount transferred."
+		doc = "function(from:string, fromSlot:int[, limit:int] [, toSlot:int]):int -- Pull items to this inventory from another inventory. Returns the amount transferred."
 	)
 	@MarkerInterfaces(ITransferMethod.class)
 	public static MethodResult pullItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
