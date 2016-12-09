@@ -118,10 +118,8 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		DebugLogger.debug("Cached: " + name + " → " + findLoadedClass(name));
 		Class<?> klass = loaded.get(name);
 		if (klass != null) {
-			DebugLogger.debug("Loaded: " + name + " → " + klass);
 			return klass;
 		}
 

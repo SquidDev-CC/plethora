@@ -17,11 +17,11 @@ public interface IMetaProvider<T> {
 	/**
 	 * Get metadata about an object
 	 *
-	 * @param object The object to get metadata about
+	 * @param context The object to get metadata about
 	 * @return The gathered data. Do not return {@code null}.
 	 */
 	@Nonnull
-	Map<Object, Object> getMeta(@Nonnull IPartialContext<T> object);
+	Map<Object, Object> getMeta(@Nonnull IPartialContext<T> context);
 
 	/**
 	 * Get the priority of this provider

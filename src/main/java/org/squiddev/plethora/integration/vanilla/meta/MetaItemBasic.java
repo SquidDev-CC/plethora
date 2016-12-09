@@ -1,12 +1,24 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,10 +50,33 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull ItemStack stack) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
-		data.put("name", Item.REGISTRY.getNameForObject(stack.getItem()).toString());
+		data.put("name", stack.getItem().getRegistryName().toString());
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.stackSize);
+		data.put("nbtHash", getNBTHash(stack));
 
 		return data;
+	}
+
+	@Nullable
+	private static String getNBTHash(@Nonnull ItemStack stack) {
+		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) return null;
+
+		NBTTagCompound tag = stack.getTagCompound();
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			OutputStream dump = new NullOutputStream();
+			DigestOutputStream hasher = new DigestOutputStream(dump, digest);
+			DataOutput output = new DataOutputStream(hasher);
+			CompressedStreamTools.write(tag, output);
+			byte[] hash = digest.digest();
+			return new String(Hex.encodeHex(hash));
+		} catch (NoSuchAlgorithmException e) {
+			DebugLogger.error("Cannot hash NBT", e);
+			return null;
+		} catch (IOException e) {
+			DebugLogger.error("Cannot hash NBT", e);
+			return null;
+		}
 	}
 }
