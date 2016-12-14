@@ -1,9 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -41,6 +44,13 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 
 		if (stack.getItem().showDurabilityBar(stack)) {
 			data.put("durability", stack.getItem().getDurabilityForDisplay(stack));
+		}
+
+		// tabToDisplayOn
+		CreativeTabs tab = ObfuscationReflectionHelper.getPrivateValue(Item.class, stack.getItem(), "field_77701_a");
+		if (tab != null) {
+			// tabLabel
+			data.put("creativeTab", ObfuscationReflectionHelper.getPrivateValue(CreativeTabs.class, tab, "field_78034_o"));
 		}
 
 		return data;
