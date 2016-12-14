@@ -16,8 +16,13 @@ import org.squiddev.plethora.core.BasicModuleHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 
 public class IntegrationVanilla {
-	public static final String daylightSensor = "minecraft:daylightSensor";
+	public static final String daylightSensor = "minecraft:daylight_detector";
 	public static final String clock = "minecraft:clock";
+	public static final String noteblock = "minecraft:noteblock";
+
+	private static BasicModuleHandler daylightSensorCap = new BasicModuleHandler(clock, Item.getItemFromBlock(Blocks.daylight_detector));
+	private static BasicModuleHandler clockCap = new BasicModuleHandler(clock, Items.clock);
+	private static BasicModuleHandler noteblockCap = new BasicModuleHandler(noteblock, Item.getItemFromBlock(Blocks.noteblock));
 
 	public static void setup() {
 		IntegrationVanilla instance = new IntegrationVanilla();
@@ -29,11 +34,13 @@ public class IntegrationVanilla {
 	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
 		Item item = event.getItem();
 		if (item == Items.clock) {
-			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new BasicModuleHandler(clock, event.getItemStack()));
+			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, clockCap);
 		} else if (item instanceof ItemBlock) {
 			Block block = ((ItemBlock) item).getBlock();
 			if (block == Blocks.daylight_detector) {
-				event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new BasicModuleHandler(daylightSensor, event.getItemStack()));
+				event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, daylightSensorCap);
+			} else if (block == Blocks.noteblock) {
+				event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);
 			}
 		}
 	}

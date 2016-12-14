@@ -1,11 +1,14 @@
 package org.squiddev.plethora.core;
 
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -23,12 +26,15 @@ import java.util.Collections;
  * Used for {@link net.minecraftforge.event.AttachCapabilitiesEvent}.
  */
 public class BasicModuleHandler implements IModuleHandler, ICapabilityProvider {
-	private final ItemStack stack;
 	private final ResourceLocation id;
+	private final Item item;
 
-	public BasicModuleHandler(String id, ItemStack stack) {
-		this.stack = stack;
+	@SideOnly(Side.CLIENT)
+	private IBakedModel model;
+
+	public BasicModuleHandler(String id, Item item) {
 		this.id = new ResourceLocation(id);
+		this.item = item;
 	}
 
 	@Nonnull
@@ -43,16 +49,19 @@ public class BasicModuleHandler implements IModuleHandler, ICapabilityProvider {
 		return Collections.emptySet();
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Nonnull
 	@Override
 	public Pair<IBakedModel, Matrix4f> getModel(float delta) {
 		Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 		matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
 
-		return Pair.of(
-			Helpers.getMesher().getItemModel(stack),
-			matrix
-		);
+		IBakedModel model = this.model;
+		if (model == null) {
+			model = this.model = Helpers.getMesher().getItemModel(new ItemStack(item));
+		}
+
+		return Pair.of(model, matrix);
 	}
 
 	@Override
