@@ -227,7 +227,7 @@ public final class ItemModule extends ItemBase {
 			"CHC",
 			"GCG",
 			'G', new ItemStack(Items.gold_ingot),
-			'H', new ItemStack(Items.skull),
+			'H', new ItemStack(Items.diamond_helmet),
 			'C', new ItemStack(Blocks.ender_chest)
 		);
 
