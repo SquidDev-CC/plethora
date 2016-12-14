@@ -22,7 +22,6 @@ import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.capabilities.DefaultModuleHandler;
 import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
 import org.squiddev.plethora.core.capabilities.DefaultStorage;
-import org.squiddev.plethora.core.docdump.CommandDump;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
@@ -85,7 +84,7 @@ public class PlethoraCore {
 
 	@Mod.EventHandler
 	public void onSeverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandDump(event.getServer().isDedicatedServer()));
+		event.registerServerCommand(new CommandPlethora(event.getServer().isDedicatedServer()));
 	}
 
 	@Mod.EventHandler
