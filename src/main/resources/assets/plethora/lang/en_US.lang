@@ -44,6 +44,7 @@ gui.config.plethora.costsystem=Cost System
 gui.config.plethora.costsystem.initial=Initial level
 gui.config.plethora.costsystem.regen=Regen
 gui.config.plethora.costsystem.limit=Limit
+gui.config.plethora.costsystem.allowNegative=Allow negative buffer
 gui.config.plethora.blacklist=Blacklist
 gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
 gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
