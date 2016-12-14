@@ -27,6 +27,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -320,6 +321,18 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		ItemStack stack = NeuralHelpers.getStack(event.entityLiving);
 		if (stack != null) {
 			onUpdate(stack, event.entityLiving, true);
+		}
+	}
+
+	/**
+	 * Call the right click event earlier on.
+	 *
+	 * @param event
+	 */
+	@SubscribeEvent
+	public void onEntityInteract(EntityInteractEvent event) {
+		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.entityPlayer, event.target)) {
+			event.setCanceled(true);
 		}
 	}
 	//endregion

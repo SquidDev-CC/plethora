@@ -6,10 +6,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.utils.Helpers;
 
 import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_ENTITY;
 import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_PLAYER;
@@ -48,6 +52,24 @@ public class ItemNeuralConnector extends ItemBase {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Call the right click event earlier on.
+	 *
+	 * @param event
+	 */
+	@SubscribeEvent
+	public void onEntityInteract(EntityInteractEvent event) {
+		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.entityPlayer, event.target)) {
+			event.setCanceled(true);
+		}
+	}
+
+	@Override
+	public void preInit() {
+		super.preInit();
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
