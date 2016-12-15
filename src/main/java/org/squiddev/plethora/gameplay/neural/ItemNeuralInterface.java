@@ -7,6 +7,7 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.items.IComputerItem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -16,10 +17,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +26,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -76,7 +75,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 					living.enablePersistence();
 				}
 
-				stack.stackSize = 0;
+				if (!player.capabilities.isCreativeMode) {
+					stack.stackSize = 0;
+				}
 			}
 			return true;
 		} else {
@@ -333,6 +334,31 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public void onEntityInteract(EntityInteractEvent event) {
 		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.entityPlayer, event.target)) {
 			event.setCanceled(true);
+		}
+	}
+
+	/**
+	 * Cancel the right click air event on the client side and we've hit an entity.
+	 * Yes, this is horrible.
+	 *
+	 * @param event The event to cancel
+	 */
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		ItemStack current = event.entityPlayer.getHeldItem();
+		if (current == null || current.getItem() != this) return;
+
+		if (!event.isCanceled() && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote) {
+			MovingObjectPosition hit = Minecraft.getMinecraft().objectMouseOver;
+			Entity entity = hit.entityHit;
+			if (hit.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY &&
+				!(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase
+				) {
+				if (((EntityLivingBase) entity).getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT) == null && current.stackSize == 1) {
+					event.setCanceled(true);
+				}
+			}
 		}
 	}
 	//endregion
