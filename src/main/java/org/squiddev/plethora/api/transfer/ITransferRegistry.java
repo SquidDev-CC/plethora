@@ -77,5 +77,5 @@ public interface ITransferRegistry {
 	 * @return All valid locations
 	 */
 	@Nonnull
-	Set<String> getTransferLocations(@Nonnull Object object);
+	Set<String> getTransferLocations(@Nonnull Object object, boolean primary);
 }

@@ -4,8 +4,6 @@ import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Set;
 
 /**
  * This holds the context for a method.
@@ -46,19 +44,4 @@ public interface IContext<T> extends IPartialContext<T> {
 	 */
 	@Nonnull
 	ICostHandler getCostHandler();
-
-	/**
-	 * @param key The lookup for transfer location
-	 * @return The valid transfer location or {@code null} if none exists.
-	 */
-	@Nullable
-	Object getTransferLocation(@Nonnull String key);
-
-	/**
-	 * Get all primary transfer locations
-	 *
-	 * @return All valid locations
-	 */
-	@Nonnull
-	Set<String> getTransferLocations();
 }

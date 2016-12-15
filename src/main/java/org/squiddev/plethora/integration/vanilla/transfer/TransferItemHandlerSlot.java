@@ -1,13 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
+import com.google.common.collect.Sets;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.AbstractSet;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -34,60 +33,10 @@ public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> 
 	public Set<String> getTransferLocations(@Nonnull IItemHandler object) {
 		final int size = object.getSlots();
 		if (size == 0) return Collections.emptySet();
-		return new NumberSet(size);
-	}
-
-	private static class NumberSet extends AbstractSet<String> {
-		private final int size;
-
-		public NumberSet(int size) {
-			this.size = size;
+		Set<String> slots = Sets.newHashSet();
+		for (int i = 0; i < size; i++) {
+			if (object.getStackInSlot(i) != null) slots.add(Integer.toString(i));
 		}
-
-		@Override
-		public int size() {
-			return size;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return size > 0;
-		}
-
-		@Override
-		public boolean contains(Object o) {
-			if (!(o instanceof String)) return false;
-			try {
-				int value = Integer.valueOf((String) o);
-				return value >= 1 && value <= size();
-			} catch (NumberFormatException ignored) {
-			}
-
-			return false;
-		}
-
-		@Nonnull
-		@Override
-		public Iterator<String> iterator() {
-			return new Iterator<String>() {
-				private int position = 0;
-
-				@Override
-				public boolean hasNext() {
-					return position < size;
-				}
-
-				@Override
-				public String next() {
-					position++;
-					return Integer.toString(position);
-				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-			};
-		}
+		return slots;
 	}
 }

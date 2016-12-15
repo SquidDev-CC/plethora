@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ public interface IMethodCollection {
 	 *
 	 * @return A read only list of all gathered methods
 	 */
+	@Nonnull
 	List<IMethod<?>> methods();
 
 	/**
@@ -24,5 +26,5 @@ public interface IMethodCollection {
 	 * @param iface The interface or class to check
 	 * @return If any method implements this interface (or extends this class)
 	 */
-	boolean has(Class<?> iface);
+	boolean has(@Nonnull Class<?> iface);
 }

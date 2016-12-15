@@ -29,7 +29,7 @@ public interface ITransferProvider<T> {
 	Object getTransferLocation(@Nonnull T object, @Nonnull String key);
 
 	/**
-	 * Get all primary transfer locations
+	 * Get all transfer locations
 	 *
 	 * @param object The object to get locations from
 	 * @return All valid locations.

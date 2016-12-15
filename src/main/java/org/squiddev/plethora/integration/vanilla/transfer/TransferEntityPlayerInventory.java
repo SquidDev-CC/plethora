@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
- * Provides
+ * Provides the inventory and ender chest of a player
  */
 @ITransferProvider.Inject(EntityPlayer.class)
 public class TransferEntityPlayerInventory implements ITransferProvider<EntityPlayer> {

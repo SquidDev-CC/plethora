@@ -152,9 +152,10 @@ public final class TransferRegistry implements ITransferRegistry {
 	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
-	public Set<String> getTransferLocations(@Nonnull Object object) {
+	public Set<String> getTransferLocations(@Nonnull Object object, boolean primary) {
 		HashSet<String> parts = Sets.newHashSet();
 
+		Multimap<Class<?>, ITransferProvider<?>> lookup = primary ? this.primary : this.secondary;
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
 			HashSet<Class<?>> visited = Sets.newHashSet();
 			Queue<Class<?>> toVisit = Queues.newArrayDeque();
@@ -165,7 +166,7 @@ public final class TransferRegistry implements ITransferRegistry {
 
 			while (toVisit.size() > 0) {
 				Class<?> klass = toVisit.poll();
-				for (ITransferProvider provider : primary.get(klass)) {
+				for (ITransferProvider provider : lookup.get(klass)) {
 					parts.addAll(provider.getTransferLocations(converted));
 				}
 

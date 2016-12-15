@@ -191,10 +191,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
 			IUnbakedContext<IMethodCollection> ctx = null;
-			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference, initialBaked.getModules());
+			IPartialContext<IMethodCollection> baked = initialBaked.makePartialChild(collection);
 			for (IMethod method : getMethods(baked)) {
 				if (ctx == null) {
-					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference, Reference.id(Collections.<ResourceLocation>emptySet()), initialContext.getExecutor());
+					ctx = initialContext.makeChild(Reference.id(collection));
 				}
 
 				Integer existing = methodLookup.get(method.getName());

@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Provides locations for adjacent blocks and the current one
  */
-@ITransferProvider.Inject(TileEntity.class)
+@ITransferProvider.Inject(value = TileEntity.class, secondary = false)
 public class TransferTileEntity implements ITransferProvider<TileEntity> {
 	private final Map<String, EnumFacing> mappings;
 
