@@ -13,7 +13,6 @@ import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -50,43 +49,41 @@ public final class MethodsKineticEntity {
 		});
 	}
 
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityCreeperExplode extends SubtargetedModuleObjectMethod<EntityCreeper> {
-		public MethodEntityCreeperExplode() {
-			super("explode", PlethoraModules.KINETIC, EntityCreeper.class, true, "function() -- Explode this creeper");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull EntityCreeper target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
-			target.explode();
-			return null;
-		}
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityCreeper.class, worldThread = true,
+		doc = "function() -- Explode this creeper"
+	)
+	public static Object[] explode(@Nonnull EntityCreeper target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
+		target.explode();
+		return null;
 	}
 
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityEndermanTeleport extends SubtargetedModuleObjectMethod<EntityEnderman> {
-		public MethodEntityEndermanTeleport() {
-			super("teleport", PlethoraModules.KINETIC, EntityEnderman.class, true, "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one");
-		}
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityEnderman.class,
+		doc = "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one"
+	)
+	public static MethodResult teleport(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		final double x = getNumber(args, 0);
+		final double y = getNumber(args, 1);
+		final double z = getNumber(args, 2);
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull EntityEnderman target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			double x = getNumber(args, 0);
-			double y = getNumber(args, 1);
-			double z = getNumber(args, 2);
+		assertBetween(x, -Kinetic.teleportRange, Kinetic.teleportRange, "X coordinate out of bounds (%s)");
+		assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
+		assertBetween(z, -Kinetic.teleportRange, Kinetic.teleportRange, "Z coordinate out of bounds (%s)");
 
-			assertBetween(x, -Kinetic.teleportRange, Kinetic.teleportRange, "X coordinate out of bounds (%s)");
-			assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
-			assertBetween(z, -Kinetic.teleportRange, Kinetic.teleportRange, "Z coordinate out of bounds (%s)");
+		CostHelpers.checkCost(
+			context.getCostHandler(),
+			Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost
+		);
 
-			CostHelpers.checkCost(
-				context.getCostHandler(),
-				Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost
-			);
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModuleContainer> baked = context.bake();
 
-			return new Object[]{target.teleportTo(target.posX + x, target.posY + y, target.posZ + z)};
-		}
+				EntityEnderman target = baked.getContext(EntityEnderman.class);
+				return MethodResult.result(target.teleportTo(target.posX + x, target.posY + y, target.posZ + z));
+			}
+		});
 	}
 }

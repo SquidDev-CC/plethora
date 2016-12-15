@@ -8,7 +8,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -30,29 +29,25 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class SenseEntitiesMethod extends SubtargetedModuleObjectMethod<IWorldLocation> {
-		public SenseEntitiesMethod() {
-			super("sense", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class, worldThread = true,
+		doc = "function():table -- Scan for entities in the vicinity"
+	)
+	@Nullable
+	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		final World world = location.getWorld();
+		final BlockPos pos = location.getPos();
+
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
+
+		int i = 0;
+		HashMap<Integer, Object> map = Maps.newHashMap();
+		for (Entity entity : entities) {
+			Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
+			map.put(++i, data);
 		}
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			final World world = location.getWorld();
-			final BlockPos pos = location.getPos();
-
-			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
-
-			int i = 0;
-			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (Entity entity : entities) {
-				Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
-				map.put(++i, data);
-			}
-
-			return new Object[]{map};
-		}
+		return new Object[]{map};
 	}
 
 	@SubtargetedModuleMethod.Inject(

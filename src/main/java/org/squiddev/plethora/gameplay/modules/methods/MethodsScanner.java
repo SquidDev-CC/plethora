@@ -8,7 +8,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -27,41 +26,37 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodScanBlocks extends SubtargetedModuleObjectMethod<IWorldLocation> {
-		public MethodScanBlocks() {
-			super("scan", PlethoraModules.SCANNER, IWorldLocation.class, true, "function() -- Scan all blocks in the vicinity");
-		}
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class, worldThread = true,
+		doc = "function() -- Scan all blocks in the vicinity"
+	)
+	@Nullable
+	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		final World world = location.getWorld();
+		final BlockPos pos = location.getPos();
+		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			final World world = location.getWorld();
-			final BlockPos pos = location.getPos();
-			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+		int i = 0;
+		HashMap<Integer, Object> map = Maps.newHashMap();
+		for (int oX = x - radius; oX <= x + radius; oX++) {
+			for (int oY = y - radius; oY <= y + radius; oY++) {
+				for (int oZ = z - radius; oZ <= z + radius; oZ++) {
+					BlockPos newPos = new BlockPos(oX, oY, oZ);
+					IBlockState block = world.getBlockState(newPos);
 
-			int i = 0;
-			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (int oX = x - radius; oX <= x + radius; oX++) {
-				for (int oY = y - radius; oY <= y + radius; oY++) {
-					for (int oZ = z - radius; oZ <= z + radius; oZ++) {
-						BlockPos newPos = new BlockPos(oX, oY, oZ);
-						IBlockState block = world.getBlockState(newPos);
+					HashMap<String, Object> data = Maps.newHashMap();
+					data.put("x", oX - x);
+					data.put("y", oY - y);
+					data.put("z", oZ - z);
+					String name = block.getBlock().getRegistryName();
+					data.put("name", name == null ? "unknown" : name);
 
-						HashMap<String, Object> data = Maps.newHashMap();
-						data.put("x", oX - x);
-						data.put("y", oY - y);
-						data.put("z", oZ - z);
-						String name = block.getBlock().getRegistryName();
-						data.put("name", name == null ? "unknown" : name);
-
-						map.put(++i, data);
-					}
+					map.put(++i, data);
 				}
 			}
-
-			return new Object[]{map};
 		}
+
+		return new Object[]{map};
 	}
 
 	@SubtargetedModuleMethod.Inject(

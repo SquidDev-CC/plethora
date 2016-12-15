@@ -5,7 +5,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -49,23 +52,19 @@ public final class MethodsKinetic {
 		});
 	}
 
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityLivingDisableAI extends SubtargetedModuleObjectMethod<EntityLiving> {
-		public MethodEntityLivingDisableAI() {
-			super("disableAI", PlethoraModules.KINETIC, EntityLiving.class, true, "function() -- Disable the AI of this entity");
-		}
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityLiving.class, worldThread = true,
+		doc = "function() -- Disable the AI of this entity. Be warned: this permanently scars them - they'll never be the same again!"
+	)
+	@Nullable
+	public static Object[] disableAI(@Nonnull EntityLiving entity, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
+		if (disable == null) throw new LuaException("Cannot disable AI");
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull EntityLiving entity, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
-			if (disable == null) throw new LuaException("Cannot disable AI");
+		disable.setDisabled(true);
+		DisableAI.maybeClear(entity);
 
-			disable.setDisabled(true);
-			DisableAI.maybeClear(entity);
-
-			return null;
-		}
+		return null;
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -119,16 +118,12 @@ public final class MethodsKinetic {
 		});
 	}
 
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityIsWalking extends SubtargetedModuleObjectMethod<EntityLiving> {
-		public MethodEntityIsWalking() {
-			super("isWalking", PlethoraModules.KINETIC, EntityLiving.class, true, "function():boolean -- Whether the entity is currently walking somewhere");
-		}
-
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			return new Object[]{!target.getNavigator().noPath()};
-		}
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityLiving.class, worldThread = true,
+		doc = "function():boolean -- Whether the entity is currently walking somewhere"
+	)
+	@Nullable
+	public static Object[] isWalking(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		return new Object[]{!target.getNavigator().noPath()};
 	}
 }
