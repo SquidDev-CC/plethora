@@ -93,8 +93,8 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 	 *                   You need not call {@link MethodVisitor#visitEnd()}.
 	 */
 	protected void writeApply(@Nonnull Method method, @Nonnull T annotation, @Nonnull String className, @Nonnull MethodVisitor mv) {
-		Class<?>[] parameterTypes = method.getParameterTypes();
-		Class<?>[] childParamTypes = getArgumentTypes(method, annotation);
+		Class<?>[] parameterTypes = getMethod().getParameterTypes();
+		Class<?>[] childParamTypes = method.getParameterTypes();
 		for (int i = 0; i < parameterTypes.length; i++) {
 			Class<?> arg = parameterTypes[i];
 			if (arg.isPrimitive()) {
@@ -122,10 +122,10 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 			}
 		}
 
-		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(method.getDeclaringClass()), method.getName(), methodSignature, false);
+		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(method.getDeclaringClass()), method.getName(), Type.getMethodDescriptor(method), false);
 
-		Class<?> ret = method.getReturnType();
-		Class<?> childRet = getReturnType(method, annotation);
+		Class<?> ret = getMethod().getReturnType();
+		Class<?> childRet = method.getReturnType();
 		if (ret.isPrimitive()) {
 			if (ret != childRet) {
 				throw new IllegalStateException("Expected argument " + ret.getName() + ", got " + childRet.getName());
