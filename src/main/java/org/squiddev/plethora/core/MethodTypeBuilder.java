@@ -196,7 +196,11 @@ public final class MethodTypeBuilder extends ClassLoader {
 				Class<? extends Annotation> target = Class.forName(((Type) info.get("value")).getClassName()).asSubclass(Annotation.class);
 				addBuilder(target, instance);
 			} catch (Throwable e) {
-				DebugLogger.error("Failed to load: " + name, e);
+				if (ConfigCore.Testing.strict) {
+					throw new IllegalStateException("Failed to load: " + name, e);
+				} else {
+					DebugLogger.error("Failed to load: " + name, e);
+				}
 			}
 		}
 

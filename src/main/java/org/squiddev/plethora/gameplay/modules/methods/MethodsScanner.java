@@ -12,8 +12,8 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodScanBlocks extends TargetedModuleObjectMethod<IWorldLocation> {
+	public static final class MethodScanBlocks extends SubtargetedModuleObjectMethod<IWorldLocation> {
 		public MethodScanBlocks() {
 			super("scan", PlethoraModules.SCANNER, IWorldLocation.class, true, "function() -- Scan all blocks in the vicinity");
 		}
@@ -64,7 +64,7 @@ public final class MethodsScanner {
 		}
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SCANNER_S,
 		target = IWorldLocation.class,
 		doc = "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block"

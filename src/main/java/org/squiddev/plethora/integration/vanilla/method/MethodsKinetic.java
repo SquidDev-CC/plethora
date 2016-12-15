@@ -7,8 +7,8 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.DisableAI;
@@ -22,7 +22,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
 public final class MethodsKinetic {
 	@Nonnull
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLivingBase.class,
 		doc = "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction"
@@ -50,7 +50,7 @@ public final class MethodsKinetic {
 	}
 
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityLivingDisableAI extends TargetedModuleObjectMethod<EntityLiving> {
+	public static final class MethodEntityLivingDisableAI extends SubtargetedModuleObjectMethod<EntityLiving> {
 		public MethodEntityLivingDisableAI() {
 			super("disableAI", PlethoraModules.KINETIC, EntityLiving.class, true, "function() -- Disable the AI of this entity");
 		}
@@ -68,7 +68,7 @@ public final class MethodsKinetic {
 		}
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLiving.class,
 		doc = "function(x:number, y:number, z:number):boolean, string|nil -- Walk to a coordinate"
@@ -120,7 +120,7 @@ public final class MethodsKinetic {
 	}
 
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityIsWalking extends TargetedModuleObjectMethod<EntityLiving> {
+	public static final class MethodEntityIsWalking extends SubtargetedModuleObjectMethod<EntityLiving> {
 		public MethodEntityIsWalking() {
 			super("isWalking", PlethoraModules.KINETIC, EntityLiving.class, true, "function():boolean -- Whether the entity is currently walking somewhere");
 		}

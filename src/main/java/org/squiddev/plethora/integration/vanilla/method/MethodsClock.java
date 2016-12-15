@@ -5,7 +5,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.concurrent.Callable;
@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
  * Various methods for interacting with the clock module
  */
 public class MethodsClock {
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():integer -- The game time in ticks"
 	)
@@ -28,7 +28,7 @@ public class MethodsClock {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():integer -- The current day of this world"
 	)
@@ -42,7 +42,7 @@ public class MethodsClock {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():number -- The angle the sun or moon lies at in degrees. 0 is directly overhead."
 	)
@@ -56,7 +56,7 @@ public class MethodsClock {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.clock, target = IWorldLocation.class,
 		doc = "function():number -- The current phase of the moon"
 	)

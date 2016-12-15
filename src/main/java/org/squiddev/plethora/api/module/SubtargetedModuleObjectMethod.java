@@ -1,12 +1,11 @@
 package org.squiddev.plethora.api.module;
 
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,23 +14,23 @@ import java.lang.annotation.Target;
 /**
  * A top-level module method which requires a particular context object to execute.
  */
-public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
+public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass) {
-		this(name, module, klass, 0, null);
+	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread) {
+		this(name, module, klass, worldThread, 0, null);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority) {
-		this(name, module, klass, priority, null);
+	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, int priority) {
+		this(name, module, klass, worldThread, priority, null);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, String docs) {
-		this(name, module, klass, 0, docs);
+	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, String docs) {
+		this(name, module, klass, worldThread, 0, docs);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority, String docs) {
-		super(name, module, priority, docs);
+	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, int priority, String docs) {
+		super(name, module, worldThread, priority, docs);
 		this.klass = klass;
 	}
 
@@ -39,6 +38,15 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
 		return super.canApply(context) && context.hasContext(klass);
 	}
+
+	@Nullable
+	@Override
+	public final Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		return apply(context.getContext(klass), context, args);
+	}
+
+	@Nullable
+	public abstract Object[] apply(@Nonnull T target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException;
 
 	@Nonnull
 	@Override
@@ -49,7 +57,7 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 	/**
 	 * Delegate to a normal method from a {@link ModuleMethod}.
 	 *
-	 * The method should be a public and static with the same signature as {@link ModuleMethod#apply(IUnbakedContext, Object[])}.
+	 * The method should be a public and static with the same signature as {@link SubtargetedModuleObjectMethod#apply(Object, IContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
 	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
@@ -84,13 +92,6 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 		Class<?> target();
 
 		/**
-		 * A collection of objects that should be in the context for the method to run.
-		 *
-		 * @return Valid objects that should be in the context.
-		 */
-		Class<?>[] requirements() default {};
-
-		/**
 		 * The priority of the method.
 		 *
 		 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Methods
@@ -110,6 +111,14 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 		 * @see IMethod#getDocString()
 		 */
 		String doc() default "";
+
+		/**
+		 * Run this method on the world thread
+		 *
+		 * @return Whether this method should be run on the world thread
+		 * @see BasicObjectMethod#BasicObjectMethod(String, boolean)
+		 */
+		boolean worldThread();
 
 		/**
 		 * Set if this method depends on a mod

@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
  * Various methods for mobs
  */
 public final class MethodsKineticEntity {
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLivingBase.class,
 		doc = "function(yaw:number, pitch:number) -- Look in a set direction"
@@ -51,7 +51,7 @@ public final class MethodsKineticEntity {
 	}
 
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityCreeperExplode extends TargetedModuleObjectMethod<EntityCreeper> {
+	public static final class MethodEntityCreeperExplode extends SubtargetedModuleObjectMethod<EntityCreeper> {
 		public MethodEntityCreeperExplode() {
 			super("explode", PlethoraModules.KINETIC, EntityCreeper.class, true, "function() -- Explode this creeper");
 		}
@@ -65,7 +65,7 @@ public final class MethodsKineticEntity {
 	}
 
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodEntityEndermanTeleport extends TargetedModuleObjectMethod<EntityEnderman> {
+	public static final class MethodEntityEndermanTeleport extends SubtargetedModuleObjectMethod<EntityEnderman> {
 		public MethodEntityEndermanTeleport() {
 			super("teleport", PlethoraModules.KINETIC, EntityEnderman.class, true, "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one");
 		}

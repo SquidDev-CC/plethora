@@ -12,8 +12,8 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
@@ -31,7 +31,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
 	@IMethod.Inject(IModuleContainer.class)
-	public static final class SenseEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
+	public static final class SenseEntitiesMethod extends SubtargetedModuleObjectMethod<IWorldLocation> {
 		public SenseEntitiesMethod() {
 			super("sense", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
 		}
@@ -55,7 +55,7 @@ public final class MethodsSensor {
 		}
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
 		doc = "function():table|nil -- Find a nearby entity by UUID"
@@ -82,7 +82,7 @@ public final class MethodsSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
 		doc = "function():table|nil -- Find a nearby entity by name"

@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.concurrent.Callable;
@@ -17,10 +17,10 @@ import java.util.concurrent.Callable;
  * Various methods for interacting with the daylight sensor module.
  * Providers information about light levels in the area.
  *
- * TODO: Convert to use TargetedModuleObjectMethod once I've got generation working
+ * TODO: Convert to use SubtargetedModuleObjectMethod once I've got generation working
  */
 public class MethodsDaylightSensor {
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():boolean -- Whether this world has a sky"
 	)
@@ -34,7 +34,7 @@ public class MethodsDaylightSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from the sun"
 	)
@@ -54,7 +54,7 @@ public class MethodsDaylightSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from surrounding blocks"
 	)
@@ -70,7 +70,7 @@ public class MethodsDaylightSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():string -- The weather in the current world"
 	)

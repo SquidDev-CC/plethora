@@ -20,7 +20,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optInt;
 
 public final class MethodsPlayerActions {
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
 		target = EntityLivingBase.class,
 		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item"

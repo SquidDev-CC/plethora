@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class MethodsNoteblock {
 		return instruments;
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
 		doc = "(instrument:string|number, pitch:number) -- Plays a note block note"
 	)
@@ -72,7 +72,7 @@ public class MethodsNoteblock {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
 		doc = "(sound:string[, pitch:number][, volume:number]) -- Plays a note block note"
 	)

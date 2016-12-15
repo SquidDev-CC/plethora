@@ -6,7 +6,7 @@ import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
 import org.squiddev.plethora.gameplay.modules.EntityLaser;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -19,7 +19,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
 public final class MethodsLaser {
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.LASER_S,
 		target = IWorldLocation.class,
 		doc = "function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction"

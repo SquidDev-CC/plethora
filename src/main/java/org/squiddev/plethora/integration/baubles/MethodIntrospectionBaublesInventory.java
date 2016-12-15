@@ -9,7 +9,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  * Allows getting the player's baubles inventory
  */
 @IMethod.Inject(value = IModuleContainer.class, modId = "Baubles")
-public class MethodIntrospectionBaublesInventory extends TargetedModuleObjectMethod<EntityPlayer> {
+public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityPlayer> {
 	public MethodIntrospectionBaublesInventory() {
 		super("getBaubles", PlethoraModules.INTROSPECTION, EntityPlayer.class, false, "function():table -- Get this player's baubles inventory");
 	}
