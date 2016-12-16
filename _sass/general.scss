@@ -1,0 +1,177 @@
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+	"Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+header {
+	background-color: $header-back;
+	box-sizing: border-box;
+	color: $header-fore;
+	padding: 10px;
+	height: 50px;
+	vertical-align: middle;
+
+	h1 { font-size: 1.5em; }
+	a, a:hover { color: inherit !important; }
+}
+
+footer {
+	background-color: $footer-back;
+	box-sizing: border-box;
+	color: $footer-fore;
+	font-size: 0.7em;
+	padding: 10px;
+
+	@include link($grey06, $grey04);
+
+	code {
+		background: none;
+		color: inherit;
+		font-size: inherit;
+	}
+}
+
+h2, h3 {
+	overflow-wrap: break-word;
+	word-break: break-all;
+}
+
+h2 {
+	font-size: 2em;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: solid 1px $grey05;
+}
+
+h3 {
+	font-size: 1.2em;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+pre, code {
+	font-family: "Consolas", "Courier New", monospace;
+}
+
+code {
+	background-color: $grey07;
+	color: $base0E;
+	padding: 0.1em;
+	font-size: 0.8em;
+}
+
+pre {
+	padding: 1.2em;
+	font-size: 0.8em;
+	white-space: pre-wrap;
+}
+
+pre.box, pre.highlight {
+	border: solid 1px $grey05;
+	background-color: $grey08;
+
+	code {
+		background-color: transparent;
+		color: inherit;
+		padding: 0px;
+		font-size: inherit;
+	}
+}
+
+pre.highlight {
+	.o  { color: $base08; }
+	.s2 { color: $base09; }
+	.c1 { color: $grey03; }
+}
+
+em { font-style: italic; }
+strong { font-weight: bold; }
+
+p {
+	line-height: 1.3em;
+}
+
+p, table.table-grid, pre.box, ul.list {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+@include link($link, lighten($link, 20%));
+a {
+	text-decoration: none;
+}
+
+@include icon-link($grey03, $grey00);
+
+.aria-hint {
+	display: none;
+}
+
+.text-content {
+	a {
+		font-weight: 600;
+	}
+
+	h3 {
+		border-bottom: $grey05 1px solid;
+	}
+}
+
+ul.list {
+	list-style-type: disc;
+	list-style-position: outside;
+	padding-left: 2em;
+
+	li {
+		padding: 3px 0px;
+	}
+}
+
+.license {
+	font-size: 0.7em;
+	border-bottom: solid 1px $grey05;
+	margin-bottom: 20px;
+}
+
+.fa.fa-0 {
+	font-size: 0.7em;
+}
+
+// Reset buttons
+button {
+	background: none;
+	border: none;
+}
+
+
+table.table-grid {
+	td, th {
+		padding: 10px;
+		min-width: 100px;
+	}
+
+	> tr, tbody > tr {
+		border-top: solid 1px $grey06;
+	}
+
+	tbody > tr:first-child {
+		border-top: none;
+	}
+
+	thead > tr {
+		font-weight: bold;
+		border-bottom: solid 2px $grey06;
+	}
+}
+
+
+table.table-rows {
+	tr {
+		margin: 10px 0px;
+	}
+
+	th {
+		text-align: right;
+		border-right: solid 1px $grey06;
+	}
+}

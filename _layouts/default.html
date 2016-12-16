@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
+		<link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	</head>
+	<body>
+		<div id="container">
+			<header>
+				<h1 class="pull-left"><a href="{{base}}">Plethora</a></h1>
+			</header>
+			<div id="content">
+				{{content}}
+			</div>
+			<footer>
+				<span class="pull-left">
+					&copy; {{ site.time | date: '%Y' }} SquidDev</a>
+				</span>
+				<span class="pull-right">Version <code>{{ site.version }}</code></span>
+			</footer>
+		</div>
+	</body>
+</html>

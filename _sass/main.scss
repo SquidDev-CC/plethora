@@ -1,0 +1,109 @@
+$footer-height: 30px;
+$header-height: 60px;
+
+$grey00: #151515;
+$grey01: #202020;
+$grey02: #505050;
+$grey03: #707070;
+$grey04: #B0B0B0;
+$grey05: #D0D0D0;
+$grey06: #E0E0E0;
+$grey07: #ECF0F1;
+$grey08: #FAFAFA;
+$grey09: #FFFFFF;
+
+$base08: #FF0086;
+$base09: #FD8900;
+$base0B: #00C918;
+$base0C: #1FAAAA;
+$base0D: #3777E6;
+$base0E: #AD00A1;
+
+$header-back: $base0C;
+$header-fore: $grey09;
+
+$footer-back: $grey02;
+$footer-fore: $grey09;
+
+$link: darken($base0D, 20%);
+
+@mixin link($normal, $hover) {
+	a {
+		&, &:visited, &:active { color: $normal; }
+		&:hover { color: $hover; }
+	}
+}
+
+@mixin icon-link($normal, $hover) {
+	a.icon-link {
+		& .fa, &:visited .fa, &:active .fa { color: $normal; }
+		&:hover  .fa { color: $hover; }
+	}
+}
+
+@import "reset.scss";
+@import "layout.scss";
+@import "general.scss";
+
+.main {
+	&.center-content {
+		max-width: 90%;
+	}
+
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+
+	.main-content {
+		order: 2;
+		box-sizing: border-box;
+		flex: 0 0 75%;
+		max-width: 75%;
+		padding-left: 15px;
+	}
+
+	.main-sidebar {
+		text-align: right;
+		box-sizing: border-box;
+		flex: 0 0 25%;
+		max-width: 25%;
+		padding-right: 15px;
+
+		a {
+			line-height: 1.6em;
+		}
+
+		li {
+			padding: 3px 0px;
+		}
+
+		ul {
+			margin-top: 5px;
+			margin-bottom: 20px;
+		}
+	}
+
+	// This is awful, but it works.
+	* {
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-word;
+	}
+
+	@media(max-width: 800px) {
+		.main-content {
+			order: 1;
+			flex-basis: 100%;
+			max-width: 100%;
+			padding-left: 0px;
+		}
+
+		.main-sidebar {
+			order: 2;
+			text-align: left;
+			flex-basis: 100%;
+			max-width: 100%;
+			padding-right: 0px;
+		}
+	}
+}
