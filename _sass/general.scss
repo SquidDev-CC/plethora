@@ -103,6 +103,12 @@ a {
 
 @include icon-link($grey03, $grey00);
 
+blockquote {
+	background-color: $grey08;
+	padding: 3px 5px;
+	border-left: solid 5px $grey04;
+}
+
 .aria-hint {
 	display: none;
 }
@@ -115,34 +121,20 @@ a {
 	h3 {
 		border-bottom: $grey05 1px solid;
 	}
-}
 
-ul.list {
-	list-style-type: disc;
-	list-style-position: outside;
-	padding-left: 2em;
+	ul {
+		list-style-type: disc;
+		list-style-position: outside;
+		padding-left: 2em;
 
-	li {
-		padding: 3px 0px;
+		li {
+			padding: 3px 0px;
+		}
 	}
 }
-
-.license {
-	font-size: 0.7em;
-	border-bottom: solid 1px $grey05;
-	margin-bottom: 20px;
-}
-
 .fa.fa-0 {
 	font-size: 0.7em;
 }
-
-// Reset buttons
-button {
-	background: none;
-	border: none;
-}
-
 
 table.table-grid {
 	td, th {
@@ -163,7 +155,6 @@ table.table-grid {
 		border-bottom: solid 2px $grey06;
 	}
 }
-
 
 table.table-rows {
 	tr {
