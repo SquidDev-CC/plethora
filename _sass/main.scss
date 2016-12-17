@@ -107,3 +107,33 @@ $link: darken($base0D, 20%);
 		}
 	}
 }
+
+.method {
+	background: $grey08;
+	margin-top: 10px;
+
+	h4 {
+		font-family: "Consolas", monospace;
+		background: #EEEEEE;
+		display: block;
+		margin-bottom: 0px;
+		font-weight: 600;
+	}
+
+	h4, .content {
+		width: 100%;
+		padding: 4px 2px;
+		box-sizing: border-box;
+	}
+
+	table {
+		width: 100%;
+	}
+
+	tr, td, th {
+		border: 1px solid $grey04;
+		min-width: 100px;
+		padding: 3px;
+		font-size: 14px;
+	}
+}

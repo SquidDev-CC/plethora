@@ -1,0 +1,30 @@
+---
+layout: text
+---
+
+<h2>Plethora's methods</h2>
+
+{% for method in site.data.methods %}
+	<div class="method" data-target="{{method.target}}" data-subtarget="{{method.subtarget}}" data-module="{{method.module}}">
+		<h4>{{ method.name }}{{ method.args}}</h4>
+		<div class="content">
+			{% if method.synopsis %}
+				<p><em class="method-synopsis">{{ method.synopsis }}</em></p>
+			{% endif %}
+			{% if method.detail %}
+				<p>{{ method.detail }}</p>
+			{% endif %}
+
+			<table class="method-details">
+				<tr><td>Target</td><td><code> {{ method.target }}</code></td></tr>
+				{% if method.subtarget %}
+					<tr><td>Subtarget</td><td><code> {{ method.subtarget }}</code></td></tr>
+				{% endif %}
+				{% if method.module %}
+					<tr><td>Module</td><td><code> {{ method.module }}</code></td></tr>
+				{% endif %}
+				<tr><td>Class</td><td><code>{{ method.method }}</code></td></tr>
+			</table>
+		</div>
+	</div>
+{% endfor %}

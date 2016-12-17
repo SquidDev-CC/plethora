@@ -4,25 +4,34 @@
 	<meta charset="UTF-8">
 	<title>Plethora dump</title>
 	<style>
-		body{
-			margin:40px auto;
-			max-width:1000px;
-			line-height:1.6;
-			font-size:18px;
-			color:#444;
-			padding:0 10px;
+		body {
+			margin: 40px auto;
+			max-width: 1000px;
+			line-height: 1.6;
+			font-size: 18px;
+			color: #444;
+			padding: 0 10px;
 			background: #fff;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+			"Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 		}
 
-		h1, h2, h3 { line-height:1.2 }
-		h3, h4, code { font-family:"Consolas", monospace; }
+		h1, h2, h3 {
+			line-height: 1.2
+		}
+
+		h3, h4, code {
+			font-family: "Consolas", monospace;
+		}
 
 		code {
-			color:#c7254e;
-			background-color:#f9f2f4;
+			color: #c7254e;
+			background-color: #f9f2f4;
 		}
 
-		table { width: 100% }
+		table {
+			width: 100%
+		}
 
 		table, tr, td, th {
 			border: 1px solid #aaa;
@@ -55,8 +64,13 @@
 			margin-bottom: 0px;
 		}
 
-		.method-list tr:nth-child(odd)  { background-color:#f9f9f9; }
-		.method-list tr:nth-child(even) { background-color:#ffffff; }
+		.method-list tr:nth-child(odd) {
+			background-color: #f9f9f9;
+		}
+
+		.method-list tr:nth-child(even) {
+			background-color: #ffffff;
+		}
 	</style>
 </head>
 <body>
@@ -66,11 +80,12 @@
 <li><a href="#0_java_lang_Object">java.lang.Object</a></li>
 <li><a href="#1_net_minecraft_tileentity_TileEntityBrewingStand">net.minecraft.tileentity.TileEntityBrewingStand</a></li>
 <li><a href="#2_net_minecraft_tileentity_TileEntityFurnace">net.minecraft.tileentity.TileEntityFurnace</a></li>
-<li><a href="#3_net_minecraftforge_common_capabilities_ICapabilityProvider">net.minecraftforge.common.capabilities.ICapabilityProvider</a></li>
-<li><a href="#4_net_minecraftforge_items_IItemHandler">net.minecraftforge.items.IItemHandler</a></li>
-<li><a href="#5_org_squiddev_plethora_api_method_IMethodCollection">org.squiddev.plethora.api.method.IMethodCollection</a></li>
-<li><a href="#6_org_squiddev_plethora_api_module_IModuleContainer">org.squiddev.plethora.api.module.IModuleContainer</a></li>
-<li><a href="#7_org_squiddev_plethora_api_reference_ItemSlot">org.squiddev.plethora.api.reference.ItemSlot</a></li>
+<li><a href="#3_net_minecraft_tileentity_TileEntitySign">net.minecraft.tileentity.TileEntitySign</a></li>
+<li><a href="#4_net_minecraftforge_fluids_IFluidHandler">net.minecraftforge.fluids.IFluidHandler</a></li>
+<li><a href="#5_net_minecraftforge_items_IItemHandler">net.minecraftforge.items.IItemHandler</a></li>
+<li><a href="#6_org_squiddev_plethora_api_method_IMethodCollection">org.squiddev.plethora.api.method.IMethodCollection</a></li>
+<li><a href="#7_org_squiddev_plethora_api_module_IModuleContainer">org.squiddev.plethora.api.module.IModuleContainer</a></li>
+<li><a href="#8_org_squiddev_plethora_api_reference_ItemSlot">org.squiddev.plethora.api.reference.ItemSlot</a></li>
 </ul>
 <h3 id="0_java_lang_Object">java.lang.Object</h3>
 <table class="method-list">
@@ -129,33 +144,55 @@
 <tr><td>Target</td><td><code>net.minecraft.tileentity.TileEntityFurnace</code></td></tr>
 </table>
 </div>
-<h3 id="3_net_minecraftforge_common_capabilities_ICapabilityProvider">net.minecraftforge.common.capabilities.ICapabilityProvider</h3>
+<h3 id="3_net_minecraft_tileentity_TileEntitySign">net.minecraft.tileentity.TileEntitySign</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#4_0_getTanks">getTanks</a></td><td> Get a list of all tanks on this side</td></tr>
+<tr><td><a href="#4_0_getSignText">getSignText</a></td><td> Each line of text on this sign</td></tr>
+<tr><td><a href="#4_1_setSignText">setSignText</a></td><td> Set the lines of text on this sign</td></tr>
 </table>
 <div class="method">
-<h4 id="4_0_getTanks">getTanks([side:string]):table</h4>
+<h4 id="4_0_getSignText">getSignText():[string]</h4>
+<p><em class="method-synopsis"> Each line of text on this sign</em></p>
+<table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsVanillaTileEntities$getSignText</code></td></tr>
+<tr><td>Target</td><td><code>net.minecraft.tileentity.TileEntitySign</code></td></tr>
+</table>
+</div>
+<div class="method">
+<h4 id="4_1_setSignText">setSignText([line...:string])</h4>
+<p><em class="method-synopsis"> Set the lines of text on this sign</em></p>
+<table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsVanillaTileEntities$setSignText</code></td></tr>
+<tr><td>Target</td><td><code>net.minecraft.tileentity.TileEntitySign</code></td></tr>
+</table>
+</div>
+<h3 id="4_net_minecraftforge_fluids_IFluidHandler">net.minecraftforge.fluids.IFluidHandler</h3>
+<table class="method-list">
+<tr><th>Function</th><th>Synopsis</th></tr>
+<tr><td><a href="#5_0_getTanks">getTanks</a></td><td> Get a list of all tanks on this side</td></tr>
+</table>
+<div class="method">
+<h4 id="5_0_getTanks">getTanks(side:string):table</h4>
 <p><em class="method-synopsis"> Get a list of all tanks on this side</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodFluidHandler</code></td></tr>
-<tr><td>Target</td><td><code>net.minecraftforge.common.capabilities.ICapabilityProvider</code></td></tr>
+<tr><td>Target</td><td><code>net.minecraftforge.fluids.IFluidHandler</code></td></tr>
 </table>
 </div>
-<h3 id="4_net_minecraftforge_items_IItemHandler">net.minecraftforge.items.IItemHandler</h3>
+<h3 id="5_net_minecraftforge_items_IItemHandler">net.minecraftforge.items.IItemHandler</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#5_0_drop">drop</a></td><td>Drop an item on the ground</td></tr>
-<tr><td><a href="#5_1_getItem">getItem</a></td><td>The item in the specified slot</td></tr>
-<tr><td><a href="#5_2_getItemMeta">getItemMeta</a></td><td>The metadata of the item in the specified slot</td></tr>
-<tr><td><a href="#5_3_list">list</a></td><td> List all items in this inventory</td></tr>
-<tr><td><a href="#5_4_pullItems">pullItems</a></td><td>Pull items to this inventory from another inventory</td></tr>
-<tr><td><a href="#5_5_pushItems">pushItems</a></td><td>Push items from this inventory to another inventory</td></tr>
-<tr><td><a href="#5_6_size">size</a></td><td> The size of the inventory</td></tr>
-<tr><td><a href="#5_7_suck">suck</a></td><td> Suck an item from the ground</td></tr>
+<tr><td><a href="#6_0_drop">drop</a></td><td>Drop an item on the ground</td></tr>
+<tr><td><a href="#6_1_getItem">getItem</a></td><td>The item in the specified slot</td></tr>
+<tr><td><a href="#6_2_getItemMeta">getItemMeta</a></td><td>The metadata of the item in the specified slot</td></tr>
+<tr><td><a href="#6_3_list">list</a></td><td> List all items in this inventory</td></tr>
+<tr><td><a href="#6_4_pullItems">pullItems</a></td><td>Pull items to this inventory from another inventory</td></tr>
+<tr><td><a href="#6_5_pushItems">pushItems</a></td><td>Push items from this inventory to another inventory</td></tr>
+<tr><td><a href="#6_6_size">size</a></td><td> The size of the inventory</td></tr>
+<tr><td><a href="#6_7_suck">suck</a></td><td> Suck an item from the ground</td></tr>
 </table>
 <div class="method">
-<h4 id="5_0_drop">drop(slot:int[, limit:int]):int</h4>
+<h4 id="6_0_drop">drop(slot:int[, limit:int][, direction:string]):int</h4>
 <p><em class="method-synopsis">Drop an item on the ground</em></p>
 <p>Returns the number of items dropped</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventoryWorld$MethodItemHandlerDrop</code></td></tr>
@@ -163,7 +200,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_1_getItem">getItem(slot:integer):table|nil</h4>
+<h4 id="6_1_getItem">getItem(slot:integer):table|nil</h4>
 <p><em class="method-synopsis">The item in the specified slot</em></p>
 <p>The slot number starts from 1.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventory$getItem</code></td></tr>
@@ -171,7 +208,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_2_getItemMeta">getItemMeta(slot:integer):table|nil</h4>
+<h4 id="6_2_getItemMeta">getItemMeta(slot:integer):table|nil</h4>
 <p><em class="method-synopsis">The metadata of the item in the specified slot</em></p>
 <p>The slot number starts from 1.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventory$getItemMeta</code></td></tr>
@@ -179,7 +216,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_3_list">list():table</h4>
+<h4 id="6_3_list">list():table</h4>
 <p><em class="method-synopsis"> List all items in this inventory</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventory$list</code></td></tr>
@@ -187,7 +224,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_4_pullItems">pullItems(from:string, fromSlot:int[, limit:int [, toSlot:int]]):int</h4>
+<h4 id="6_4_pullItems">pullItems(from:string, fromSlot:int[, limit:int] [, toSlot:int]):int</h4>
 <p><em class="method-synopsis">Pull items to this inventory from another inventory</em></p>
 <p>Returns the amount transferred.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer$pullItems</code></td></tr>
@@ -195,7 +232,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_5_pushItems">pushItems(to:string, fromSlot:int[, limit:int [, toSlot:int]]):int</h4>
+<h4 id="6_5_pushItems">pushItems(to:string, fromSlot:int[, limit:int] [, toSlot:int]):int</h4>
 <p><em class="method-synopsis">Push items from this inventory to another inventory</em></p>
 <p>Returns the amount transferred.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer$pushItems</code></td></tr>
@@ -203,7 +240,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_6_size">size():integer</h4>
+<h4 id="6_6_size">size():integer</h4>
 <p><em class="method-synopsis"> The size of the inventory</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventory$size</code></td></tr>
@@ -211,21 +248,21 @@
 </table>
 </div>
 <div class="method">
-<h4 id="5_7_suck">suck([slot:int], [limit:int]):int</h4>
+<h4 id="6_7_suck">suck([slot:int], [limit:int]):int</h4>
 <p><em class="method-synopsis"> Suck an item from the ground</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventoryWorld$MethodItemHandlerSuck</code></td></tr>
 <tr><td>Target</td><td><code>net.minecraftforge.items.IItemHandler</code></td></tr>
 </table>
 </div>
-<h3 id="5_org_squiddev_plethora_api_method_IMethodCollection">org.squiddev.plethora.api.method.IMethodCollection</h3>
+<h3 id="6_org_squiddev_plethora_api_method_IMethodCollection">org.squiddev.plethora.api.method.IMethodCollection</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#6_0_getDocs">getDocs</a></td><td>Get the documentation for all functions or the function specified</td></tr>
-<tr><td><a href="#6_1_getTransferLocations">getTransferLocations</a></td><td>Get a list of all available objects which can...</td></tr>
+<tr><td><a href="#7_0_getDocs">getDocs</a></td><td>Get the documentation for all functions or the function specified</td></tr>
+<tr><td><a href="#7_1_getTransferLocations">getTransferLocations</a></td><td>Get a list of all available objects which can...</td></tr>
 </table>
 <div class="method">
-<h4 id="6_0_getDocs">getDocs([name:string]):table|string|nil</h4>
+<h4 id="7_0_getDocs">getDocs([name:string]):table|string|nil</h4>
 <p><em class="method-synopsis">Get the documentation for all functions or the function specified</em></p>
 <p>Errors if the function cannot be found.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.MethodDocumentation</code></td></tr>
@@ -233,22 +270,22 @@
 </table>
 </div>
 <div class="method">
-<h4 id="6_1_getTransferLocations">getTransferLocations():table</h4>
+<h4 id="7_1_getTransferLocations">getTransferLocations([location:string]):table</h4>
 <p><em class="method-synopsis">Get a list of all available objects which can...</em></p>
 <p> Get a list of all available objects which can be transferred to or from</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.MethodTransferLocations</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.method.IMethodCollection</code></td></tr>
 </table>
 </div>
-<h3 id="6_org_squiddev_plethora_api_module_IModuleContainer">org.squiddev.plethora.api.module.IModuleContainer</h3>
+<h3 id="7_org_squiddev_plethora_api_module_IModuleContainer">org.squiddev.plethora.api.module.IModuleContainer</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#7_0_filterModules">filterModules</a></td><td> Gets the methods which require these modules</td></tr>
-<tr><td><a href="#7_1_hasModules">hasModules</a></td><td> Checks whether a module is available</td></tr>
-<tr><td><a href="#7_2_listModules">listModules</a></td><td> Lists all modules available</td></tr>
+<tr><td><a href="#8_0_filterModules">filterModules</a></td><td> Gets the methods which require these modules</td></tr>
+<tr><td><a href="#8_1_hasModules">hasModules</a></td><td> Checks whether a module is available</td></tr>
+<tr><td><a href="#8_2_listModules">listModules</a></td><td> Lists all modules available</td></tr>
 </table>
 <div class="method">
-<h4 id="7_0_filterModules">filterModules(names:string...):table</h4>
+<h4 id="8_0_filterModules">filterModules(names:string...):table</h4>
 <p><em class="method-synopsis"> Gets the methods which require these modules</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.MethodsModules$filterModules</code></td></tr>
@@ -256,7 +293,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="7_1_hasModules">hasModules():boolean</h4>
+<h4 id="8_1_hasModules">hasModules():boolean</h4>
 <p><em class="method-synopsis"> Checks whether a module is available</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.MethodsModules$hasModules</code></td></tr>
@@ -264,21 +301,21 @@
 </table>
 </div>
 <div class="method">
-<h4 id="7_2_listModules">listModules():table</h4>
+<h4 id="8_2_listModules">listModules():table</h4>
 <p><em class="method-synopsis"> Lists all modules available</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.MethodsModules$listModules</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 </table>
 </div>
-<h3 id="7_org_squiddev_plethora_api_reference_ItemSlot">org.squiddev.plethora.api.reference.ItemSlot</h3>
+<h3 id="8_org_squiddev_plethora_api_reference_ItemSlot">org.squiddev.plethora.api.reference.ItemSlot</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#8_0_consume">consume</a></td><td> Consume one item from this stack</td></tr>
-<tr><td><a href="#8_1_drop">drop</a></td><td>Drop an item on the ground</td></tr>
+<tr><td><a href="#9_0_consume">consume</a></td><td> Consume one item from this stack</td></tr>
+<tr><td><a href="#9_1_drop">drop</a></td><td>Drop an item on the ground</td></tr>
 </table>
 <div class="method">
-<h4 id="8_0_consume">consume()</h4>
+<h4 id="9_0_consume">consume()</h4>
 <p><em class="method-synopsis"> Consume one item from this stack</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodItemConsume</code></td></tr>
@@ -286,7 +323,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="8_1_drop">drop([limit:int]):int</h4>
+<h4 id="9_1_drop">drop([limit:int][, direction:string]):int</h4>
 <p><em class="method-synopsis">Drop an item on the ground</em></p>
 <p>Returns the number of items dropped</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsInventoryWorld$MethodItemDrop</code></td></tr>
@@ -297,24 +334,25 @@
 <div class="target">
 <h1>Modules</h1>
 <ul>
-<li><a href="#8_minecraft:clock">minecraft:clock</a></li>
-<li><a href="#9_minecraft:daylightSensor">minecraft:daylightSensor</a></li>
-<li><a href="#10_plethora:introspection">plethora:introspection</a></li>
-<li><a href="#11_plethora:kinetic">plethora:kinetic</a></li>
-<li><a href="#12_plethora:laser">plethora:laser</a></li>
-<li><a href="#13_plethora:scanner">plethora:scanner</a></li>
-<li><a href="#14_plethora:sensor">plethora:sensor</a></li>
+<li><a href="#9_minecraft:clock">minecraft:clock</a></li>
+<li><a href="#10_minecraft:daylight_detector">minecraft:daylight_detector</a></li>
+<li><a href="#11_minecraft:noteblock">minecraft:noteblock</a></li>
+<li><a href="#12_plethora:introspection">plethora:introspection</a></li>
+<li><a href="#13_plethora:kinetic">plethora:kinetic</a></li>
+<li><a href="#14_plethora:laser">plethora:laser</a></li>
+<li><a href="#15_plethora:scanner">plethora:scanner</a></li>
+<li><a href="#16_plethora:sensor">plethora:sensor</a></li>
 </ul>
-<h3 id="8_minecraft:clock">minecraft:clock</h3>
+<h3 id="9_minecraft:clock">minecraft:clock</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#9_0_getCelestialAngle">getCelestialAngle</a></td><td>The angle the sun or moon lies at in degrees</td></tr>
-<tr><td><a href="#9_1_getDay">getDay</a></td><td> The current day of this world</td></tr>
-<tr><td><a href="#9_2_getMoonPhase">getMoonPhase</a></td><td> The current phase of the moon</td></tr>
-<tr><td><a href="#9_3_getTime">getTime</a></td><td> The game time in ticks</td></tr>
+<tr><td><a href="#10_0_getCelestialAngle">getCelestialAngle</a></td><td>The angle the sun or moon lies at in degrees</td></tr>
+<tr><td><a href="#10_1_getDay">getDay</a></td><td> The current day of this world</td></tr>
+<tr><td><a href="#10_2_getMoonPhase">getMoonPhase</a></td><td> The current phase of the moon</td></tr>
+<tr><td><a href="#10_3_getTime">getTime</a></td><td> The game time in ticks</td></tr>
 </table>
 <div class="method">
-<h4 id="9_0_getCelestialAngle">getCelestialAngle():number</h4>
+<h4 id="10_0_getCelestialAngle">getCelestialAngle():number</h4>
 <p><em class="method-synopsis">The angle the sun or moon lies at in degrees</em></p>
 <p>0 is directly overhead.</p><table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsClock$getCelestialAngle</code></td></tr>
@@ -324,7 +362,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="9_1_getDay">getDay():integer</h4>
+<h4 id="10_1_getDay">getDay():integer</h4>
 <p><em class="method-synopsis"> The current day of this world</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsClock$getDay</code></td></tr>
@@ -334,7 +372,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="9_2_getMoonPhase">getMoonPhase():number</h4>
+<h4 id="10_2_getMoonPhase">getMoonPhase():number</h4>
 <p><em class="method-synopsis"> The current phase of the moon</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsClock$getMoonPhase</code></td></tr>
@@ -344,7 +382,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="9_3_getTime">getTime():integer</h4>
+<h4 id="10_3_getTime">getTime():integer</h4>
 <p><em class="method-synopsis"> The game time in ticks</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsClock$getTime</code></td></tr>
@@ -353,65 +391,91 @@
 <tr><td>Module</td><td><code>minecraft:clock</code></td></tr>
 </table>
 </div>
-<h3 id="9_minecraft:daylightSensor">minecraft:daylightSensor</h3>
+<h3 id="10_minecraft:daylight_detector">minecraft:daylight_detector</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#10_0_getBlockLight">getBlockLight</a></td><td> The light level from surrounding blocks</td></tr>
-<tr><td><a href="#10_1_getSkyLight">getSkyLight</a></td><td> The light level from the sun</td></tr>
-<tr><td><a href="#10_2_hasSky">hasSky</a></td><td> Whether this world has a sky</td></tr>
+<tr><td><a href="#11_0_getBlockLight">getBlockLight</a></td><td> The light level from surrounding blocks</td></tr>
+<tr><td><a href="#11_1_getSkyLight">getSkyLight</a></td><td> The light level from the sun</td></tr>
+<tr><td><a href="#11_2_getWeather">getWeather</a></td><td> The weather in the current world</td></tr>
+<tr><td><a href="#11_3_hasSky">hasSky</a></td><td> Whether this world has a sky</td></tr>
 </table>
 <div class="method">
-<h4 id="10_0_getBlockLight">getBlockLight():int</h4>
+<h4 id="11_0_getBlockLight">getBlockLight():int</h4>
 <p><em class="method-synopsis"> The light level from surrounding blocks</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsDaylightSensor$getBlockLight</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
-<tr><td>Module</td><td><code>minecraft:daylightSensor</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:daylight_detector</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="10_1_getSkyLight">getSkyLight():int</h4>
+<h4 id="11_1_getSkyLight">getSkyLight():int</h4>
 <p><em class="method-synopsis"> The light level from the sun</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsDaylightSensor$getSkyLight</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
-<tr><td>Module</td><td><code>minecraft:daylightSensor</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:daylight_detector</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="10_2_hasSky">hasSky():boolean</h4>
+<h4 id="11_2_getWeather">getWeather():string</h4>
+<p><em class="method-synopsis"> The weather in the current world</em></p>
+<table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsDaylightSensor$getWeather</code></td></tr>
+<tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
+<tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:daylight_detector</code></td></tr>
+</table>
+</div>
+<div class="method">
+<h4 id="11_3_hasSky">hasSky():boolean</h4>
 <p><em class="method-synopsis"> Whether this world has a sky</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsDaylightSensor$hasSky</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
-<tr><td>Module</td><td><code>minecraft:daylightSensor</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:daylight_detector</code></td></tr>
 </table>
 </div>
-<h3 id="10_plethora:introspection">plethora:introspection</h3>
+<h3 id="11_minecraft:noteblock">minecraft:noteblock</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#11_0_getBaubles">getBaubles</a></td><td> Get this player's baubles inventory</td></tr>
-<tr><td><a href="#11_1_getEnder">getEnder</a></td><td> Get this player's ender chest</td></tr>
-<tr><td><a href="#11_2_getEquipment">getEquipment</a></td><td> Get this entity's held item and armor</td></tr>
-<tr><td><a href="#11_3_getID">getID</a></td><td> Get this entity's UUID</td></tr>
-<tr><td><a href="#11_4_getInventory">getInventory</a></td><td> Get this player's inventory</td></tr>
-<tr><td><a href="#11_5_getName">getName</a></td><td> Get this entity's name</td></tr>
+<tr><td><a href="#12_0_playNote">playNote</a></td><td>(instrument:string|number, pitch:number) -- Pla...</td></tr>
+<tr><td><a href="#12_1_playSound">playSound</a></td><td>(sound:string[, pitch:number][, volume:number])...</td></tr>
 </table>
 <div class="method">
-<h4 id="11_0_getBaubles">getBaubles():table</h4>
-<p><em class="method-synopsis"> Get this player's baubles inventory</em></p>
-<table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.baubles.MethodIntrospectionBaublesInventory</code></td></tr>
+<h4 id="12_0_playNote">playNote</h4>
+<p><em class="method-synopsis">(instrument:string|number, pitch:number) -- Pla...</em></p>
+<p>(instrument:string|number, pitch:number) -- Plays a note block note</p><table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsNoteblock$playNote</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
-<tr><td>Sub-target</td><td><code>net.minecraft.entity.player.EntityPlayer</code></td></tr>
-<tr><td>Module</td><td><code>plethora:introspection</code></td></tr>
+<tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:noteblock</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="11_1_getEnder">getEnder():table</h4>
+<h4 id="12_1_playSound">playSound</h4>
+<p><em class="method-synopsis">(sound:string[, pitch:number][, volume:number])...</em></p>
+<p>(sound:string[, pitch:number][, volume:number]) -- Plays a note block note</p><table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsNoteblock$playSound</code></td></tr>
+<tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
+<tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
+<tr><td>Module</td><td><code>minecraft:noteblock</code></td></tr>
+</table>
+</div>
+<h3 id="12_plethora:introspection">plethora:introspection</h3>
+<table class="method-list">
+<tr><th>Function</th><th>Synopsis</th></tr>
+<tr><td><a href="#13_0_getEnder">getEnder</a></td><td> Get this player's ender chest</td></tr>
+<tr><td><a href="#13_1_getEquipment">getEquipment</a></td><td> Get this entity's held item and armor</td></tr>
+<tr><td><a href="#13_2_getID">getID</a></td><td> Get this entity's UUID</td></tr>
+<tr><td><a href="#13_3_getInventory">getInventory</a></td><td> Get this player's inventory</td></tr>
+<tr><td><a href="#13_4_getName">getName</a></td><td> Get this entity's name</td></tr>
+</table>
+<div class="method">
+<h4 id="13_0_getEnder">getEnder():table</h4>
 <p><em class="method-synopsis"> Get this player's ender chest</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.ModuleIntrospectionEntity$MethodEntityPlayerGetEnder</code></td></tr>
@@ -420,7 +484,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="11_2_getEquipment">getEquipment():table</h4>
+<h4 id="13_1_getEquipment">getEquipment():table</h4>
 <p><em class="method-synopsis"> Get this entity's held item and armor</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.ModuleIntrospectionEntity$MethodEntityEquipment</code></td></tr>
@@ -429,7 +493,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="11_3_getID">getID():string</h4>
+<h4 id="13_2_getID">getID():string</h4>
 <p><em class="method-synopsis"> Get this entity's UUID</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsIntrospection$MethodEntityGetID</code></td></tr>
@@ -438,7 +502,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="11_4_getInventory">getInventory():table</h4>
+<h4 id="13_3_getInventory">getInventory():table</h4>
 <p><em class="method-synopsis"> Get this player's inventory</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.ModuleIntrospectionEntity$MethodEntityPlayerInventory</code></td></tr>
@@ -447,7 +511,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="11_5_getName">getName():string</h4>
+<h4 id="13_4_getName">getName():string</h4>
 <p><em class="method-synopsis"> Get this entity's name</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsIntrospection$MethodEntityGetName</code></td></tr>
@@ -455,50 +519,50 @@
 <tr><td>Module</td><td><code>plethora:introspection</code></td></tr>
 </table>
 </div>
-<h3 id="11_plethora:kinetic">plethora:kinetic</h3>
+<h3 id="13_plethora:kinetic">plethora:kinetic</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#12_0_disableAI">disableAI</a></td><td> Disable the AI of this entity</td></tr>
-<tr><td><a href="#12_1_explode">explode</a></td><td> Explode this creeper</td></tr>
-<tr><td><a href="#12_2_isWalking">isWalking</a></td><td> Whether the entity is currently walking somewhere</td></tr>
-<tr><td><a href="#12_3_launch">launch</a></td><td> Launch the entity in a set direction</td></tr>
-<tr><td><a href="#12_4_look">look</a></td><td> Look in a set direction</td></tr>
-<tr><td><a href="#12_5_teleport">teleport</a></td><td>Teleport to a position relative to the current...</td></tr>
-<tr><td><a href="#12_6_use">use</a></td><td>Right click with this item using a particular hand</td></tr>
-<tr><td><a href="#12_7_walk">walk</a></td><td> Walk to a coordinate</td></tr>
+<tr><td><a href="#14_0_disableAI">disableAI</a></td><td>Disable the AI of this entity</td></tr>
+<tr><td><a href="#14_1_explode">explode</a></td><td> Explode this creeper</td></tr>
+<tr><td><a href="#14_2_isWalking">isWalking</a></td><td> Whether the entity is currently walking somewhere</td></tr>
+<tr><td><a href="#14_3_launch">launch</a></td><td> Launch the entity in a set direction</td></tr>
+<tr><td><a href="#14_4_look">look</a></td><td> Look in a set direction</td></tr>
+<tr><td><a href="#14_5_teleport">teleport</a></td><td>Teleport to a position relative to the current...</td></tr>
+<tr><td><a href="#14_6_use">use</a></td><td> Right click with this item</td></tr>
+<tr><td><a href="#14_7_walk">walk</a></td><td> Walk to a coordinate</td></tr>
 </table>
 <div class="method">
-<h4 id="12_0_disableAI">disableAI()</h4>
-<p><em class="method-synopsis"> Disable the AI of this entity</em></p>
-<table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$MethodEntityLivingDisableAI</code></td></tr>
+<h4 id="14_0_disableAI">disableAI()</h4>
+<p><em class="method-synopsis">Disable the AI of this entity</em></p>
+<p>Be warned: this permanently scars them - they'll never be the same again!</p><table class="method-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$disableAI</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLiving</code></td></tr>
 <tr><td>Module</td><td><code>plethora:kinetic</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="12_1_explode">explode()</h4>
+<h4 id="14_1_explode">explode()</h4>
 <p><em class="method-synopsis"> Explode this creeper</em></p>
 <table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity$MethodEntityCreeperExplode</code></td></tr>
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity$explode</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>net.minecraft.entity.monster.EntityCreeper</code></td></tr>
 <tr><td>Module</td><td><code>plethora:kinetic</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="12_2_isWalking">isWalking():boolean</h4>
+<h4 id="14_2_isWalking">isWalking():boolean</h4>
 <p><em class="method-synopsis"> Whether the entity is currently walking somewhere</em></p>
 <table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$MethodEntityIsWalking</code></td></tr>
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$isWalking</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLiving</code></td></tr>
 <tr><td>Module</td><td><code>plethora:kinetic</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="12_3_launch">launch(yaw:number, pitch:number, power:number)</h4>
+<h4 id="14_3_launch">launch(yaw:number, pitch:number, power:number)</h4>
 <p><em class="method-synopsis"> Launch the entity in a set direction</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$launch</code></td></tr>
@@ -508,7 +572,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="12_4_look">look(yaw:number, pitch:number)</h4>
+<h4 id="14_4_look">look(yaw:number, pitch:number)</h4>
 <p><em class="method-synopsis"> Look in a set direction</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity$look</code></td></tr>
@@ -518,18 +582,18 @@
 </table>
 </div>
 <div class="method">
-<h4 id="12_5_teleport">teleport(x:number, y:number, z:number)</h4>
+<h4 id="14_5_teleport">teleport(x:number, y:number, z:number)</h4>
 <p><em class="method-synopsis">Teleport to a position relative to the current...</em></p>
 <p> Teleport to a position relative to the current one</p><table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity$MethodEntityEndermanTeleport</code></td></tr>
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity$teleport</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>net.minecraft.entity.monster.EntityEnderman</code></td></tr>
 <tr><td>Module</td><td><code>plethora:kinetic</code></td></tr>
 </table>
 </div>
 <div class="method">
-<h4 id="12_6_use">use([duration: integer], [hand:string]):boolean, string|nil</h4>
-<p><em class="method-synopsis">Right click with this item using a particular hand</em></p>
+<h4 id="14_6_use">use([duration:integer]):boolean, string|nil</h4>
+<p><em class="method-synopsis"> Right click with this item</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsPlayerActions$use</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
@@ -538,7 +602,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="12_7_walk">walk(x:number, y:number, z:number]):boolean, string|nil</h4>
+<h4 id="14_7_walk">walk(x:number, y:number, z:number):boolean, string|nil</h4>
 <p><em class="method-synopsis"> Walk to a coordinate</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic$walk</code></td></tr>
@@ -547,13 +611,13 @@
 <tr><td>Module</td><td><code>plethora:kinetic</code></td></tr>
 </table>
 </div>
-<h3 id="12_plethora:laser">plethora:laser</h3>
+<h3 id="14_plethora:laser">plethora:laser</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#13_0_fire">fire</a></td><td> Fire a laser in a set direction</td></tr>
+<tr><td><a href="#15_0_fire">fire</a></td><td> Fire a laser in a set direction</td></tr>
 </table>
 <div class="method">
-<h4 id="13_0_fire">fire(yaw:number, pitch:number, potency:number)</h4>
+<h4 id="15_0_fire">fire(yaw:number, pitch:number, potency:number)</h4>
 <p><em class="method-synopsis"> Fire a laser in a set direction</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsLaser$fire</code></td></tr>
@@ -562,14 +626,14 @@
 <tr><td>Module</td><td><code>plethora:laser</code></td></tr>
 </table>
 </div>
-<h3 id="13_plethora:scanner">plethora:scanner</h3>
+<h3 id="15_plethora:scanner">plethora:scanner</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#14_0_getBlockMeta">getBlockMeta</a></td><td> Get metadata about a nearby block</td></tr>
-<tr><td><a href="#14_1_scan">scan</a></td><td> Scan all blocks in the vicinity</td></tr>
+<tr><td><a href="#16_0_getBlockMeta">getBlockMeta</a></td><td> Get metadata about a nearby block</td></tr>
+<tr><td><a href="#16_1_scan">scan</a></td><td> Scan all blocks in the vicinity</td></tr>
 </table>
 <div class="method">
-<h4 id="14_0_getBlockMeta">getBlockMeta(x:integer, y:integer, z:integer):table</h4>
+<h4 id="16_0_getBlockMeta">getBlockMeta(x:integer, y:integer, z:integer):table</h4>
 <p><em class="method-synopsis"> Get metadata about a nearby block</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsScanner$getBlockMeta</code></td></tr>
@@ -579,24 +643,24 @@
 </table>
 </div>
 <div class="method">
-<h4 id="14_1_scan">scan()</h4>
+<h4 id="16_1_scan">scan()</h4>
 <p><em class="method-synopsis"> Scan all blocks in the vicinity</em></p>
 <table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsScanner$MethodScanBlocks</code></td></tr>
+<tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsScanner$scan</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
 <tr><td>Module</td><td><code>plethora:scanner</code></td></tr>
 </table>
 </div>
-<h3 id="14_plethora:sensor">plethora:sensor</h3>
+<h3 id="16_plethora:sensor">plethora:sensor</h3>
 <table class="method-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
-<tr><td><a href="#15_0_getMetaByID">getMetaByID</a></td><td> Find a nearby entity by UUID</td></tr>
-<tr><td><a href="#15_1_getMetaByName">getMetaByName</a></td><td> Find a nearby entity by name</td></tr>
-<tr><td><a href="#15_2_sense">sense</a></td><td> Scan for entities in the vicinity</td></tr>
+<tr><td><a href="#17_0_getMetaByID">getMetaByID</a></td><td> Find a nearby entity by UUID</td></tr>
+<tr><td><a href="#17_1_getMetaByName">getMetaByName</a></td><td> Find a nearby entity by name</td></tr>
+<tr><td><a href="#17_2_sense">sense</a></td><td> Scan for entities in the vicinity</td></tr>
 </table>
 <div class="method">
-<h4 id="15_0_getMetaByID">getMetaByID():table|nil</h4>
+<h4 id="17_0_getMetaByID">getMetaByID():table|nil</h4>
 <p><em class="method-synopsis"> Find a nearby entity by UUID</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsSensor$getMetaByID</code></td></tr>
@@ -606,7 +670,7 @@
 </table>
 </div>
 <div class="method">
-<h4 id="15_1_getMetaByName">getMetaByName():table|nil</h4>
+<h4 id="17_1_getMetaByName">getMetaByName():table|nil</h4>
 <p><em class="method-synopsis"> Find a nearby entity by name</em></p>
 <table class="method-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsSensor$getMetaByName</code></td></tr>
@@ -616,15 +680,15 @@
 </table>
 </div>
 <div class="method">
-<h4 id="15_2_sense">sense():table</h4>
+<h4 id="17_2_sense">sense():table</h4>
 <p><em class="method-synopsis"> Scan for entities in the vicinity</em></p>
 <table class="method-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsSensor$SenseEntitiesMethod</code></td></tr>
+<tr><td>Class</td><td><code>org.squiddev.plethora.gameplay.modules.methods.MethodsSensor$sense</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>org.squiddev.plethora.api.IWorldLocation</code></td></tr>
 <tr><td>Module</td><td><code>plethora:sensor</code></td></tr>
 </table>
 </div>
 </div>
-<footer>Generated on 00:00:54 2016-11-14</footer>
+<footer>Generated on 10:55:47 2016-12-17</footer>
 </body></html>

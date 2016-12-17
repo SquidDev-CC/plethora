@@ -1,19 +1,9 @@
-*.class
-.shelf
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
 # =========================
 # Operating System Files
+# =========================
+
+# Linux
+*.swp
 # =========================
 
 # OSX
@@ -54,36 +44,6 @@ $RECYCLE.BIN/
 *.msp
 
 # =========================
-# Forge Files
+# Jekyll files
 # =========================
-/run-*/
-/build-*/
-/bin/
-/lib/ # Include libs manually
-
-# Gradle
-# =========================
-/.gradle
-/build/
-/run/
-!gradle/wrapper/gradle-wrapper.jar
-
-# Idea
-# =========================
-*.iml
-*.ipr
-*.iws
-.idea
-/classes
-
-# Eclipse
-# =========================
-/eclipse/
-/.classpath
-/.project
-/.settings/
-/debug/
-*.lock
-/.metadata/
-out
-logs/
+/_site
