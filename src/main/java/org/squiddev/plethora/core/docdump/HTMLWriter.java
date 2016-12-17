@@ -19,13 +19,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class WriteDocumentation {
+public class HTMLWriter implements IDocWriter {
 	private static final DateFormat format = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
 	private final PrintStream writer;
 
 	private int id = 0;
 
-	public WriteDocumentation(OutputStream stream) {
+	public HTMLWriter(OutputStream stream) {
 		this.writer = new PrintStream(stream);
 	}
 
@@ -114,15 +114,15 @@ public class WriteDocumentation {
 		if (data.detail != null) writer.printf("<p>%s</p>", data.detail.replace("\n", "</p>\n<p>"));
 
 		writer.println("<table class=\"method-details\">");
-		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", data.method.getClass().getName());
-		writer.printf("<tr><td>Target</td><td><code>%s</code></td></tr>\n", data.target.getName());
+		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", data.method);
+		writer.printf("<tr><td>Target</td><td><code>%s</code></td></tr>\n", data.target);
 
-		if (data.method instanceof ISubTargetedMethod) {
-			writer.printf("<tr><td>Sub-target</td><td><code>%s</code></td></tr>\n", ((ISubTargetedMethod) data.method).getSubTarget().getName());
+		if (data.subtarget != null) {
+			writer.printf("<tr><td>Sub-target</td><td><code>%s</code></td></tr>\n", data.subtarget);
 		}
 
-		if (data.method instanceof IModuleMethod) {
-			writer.printf("<tr><td>Module</td><td><code>%s</code></td></tr>\n", ((IModuleMethod) data.method).getModule());
+		if (data.module != null) {
+			writer.printf("<tr><td>Module</td><td><code>%s</code></td></tr>\n", data.module);
 		}
 
 		writer.println("</table>");

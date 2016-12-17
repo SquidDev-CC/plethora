@@ -1,12 +1,15 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.core.docdump.WriteDocumentation;
+import org.squiddev.plethora.core.docdump.HTMLWriter;
+import org.squiddev.plethora.core.docdump.IDocWriter;
+import org.squiddev.plethora.core.docdump.JSONWriter;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.io.FileOutputStream;
@@ -51,11 +54,20 @@ public class CommandPlethora extends CommandBase {
 			String name = args[1];
 			try {
 				OutputStream file = new FileOutputStream(name);
+				String extension = Files.getFileExtension(name);
 
 				try {
 					PrintStream writer = new PrintStream(file);
 
-					WriteDocumentation docs = new WriteDocumentation(writer);
+					IDocWriter docs;
+					if (extension.equals("json")) {
+						docs = new JSONWriter(writer);
+					} else if (extension.equals("html") || extension.equals("htm")) {
+						docs = new HTMLWriter(writer);
+					} else {
+						throw new CommandException("Unknown extension '" + extension + "'. Please use html or json");
+					}
+
 					docs.writeHeader();
 					docs.write(PlethoraAPI.instance().methodRegistry().getMethods());
 					docs.writeFooter();
@@ -63,9 +75,7 @@ public class CommandPlethora extends CommandBase {
 					file.close();
 				}
 
-				if (sender.sendCommandFeedback()) {
-					sender.addChatMessage(new ChatComponentText("Documentation written to " + name));
-				}
+				sender.addChatMessage(new ChatComponentText("Documentation written to " + name));
 			} catch (Throwable e) {
 				DebugLogger.error("Cannot handle " + name, e);
 				throw new CommandException(e.toString());
