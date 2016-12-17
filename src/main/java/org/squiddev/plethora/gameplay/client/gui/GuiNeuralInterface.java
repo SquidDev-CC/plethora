@@ -61,6 +61,11 @@ public class GuiNeuralInterface extends GuiContainer {
 	}
 
 	@Override
+	public boolean doesGuiPauseGame() {
+		return false;
+	}
+
+	@Override
 	public void updateScreen() {
 		super.updateScreen();
 		terminalGui.update();

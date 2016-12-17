@@ -26,6 +26,14 @@ tile.plethora.manipulator.mark_2.name=Manipulator Mk II
 tile.plethora.manipulator.mark_1.desc=Used to interface with a module from a computer
 tile.plethora.manipulator.mark_2.desc=Used to interface with multiple modules from a computer
 
+item.plethora.keyboard.name=Keyboard
+item.plethora.keyboard.desc=Type into computers remotely. Shift+Right-click to bind to a computer,
+item.plethora.keyboard.bound=Bound to block
+item.plethora.keyboard.cleared=Binding cleared
+item.plethora.keyboard.binding=Bound to %s
+item.plethora.keyboard.broken=Broken binding to %s
+item.plethora.keyboard.close=Keyboard open. Press ESC to close.
+
 # Neural interface/connector
 item.plethora.neuralConnector.name=Neural Connector
 item.plethora.neuralConnector.desc=Used to connect to Neural Interfaces
