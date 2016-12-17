@@ -13,6 +13,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,6 +40,7 @@ public class ItemKeyboard extends ItemBase {
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
 				tag.setInteger("z", pos.getZ());
+				tag.setInteger("dim", world.provider.getDimensionId());
 
 				// We'll rebind this elsewhere.
 				tag.removeTag(SESSION_ID);
@@ -51,6 +53,7 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag("x");
 				tag.removeTag("y");
 				tag.removeTag("z");
+				tag.removeTag("dim");
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 			}
@@ -79,9 +82,10 @@ public class ItemKeyboard extends ItemBase {
 			}
 
 			if (!tag.hasKey(INSTANCE_ID, 99) || !ComputerCraft.serverComputerRegistry.contains(tag.getInteger(INSTANCE_ID))) {
+				World remote = DimensionManager.getWorld(tag.getInteger("dim"));
 				BlockPos pos = new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
-				if (world.isBlockLoaded(pos)) {
-					TileEntity tile = world.getTileEntity(pos);
+				if (remote != null && remote.isBlockLoaded(pos)) {
+					TileEntity tile = remote.getTileEntity(pos);
 					if (tile instanceof IComputerTile) {
 						tag.setInteger(INSTANCE_ID, ((IComputerTile) tile).getComputer().getInstanceID());
 						dirty = true;
