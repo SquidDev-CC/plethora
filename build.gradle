@@ -100,8 +100,8 @@ dependencies {
 	deobfProvided "curseMods:Chameleon:1.10-2.2.0"
 	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-3.5.8"
 
-	deobfCompile "MCMultiPart:MCMultiPart:1.3.0:universal"
-	deobfCompile "refinedstorage:refinedstorage:1.2.5-576"
+	deobfProvided "MCMultiPart:MCMultiPart:1.3.0:universal"
+	deobfProvided "refinedstorage:refinedstorage:1.2.5-576"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
