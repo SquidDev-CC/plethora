@@ -80,6 +80,9 @@ repositories {
 
 	// Tesla
 	maven { url 'http://maven.epoxide.xyz' }
+
+	// Forestry
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2355/320/[module]_[revision](.[ext])" }
 }
 
 dependencies {
@@ -102,6 +105,8 @@ dependencies {
 
 	deobfProvided "MCMultiPart:MCMultiPart:1.3.0:universal"
 	deobfProvided "refinedstorage:refinedstorage:1.2.5-576"
+
+	deobfCompile "curseMods:forestry:${project.mc_version}-5.2.16.335"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
