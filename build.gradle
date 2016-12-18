@@ -28,7 +28,7 @@ archivesBaseName = "plethora"
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}"
 	runDir = "run-${project.mc_version}"
-	mappings = "snapshot_20160518"
+	mappings = "snapshot_20161111"
 
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
@@ -78,7 +78,7 @@ repositories {
 
 dependencies {
 	compile "ComputerCraft:ComputerCraft:${project.cc_version}"
-	deobfCompile "mezz.jei:jei_${project.mc_version}:3.9.7.260"
+	deobfCompile "mezz.jei:jei_${project.mc_version}:3.13.6.392"
 
 	provided "org.squiddev:CCTweaks:${project.mc_version}-1.2.3-pr0:dev"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
