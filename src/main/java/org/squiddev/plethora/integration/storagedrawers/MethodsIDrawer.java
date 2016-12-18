@@ -9,7 +9,7 @@ import org.squiddev.plethora.api.method.IContext;
 public class MethodsIDrawer {
 	@BasicObjectMethod.Inject(
 		value = IDrawer.class, modId = StorageDrawers.MOD_ID, worldThread = true,
-		doc = "():int -- The maximum number of items in this drawer"
+		doc = "function():int -- The maximum number of items in this drawer"
 	)
 	public static Object[] getCapacity(IContext<IDrawer> context, Object[] arguments) {
 		return new Object[]{context.getTarget().getMaxCapacity()};
@@ -17,7 +17,7 @@ public class MethodsIDrawer {
 
 	@BasicObjectMethod.Inject(
 		value = IDrawer.class, modId = StorageDrawers.MOD_ID, worldThread = true,
-		doc = "():int -- The number of items in this drawer"
+		doc = "function():int -- The number of items in this drawer"
 	)
 	public static Object[] getCount(IContext<IDrawer> context, Object[] arguments) {
 		return new Object[]{context.getTarget().getStoredItemCount()};
@@ -25,7 +25,7 @@ public class MethodsIDrawer {
 
 	@BasicObjectMethod.Inject(
 		value = IDrawer.class, modId = StorageDrawers.MOD_ID, worldThread = true,
-		doc = "():table -- The metadata of the item in this drawer"
+		doc = "function():table -- The metadata of the item in this drawer"
 	)
 	public static Object[] getItemMeta(IContext<IDrawer> context, Object[] arguments) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();
