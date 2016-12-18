@@ -41,6 +41,11 @@ public final class ArgumentHelper {
 		return new LuaException("Expected " + expected + " for argument " + (index + 1) + ", got " + getType(object));
 	}
 
+	@Nonnull
+	public static LuaException badObject(@Nullable Object object, @Nonnull String kind, @Nonnull String expected) {
+		return new LuaException("Expected " + expected + " for " + kind + ", got " + getType(object));
+	}
+
 	public static double getNumber(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof Number) {

@@ -59,7 +59,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	}
 
 	@Nullable
-	private static String getNBTHash(@Nonnull ItemStack stack) {
+	public static String getNBTHash(@Nonnull ItemStack stack) {
 		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) return null;
 
 		NBTTagCompound tag = stack.getTagCompound();
