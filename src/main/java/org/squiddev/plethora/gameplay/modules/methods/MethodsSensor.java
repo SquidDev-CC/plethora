@@ -26,6 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getUUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
@@ -56,12 +57,7 @@ public final class MethodsSensor {
 		doc = "function():table|nil -- Find a nearby entity by UUID"
 	)
 	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final UUID uuid;
-		try {
-			uuid = UUID.fromString(getString(args, 0));
-		} catch (IllegalArgumentException e) {
-			throw new LuaException("Invalid UUID");
-		}
+		final UUID uuid = getUUID(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override

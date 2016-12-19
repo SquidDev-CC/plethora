@@ -4,7 +4,9 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Various helpers for arguments
@@ -84,6 +86,38 @@ public final class ArgumentHelper {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Nonnull
+	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
+		Object value = index < args.length ? args[index] : null;
+		if (value instanceof String) {
+			String name = (String) value;
+			try {
+				return Enum.valueOf(klass, name.toUpperCase(Locale.ENGLISH));
+			} catch (IllegalArgumentException e) {
+				throw new LuaException("Bad name '" + name.toLowerCase(Locale.ENGLISH) + "' for argument " + (index + 1));
+			}
+		} else {
+			throw badArgument(value, index, "string");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nonnull
+	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
+		Object value = index < args.length ? args[index] : null;
+		if (value instanceof String) {
+			String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
+			try {
+				return UUID.fromString(uuid);
+			} catch (IllegalArgumentException e) {
+				throw new LuaException("Bad uuid '" + uuid + "' for argument " + (index + 1));
+			}
+		} else {
+			throw badArgument(value, index, "string");
+		}
+	}
+
 	public static double optNumber(@Nonnull Object[] args, int index, double def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
@@ -122,7 +156,17 @@ public final class ArgumentHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<Object, Object> defaultTable(@Nonnull Object[] args, int index, Map<Object, Object> def) throws LuaException {
+	@Nonnull
+	public static <T extends Enum<T>> T optEnum(@Nonnull Object[] args, int index, Class<T> klass, T def) throws LuaException {
+		if (index >= args.length || args[index] == null) {
+			return def;
+		} else {
+			return getEnum(args, index, klass);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<Object, Object> optTable(@Nonnull Object[] args, int index, Map<Object, Object> def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
 			return def;

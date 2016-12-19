@@ -39,7 +39,7 @@ public class MethodsInventoryWorld {
 
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-			final EnumFacing direction = getDirection(optString(args, 2, null));
+			final EnumFacing direction = optEnum(args, 2, EnumFacing.class, null);
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
@@ -72,7 +72,7 @@ public class MethodsInventoryWorld {
 		public MethodResult apply(@Nonnull final IUnbakedContext<ItemSlot> context, @Nonnull Object[] args) throws LuaException {
 			final int limit = optInt(args, 0, Integer.MAX_VALUE);
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
-			final EnumFacing direction = getDirection(optString(args, 1, null));
+			final EnumFacing direction = optEnum(args, 1, EnumFacing.class, null);
 
 			return MethodResult.nextTick(new Callable<MethodResult>() {
 				@Override
@@ -85,15 +85,6 @@ public class MethodsInventoryWorld {
 				}
 			});
 		}
-	}
-
-	private static EnumFacing getDirection(String name) throws LuaException {
-		if (name == null) return null;
-
-		EnumFacing direction = EnumFacing.byName(name);
-
-		if (direction == null) throw new LuaException("Unknown direction '" + name + "'");
-		return direction;
 	}
 
 	private static int dropItem(IWorldLocation location, ItemStack stack, EnumFacing direction) {
