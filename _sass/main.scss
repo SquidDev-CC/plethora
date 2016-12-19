@@ -137,3 +137,54 @@ $link: darken($base0D, 20%);
 		font-size: 14px;
 	}
 }
+
+.desc {
+	.desc-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin: 5px 0px;
+	}
+
+	.desc-text {
+		flex: 0 0 60%;
+		max-width: 60%;
+		order: 1;
+	}
+
+	.desc-image, .desc-image {
+		flex: 0 0 40%;
+		max-width: 40%;
+		box-sizing: border-box;
+	}
+
+	&:nth-child(2n+1) .desc-image {
+		padding-right: 10px;
+		order: 0;
+	}
+
+	&:nth-child(2n) .desc-image {
+		padding-left: 10px;
+		order: 2;
+	}
+
+	@media(max-width: 800px) {
+		.desc-row {
+			flex-direction: column;
+		}
+
+		.desc-text {
+			flex-basis: 100%;
+			max-width: 100%;
+		}
+
+		.desc-image {
+			flex-basis: 100%;
+			max-width: 100%;
+			margin: 0px auto;
+			padding: 0px;
+			order: 2;
+		}
+	}
+}
