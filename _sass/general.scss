@@ -5,14 +5,30 @@ body {
 
 header {
 	background-color: $header-back;
-	box-sizing: border-box;
 	color: $header-fore;
-	padding: 10px;
 	height: 50px;
-	vertical-align: middle;
 
-	h1 { font-size: 1.5em; }
-	a, a:hover { color: inherit !important; }
+	h1 {
+		font-size: 1.5em;
+	}
+
+	.button-group {
+		height: 100%;
+		a {
+			display: inline-block;
+			height: 100%;
+			padding: 0px 10px;
+			box-sizing: border-box;
+			color: inherit;
+
+			&:hover {
+				color: inherit;
+				background-color: darken($header-back, 10%);
+			}
+
+			> * { @include middle; }
+		}
+	}
 }
 
 footer {

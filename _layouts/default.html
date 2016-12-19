@@ -11,7 +11,26 @@
 	<body>
 		<div id="container">
 			<header>
-				<h1 class="pull-left"><a href="{{ "/" | relative_url }}">Plethora</a></h1>
+				<div class="pull-left button-group">
+					<a href="{{ base_url }}">
+						<h1>Plethora</h1>
+					</a>
+				</div>
+
+				<div class="pull-right button-group">
+					<a href="https://github.com/SquidDev-CC/plethora" title="View on GitHub">
+						<span>
+							<span class="fa fa-github" aria-hidden="true"></span>
+							GitHub
+						</span>
+					</a>
+					<a href="https://minecraft.curseforge.com/projects/plethora-peripherals" title="View on Curse">
+						<span>
+							<span class="fa fa-fire" aria-hidden="true"></span>
+							Curse
+						</span>
+					</a>
+				</div>
 			</header>
 			<div id="content">
 				{{content}}
