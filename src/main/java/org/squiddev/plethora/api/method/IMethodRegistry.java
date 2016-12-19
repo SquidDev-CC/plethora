@@ -1,11 +1,13 @@
 package org.squiddev.plethora.api.method;
 
 import com.google.common.collect.Multimap;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
@@ -66,10 +68,11 @@ public interface IMethodRegistry {
 	 * Get the cost handler for this object
 	 *
 	 * @param object The cost handler's owner
+	 * @param side   The side to get the cost handler from
 	 * @return The associated cost handler
 	 */
 	@Nonnull
-	ICostHandler getCostHandler(@Nonnull ICapabilityProvider object);
+	ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side);
 
 	/**
 	 * Register a method builder

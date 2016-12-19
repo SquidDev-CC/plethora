@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -20,6 +21,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -120,9 +122,9 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object) {
+	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side) {
 		Preconditions.checkNotNull(object, "object cannot be null");
-		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, null);
+		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, side);
 		return handler != null ? handler : DefaultCostHandler.get(object);
 	}
 
