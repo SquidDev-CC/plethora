@@ -78,7 +78,7 @@ html, body {
 	display: block;
 	position: relative;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
+	-webkit-transform: perspective(1px) translateY(-50%);
+	-ms-transform: perspective(1px) translateY(-50%);
+	transform: perspective(1px) translateY(-50%);
 }

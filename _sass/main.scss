@@ -182,9 +182,9 @@ $link: darken($base0D, 20%);
 		.desc-image {
 			flex-basis: 100%;
 			max-width: 100%;
-			margin: 0px auto;
+			margin: 10px auto;
 			padding: 0px;
-			order: 2;
+			order: 2 !important;
 		}
 	}
 }
