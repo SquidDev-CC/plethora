@@ -104,11 +104,30 @@ $link: darken($base0D, 20%);
 	}
 }
 
+code.class {
+	background-color: inherit;
+	color: inherit;
+}
+
+.method-list {
+	h3 {
+		font-size: 1.7em;
+		margin-bottom: 15px;
+	}
+
+	h4 {
+		margin-top: 15px;
+		margin-bottom: 10px;
+		font-size: 1.3em;
+		font-family: "Consolas", monospace;
+	}
+}
 .method {
 	background: $grey08;
 	margin-top: 10px;
 
-	h4 {
+	h5 {
+		font-size: 1em;
 		font-family: "Consolas", monospace;
 		background: #EEEEEE;
 		display: block;
@@ -116,7 +135,7 @@ $link: darken($base0D, 20%);
 		font-weight: 600;
 	}
 
-	h4, .content {
+	h5, .content {
 		width: 100%;
 		padding: 6px;
 		box-sizing: border-box;
