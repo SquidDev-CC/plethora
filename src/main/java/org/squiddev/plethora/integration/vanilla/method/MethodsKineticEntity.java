@@ -1,11 +1,18 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
@@ -41,8 +48,8 @@ public final class MethodsKineticEntity {
 					NetHandlerPlayServer handler = ((EntityPlayerMP) target).playerNetServerHandler;
 					handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
 				} else {
-					target.rotationYawHead = target.rotationYaw = (float) (Math.toDegrees(yaw) % 360);
-					target.rotationPitch = (float) (Math.toDegrees(pitch) % 360);
+					target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
+					target.rotationPitch = (float) (pitch % 360);
 				}
 				return MethodResult.empty();
 			}
@@ -86,4 +93,52 @@ public final class MethodsKineticEntity {
 			}
 		});
 	}
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntitySkeleton.class,
+		doc = "function(potency:number) -- Fire an arrow in the direction the skeleton is looking"
+	)
+	@Nonnull
+	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+		final double potency = getNumber(args, 1);
+
+		ArgumentHelper.assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
+
+		CostHelpers.checkCost(unbaked.getCostHandler(), Kinetic.shootCost * potency);
+
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModuleContainer> context = unbaked.bake();
+				EntitySkeleton skeleton = context.getContext(EntitySkeleton.class);
+
+				ItemStack stack = skeleton.getHeldItem();
+				if (stack == null || stack.getItem() != Items.bow) throw new LuaException("Not holding a bow");
+
+				IWorldLocation location = context.getContext(IWorldLocation.class);
+
+				EntityArrow arrow = new EntityArrow(location.getWorld(), skeleton, (float) (potency * 2));
+
+				double damage = potency * 2;
+				int power = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
+				if (power > 0) damage += power * 0.5 + 0.5;
+				arrow.setDamage(damage);
+
+				int punch = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
+				if (punch > 0) arrow.setKnockbackStrength(punch);
+
+				if (potency == 1.0) arrow.setIsCritical(true);
+
+				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack) > 0 || skeleton.getSkeletonType() == 1) {
+					arrow.setFire(100);
+				}
+
+				skeleton.playSound("random.bow", 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
+
+				location.getWorld().spawnEntityInWorld(arrow);
+				return MethodResult.empty();
+			}
+		});
+	}
 }
+
