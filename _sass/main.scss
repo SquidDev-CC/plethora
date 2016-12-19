@@ -69,16 +69,12 @@ $link: darken($base0D, 20%);
 		max-width: 25%;
 		padding-right: 15px;
 
-		a {
-			line-height: 1.6em;
-		}
-
 		li {
 			padding: 3px 0px;
+			line-height: 1.4em;
 		}
 
-		ul {
-			margin-top: 5px;
+		.sidebar-group {
 			margin-bottom: 20px;
 		}
 	}
@@ -122,7 +118,7 @@ $link: darken($base0D, 20%);
 
 	h4, .content {
 		width: 100%;
-		padding: 4px 2px;
+		padding: 6px;
 		box-sizing: border-box;
 	}
 
