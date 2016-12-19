@@ -22,12 +22,3 @@ neural controller allows you to interact with it. You can insert modules (which 
 manipulate them with the built-in computer. Building a cyborg army has never been so easy.
 
 You can also add a kinetic augment to the neural interface. This allows controlling the host entity in various ways.
-
-### Images
-![](images/Squids%20and%20Lasers.png)
-
-> You know, I have one simple request. And that is to have ~~sharks~~ squid with frickin' laser beams attached to their heads!
-
-![](images/Modules.png)
-
-> Various modules available
