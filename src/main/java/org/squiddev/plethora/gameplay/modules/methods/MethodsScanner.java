@@ -3,16 +3,17 @@ package org.squiddev.plethora.gameplay.modules.methods;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
+import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -28,7 +29,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 public final class MethodsScanner {
 	@SubtargetedModuleObjectMethod.Inject(
 		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class, worldThread = true,
-		doc = "function() -- Scan all blocks in the vicinity"
+		doc = "function():table -- Scan all blocks in the vicinity"
 	)
 	@Nullable
 	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -79,16 +80,13 @@ public final class MethodsScanner {
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
 				IWorldLocation location = baked.getContext(IWorldLocation.class);
-				BlockPos pos = location.getPos().add(x, y, z);
+
 				World world = location.getWorld();
+				BlockPos pos = location.getPos().add(x, y, z);
 
-				IBlockState block = world.getBlockState(pos);
-				Map<Object, Object> meta = baked.makePartialChild(block).getMeta();
-
-				TileEntity te = world.getTileEntity(pos);
-				if (te != null) {
-					meta.putAll(baked.makePartialChild(te).getMeta());
-				}
+				Map<Object, Object> meta = baked
+					.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
+					.getMeta();
 
 				return MethodResult.result(meta);
 			}
