@@ -32,7 +32,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "(instrument:string|number, pitch:number) -- Plays a note block note"
+		doc = "function(instrument:string|number, pitch:number) -- Plays a note block note"
 	)
 	public static MethodResult playNote(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		List<String> instruments = getInstruments();
@@ -74,7 +74,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "(sound:string[, pitch:number][, volume:number]) -- Plays a note block note"
+		doc = "function(sound:string[, pitch:number][, volume:number]) -- Plays a note block note"
 	)
 	public static MethodResult playSound(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		final String sound = getString(arguments, 0);

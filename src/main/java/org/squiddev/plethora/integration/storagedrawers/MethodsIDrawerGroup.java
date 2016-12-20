@@ -13,7 +13,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 public class MethodsIDrawerGroup {
 	@BasicObjectMethod.Inject(
 		value = IDrawerGroup.class, modId = StorageDrawers.MOD_ID, worldThread = true,
-		doc = "():int -- Return the number of drawers inside this draw group"
+		doc = "function():int -- Return the number of drawers inside this draw group"
 	)
 	public static Object[] getDrawerCount(IContext<IDrawerGroup> context, Object[] arguments) {
 		return new Object[]{context.getTarget().getDrawerCount()};
@@ -21,7 +21,7 @@ public class MethodsIDrawerGroup {
 
 	@BasicMethod.Inject(
 		value = IDrawerGroup.class, modId = StorageDrawers.MOD_ID,
-		doc = "(slot:int):table -- Return the drawer at this particular slot"
+		doc = "function(slot:int):table -- Return the drawer at this particular slot"
 	)
 	public static MethodResult getDrawer(final IUnbakedContext<IDrawerGroup> context, Object[] args) throws LuaException {
 		final int slot = ArgumentHelper.getInt(args, 0);

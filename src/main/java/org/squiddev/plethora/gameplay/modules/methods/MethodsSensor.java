@@ -54,7 +54,7 @@ public final class MethodsSensor {
 	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
-		doc = "function():table|nil -- Find a nearby entity by UUID"
+		doc = "function(id:string):table|nil -- Find a nearby entity by UUID"
 	)
 	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final UUID uuid = getUUID(args, 0);
@@ -76,7 +76,7 @@ public final class MethodsSensor {
 	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
-		doc = "function():table|nil -- Find a nearby entity by name"
+		doc = "function(name:string):table|nil -- Find a nearby entity by name"
 	)
 	@Nonnull
 	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {

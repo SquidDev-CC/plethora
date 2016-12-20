@@ -112,7 +112,7 @@ public class MethodsInventoryWorld {
 		private static final double RADIUS = 1;
 
 		public MethodItemHandlerSuck() {
-			super("suck", "function([slot:int], [limit:int]):int -- Suck an item from the ground");
+			super("suck", "function([slot:int][, limit:int]):int -- Suck an item from the ground");
 		}
 
 		@Override
