@@ -20,7 +20,8 @@ Right click to insert the module into the manipulator. You can right click with 
 
 ![](images/manipulator-with.png "A manipulator with the module inserted")
 
-No we've got the module in there, let's start doing some things with it. Fire up a Lua console and wrap the manipulator:
+Now that we've got the module in there, let's start doing some things with it. Fire up a Lua console and wrap the
+manipulator:
 
 ```lua
 manip = peripheral.wrap("left")
@@ -33,12 +34,12 @@ manip.getDocs()
 
 -- You should get something like
 {
-  hasModules = "function(names:string...):boolean -- Checks whether a module is a available",
-  filterModules = "function(names:string...):table|nil -- Gets the methods which require these modules",
+  hasModule = "function(name:string:boolean -- Checks whether a module is a available",
+  filterModules = "function(names...:string):table|nil -- Gets the methods which require these modules",
   listModules = "function():table -- Lists all modules available",
   -- Some module specific methods here. For instance:
   sense = "function():table -- Scan for entities in the vicinity",
-  getMetaByID = "function(id:string) -- Find a nearby entity by UUID.
+  getMetaByID = "function(id:string) -- Find a nearby entity by UUID.",
 }
 ```
 
@@ -48,15 +49,15 @@ So firstly, let's list the modules our manipulator has.
 manip.listModules()
 
 {
-	"plethora:sensor",
+  "plethora:sensor",
 }
 ```
 
 As expected, the list just has the entity sensor which we placed in. We can confirm the module is there with the
-`.hasModules()` method:
+`.hasModule()` method:
 
 ```lua
-manip.hasModules("plethora:sensor")
+manip.hasModule("plethora:sensor")
 
 true
 ```
@@ -89,8 +90,9 @@ manip.sense()
 }
 ```
 
-This provides us with a list of entities within a 8 block radius around the manipulator. Like `.list()` on inventories,
-this method provides only a snapshot of the surrounding entities. Its worth noting a couple of things about the data provided:
+This provides us with a list of entities within an 8 block radius around the manipulator. Like `.list()` on inventories,
+this method provides only a snapshot of the surrounding entities. Its worth noting a couple of things about the data
+provided:
 
  - The positions are relative to the sensor. Plethora tries to avoid "leaking" information about the environment, such
    as absolute positions of things.
@@ -100,8 +102,8 @@ this method provides only a snapshot of the surrounding entities. Its worth noti
 Let's find out a little more about this player. For that we'll use the `.getMetaByID()` function:
 
 ```lua
-manip.getMetaByID("blah-blah-blah")
 -- Note, you might want to store the result of .sense() in a variable instead of typing the UUID.
+manip.getMetaByID("blah-blah-blah")
 
 table: 66a31607
 ```
@@ -114,4 +116,4 @@ such as whether they are sleeping or not. We won't focus on it too much and will
 ### Mixing modules
 What distinguishes modules from normal peripherals is their ability to interact with each other. The block sensor allows
 getting metadata about surrounding blocks and the daylight sensor allows you to get the light level of the current
-block. When combined, the block sensor will also include light level's in blocks metadata.
+block. When combined, the block sensor will also include light levels in blocks metadata.
