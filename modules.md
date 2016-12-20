@@ -14,11 +14,11 @@ one of these and place it next to a computer. Then grab a module, we're going to
 
 If you hover over the centre point of the manipulator you should see an outline of where the module can go.
 
-![](/images/manipulator-without.png "A manipulator before putting the module in")
+![](images/manipulator-without.png "A manipulator before putting the module in")
 
 Right click to insert the module into the manipulator. You can right click with an empty hand to remove it again.
 
-![](/images/manipulator-with.png "A manipulator with the module inserted")
+![](images/manipulator-with.png "A manipulator with the module inserted")
 
 No we've got the module in there, let's start doing some things with it. Fire up a Lua console and wrap the manipulator:
 
