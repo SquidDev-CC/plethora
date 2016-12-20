@@ -6,6 +6,8 @@ layout: text
 ## Getting started with Plethora
 One of the main features provided by Plethora is the ability to wrap almost any in-game object as a peripheral. This allows you to read data about that object and manipulate it using Lua. To see how this works let's place a chest next to a computer and open the Lua console.
 
+![](/images/chest-computer.png "A chest next to a computer")
+
 > **Note:** If you're unfamiliar with ComputerCraft's peripherals, I really recommend you read through [this tutorial](http://www.computercraft.info/forums2/index.php?/topic/15062-peripheral-basics/) first.
 
 Now you've got a Lua console open you'll want to "wrap" the peripheral and start using it:
