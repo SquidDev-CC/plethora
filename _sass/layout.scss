@@ -45,6 +45,12 @@ html, body {
 	float: right;
 }
 
+.hide-tiny {
+	@media(max-width: 300px) {
+		display: none;
+	}
+}
+
 @mixin grid-container() {
 	display: flex;
 	flex-wrap: wrap;
