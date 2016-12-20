@@ -27,6 +27,7 @@ public final class Registry {
 	public static ItemNeuralInterface itemNeuralInterface;
 	public static ItemModule itemModule;
 	public static ItemKeyboard itemKeyboard;
+	public static BlockManipulator blockManipulator;
 
 	private static void addModule(IModule module) {
 		if (module instanceof IClientModule) {
@@ -49,7 +50,7 @@ public final class Registry {
 		setup = true;
 
 		addModule(itemModule = new ItemModule());
-		addModule(new BlockManipulator());
+		addModule(blockManipulator = new BlockManipulator());
 		addModule(new RenderOverlay());
 
 		addModule(itemNeuralInterface = new ItemNeuralInterface());
