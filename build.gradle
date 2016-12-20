@@ -58,8 +58,8 @@ repositories {
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2311/39/[module][revision](.[ext])" }
 
 	// Chameleon + Storage Drawers
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2349/653/[module]-[revision](.[ext])"}
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2353/147/[module]-[revision](.[ext])"}
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2349/653/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2353/147/[module]-[revision](.[ext])" }
 
 	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
@@ -82,7 +82,7 @@ repositories {
 	maven { url 'http://maven.epoxide.xyz' }
 
 	// Forestry
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2355/320/[module]_[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/227/[module]_[revision](.[ext])" }
 }
 
 dependencies {
@@ -106,7 +106,7 @@ dependencies {
 	deobfProvided "MCMultiPart:MCMultiPart:1.3.0:universal"
 	deobfProvided "refinedstorage:refinedstorage:1.2.5-576"
 
-	deobfCompile "curseMods:forestry:${project.mc_version}-5.2.16.335"
+	deobfCompile "curseMods:forestry:${project.mc_version}-5.2.16.340"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 

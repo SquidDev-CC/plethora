@@ -72,8 +72,8 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 			data.put("authority", species.getAuthority());
 			data.put("binomial", species.getBinomial());
 			data.put("complexity", species.getComplexity());
-			data.put("humidity", species.getHumidity().toString().toLowerCase(Locale.ENGLISH));
-			data.put("temperature", species.getTemperature().toString().toLowerCase(Locale.ENGLISH));
+			data.put("humidity", species.getHumidity().getName());
+			data.put("temperature", species.getTemperature().getName());
 			return data;
 		} else if (allele instanceof IAlleleTolerance) {
 			return ((IAlleleTolerance) allele).getValue().toString().toLowerCase(Locale.ENGLISH);
