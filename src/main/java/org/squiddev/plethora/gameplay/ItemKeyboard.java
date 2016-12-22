@@ -3,8 +3,12 @@ package org.squiddev.plethora.gameplay;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.ClientComputer;
+import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -15,6 +19,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.client.gui.GuiCapture;
@@ -120,7 +125,7 @@ public class ItemKeyboard extends ItemBase {
 		return stack;
 	}
 
-	private static final ClientComputer getBlockComputer(NBTTagCompound tag) {
+	private static ClientComputer getBlockComputer(NBTTagCompound tag) {
 		if (!tag.hasKey(SESSION_ID, 99) || !tag.hasKey(INSTANCE_ID, 99)) return null;
 
 		int instance = tag.getInteger(INSTANCE_ID);
@@ -142,5 +147,19 @@ public class ItemKeyboard extends ItemBase {
 				out.add(StatCollector.translateToLocalFormatted("item.plethora.keyboard.broken", position));
 			}
 		}
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		GameRegistry.addShapedRecipe(new ItemStack(this),
+			"  M",
+			"SSI",
+			"SSS",
+			'M', PeripheralItemFactory.create(PeripheralType.WirelessModem, null, 1),
+			'S', new ItemStack(Blocks.stone),
+			'I', new ItemStack(Items.iron_ingot)
+		);
 	}
 }
