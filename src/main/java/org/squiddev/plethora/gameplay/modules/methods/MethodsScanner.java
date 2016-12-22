@@ -3,17 +3,17 @@ package org.squiddev.plethora.gameplay.modules.methods;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
+import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -27,44 +27,40 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class MethodScanBlocks extends TargetedModuleObjectMethod<IWorldLocation> {
-		public MethodScanBlocks() {
-			super("scan", PlethoraModules.SCANNER, IWorldLocation.class, true, "function() -- Scan all blocks in the vicinity");
-		}
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class, worldThread = true,
+		doc = "function():table -- Scan all blocks in the vicinity"
+	)
+	@Nullable
+	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		final World world = location.getWorld();
+		final BlockPos pos = location.getPos();
+		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			final World world = location.getWorld();
-			final BlockPos pos = location.getPos();
-			final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+		int i = 0;
+		HashMap<Integer, Object> map = Maps.newHashMap();
+		for (int oX = x - radius; oX <= x + radius; oX++) {
+			for (int oY = y - radius; oY <= y + radius; oY++) {
+				for (int oZ = z - radius; oZ <= z + radius; oZ++) {
+					BlockPos newPos = new BlockPos(oX, oY, oZ);
+					IBlockState block = world.getBlockState(newPos);
 
-			int i = 0;
-			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (int oX = x - radius; oX <= x + radius; oX++) {
-				for (int oY = y - radius; oY <= y + radius; oY++) {
-					for (int oZ = z - radius; oZ <= z + radius; oZ++) {
-						BlockPos newPos = new BlockPos(oX, oY, oZ);
-						IBlockState block = world.getBlockState(newPos);
+					HashMap<String, Object> data = Maps.newHashMap();
+					data.put("x", oX - x);
+					data.put("y", oY - y);
+					data.put("z", oZ - z);
+					String name = block.getBlock().getRegistryName().toString();
+					data.put("name", name);
 
-						HashMap<String, Object> data = Maps.newHashMap();
-						data.put("x", oX - x);
-						data.put("y", oY - y);
-						data.put("z", oZ - z);
-						String name = block.getBlock().getRegistryName().toString();
-						data.put("name", name);
-
-						map.put(++i, data);
-					}
+					map.put(++i, data);
 				}
 			}
-
-			return new Object[]{map};
 		}
+
+		return new Object[]{map};
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SCANNER_S,
 		target = IWorldLocation.class,
 		doc = "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block"
@@ -84,16 +80,13 @@ public final class MethodsScanner {
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
 				IWorldLocation location = baked.getContext(IWorldLocation.class);
-				BlockPos pos = location.getPos().add(x, y, z);
+
 				World world = location.getWorld();
+				BlockPos pos = location.getPos().add(x, y, z);
 
-				IBlockState block = world.getBlockState(pos);
-				Map<Object, Object> meta = baked.makePartialChild(block).getMeta();
-
-				TileEntity te = world.getTileEntity(pos);
-				if (te != null) {
-					meta.putAll(baked.makePartialChild(te).getMeta());
-				}
+				Map<Object, Object> meta = baked
+					.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
+					.getMeta();
 
 				return MethodResult.result(meta);
 			}

@@ -32,16 +32,16 @@ public class MethodsModules {
 
 	@BasicObjectMethod.Inject(
 		value = IModuleContainer.class, worldThread = true,
-		doc = "function():boolean -- Checks whether a module is available"
+		doc = "function(name:string):boolean -- Checks whether a module is available"
 	)
-	public static Object[] hasModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] hasModule(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		ResourceLocation module = new ResourceLocation(getString(args, 0));
 		return new Object[]{context.hasModule(module)};
 	}
 
 	@BasicObjectMethod.Inject(
 		value = IModuleContainer.class, worldThread = true,
-		doc = "function(names:string...):table -- Gets the methods which require these modules"
+		doc = "function(names:string...):table|nil -- Gets the methods which require these modules"
 	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final ResourceLocation[] modules = new ResourceLocation[args.length];

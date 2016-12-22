@@ -9,15 +9,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,10 +31,12 @@ import org.squiddev.plethora.utils.WorldPosition;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public final class EntityLaser extends Entity implements IProjectile {
 	private static final int TICKS_EXISTED = 30 * 20;
+	private static final Random random = new Random();
 
 	@Nullable
 	private EntityLivingBase shooter;
@@ -276,44 +281,62 @@ public final class EntityLaser extends Entity implements IProjectile {
 				Block block = blockState.getBlock();
 				if (!block.isAir(blockState, world, position) && !blockState.getMaterial().isLiquid()) {
 					float hardness = blockState.getBlockHardness(world, position);
-					if (hardness > -1 && hardness <= potency) {
+
+					EntityPlayer player = getShooterPlayer();
+					if (player == null) return;
+
+					// Ensure the player is setup correctly
+					syncPositions(true);
+
+					if (!world.isBlockModifiable(player, position)) {
+						potency = -1;
+						return;
+					}
+
+					if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, position, blockState, player))) {
+						potency = -1;
+						return;
+					}
+
+					if (block == Blocks.TNT) {
 						potency -= hardness;
 
-						EntityPlayer player = getShooterPlayer();
-						if (player == null) return;
+						// Ignite TNT blocks
+						((BlockTNT) block).explode(
+							world, position,
+							blockState.withProperty(BlockTNT.EXPLODE, Boolean.TRUE),
+							getShooter()
+						);
 
-						// Ensure the player is setup correctly
-						syncPositions(true);
+						world.setBlockToAir(position);
+					} else if (block == Blocks.OBSIDIAN) {
+						potency -= hardness;
 
-						if (!world.isBlockModifiable(player, position)) {
-							potency = -1;
+						// Attempt to light obsidian blocks, creating a portal
+						BlockPos offset = position.offset(collision.sideHit);
+						IBlockState offsetState = world.getBlockState(offset);
+
+						if (!offsetState.getBlock().isAir(offsetState, world, offset)) {
 							return;
 						}
 
-						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, position, blockState, player);
-						MinecraftForge.EVENT_BUS.post(event);
-						if (event.isCanceled()) {
-							potency = -1;
+						if (MinecraftForge.EVENT_BUS.post(new BlockEvent.PlaceEvent(new BlockSnapshot(world, position, offsetState), blockState, player))) {
 							return;
 						}
+
+						world.playSound(null, offset, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, random.nextFloat() * 0.4f + 0.8f);
+						world.setBlockState(offset, Blocks.FIRE.getDefaultState());
+					} else if (hardness > -1 && hardness <= potency) {
+						potency -= hardness;
 
 						world.setBlockToAir(position);
 
-						if (block == Blocks.TNT) {
-							((BlockTNT) block).explode(
-								world, position,
-								blockState.withProperty(BlockTNT.EXPLODE, Boolean.TRUE),
-								getShooter()
-							);
-						} else {
-							List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
-							if (drops != null) {
-								for (ItemStack stack : drops) {
-									WorldUtil.dropItemStack(stack, world, position);
-								}
+						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
+						if (drops != null) {
+							for (ItemStack stack : drops) {
+								WorldUtil.dropItemStack(stack, world, position);
 							}
 						}
-
 					} else {
 						potency = -1;
 					}

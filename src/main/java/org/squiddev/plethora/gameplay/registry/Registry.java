@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
@@ -25,6 +26,8 @@ public final class Registry {
 
 	public static ItemNeuralInterface itemNeuralInterface;
 	public static ItemModule itemModule;
+	public static ItemKeyboard itemKeyboard;
+	public static BlockManipulator blockManipulator;
 
 	private static void addModule(IModule module) {
 		if (module instanceof IClientModule) {
@@ -47,12 +50,14 @@ public final class Registry {
 		setup = true;
 
 		addModule(itemModule = new ItemModule());
-		addModule(new BlockManipulator());
+		addModule(blockManipulator = new BlockManipulator());
 		addModule(new RenderOverlay());
 
 		addModule(itemNeuralInterface = new ItemNeuralInterface());
 		addModule(new ItemNeuralConnector());
 		addModule(new RenderInterfaceLiving());
+
+		addModule(itemKeyboard = new ItemKeyboard());
 	}
 
 	public static void preInit() {

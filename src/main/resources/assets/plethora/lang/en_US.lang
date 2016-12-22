@@ -21,10 +21,19 @@ item.plethora.module.module_kinetic.desc=Allows controlling your body via the ne
 item.plethora.module.module_unknown.name=Unknown module
 item.plethora.module.module_unknown.desc=What did you break this time?
 
+tile.plethora.manipulator.name=Manipulator
 tile.plethora.manipulator.mark_1.name=Manipulator Mk I
 tile.plethora.manipulator.mark_2.name=Manipulator Mk II
 tile.plethora.manipulator.mark_1.desc=Used to interface with a module from a computer
 tile.plethora.manipulator.mark_2.desc=Used to interface with multiple modules from a computer
+
+item.plethora.keyboard.name=Keyboard
+item.plethora.keyboard.desc=Type into computers remotely. Shift+Right-click to bind to a computer,
+item.plethora.keyboard.bound=Bound to block
+item.plethora.keyboard.cleared=Binding cleared
+item.plethora.keyboard.binding=Bound to %s
+item.plethora.keyboard.broken=Broken binding to %s
+item.plethora.keyboard.close=Keyboard open. Press ESC to close.
 
 # Neural interface/connector
 item.plethora.neuralConnector.name=Neural Connector
@@ -44,6 +53,7 @@ gui.config.plethora.costsystem=Cost System
 gui.config.plethora.costsystem.initial=Initial level
 gui.config.plethora.costsystem.regen=Regen
 gui.config.plethora.costsystem.limit=Limit
+gui.config.plethora.costsystem.allowNegative=Allow negative buffer
 gui.config.plethora.blacklist=Blacklist
 gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
 gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
@@ -78,3 +88,7 @@ gui.config.plethora.scanner.radius=Scan radius
 
 gui.config.plethora.sensor=Entity Sensor
 gui.config.plethora.sensor.radius=Sense radius
+
+gui.jei.plethora.modules=Modules
+gui.jei.plethora.modules.module=Usable as a module in:
+gui.jei.plethora.modules.peripheral=Usable as a peripheral in:

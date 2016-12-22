@@ -5,9 +5,9 @@ import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.patcher.Logger;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -166,7 +166,7 @@ public final class DelayedExecutor implements IExecutorFactory {
 
 		private void update() {
 			if (remaining < 0) {
-				Logger.warn("Task has negative time remaining!");
+				DebugLogger.warn("Task has negative time remaining!");
 				return;
 			}
 
@@ -185,7 +185,7 @@ public final class DelayedExecutor implements IExecutorFactory {
 				} catch (LuaException e) {
 					yieldFailure(e.getMessage());
 				} catch (Throwable e) {
-					Logger.error("Error in task: ", e);
+					DebugLogger.error("Error in task: ", e);
 					yieldFailure("Java Exception Thrown: " + e.toString());
 				}
 			} else {

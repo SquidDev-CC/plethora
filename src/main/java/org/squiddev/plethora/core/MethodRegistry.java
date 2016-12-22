@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -20,6 +21,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -120,9 +122,9 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object) {
+	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side) {
 		Preconditions.checkNotNull(object, "object cannot be null");
-		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, null);
+		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, side);
 		return handler != null ? handler : DefaultCostHandler.get(object);
 	}
 
@@ -191,10 +193,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
 			IUnbakedContext<IMethodCollection> ctx = null;
-			IPartialContext<IMethodCollection> baked = new PartialContext<IMethodCollection>(collection, initialBaked.getCostHandler(), emptyReference, initialBaked.getModules());
+			IPartialContext<IMethodCollection> baked = initialBaked.makePartialChild(collection);
 			for (IMethod method : getMethods(baked)) {
 				if (ctx == null) {
-					ctx = new UnbakedContext<IMethodCollection>(Reference.id(collection), initialBaked.getCostHandler(), emptyReference, Reference.id(Collections.<ResourceLocation>emptySet()), initialContext.getExecutor());
+					ctx = initialContext.makeChild(Reference.id(collection));
 				}
 
 				Integer existing = methodLookup.get(method.getName());

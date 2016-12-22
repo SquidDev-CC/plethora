@@ -1,10 +1,15 @@
 package org.squiddev.plethora.core.docdump;
 
 import com.google.common.base.Strings;
+import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.module.IModuleMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,10 +22,10 @@ public class DocData implements Comparable<DocData> {
 
 
 	@Nonnull
-	public final Class<?> target;
+	public final String target;
 
 	@Nonnull
-	public final IMethod<?> method;
+	public final String method;
 
 	@Nonnull
 	public final String name;
@@ -34,9 +39,15 @@ public class DocData implements Comparable<DocData> {
 	@Nullable
 	public final String args;
 
+	@Nullable
+	public final String subtarget;
+
+	@Nullable
+	public final String[] modules;
+
 	public DocData(@Nonnull Class<?> target, @Nonnull IMethod<?> method) {
-		this.target = target;
-		this.method = method;
+		this.target = target.getName();
+		this.method = method.getClass().getName();
 		this.name = method.getName();
 
 		String doc = method.getDocString();
@@ -58,8 +69,8 @@ public class DocData implements Comparable<DocData> {
 			if (position > -1) {
 				synopsis = doc.substring(0, position).trim();
 				detail = doc.substring(position + 1).trim();
-			} else if (doc.length() > 50) {
-				synopsis = doc.substring(0, 47).trim() + "...";
+			} else if (doc.length() > 80) {
+				synopsis = doc.substring(0, 77).trim() + "...";
 				detail = doc;
 			} else {
 				synopsis = doc;
@@ -73,6 +84,26 @@ public class DocData implements Comparable<DocData> {
 			this.synopsis = null;
 			this.detail = null;
 			this.args = null;
+		}
+
+		if (method instanceof ISubTargetedMethod) {
+			subtarget = ((ISubTargetedMethod<?, ?>) method).getSubTarget().getName();
+		} else {
+			subtarget = null;
+		}
+
+		if (method instanceof IModuleMethod) {
+			Set<ResourceLocation> modules = ((IModuleMethod<?>) method).getModules();
+			this.modules = new String[modules.size()];
+
+			int i = 0;
+			for (ResourceLocation module : modules) {
+				this.modules[i++] = module.toString();
+			}
+
+			Arrays.sort(this.modules);
+		} else {
+			modules = null;
 		}
 	}
 

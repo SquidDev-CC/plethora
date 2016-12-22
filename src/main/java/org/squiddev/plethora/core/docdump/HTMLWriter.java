@@ -4,9 +4,9 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.io.ByteStreams;
+import joptsimple.internal.Strings;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.module.IModuleMethod;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +19,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class WriteDocumentation {
+public class HTMLWriter implements IDocWriter {
 	private static final DateFormat format = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
 	private final PrintStream writer;
 
 	private int id = 0;
 
-	public WriteDocumentation(OutputStream stream) {
+	public HTMLWriter(OutputStream stream) {
 		this.writer = new PrintStream(stream);
 	}
 
@@ -52,16 +52,16 @@ public class WriteDocumentation {
 		ListMultimap<String, DocData> moduleLookup = MultimapBuilder.treeKeys().arrayListValues().build();
 
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methodLookup.entries()) {
-			IMethod method = entry.getValue();
+			IMethod<?> method = entry.getValue();
 			Class<?> klass = entry.getKey();
 			DocData data = new DocData(klass, method);
 
-			if (method instanceof ISubTargetedMethod) {
-				klass = ((ISubTargetedMethod) method).getSubTarget();
+			if (method instanceof ISubTargetedMethod<?, ?>) {
+				klass = ((ISubTargetedMethod<?, ?>) method).getSubTarget();
 			}
 
-			if (method instanceof IModuleMethod) {
-				moduleLookup.put(((IModuleMethod) method).getModule().toString(), data);
+			if (data.modules != null) {
+				moduleLookup.put(Strings.join(data.modules, ", "), data);
 			} else {
 				classLookup.put(klass.getName(), data);
 			}
@@ -114,15 +114,19 @@ public class WriteDocumentation {
 		if (data.detail != null) writer.printf("<p>%s</p>", data.detail.replace("\n", "</p>\n<p>"));
 
 		writer.println("<table class=\"method-details\">");
-		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", data.method.getClass().getName());
-		writer.printf("<tr><td>Target</td><td><code>%s</code></td></tr>\n", data.target.getName());
+		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", data.method);
+		writer.printf("<tr><td>Target</td><td><code>%s</code></td></tr>\n", data.target);
 
-		if (data.method instanceof ISubTargetedMethod) {
-			writer.printf("<tr><td>Sub-target</td><td><code>%s</code></td></tr>\n", ((ISubTargetedMethod) data.method).getSubTarget().getName());
+		if (data.subtarget != null) {
+			writer.printf("<tr><td>Sub-target</td><td><code>%s</code></td></tr>\n", data.subtarget);
 		}
 
-		if (data.method instanceof IModuleMethod) {
-			writer.printf("<tr><td>Module</td><td><code>%s</code></td></tr>\n", ((IModuleMethod) data.method).getModule());
+		if (data.modules != null) {
+			writer.print("<tr><td>Modules</td><td>");
+			for (String module : data.modules) {
+				writer.printf("<code>%s</code> ", module);
+			}
+			writer.print("</td></tr>\n");
 		}
 
 		writer.println("</table>");

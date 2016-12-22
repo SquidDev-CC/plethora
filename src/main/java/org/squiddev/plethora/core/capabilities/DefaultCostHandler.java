@@ -4,9 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.MapMaker;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.core.ConfigCore;
 
 import java.util.Map;
+
+import static org.squiddev.plethora.core.ConfigCore.CostSystem;
 
 /**
  * A basic {@link ICostHandler} implementation. Every object registered with it is updated every tick.
@@ -23,8 +24,9 @@ public final class DefaultCostHandler implements ICostHandler {
 	private double value;
 	private final double regenRate;
 	private final double limit;
+	private final boolean allowNegative;
 
-	public DefaultCostHandler(double initial, double regenRate, double limit) {
+	public DefaultCostHandler(double initial, double regenRate, double limit, boolean allowNegative) {
 		Preconditions.checkArgument(initial >= 0, "initial must be >= 0");
 		Preconditions.checkArgument(regenRate > 0, "regenRate must be > 0");
 
@@ -33,10 +35,11 @@ public final class DefaultCostHandler implements ICostHandler {
 
 		this.regenRate = regenRate;
 		this.limit = limit;
+		this.allowNegative = allowNegative;
 	}
 
 	public DefaultCostHandler() {
-		this(ConfigCore.CostSystem.initial, ConfigCore.CostSystem.regen, ConfigCore.CostSystem.limit);
+		this(CostSystem.initial, CostSystem.regen, CostSystem.limit, CostSystem.allowNegative);
 	}
 
 	@Override
@@ -47,7 +50,12 @@ public final class DefaultCostHandler implements ICostHandler {
 	@Override
 	public synchronized boolean consume(double amount) {
 		Preconditions.checkArgument(amount >= 0, "amount must be >= 0");
-		if (amount > value) return false;
+
+		if (allowNegative) {
+			if (value <= 0) return false;
+		} else {
+			if (amount > value) return false;
+		}
 
 		value -= amount;
 		return true;

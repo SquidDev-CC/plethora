@@ -23,8 +23,8 @@ public final class ItemComputerHandler {
 	public static final int WIDTH = 39;
 	public static final int HEIGHT = 13;
 
-	private static final String SESSION_ID = "session_id";
-	private static final String INSTANCE_ID = "instance_id";
+	public static final String SESSION_ID = "session_id";
+	public static final String INSTANCE_ID = "instance_id";
 	public static final String COMPUTER_ID = "id";
 	public static final String DIRTY = "dirty";
 	public static final String ENTITY_MOST = "owner_most";

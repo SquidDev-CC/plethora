@@ -15,7 +15,10 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
 import java.util.concurrent.Callable;
 
 public class MethodsVanillaTileEntities {
-	@BasicMethod.Inject(value = TileEntityFurnace.class, doc = "function():int -- Number of ticks of fuel left")
+	@BasicMethod.Inject(
+		value = TileEntityFurnace.class,
+		doc = "function():int -- Number of ticks of fuel left"
+	)
 	public static MethodResult getRemainingBurnTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -26,7 +29,10 @@ public class MethodsVanillaTileEntities {
 		});
 	}
 
-	@BasicMethod.Inject(value = TileEntityFurnace.class, doc = "function():int -- Number of ticks of burning the current fuel provides")
+	@BasicMethod.Inject(
+		value = TileEntityFurnace.class,
+		doc = "function():int -- Number of ticks of burning the current fuel provides"
+	)
 	public static MethodResult getBurnTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -37,7 +43,10 @@ public class MethodsVanillaTileEntities {
 		});
 	}
 
-	@BasicMethod.Inject(value = TileEntityFurnace.class, doc = "function():int -- Number of ticks the current item has cooked for")
+	@BasicMethod.Inject(
+		value = TileEntityFurnace.class,
+		doc = "function():int -- Number of ticks the current item has cooked for"
+	)
 	public static MethodResult getCookTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -48,7 +57,10 @@ public class MethodsVanillaTileEntities {
 		});
 	}
 
-	@BasicMethod.Inject(value = TileEntityBrewingStand.class, doc = "function():int -- Number of ticks the current potion has brewed for")
+	@BasicMethod.Inject(
+		value = TileEntityBrewingStand.class,
+		doc = "function():int -- Number of ticks the current potion has brewed for"
+	)
 	public static MethodResult getBrewTime(final IUnbakedContext<TileEntityBrewingStand> context, Object[] args) {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -59,12 +71,18 @@ public class MethodsVanillaTileEntities {
 		});
 	}
 
-	@BasicObjectMethod.Inject(value = TileEntitySign.class, worldThread = true, doc = "function():[string] -- Each line of text on this sign")
+	@BasicObjectMethod.Inject(
+		value = TileEntitySign.class, worldThread = true,
+		doc = "function():table -- Each line of text on this sign"
+	)
 	public static Object[] getSignText(final IContext<TileEntitySign> context, Object[] args) {
 		return new Object[]{MetaTileSign.getSignLines(context.getTarget())};
 	}
 
-	@BasicMethod.Inject(value = TileEntitySign.class, doc = "function([line...:string]) -- Set the lines of text on this sign")
+	@BasicMethod.Inject(
+		value = TileEntitySign.class,
+		doc = "function(lines...:string) -- Set the lines of text on this sign"
+	)
 	public static MethodResult setSignText(final IUnbakedContext<TileEntitySign> context, Object[] args) throws LuaException {
 		final ITextComponent[] lines = new ITextComponent[4];
 		for (int i = 0; i < lines.length; i++) {

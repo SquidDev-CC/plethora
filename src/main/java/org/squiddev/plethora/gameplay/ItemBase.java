@@ -36,6 +36,7 @@ public abstract class ItemBase extends Item implements IClientModule {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
 		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));

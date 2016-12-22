@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.ModContainer;
@@ -292,5 +294,21 @@ public class Helpers {
 		} else {
 			return owner.getClass().getSimpleName();
 		}
+	}
+
+	public static boolean onEntityInteract(Item item, EntityPlayer player, Entity target) {
+		if (!(target instanceof EntityLivingBase)) return false;
+
+		ItemStack current = player.getHeldItem();
+		if (current == null || current.getItem() != item) return false;
+
+		boolean result = item.itemInteractionForEntity(current, player, (EntityLivingBase) target);
+
+		if (current.stackSize <= 0) {
+			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+			ForgeEventFactory.onPlayerDestroyItem(player, current);
+		}
+
+		return result;
 	}
 }

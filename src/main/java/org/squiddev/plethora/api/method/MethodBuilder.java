@@ -62,51 +62,9 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		writer.visit(V1_6, ACC_PUBLIC | ACC_FINAL, name, null, superName, allInterfaces.toArray(new String[allInterfaces.size()]));
 
-		MethodVisitor invoke = writer.visitMethod(ACC_PUBLIC, this.method.getName(), methodSignature, null, exceptions);
+		MethodVisitor invoke = writer.visitMethod(ACC_PUBLIC, getMethod().getName(), methodSignature, null, exceptions);
 		invoke.visitCode();
-
-		Class<?>[] parameterTypes = method.getParameterTypes();
-		for (int i = 0; i < parameterTypes.length; i++) {
-			Class<?> arg = parameterTypes[i];
-			if (arg.isPrimitive()) {
-				if (arg == int.class || arg == boolean.class || arg == byte.class || arg == short.class || arg == char.class) {
-					invoke.visitVarInsn(ILOAD, i + 1);
-				} else if (arg == float.class) {
-					invoke.visitVarInsn(FLOAD, i + 1);
-				} else if (arg == double.class) {
-					invoke.visitVarInsn(DLOAD, i + 1);
-				} else if (arg == long.class) {
-					invoke.visitVarInsn(LLOAD, i + 1);
-				} else {
-					throw new IllegalStateException("Unknown primitive " + arg);
-				}
-			} else {
-				invoke.visitVarInsn(ALOAD, i + 1);
-			}
-		}
-
-		invoke.visitMethodInsn(INVOKESTATIC, Type.getInternalName(method.getDeclaringClass()), method.getName(), methodSignature, false);
-
-		Class<?> ret = method.getReturnType();
-		if (ret.isPrimitive()) {
-			if (ret == int.class || ret == boolean.class || ret == byte.class || ret == short.class || ret == char.class) {
-				invoke.visitInsn(IRETURN);
-			} else if (ret == float.class) {
-				invoke.visitInsn(FRETURN);
-			} else if (ret == double.class) {
-				invoke.visitInsn(DRETURN);
-			} else if (ret == long.class) {
-				invoke.visitInsn(LRETURN);
-			} else if (ret == void.class) {
-				invoke.visitInsn(RETURN);
-			} else {
-				throw new IllegalStateException("Unknown primitive " + ret);
-			}
-		} else {
-			invoke.visitInsn(ARETURN);
-		}
-
-		invoke.visitMaxs(parameterTypes.length, parameterTypes.length + 1);
+		writeApply(method, annotation, name, invoke);
 		invoke.visitEnd();
 
 		writeClass(method, annotation, name, writer);
@@ -126,6 +84,78 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 	public abstract void writeClass(@Nonnull Method method, @Nonnull T annotation, @Nonnull String className, @Nonnull ClassWriter writer);
 
 	/**
+	 * Used to write the body of the apply method
+	 *
+	 * @param method     The method we are generating for
+	 * @param annotation The annotation data of the method we are generating for
+	 * @param className  The class name we are generating
+	 * @param mv         The visitor to write to. This has had {@link MethodVisitor#visitCode()} already called.
+	 *                   You need not call {@link MethodVisitor#visitEnd()}.
+	 */
+	protected void writeApply(@Nonnull Method method, @Nonnull T annotation, @Nonnull String className, @Nonnull MethodVisitor mv) {
+		Class<?>[] parameterTypes = getMethod().getParameterTypes();
+		Class<?>[] childParamTypes = method.getParameterTypes();
+		for (int i = 0; i < parameterTypes.length; i++) {
+			Class<?> arg = parameterTypes[i];
+			if (arg.isPrimitive()) {
+				if (arg != childParamTypes[i]) {
+					throw new IllegalStateException("Expected argument " + arg.getName() + ", got " + childParamTypes[i].getName());
+				}
+
+				if (arg == int.class || arg == boolean.class || arg == byte.class || arg == short.class || arg == char.class) {
+					mv.visitVarInsn(ILOAD, i + 1);
+				} else if (arg == float.class) {
+					mv.visitVarInsn(FLOAD, i + 1);
+				} else if (arg == double.class) {
+					mv.visitVarInsn(DLOAD, i + 1);
+				} else if (arg == long.class) {
+					mv.visitVarInsn(LLOAD, i + 1);
+				} else {
+					throw new IllegalStateException("Unknown primitive " + arg);
+				}
+			} else {
+				mv.visitVarInsn(ALOAD, i + 1);
+
+				if (arg != childParamTypes[i]) {
+					mv.visitTypeInsn(CHECKCAST, Type.getInternalName(childParamTypes[i]));
+				}
+			}
+		}
+
+		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(method.getDeclaringClass()), method.getName(), Type.getMethodDescriptor(method), false);
+
+		Class<?> ret = getMethod().getReturnType();
+		Class<?> childRet = method.getReturnType();
+		if (ret.isPrimitive()) {
+			if (ret != childRet) {
+				throw new IllegalStateException("Expected argument " + ret.getName() + ", got " + childRet.getName());
+			}
+
+			if (ret == int.class || ret == boolean.class || ret == byte.class || ret == short.class || ret == char.class) {
+				mv.visitInsn(IRETURN);
+			} else if (ret == float.class) {
+				mv.visitInsn(FRETURN);
+			} else if (ret == double.class) {
+				mv.visitInsn(DRETURN);
+			} else if (ret == long.class) {
+				mv.visitInsn(LRETURN);
+			} else if (ret == void.class) {
+				mv.visitInsn(RETURN);
+			} else {
+				throw new IllegalStateException("Unknown primitive " + ret);
+			}
+		} else {
+			mv.visitInsn(ARETURN);
+
+			if (ret != childRet) {
+				mv.visitTypeInsn(CHECKCAST, Type.getInternalName(ret));
+			}
+		}
+
+		mv.visitMaxs(parameterTypes.length, parameterTypes.length + 1);
+	}
+
+	/**
 	 * Get the method this builder delegates to
 	 *
 	 * @return The builder this method delegates to
@@ -134,18 +164,33 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 		return method;
 	}
 
+	/**
+	 * Get the return type for this method
+	 *
+	 * @return The method's return type
+	 */
+	@Nonnull
+	protected Class<?> getReturnType(@Nonnull Method method, @Nonnull T annotation) {
+		return method.getReturnType();
+	}
+
+	@Nonnull
+	protected Class<?>[] getArgumentTypes(@Nonnull Method method, @Nonnull T annotation) {
+		return method.getParameterTypes();
+	}
+
 	@Nonnull
 	@Override
 	public List<String> validate(@Nonnull Method method, @Nonnull T annotation) {
 		List<String> errors = Lists.newArrayList();
 
-		Method expected = getMethod();
-		if (method.getReturnType() != expected.getReturnType()) {
-			errors.add("Bad return type: expected " + expected.getReturnType().getName() + ", got " + method.getReturnType().getName());
+		Class<?> returnType = getReturnType(method, annotation);
+		if (method.getReturnType() != returnType) {
+			errors.add("Bad return type: expected " + returnType + ", got " + method.getReturnType().getName());
 		}
 
 		Class<?>[] args = method.getParameterTypes();
-		Class<?>[] expectedArgs = expected.getParameterTypes();
+		Class<?>[] expectedArgs = getArgumentTypes(method, annotation);
 		if (args.length != expectedArgs.length) {
 			errors.add("Bad arg count: expected " + expectedArgs.length + ", got " + args.length);
 		} else {

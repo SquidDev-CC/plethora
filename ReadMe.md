@@ -37,11 +37,11 @@ This documentation is also [avaliable online](http://squiddev-cc.github.io/pleth
 be out of date. It was last generated for the 1.0.0-beta1 release.
 
 ## Images
-![](https://raw.githubusercontent.com/SquidDev-CC/ccjam-2016/master/images/Squids%20and%20Lasers.png)
+![](images/Squids%20and%20Lasers.png)
 
 > You know, I have one simple request. And that is to have ~~sharks~~ squid with frickin' laser beams attached to their heads!
 
-![](https://raw.githubusercontent.com/SquidDev-CC/ccjam-2016/master/images/Modules.png)
+![](images/Modules.png)
 
 > Various modules available
 

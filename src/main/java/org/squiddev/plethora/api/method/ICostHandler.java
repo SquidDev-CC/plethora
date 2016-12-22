@@ -13,7 +13,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * You should aim to regen the fuel level when possible
  *
  * @see org.squiddev.plethora.api.Constants#COST_HANDLER_CAPABILITY
- * @see IMethodRegistry#getCostHandler(ICapabilityProvider)
+ * @see IMethodRegistry#getCostHandler(ICapabilityProvider, net.minecraft.util.EnumFacing)
  */
 @ThreadSafe
 public interface ICostHandler {

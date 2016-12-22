@@ -121,6 +121,13 @@ public final class ConfigGameplay {
 		@DefaultInt(0)
 		@Range(min = 0)
 		public static int teleportCost;
+
+		/**
+		 * The cost to shoot an arrow per potency.
+		 */
+		@DefaultInt(20)
+		@Range(min = 0)
+		public static int shootCost;
 	}
 
 	public static class Scanner {

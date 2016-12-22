@@ -19,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -115,7 +116,7 @@ public final class ItemModule extends ItemBase {
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
-				if (!world.isRemote) {
+				if (!world.isRemote && !(player instanceof FakePlayer)) {
 					if (player.isSneaking()) {
 						UUID id = player.getGameProfile().getId();
 						if (id != null) {
@@ -230,7 +231,7 @@ public final class ItemModule extends ItemBase {
 			"CHC",
 			"GCG",
 			'G', new ItemStack(Items.GOLD_INGOT),
-			'H', new ItemStack(Items.SKULL),
+			'H', new ItemStack(Items.DIAMOND_HELMET),
 			'C', new ItemStack(Blocks.ENDER_CHEST)
 		);
 

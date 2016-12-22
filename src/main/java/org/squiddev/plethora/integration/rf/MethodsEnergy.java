@@ -34,7 +34,7 @@ public class MethodsEnergy {
 		doc = "function([side:string]):int -- The amount of RF currently stored"
 	)
 	public static MethodResult getRFStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
-		final EnumFacing facing = parseFacing(ArgumentHelper.optString(args, 0, null));
+		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -49,7 +49,7 @@ public class MethodsEnergy {
 		doc = "function([side:string]):int -- The maximum amount of RF that can be stored"
 	)
 	public static MethodResult getRFCapacityHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
-		final EnumFacing facing = parseFacing(ArgumentHelper.optString(args, 0, null));
+		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -57,18 +57,6 @@ public class MethodsEnergy {
 				return MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing));
 			}
 		});
-	}
-
-	private static EnumFacing parseFacing(String direction) throws LuaException {
-		if (direction != null) {
-			direction = direction.toLowerCase();
-			EnumFacing facing = EnumFacing.byName(direction);
-			if (facing == null) throw new LuaException("Invalid direction " + direction);
-
-			return facing;
-		} else {
-			return null;
-		}
 	}
 
 	@IMethod.Inject(value = ItemStack.class, modId = "CoFHAPI|energy")

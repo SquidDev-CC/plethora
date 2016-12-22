@@ -58,6 +58,16 @@ public final class ConfigCore {
 		@Range(min = 0)
 		@RequiresRestart(mc = false, world = true)
 		public static double limit;
+
+		/**
+		 * Allow costs to go into the negative.
+		 * Methods will fail when there is negative energy.
+		 * This allows you to use costs higher than the allocated
+		 * buffer and so have a more traditional rate-limiting system.
+		 */
+		@DefaultBoolean(false)
+		@RequiresRestart(mc = false, world = true)
+		public static boolean allowNegative;
 	}
 
 	/**

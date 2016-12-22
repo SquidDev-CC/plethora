@@ -8,12 +8,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
-import org.squiddev.plethora.api.module.TargetedModuleObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
@@ -27,46 +26,38 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getUUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
-	@IMethod.Inject(IModuleContainer.class)
-	public static final class SenseEntitiesMethod extends TargetedModuleObjectMethod<IWorldLocation> {
-		public SenseEntitiesMethod() {
-			super("sense", PlethoraModules.SENSOR, IWorldLocation.class, true, "function():table -- Scan for entities in the vicinity");
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class, worldThread = true,
+		doc = "function():table -- Scan for entities in the vicinity"
+	)
+	@Nullable
+	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		final World world = location.getWorld();
+		final BlockPos pos = location.getPos();
+
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
+
+		int i = 0;
+		HashMap<Integer, Object> map = Maps.newHashMap();
+		for (Entity entity : entities) {
+			Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
+			map.put(++i, data);
 		}
 
-		@Nullable
-		@Override
-		public Object[] apply(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-			final World world = location.getWorld();
-			final BlockPos pos = location.getPos();
-
-			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
-
-			int i = 0;
-			HashMap<Integer, Object> map = Maps.newHashMap();
-			for (Entity entity : entities) {
-				Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
-				map.put(++i, data);
-			}
-
-			return new Object[]{map};
-		}
+		return new Object[]{map};
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
-		doc = "function():table|nil -- Find a nearby entity by UUID"
+		doc = "function(id:string):table|nil -- Find a nearby entity by UUID"
 	)
 	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final UUID uuid;
-		try {
-			uuid = UUID.fromString(getString(args, 0));
-		} catch (IllegalArgumentException e) {
-			throw new LuaException("Invalid UUID");
-		}
+		final UUID uuid = getUUID(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -82,10 +73,10 @@ public final class MethodsSensor {
 		});
 	}
 
-	@TargetedModuleMethod.Inject(
+	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.SENSOR_S,
 		target = IWorldLocation.class,
-		doc = "function():table|nil -- Find a nearby entity by name"
+		doc = "function(name:string):table|nil -- Find a nearby entity by name"
 	)
 	@Nonnull
 	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {

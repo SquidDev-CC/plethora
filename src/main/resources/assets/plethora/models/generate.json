@@ -11,13 +11,13 @@
 	"simple": {
 		"item": {
 			"module_introspection": "plethora:items/moduleIntrospection",
-			"module_laser": "plethora:items/moduleLaser",
 			"module_scanner": "plethora:items/moduleScanner",
 			"module_sensor": "plethora:items/moduleSensor",
 			"module_kinetic": "plethora:items/moduleKinetic",
 			"module": "plethora:items/moduleUnknown",
 			"neuralConnector": "plethora:items/neuralConnector",
-			"neuralInterface": "plethora:items/neuralInterface"
+			"neuralInterface": "plethora:items/neuralInterface",
+			"keyboard": "plethora:items/keyboard"
 		},
 		"itemblock": {
 			"manipulator.mark_1": "manipulator.mark_1",

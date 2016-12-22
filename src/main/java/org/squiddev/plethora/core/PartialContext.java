@@ -122,9 +122,9 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
 
-		out.addAll(registry.getTransferLocations(target));
+		out.addAll(registry.getTransferLocations(target, true));
 		for (int i = context.length - 1; i >= 0; i--) {
-			out.addAll(registry.getTransferLocations(context[i]));
+			out.addAll(registry.getTransferLocations(context[i], true));
 		}
 
 		return out;

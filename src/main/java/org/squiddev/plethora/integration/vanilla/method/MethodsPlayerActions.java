@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,10 +22,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import org.apache.commons.lang3.tuple.Pair;
+import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.TargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
@@ -37,9 +41,8 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optString;
 
 public final class MethodsPlayerActions {
-	@TargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S,
-		target = EntityLivingBase.class,
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityLivingBase.class,
 		doc = "function([duration:integer], [hand:string]):boolean, string|nil -- Right click with this item using a particular hand."
 	)
 	public static MethodResult use(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -82,6 +85,37 @@ public final class MethodsPlayerActions {
 				}
 			}
 		});
+	}
+
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityLiving.class, worldThread = true,
+		doc = "function():boolean, string|nil -- Left click with this item. Returns the action taken."
+	)
+	public static Object[] swing(EntityLiving entity, IContext<IModuleContainer> context, Object[] args) {
+		PlethoraFakePlayer fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity);
+
+		fakePlayer.load(entity);
+		try {
+			RayTraceResult hit = findHit(fakePlayer, entity);
+
+			if (hit != null) {
+				switch (hit.typeOfHit) {
+					case ENTITY: {
+						Pair<Boolean, String> result = fakePlayer.attack(entity, hit.entityHit);
+						return new Object[]{result.getLeft(), result.getRight()};
+					}
+					case BLOCK: {
+						Pair<Boolean, String> result = fakePlayer.dig(hit.getBlockPos(), hit.sideHit);
+						return new Object[]{result.getLeft(), result.getRight()};
+					}
+				}
+			}
+
+			return new Object[]{false, "Nothing to do here"};
+		} finally {
+			fakePlayer.unload(entity);
+			fakePlayer.clearItemInUse();
+		}
 	}
 
 	//region Use
@@ -218,7 +252,7 @@ public final class MethodsPlayerActions {
 
 		Vec3d origin = new Vec3d(
 			player.posX,
-			player.posY + player.getEyeHeight(),
+			player.posY + original.getEyeHeight(),
 			player.posZ
 		);
 

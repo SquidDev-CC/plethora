@@ -11,27 +11,28 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 
 /**
  * A top-level module method which requires a particular context object to execute.
  */
-public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
+public abstract class SubtargetedModuleMethod<T> extends ModuleMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass) {
-		this(name, module, klass, 0, null);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass) {
+		this(name, modules, klass, 0, null);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority) {
-		this(name, module, klass, priority, null);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority) {
+		this(name, modules, klass, priority, null);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, String docs) {
-		this(name, module, klass, 0, docs);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, String docs) {
+		this(name, modules, klass, 0, docs);
 	}
 
-	public TargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority, String docs) {
-		super(name, module, priority, docs);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority, String docs) {
+		super(name, modules, priority, docs);
 		this.klass = klass;
 	}
 
@@ -49,7 +50,7 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 	/**
 	 * Delegate to a normal method from a {@link ModuleMethod}.
 	 *
-	 * The method should be a public and static with the same signature as {@link ModuleMethod#apply(IUnbakedContext, Object[])}.
+	 * The method should be a public and static with the same signature as {@link SubtargetedModuleMethod#apply(IUnbakedContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
 	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
@@ -70,11 +71,11 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 		String name() default "";
 
 		/**
-		 * The module this method targets.
+		 * The modules this method requires.
 		 *
 		 * @return The target class.
 		 */
-		String module();
+		String[] module();
 
 		/**
 		 * The class this method targets
@@ -82,13 +83,6 @@ public abstract class TargetedModuleMethod<T> extends ModuleMethod<IModuleContai
 		 * @return The target class
 		 */
 		Class<?> target();
-
-		/**
-		 * A collection of objects that should be in the context for the method to run.
-		 *
-		 * @return Valid objects that should be in the context.
-		 */
-		Class<?>[] requirements() default {};
 
 		/**
 		 * The priority of the method.

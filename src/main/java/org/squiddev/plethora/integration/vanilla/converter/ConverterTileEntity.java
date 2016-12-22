@@ -1,22 +1,23 @@
 package org.squiddev.plethora.integration.vanilla.converter;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.converter.IConverter;
+import org.squiddev.plethora.api.reference.BlockReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Gets the block state from a tile entity
+ * Gets a block reference from a tile entity
  */
 @IConverter.Inject(TileEntity.class)
-public class ConverterTileEntity implements IConverter<TileEntity, IBlockState> {
+public class ConverterTileEntity implements IConverter<TileEntity, BlockReference> {
 	@Nullable
 	@Override
-	public IBlockState convert(@Nonnull TileEntity from) {
+	public BlockReference convert(@Nonnull TileEntity from) {
 		World world = from.getWorld();
 		if (world == null) return null;
 
@@ -26,6 +27,6 @@ public class ConverterTileEntity implements IConverter<TileEntity, IBlockState> 
 		// Double check that the TE is stil there
 		if (world.getTileEntity(pos) != from) return null;
 
-		return world.getBlockState(pos);
+		return new BlockReference(new WorldLocation(world, pos), world.getBlockState(pos), from);
 	}
 }

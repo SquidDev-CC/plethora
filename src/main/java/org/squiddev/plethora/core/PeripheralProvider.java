@@ -37,25 +37,29 @@ public class PeripheralProvider implements IPeripheralProvider {
 	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
-			// Check for capability first
-			IPeripheral capability = te.getCapability(Constants.PERIPHERAL_CAPABILITY, enumFacing);
-			if (capability != null) return capability;
+			try {
+				// Check for capability first
+				IPeripheral capability = te.getCapability(Constants.PERIPHERAL_CAPABILITY, enumFacing);
+				if (capability != null) return capability;
 
-			// Simple blacklisting
-			if (te instanceof IPeripheralTile) return null;
+				// Simple blacklisting
+				if (te instanceof IPeripheralTile) return null;
 
-			Class<?> klass = te.getClass();
-			if (isBlacklisted(klass)) return null;
+				Class<?> klass = te.getClass();
+				if (isBlacklisted(klass)) return null;
 
-			MethodRegistry registry = MethodRegistry.instance;
+				MethodRegistry registry = MethodRegistry.instance;
 
-			ICostHandler handler = registry.getCostHandler(te);
-			IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, Reference.id(Collections.<ResourceLocation>emptySet()), new WorldLocation(world, blockPos));
-			IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)}, Collections.<ResourceLocation>emptySet());
+				ICostHandler handler = registry.getCostHandler(te, enumFacing);
+				IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, Reference.id(Collections.<ResourceLocation>emptySet()), new WorldLocation(world, blockPos));
+				IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)}, Collections.<ResourceLocation>emptySet());
 
-			Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
-			if (paired.getFirst().size() > 0) {
-				return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond(), DefaultExecutor.INSTANCE);
+				Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+				if (paired.getFirst().size() > 0) {
+					return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond(), DefaultExecutor.INSTANCE);
+				}
+			} catch (RuntimeException e) {
+				DebugLogger.error("Error getting peripheral", e);
 			}
 		}
 
