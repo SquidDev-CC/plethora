@@ -17,7 +17,7 @@ import static org.objectweb.asm.Opcodes.*;
 @IMethodBuilder.Inject(ModuleObjectMethod.Inject.class)
 public class ModuleObjectMethodBuilder extends MethodBuilder<ModuleObjectMethod.Inject> {
 	public ModuleObjectMethodBuilder() throws NoSuchMethodException {
-		super(ModuleObjectMethod.class.getMethod("apply", Object.class, IContext.class, Object[].class), ModuleObjectMethod.class);
+		super(ModuleObjectMethod.class.getMethod("apply", IContext.class, Object[].class), ModuleObjectMethod.class);
 	}
 
 	@Override

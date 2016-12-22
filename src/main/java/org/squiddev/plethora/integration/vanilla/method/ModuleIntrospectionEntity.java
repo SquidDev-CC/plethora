@@ -41,7 +41,7 @@ public class ModuleIntrospectionEntity {
 		doc = "function():table -- Get this entity's held item and armor"
 	)
 	@Nullable
-	public Object[] getEquipment(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] getEquipment(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		EntityLivingBase entity = context.getContext(EntityLivingBase.class);
 		if (entity == null) throw new LuaException("Entity not found");
 
@@ -55,7 +55,7 @@ public class ModuleIntrospectionEntity {
 		doc = "function():table -- Get this player's ender chest"
 	)
 	@Nullable
-	public Object[] getEnder(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] getEnder(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		EntityPlayer player = context.getContext(EntityPlayer.class);
 		if (player == null) throw new LuaException("Player not found");
 

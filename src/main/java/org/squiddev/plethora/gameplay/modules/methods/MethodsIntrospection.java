@@ -33,4 +33,15 @@ public final class MethodsIntrospection {
 
 		return new Object[]{entity.getName()};
 	}
+
+	@ModuleObjectMethod.Inject(
+		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S}, worldThread = true,
+		doc = "function():string -- Get this entity's metadata."
+	)
+	public static Object[] getMetaOwner(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+		if (entity == null) throw new LuaException("Entity not found");
+
+		return new Object[]{context.makePartialChild(entity).getMeta()};
+	}
 }
