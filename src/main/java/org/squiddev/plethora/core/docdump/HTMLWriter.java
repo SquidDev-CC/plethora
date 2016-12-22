@@ -4,9 +4,9 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.io.ByteStreams;
+import joptsimple.internal.Strings;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.module.IModuleMethod;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,16 +52,16 @@ public class HTMLWriter implements IDocWriter {
 		ListMultimap<String, DocData> moduleLookup = MultimapBuilder.treeKeys().arrayListValues().build();
 
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methodLookup.entries()) {
-			IMethod method = entry.getValue();
+			IMethod<?> method = entry.getValue();
 			Class<?> klass = entry.getKey();
 			DocData data = new DocData(klass, method);
 
-			if (method instanceof ISubTargetedMethod) {
-				klass = ((ISubTargetedMethod) method).getSubTarget();
+			if (method instanceof ISubTargetedMethod<?, ?>) {
+				klass = ((ISubTargetedMethod<?, ?>) method).getSubTarget();
 			}
 
-			if (method instanceof IModuleMethod) {
-				moduleLookup.put(((IModuleMethod) method).getModule().toString(), data);
+			if (data.modules != null) {
+				moduleLookup.put(Strings.join(data.modules, ", "), data);
 			} else {
 				classLookup.put(klass.getName(), data);
 			}
@@ -121,8 +121,12 @@ public class HTMLWriter implements IDocWriter {
 			writer.printf("<tr><td>Sub-target</td><td><code>%s</code></td></tr>\n", data.subtarget);
 		}
 
-		if (data.module != null) {
-			writer.printf("<tr><td>Module</td><td><code>%s</code></td></tr>\n", data.module);
+		if (data.modules != null) {
+			writer.print("<tr><td>Modules</td><td>");
+			for (String module : data.modules) {
+				writer.printf("<code>%s</code> ", module);
+			}
+			writer.print("</td></tr>\n");
 		}
 
 		writer.println("</table>");

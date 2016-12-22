@@ -58,8 +58,8 @@ repositories {
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2291/384/[module][revision](.[ext])" }
 
 	// Chameleon + Storage Drawers
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2323/184/[module]-[revision](.[ext])"}
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2312/704/[module]-[revision](.[ext])"}
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2323/184/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2312/704/[module]-[revision](.[ext])" }
 
 	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }

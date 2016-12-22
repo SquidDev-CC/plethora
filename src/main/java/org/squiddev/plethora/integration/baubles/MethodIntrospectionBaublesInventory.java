@@ -14,6 +14,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
@@ -23,7 +24,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 @IMethod.Inject(value = IModuleContainer.class, modId = "Baubles")
 public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityPlayer> {
 	public MethodIntrospectionBaublesInventory() {
-		super("getBaubles", PlethoraModules.INTROSPECTION, EntityPlayer.class, false, "function():table -- Get this player's baubles inventory");
+		super("getBaubles", Collections.singleton(PlethoraModules.INTROSPECTION), EntityPlayer.class, false, "function():table -- Get this player's baubles inventory");
 	}
 
 	@Nullable

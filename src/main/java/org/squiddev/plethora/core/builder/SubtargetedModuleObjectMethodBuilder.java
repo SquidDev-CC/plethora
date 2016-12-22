@@ -37,11 +37,7 @@ public class SubtargetedModuleObjectMethodBuilder extends MethodBuilder<Subtarge
 		if (Strings.isNullOrEmpty(name)) name = method.getName();
 		mv.visitLdcInsn(name);
 
-		String module = annotation.module();
-		mv.visitTypeInsn(NEW, "net/minecraft/util/ResourceLocation");
-		mv.visitInsn(DUP);
-		mv.visitLdcInsn(module);
-		mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/util/ResourceLocation", "<init>", "(Ljava/lang/String;)V", false);
+		BuilderHelpers.writeModuleList(mv, annotation.module());
 
 		mv.visitLdcInsn(Type.getType(annotation.target()));
 		mv.visitInsn(annotation.worldThread() ? ICONST_1 : ICONST_0);
@@ -55,7 +51,7 @@ public class SubtargetedModuleObjectMethodBuilder extends MethodBuilder<Subtarge
 			mv.visitLdcInsn(doc);
 		}
 
-		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/SubtargetedModuleObjectMethod", "<init>", "(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Class;ZILjava/lang/String;)V", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/SubtargetedModuleObjectMethod", "<init>", "(Ljava/lang/String;Ljava/util/Set;Ljava/lang/Class;ZILjava/lang/String;)V", false);
 		mv.visitInsn(RETURN);
 
 		mv.visitMaxs(6, 1);

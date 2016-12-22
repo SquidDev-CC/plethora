@@ -11,6 +11,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 
 /**
  * A top-level module method which requires a particular context object to execute.
@@ -18,20 +19,20 @@ import java.lang.annotation.Target;
 public abstract class SubtargetedModuleMethod<T> extends ModuleMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
-	public SubtargetedModuleMethod(String name, ResourceLocation module, Class<T> klass) {
-		this(name, module, klass, 0, null);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass) {
+		this(name, modules, klass, 0, null);
 	}
 
-	public SubtargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority) {
-		this(name, module, klass, priority, null);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority) {
+		this(name, modules, klass, priority, null);
 	}
 
-	public SubtargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, String docs) {
-		this(name, module, klass, 0, docs);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, String docs) {
+		this(name, modules, klass, 0, docs);
 	}
 
-	public SubtargetedModuleMethod(String name, ResourceLocation module, Class<T> klass, int priority, String docs) {
-		super(name, module, priority, docs);
+	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority, String docs) {
+		super(name, modules, priority, docs);
 		this.klass = klass;
 	}
 
@@ -70,11 +71,11 @@ public abstract class SubtargetedModuleMethod<T> extends ModuleMethod<IModuleCon
 		String name() default "";
 
 		/**
-		 * The module this method targets.
+		 * The modules this method requires.
 		 *
 		 * @return The target class.
 		 */
-		String module();
+		String[] module();
 
 		/**
 		 * The class this method targets

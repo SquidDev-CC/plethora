@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.module;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IMethod;
@@ -11,39 +12,47 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 
 /**
  * A method that requires a module to execute.
  */
 public abstract class ModuleMethod<T> extends BasicMethod<T> implements IModuleMethod<T> {
-	protected final ResourceLocation module;
+	protected final Set<ResourceLocation> modules;
 
-	public ModuleMethod(String name, ResourceLocation module) {
-		this(name, module, 0, null);
+	public ModuleMethod(String name, Set<ResourceLocation> modules) {
+		this(name, modules, 0, null);
 	}
 
-	public ModuleMethod(String name, ResourceLocation module, int priority) {
-		this(name, module, priority, null);
+	public ModuleMethod(String name, Set<ResourceLocation> modules, int priority) {
+		this(name, modules, priority, null);
 	}
 
-	public ModuleMethod(String name, ResourceLocation module, String doc) {
-		this(name, module, 0, doc);
+	public ModuleMethod(String name, Set<ResourceLocation> modules, String doc) {
+		this(name, modules, 0, doc);
 	}
 
-	public ModuleMethod(String name, ResourceLocation module, int priority, String doc) {
+	public ModuleMethod(String name, Set<ResourceLocation> modules, int priority, String doc) {
 		super(name, priority, doc);
-		this.module = module;
+		Preconditions.checkArgument(modules.size() > 0, "modules must be non-empty");
+		this.modules = modules;
 	}
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<T> context) {
-		return super.canApply(context) && context.hasModule(module);
+		if (!super.canApply(context)) return false;
+
+		for (ResourceLocation module : modules) {
+			if (!context.hasModule(module)) return false;
+		}
+
+		return true;
 	}
 
 	@Nonnull
 	@Override
-	public ResourceLocation getModule() {
-		return module;
+	public Set<ResourceLocation> getModules() {
+		return modules;
 	}
 
 	/**
@@ -70,12 +79,12 @@ public abstract class ModuleMethod<T> extends BasicMethod<T> implements IModuleM
 		String name() default "";
 
 		/**
-		 * The module this method targets.
+		 * The modules this method requires.
 		 *
 		 * @return The target class.
-		 * @see ModuleMethod#ModuleMethod(String, ResourceLocation)
+		 * @see ModuleMethod#ModuleMethod(String, Set)
 		 */
-		String value();
+		String[] value();
 
 		/**
 		 * The priority of the method.

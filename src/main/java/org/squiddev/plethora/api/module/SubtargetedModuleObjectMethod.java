@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 
 /**
  * A top-level module method which requires a particular context object to execute.
@@ -17,20 +18,20 @@ import java.lang.annotation.Target;
 public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
-	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread) {
-		this(name, module, klass, worldThread, 0, null);
+	public SubtargetedModuleObjectMethod(String name, Set<ResourceLocation> modules, Class<T> klass, boolean worldThread) {
+		this(name, modules, klass, worldThread, 0, null);
 	}
 
-	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, int priority) {
-		this(name, module, klass, worldThread, priority, null);
+	public SubtargetedModuleObjectMethod(String name, Set<ResourceLocation> modules, Class<T> klass, boolean worldThread, int priority) {
+		this(name, modules, klass, worldThread, priority, null);
 	}
 
-	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, String docs) {
-		this(name, module, klass, worldThread, 0, docs);
+	public SubtargetedModuleObjectMethod(String name, Set<ResourceLocation> modules, Class<T> klass, boolean worldThread, String docs) {
+		this(name, modules, klass, worldThread, 0, docs);
 	}
 
-	public SubtargetedModuleObjectMethod(String name, ResourceLocation module, Class<T> klass, boolean worldThread, int priority, String docs) {
-		super(name, module, worldThread, priority, docs);
+	public SubtargetedModuleObjectMethod(String name, Set<ResourceLocation> modules, Class<T> klass, boolean worldThread, int priority, String docs) {
+		super(name, modules, worldThread, priority, docs);
 		this.klass = klass;
 	}
 
@@ -78,11 +79,11 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMetho
 		String name() default "";
 
 		/**
-		 * The module this method targets.
+		 * The modules this method requires.
 		 *
 		 * @return The target class.
 		 */
-		String module();
+		String[] module();
 
 		/**
 		 * The class this method targets

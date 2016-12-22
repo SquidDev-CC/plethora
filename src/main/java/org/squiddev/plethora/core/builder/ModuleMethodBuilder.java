@@ -3,31 +3,30 @@ package org.squiddev.plethora.core.builder;
 import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodBuilder;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.ModuleMethod;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.*;
 
-@IMethodBuilder.Inject(SubtargetedModuleMethod.Inject.class)
-public class SubtargetedModuleMethodBuilder extends MethodBuilder<SubtargetedModuleMethod.Inject> {
-	public SubtargetedModuleMethodBuilder() throws NoSuchMethodException {
-		super(SubtargetedModuleMethod.class.getMethod("apply", IUnbakedContext.class, Object[].class), SubtargetedModuleMethod.class);
+@IMethodBuilder.Inject(ModuleMethod.Inject.class)
+public class ModuleMethodBuilder extends MethodBuilder<ModuleMethod.Inject> {
+	public ModuleMethodBuilder() throws NoSuchMethodException {
+		super(ModuleMethod.class.getMethod("apply", IUnbakedContext.class, Object[].class), ModuleMethod.class);
 	}
 
 	@Override
-	public Class<?> getTarget(@Nonnull Method method, @Nonnull SubtargetedModuleMethod.Inject annotation) {
+	public Class<?> getTarget(@Nonnull Method method, @Nonnull ModuleMethod.Inject annotation) {
 		return IModuleContainer.class;
 	}
 
 	@Override
-	public void writeClass(@Nonnull Method method, @Nonnull SubtargetedModuleMethod.Inject annotation, @Nonnull String className, @Nonnull ClassWriter writer) {
+	public void writeClass(@Nonnull Method method, @Nonnull ModuleMethod.Inject annotation, @Nonnull String className, @Nonnull ClassWriter writer) {
 		MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 
@@ -37,9 +36,7 @@ public class SubtargetedModuleMethodBuilder extends MethodBuilder<SubtargetedMod
 		if (Strings.isNullOrEmpty(name)) name = method.getName();
 		mv.visitLdcInsn(name);
 
-		BuilderHelpers.writeModuleList(mv, annotation.module());
-
-		mv.visitLdcInsn(Type.getType(annotation.target()));
+		BuilderHelpers.writeModuleList(mv, annotation.value());
 
 		mv.visitLdcInsn(annotation.priority());
 
@@ -50,7 +47,7 @@ public class SubtargetedModuleMethodBuilder extends MethodBuilder<SubtargetedMod
 			mv.visitLdcInsn(doc);
 		}
 
-		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/SubtargetedModuleMethod", "<init>", "(Ljava/lang/String;Ljava/util/Set;Ljava/lang/Class;ILjava/lang/String;)V", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/ModuleMethod", "<init>", "(Ljava/lang/String;Ljava/util/Set;ILjava/lang/String;)V", false);
 		mv.visitInsn(RETURN);
 
 		mv.visitMaxs(6, 1);
