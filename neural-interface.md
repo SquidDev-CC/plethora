@@ -5,7 +5,7 @@ title: Neural interface
 
 ## The neural interface
 The neural interface is wearable computer with support for peripherals and modules alike. The key difference between
-this and manipulator is that modules have direct access to the wearer. The use of this becomes appararent when you
+this and manipulator is that modules have direct access to the wearer. The use of this becomes apparent when you
 consider the kinetic augment, which provides methods to control the wearer.
 
 To get started craft a neural interface and a neural connector. You can place the neural interface in your helmet slot
@@ -15,15 +15,15 @@ or right click another entity to place it in theirs.
 > placed on a mob, the neural interface cannot be removed. Their brains are not as resilient to tampering as human's
 > brains are.
 
-> **Note:* If a neural interface doesn't show up on a mob, it probably means it is a modded
+> **Note:** If a neural interface doesn't show up on a mob, it probably means it is a modded
 > mob. Please [file an issue](https://github.com/SquidDev-CC/plethora/issues/new) with a link to the mod and the name of
 > the mob.
 
 Now that you've placed the neural interface, right click the mob you placed it on, or the air if you placed it on
-yourself. You should recieve a GUI not dissimilar to a turtle's. On the right you have slots for the peripherals which
-are mounted on the neural interfaec. Clicking the disk drive will toggle between showng peripherals and modules.
+yourself. You should receive a GUI not dissimilar to a turtle's. On the right you have slots for the peripherals which
+are mounted on the neural interface. Clicking the disk drive will toggle between showing peripherals and modules.
 
-Like turtles, the only supported ComputerCraft peirpherals are wireless modems. However, there is also support for other
+Like turtles, the only supported ComputerCraft peripherals are wireless modems. However, there is also support for other
 mod's peripherals, such as CCTweaks' wireless bridge.
 
 All modules which can be placed in a manipulator can also be placed in a neural interface and will continue to function
@@ -48,10 +48,10 @@ name suggests, prevents the mob from wondering around doing its own thing.
 
 One useful method is the `.walk(x, y, z)` method, which directs a mob to path-find to a position, ready to carry out
 your nefarious commands. Of course, if you want to get there faster, you can always use `.launch(yaw, pitch, power)`
-which contourts your muscles, launching you into the air in a hulk-like fashion.
+which contorts your muscles, launching you into the air in a hulk-like fashion.
 
-Some mobs have their own specific methods, such as `.shoot()` on skelletons, `.teleport()` on endermen and `.explode()`
+Some mobs have their own specific methods, such as `.shoot()` on skeletons, `.teleport()` on endermen and `.explode()`
 on creepers. Do with that what you will. I hold no responsibility.
 
-> **Note:** Be warned, the neural interface is a fragile piece of equipment and canno withstand the force of creeper's
+> **Note:** Be warned, the neural interface is a fragile piece of equipment and cannot withstand the force of creeper's
 > explosions.

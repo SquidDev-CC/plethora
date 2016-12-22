@@ -1,15 +1,16 @@
 ---
 layout: text
-title: Item transfer
+title: Moving items
 ---
 
 ## Transferring items and other things
-No automation system is useful if you can't recieve an input or output an, urm, output. This is where transfer locations
+No automation system is useful if you can't receive an input or output an, urm, output. This is where transfer locations
 come in. Transfer locations are a remote location that a peripheral can interact with, sending items or other things.
 
 ### Transfer locations
 To get started, wrap an inventory such as a chest and call the `.getTransferLocations()` method. This will print out a
-list of strings of "places" which it can send items to. Let's go through the different categories of string you might see.
+list of strings of "places" which it can send items to. Let's go through the different categories of string you might
+see.
 
 The most simple is `self`. This is simply a reference to the current object. This is useful if you want to transfer an
 item from one slot in an inventory to another slot in the same inventory.
