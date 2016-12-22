@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -113,7 +114,7 @@ public final class ItemModule extends ItemBase {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
-				if (!world.isRemote) {
+				if (!world.isRemote && !(player instanceof FakePlayer)) {
 					if (player.isSneaking()) {
 						UUID id = player.getGameProfile().getId();
 						if (id != null) {
