@@ -31,14 +31,14 @@ have [CCTweaks](https://minecraft.curseforge/projects/cctweaks) installed. This 
 network, allowing item transfer across a wired network.
 
 ### Chaining locations
-Of course, you can always chain transfer locations, for instance the left side of the inventory above you could be
-accessed as `up.left_side`. If you need to list the "child" transfer locations, you can pass the "path" to
-`.getTransferLocations()`:
+If needed, you can chain transfer locations together with a dot (`.`). For instance, to access the left side of the
+inventory above you, you would use `up.left_side`. If you need to list the "child" transfer locations, you can pass the
+"path" to `.getTransferLocations()`:
 
 ```lua
 chest.getTransferLocations()
 
-{ "up", "right", "up_side", "down_side", "0", "1", ... }
+{ "up", "east", "up_side", "down_side", "0", "1", ... }
 
 chest.getTransferLocations("up")
 
@@ -67,4 +67,9 @@ chest.pushItems("up", 1)
 chest.pullItems("up", 1)
 ```
 
-You can, of course, substitute "up" for any transfer location.
+You can, of course, substitute "up" for any transfer location, including chained transfer locations:
+
+```lua
+-- Pull from the bottom side above. Were this a furnace, this would be the output side.
+chest.pullItems("up.bottom_side", 1)
+```
