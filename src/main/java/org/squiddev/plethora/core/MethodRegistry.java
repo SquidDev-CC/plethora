@@ -27,7 +27,6 @@ import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
-	private final IReference<?>[] emptyReference = new IReference[0];
 
 	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
@@ -36,7 +35,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
 
-		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, null, 0, Integer.MAX_VALUE);
+		String comment = method.getName();
+		String doc = method.getDocString();
+		if (doc != null) comment += ": " + doc;
+		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, comment, 0, Integer.MAX_VALUE);
 
 		providers.put(target, method);
 

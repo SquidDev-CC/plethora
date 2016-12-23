@@ -100,7 +100,7 @@ public final class MethodsKineticEntity {
 	)
 	@Nonnull
 	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double potency = getNumber(args, 1);
+		final double potency = getNumber(args, 0);
 
 		ArgumentHelper.assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
