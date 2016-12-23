@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class ModuleRecipeWrapper extends BlankRecipeWrapper {
-	private ItemStack[] moduleStacks = new ItemStack[]{
+	private final ItemStack[] moduleStacks = new ItemStack[]{
 		new ItemStack(Registry.itemNeuralInterface),
 		new ItemStack(Registry.blockManipulator),
 	};
 
-	private ItemStack[] peripheralStacks = new ItemStack[]{
+	private final ItemStack[] peripheralStacks = new ItemStack[]{
 		new ItemStack(Registry.itemNeuralInterface),
 	};
 

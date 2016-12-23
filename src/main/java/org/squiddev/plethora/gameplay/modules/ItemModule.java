@@ -279,6 +279,7 @@ public final class ItemModule extends ItemBase {
 
 	//endregion
 
+	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound tag) {
 		return new ItemModuleHandler(stack);

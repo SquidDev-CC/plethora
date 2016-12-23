@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.EntityLaser;
 
+import javax.annotation.Nonnull;
+
 public class RenderLaser extends Render<EntityLaser> {
 	private static final float scale = 0.05625f;
 
@@ -18,7 +20,7 @@ public class RenderLaser extends Render<EntityLaser> {
 	}
 
 	@Override
-	public void doRender(EntityLaser entity, double dx, double dy, double dz, float urm, float ticks) {
+	public void doRender(@Nonnull EntityLaser entity, double dx, double dy, double dz, float urm, float ticks) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float) dx, (float) dy, (float) dz);
 		GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * ticks - 90.0f, 0.0f, 1.0f, 0.0f);
@@ -68,8 +70,9 @@ public class RenderLaser extends Render<EntityLaser> {
 		super.doRender(entity, dx, dy, dz, urm, ticks);
 	}
 
+	@Nonnull
 	@Override
-	protected ResourceLocation getEntityTexture(EntityLaser entityLaser) {
+	protected ResourceLocation getEntityTexture(@Nonnull EntityLaser entityLaser) {
 		return null;
 	}
 }

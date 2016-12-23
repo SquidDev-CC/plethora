@@ -66,7 +66,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 		return null;
 	}
 
-	private static Set<String> blacklist = new HashSet<String>();
+	private static final Set<String> blacklist = new HashSet<String>();
 
 	public static void addToBlacklist(String klass) {
 		blacklist.add(klass);

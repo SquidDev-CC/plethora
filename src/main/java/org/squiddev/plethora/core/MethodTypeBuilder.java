@@ -78,7 +78,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 		String internalName = INTERNAL_PREFIX + classPart.replace('.', '/');
 
 		MarkerInterfaces markerInterfacesAnnot = method.getAnnotation(MarkerInterfaces.class);
-		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.<Class<?>>emptySet() : Sets.<Class<?>>newHashSet(markerInterfacesAnnot.value());
+		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.<Class<?>>emptySet() : Sets.newHashSet(markerInterfacesAnnot.value());
 
 		Class<?> klass = add(dottedName, builder.writeClass(method, meta, markerInterfaces, internalName));
 		if (!IMethod.class.isAssignableFrom(klass)) {

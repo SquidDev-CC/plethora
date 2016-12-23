@@ -8,6 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 
+import javax.annotation.Nonnull;
+
 public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 	private final static float PIXEL = 0.0625f;
 	private final ModelRenderer renderer;
@@ -34,7 +36,7 @@ public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 	}
 
 	@Override
-	public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+	public void doRenderLayer(@Nonnull EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		if (NeuralHelpers.getStack(entity) == null || entity.isPotionActive(MobEffects.INVISIBILITY)) {
 			return;
 		}

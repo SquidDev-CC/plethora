@@ -7,12 +7,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.gameplay.Plethora;
 
+import javax.annotation.Nonnull;
+
 /**
  * Model for the neural interface
  */
 public class ModelInterface extends ModelBiped {
-	public static String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
-	public static ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
+	public static final String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
+	public static final ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
 
 	private static ModelInterface normalInstance;
 	private static ModelInterface monocleInstance;
@@ -59,7 +61,7 @@ public class ModelInterface extends ModelBiped {
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+	public void render(@Nonnull Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 
 		GlStateManager.pushMatrix();

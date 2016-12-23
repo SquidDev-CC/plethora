@@ -3,6 +3,8 @@ package org.squiddev.plethora.gameplay.modules;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
 
@@ -29,6 +31,7 @@ public enum ManipulatorType implements IStringSerializable {
 		this.boxes = boxes;
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return name;

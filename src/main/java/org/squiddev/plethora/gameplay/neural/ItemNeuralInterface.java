@@ -180,6 +180,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound oldCapNbt) {
 		return new InvProvider(stack);
@@ -334,7 +335,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	/**
 	 * Call the right click event earlier on.
 	 *
-	 * @param event
+	 * @param event The event to cancel
 	 */
 	@SubscribeEvent
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {

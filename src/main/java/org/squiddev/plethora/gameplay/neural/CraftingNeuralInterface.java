@@ -13,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.COMPUTER_ID;
 
 public class CraftingNeuralInterface extends ShapedRecipes {
@@ -35,7 +37,7 @@ public class CraftingNeuralInterface extends ShapedRecipes {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
 		ItemStack output = getRecipeOutput().copy();
 
 		ItemStack old = inv.getStackInRowAndColumn(1, 1);

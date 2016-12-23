@@ -23,10 +23,8 @@ public abstract class TileBase extends TileEntity {
 	 * Called to save data for the client
 	 *
 	 * @param tag The data to send
-	 * @return If data needs to be sent
 	 */
-	protected boolean writeDescription(NBTTagCompound tag) {
-		return false;
+	protected void writeDescription(NBTTagCompound tag) {
 	}
 
 	/**

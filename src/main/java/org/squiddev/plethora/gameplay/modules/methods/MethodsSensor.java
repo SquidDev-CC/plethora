@@ -105,7 +105,7 @@ public final class MethodsSensor {
 	}
 
 	@Nullable
-	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) throws LuaException {
+	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (entity.getUniqueID().equals(uuid)) return entity;
@@ -115,7 +115,7 @@ public final class MethodsSensor {
 	}
 
 	@Nullable
-	private static Entity findEntityByName(IWorldLocation location, String name) throws LuaException {
+	private static Entity findEntityByName(IWorldLocation location, String name) {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
 		for (Entity entity : entities) {
 			if (Helpers.getName(entity).equals(name)) return entity;

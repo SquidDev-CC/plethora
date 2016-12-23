@@ -5,15 +5,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.ITickable;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
@@ -58,6 +59,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 		readDescription(tag);
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		tag = super.writeToNBT(tag);
@@ -66,9 +68,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 	}
 
 	@Override
-	protected boolean writeDescription(NBTTagCompound tag) {
-		if (type == null) return true;
-
+	protected void writeDescription(NBTTagCompound tag) {
 		tag.setInteger("type", type.ordinal());
 		for (int i = 0; i < stacks.length; i++) {
 			ItemStack stack = stacks[i];
@@ -78,7 +78,6 @@ public final class TileManipulator extends TileBase implements ITickable {
 				tag.removeTag("stack" + i);
 			}
 		}
-		return true;
 	}
 
 	@Override

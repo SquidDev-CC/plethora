@@ -29,6 +29,7 @@ import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.INSTANCE_ID;
@@ -39,6 +40,7 @@ public class ItemKeyboard extends ItemBase {
 		super("keyboard", 1);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking()) {
@@ -109,8 +111,9 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer playerIn, EnumHand hand) {
 		if (playerIn.isSneaking()) return ActionResult.newResult(EnumActionResult.PASS, stack);
 
 		ClientComputer computer;

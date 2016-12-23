@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_ENTITY;
 import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_PLAYER;
 
+@SuppressWarnings("JavaDoc")
 public class ItemNeuralConnector extends ItemBase {
 	public ItemNeuralConnector() {
 		super("neuralConnector", 1);

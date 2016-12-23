@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.refinedstorage;
 import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
+import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
@@ -18,7 +19,8 @@ public class MetaCraftingTask extends BaseMetaProvider<ICraftingTask> {
 		ICraftingTask task = context.getTarget();
 		Map<Object, Object> out = Maps.newHashMap();
 
-		out.put("requested", context.makePartialChild(task.getRequested()));
+		ItemStack requested = task.getRequested();
+		if (requested != null) out.put("requested", context.makePartialChild(requested));
 		out.put("quantity", task.getQuantity());
 		out.put("valid", task.isValid());
 
