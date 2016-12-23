@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -16,7 +17,9 @@ public class MetaBlockState extends BasicMetaProvider<IBlockState> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IBlockState object) {
 		HashMap<Object, Object> data = Maps.newHashMap();
-		data.put("metadata", object.getBlock().getMetaFromState(object));
+
+		Block block = object.getBlock();
+		if (block != null) data.put("metadata", block.getMetaFromState(object));
 
 		HashMap<Object, Object> state = Maps.newHashMap();
 		data.put("state", state);
