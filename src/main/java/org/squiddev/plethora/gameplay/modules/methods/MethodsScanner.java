@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.modules.methods;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -49,8 +50,8 @@ public final class MethodsScanner {
 					data.put("x", oX - x);
 					data.put("y", oY - y);
 					data.put("z", oZ - z);
-					String name = block.getBlock().getRegistryName().toString();
-					data.put("name", name);
+					ResourceLocation name = block.getBlock().getRegistryName();
+					data.put("name", name == null ? "unknown" : name.toString());
 
 					map.put(++i, data);
 				}

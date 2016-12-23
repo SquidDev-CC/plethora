@@ -114,7 +114,7 @@ public final class MethodsPlayerActions {
 			return new Object[]{false, "Nothing to do here"};
 		} finally {
 			fakePlayer.unload(entity);
-			fakePlayer.clearItemInUse();
+			fakePlayer.resetActiveHand();
 		}
 	}
 

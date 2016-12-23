@@ -1,17 +1,23 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.MathHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -100,7 +106,7 @@ public final class MethodsKineticEntity {
 	)
 	@Nonnull
 	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double potency = getNumber(args, 1);
+		final double potency = getNumber(args, 0);
 
 		ArgumentHelper.assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
@@ -112,28 +118,43 @@ public final class MethodsKineticEntity {
 				IContext<IModuleContainer> context = unbaked.bake();
 				EntitySkeleton skeleton = context.getContext(EntitySkeleton.class);
 
-				ItemStack stack = skeleton.getHeldItem();
-				if (stack == null || stack.getItem() != Items.bow) throw new LuaException("Not holding a bow");
+				ItemStack stack = skeleton.getHeldItem(EnumHand.MAIN_HAND);
+				if (stack == null || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
 
 				IWorldLocation location = context.getContext(IWorldLocation.class);
 
-				EntityArrow arrow = new EntityArrow(location.getWorld(), skeleton, (float) (potency * 2));
+				EntityTippedArrow arrow = new EntityTippedArrow(location.getWorld(), skeleton);
+
+				float rotationYaw = skeleton.rotationYaw;
+				float rotationPitch = skeleton.rotationPitch;
+				float motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
+				float motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
+				float motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
+
+				arrow.setThrowableHeading(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
 
 				double damage = potency * 2;
-				int power = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
+				int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
 				if (power > 0) damage += power * 0.5 + 0.5;
 				arrow.setDamage(damage);
 
-				int punch = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
+				int punch = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
 				if (punch > 0) arrow.setKnockbackStrength(punch);
 
 				if (potency == 1.0) arrow.setIsCritical(true);
 
-				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack) > 0 || skeleton.getSkeletonType() == 1) {
+				if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0 || skeleton.getSkeletonType() == SkeletonType.WITHER) {
 					arrow.setFire(100);
 				}
 
-				skeleton.playSound("random.bow", 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
+				ItemStack offhandArrow = skeleton.getHeldItem(EnumHand.OFF_HAND);
+				if (offhandArrow != null && offhandArrow.getItem() == Items.TIPPED_ARROW) {
+					arrow.setPotionEffect(offhandArrow);
+				} else if (skeleton.getSkeletonType() == SkeletonType.STRAY) {
+					arrow.addEffect(new PotionEffect(MobEffects.SLOWNESS, 600));
+				}
+
+				skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
 
 				location.getWorld().spawnEntityInWorld(arrow);
 				return MethodResult.empty();

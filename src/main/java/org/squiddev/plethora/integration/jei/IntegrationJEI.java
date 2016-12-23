@@ -4,6 +4,8 @@ import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
 
@@ -18,6 +20,10 @@ public class IntegrationJEI extends BlankModPlugin {
 
 		registry.addRecipeCategories(new ModuleRecipeCategory(helper));
 		registry.addRecipeHandlers(new ModuleRecipeHandler());
-		registry.addRecipes(ModuleRecipeWrapper.gatherStacks(registry.getItemRegistry().getItemList(), helper));
+		registry.addRecipes(ModuleRecipeWrapper.gatherStacks(registry.getIngredientRegistry().getIngredients(ItemStack.class), helper));
+
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Registry.itemNeuralInterface), ModuleRecipeCategory.ID);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Registry.blockManipulator, 1, 0), ModuleRecipeCategory.ID);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Registry.blockManipulator, 1, 1), ModuleRecipeCategory.ID);
 	}
 }

@@ -338,7 +338,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	 */
 	@SubscribeEvent
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
-		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.getEntityPlayer(), event.getTarget())) {
+		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.getEntityPlayer(), event.getTarget(), event.getHand())) {
 			event.setCanceled(true);
 		}
 	}

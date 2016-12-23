@@ -12,10 +12,12 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -25,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.client.gui.GuiCapture;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
+import org.squiddev.plethora.utils.Helpers;
 
 import java.util.List;
 
@@ -37,23 +40,25 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (player.isSneaking() && !world.isRemote) {
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (player.isSneaking()) {
+			if (world.isRemote) return EnumActionResult.SUCCESS;
+
 			TileEntity tile = world.getTileEntity(pos);
 			NBTTagCompound tag = getTag(stack);
 			if (tile instanceof IComputerTile) {
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
 				tag.setInteger("z", pos.getZ());
-				tag.setInteger("dim", world.provider.getDimensionId());
+				tag.setInteger("dim", world.provider.getDimension());
 
 				// We'll rebind this elsewhere.
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 
-				player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("item.plethora.keyboard.bound")));
+				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.bound")));
 			} else if (tag.hasKey("x")) {
-				player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("item.plethora.keyboard.cleared")));
+				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.cleared")));
 
 				tag.removeTag("x");
 				tag.removeTag("y");
@@ -65,10 +70,10 @@ public class ItemKeyboard extends ItemBase {
 
 			player.inventory.markDirty();
 
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
@@ -105,8 +110,8 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn) {
-		if (playerIn.isSneaking() || !world.isRemote) return stack;
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn, EnumHand hand) {
+		if (playerIn.isSneaking()) return ActionResult.newResult(EnumActionResult.PASS, stack);
 
 		ClientComputer computer;
 		NBTTagCompound tag = getTag(stack);
@@ -114,15 +119,18 @@ public class ItemKeyboard extends ItemBase {
 			computer = getBlockComputer(tag);
 		} else {
 			ItemStack neural = NeuralHelpers.getStack(playerIn);
-			if (neural == null) return stack;
+			if (neural == null) return ActionResult.newResult(EnumActionResult.FAIL, stack);
 
 			computer = ItemComputerHandler.getClient(neural);
 		}
 
-		if (computer == null) return stack;
-		FMLClientHandler.instance().displayGuiScreen(playerIn, new GuiCapture(computer));
+		if (computer == null) return ActionResult.newResult(EnumActionResult.FAIL, stack);
 
-		return stack;
+		if (world.isRemote) {
+			FMLClientHandler.instance().displayGuiScreen(playerIn, new GuiCapture(computer));
+		}
+
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 
 	private static ClientComputer getBlockComputer(NBTTagCompound tag) {
@@ -142,9 +150,9 @@ public class ItemKeyboard extends ItemBase {
 			ClientComputer computer = getBlockComputer(tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
 			if (computer != null) {
-				out.add(StatCollector.translateToLocalFormatted("item.plethora.keyboard.binding", position));
+				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.binding", position));
 			} else {
-				out.add(StatCollector.translateToLocalFormatted("item.plethora.keyboard.broken", position));
+				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.broken", position));
 			}
 		}
 	}
@@ -158,8 +166,8 @@ public class ItemKeyboard extends ItemBase {
 			"SSI",
 			"SSS",
 			'M', PeripheralItemFactory.create(PeripheralType.WirelessModem, null, 1),
-			'S', new ItemStack(Blocks.stone),
-			'I', new ItemStack(Items.iron_ingot)
+			'S', new ItemStack(Blocks.STONE),
+			'I', new ItemStack(Items.IRON_INGOT)
 		);
 	}
 }

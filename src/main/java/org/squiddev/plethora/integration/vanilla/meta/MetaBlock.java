@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
@@ -16,8 +17,8 @@ public class MetaBlock extends BasicMetaProvider<Block> {
 	public Map<Object, Object> getMeta(@Nonnull Block block) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
-		String name = block.getRegistryName().toString();
-		data.put("name", name == null ? "unknown" : name);
+		ResourceLocation name = block.getRegistryName();
+		data.put("name", name == null ? "unknown" : name.toString());
 
 		data.put("displayName", block.getLocalizedName());
 		data.put("unlocalizedName", block.getUnlocalizedName());

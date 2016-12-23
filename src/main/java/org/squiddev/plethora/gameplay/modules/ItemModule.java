@@ -22,11 +22,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.server.FMLServerHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -342,10 +342,10 @@ public final class ItemModule extends ItemBase {
 	private static Entity getEntity(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
-			FMLServerHandler handler = FMLServerHandler.instance();
+			FMLCommonHandler handler = FMLCommonHandler.instance();
 			if (handler == null) return null;
 
-			MinecraftServer server = handler.getServer();
+			MinecraftServer server = handler.getMinecraftServerInstance();
 			if (server == null) return null;
 			return server.getEntityFromUuid(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")));
 		} else {

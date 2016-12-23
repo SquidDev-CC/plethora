@@ -1,7 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;

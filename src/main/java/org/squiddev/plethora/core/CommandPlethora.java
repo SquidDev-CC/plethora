@@ -5,31 +5,29 @@ import com.google.common.io.Files;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.core.docdump.HTMLWriter;
 import org.squiddev.plethora.core.docdump.IDocWriter;
 import org.squiddev.plethora.core.docdump.JSONWriter;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class CommandPlethora extends CommandBase {
-	private final boolean restricted;
-
-	public CommandPlethora(boolean restricted) {
-		this.restricted = restricted;
-	}
-
+	@Nonnull
 	@Override
 	public String getCommandName() {
 		return "plethora";
 	}
 
+	@Nonnull
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getCommandUsage(@Nonnull ICommandSender sender) {
 		return "dump|reload";
 	}
 
@@ -44,7 +42,7 @@ public class CommandPlethora extends CommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 		if (args.length < 1 || Strings.isNullOrEmpty(args[0])) throw new CommandException(getCommandUsage(sender));
 
 		String type = args[0];
@@ -75,7 +73,7 @@ public class CommandPlethora extends CommandBase {
 					file.close();
 				}
 
-				sender.addChatMessage(new ChatComponentText("Documentation written to " + name));
+				sender.addChatMessage(new TextComponentString("Documentation written to " + name));
 			} catch (Throwable e) {
 				DebugLogger.error("Cannot handle " + name, e);
 				throw new CommandException(e.toString());
@@ -87,8 +85,8 @@ public class CommandPlethora extends CommandBase {
 	}
 
 	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender) {
-		return !restricted || super.canCommandSenderUseCommand(sender);
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		return !server.isDedicatedServer() || super.checkPermission(server, sender);
 	}
 
 	@Override

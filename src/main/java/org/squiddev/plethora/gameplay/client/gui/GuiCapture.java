@@ -7,8 +7,8 @@ import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
+import org.squiddev.plethora.utils.Helpers;
 
 import java.io.IOException;
 
@@ -76,7 +76,7 @@ public class GuiCapture extends GuiScreen {
 		FontRenderer renderer = Minecraft.getMinecraft().fontRendererObj;
 		drawCenteredString(
 			renderer,
-			StatCollector.translateToLocal("item.plethora.keyboard.close"),
+			Helpers.translateToLocal("item.plethora.keyboard.close"),
 			width / 2,
 			10,
 			0xFFFFFF

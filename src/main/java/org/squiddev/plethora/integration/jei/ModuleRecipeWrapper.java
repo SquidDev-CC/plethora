@@ -4,6 +4,7 @@ package org.squiddev.plethora.integration.jei;
 import com.google.common.collect.Lists;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
@@ -45,8 +46,14 @@ public class ModuleRecipeWrapper extends BlankRecipeWrapper {
 		this.slotDrawable = helper.getSlotDrawable();
 	}
 
+	@Override
+	public void getIngredients(@Nonnull IIngredients ingredients) {
+		ingredients.setInput(ItemStack.class, stack);
+	}
+
 	@Nonnull
 	@Override
+	@SuppressWarnings("deprecation")
 	public List getInputs() {
 		return Collections.singletonList(stack);
 	}

@@ -133,8 +133,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 	public void load(EntityLivingBase from) {
 		worldObj = from.worldObj;
 		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
-		newRotationYaw = rotationYawHead = rotationYaw;
-		newRotationPitch = rotationPitch;
+		rotationYawHead = rotationYaw;
 		height = from.height;
 
 		setSneaking(from.isSneaking());

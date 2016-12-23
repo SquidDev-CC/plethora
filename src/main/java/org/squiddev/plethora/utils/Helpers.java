@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -73,6 +74,11 @@ public class Helpers {
 	@SuppressWarnings("deprecation")
 	public static String translateToLocal(String key) {
 		return I18n.translateToLocal(key);
+	}
+
+	@SuppressWarnings("deprecation")
+	public static String translateToLocalFormatted(String format, Object... args) {
+		return I18n.translateToLocalFormatted(format, args);
 	}
 
 	public static void twoWayCrafting(ItemStack a, ItemStack b) {
@@ -296,17 +302,17 @@ public class Helpers {
 		}
 	}
 
-	public static boolean onEntityInteract(Item item, EntityPlayer player, Entity target) {
+	public static boolean onEntityInteract(Item item, EntityPlayer player, Entity target, EnumHand hand) {
 		if (!(target instanceof EntityLivingBase)) return false;
 
-		ItemStack current = player.getHeldItem();
+		ItemStack current = player.getHeldItem(hand);
 		if (current == null || current.getItem() != item) return false;
 
-		boolean result = item.itemInteractionForEntity(current, player, (EntityLivingBase) target);
+		boolean result = item.itemInteractionForEntity(current, player, (EntityLivingBase) target, hand);
 
 		if (current.stackSize <= 0) {
 			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-			ForgeEventFactory.onPlayerDestroyItem(player, current);
+			ForgeEventFactory.onPlayerDestroyItem(player, current, hand);
 		}
 
 		return result;

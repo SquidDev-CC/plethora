@@ -14,8 +14,15 @@ public class ModuleRecipeHandler implements IRecipeHandler<ModuleRecipeWrapper> 
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("deprecation")
 	public String getRecipeCategoryUid() {
 		return ModuleRecipeCategory.ID;
+	}
+
+	@Nonnull
+	@Override
+	public String getRecipeCategoryUid(@Nonnull ModuleRecipeWrapper recipe) {
+		return getRecipeCategoryUid();
 	}
 
 	@Nonnull

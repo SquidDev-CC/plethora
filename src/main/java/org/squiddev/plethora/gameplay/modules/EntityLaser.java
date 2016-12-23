@@ -12,23 +12,21 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.server.FMLServerHandler;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.utils.WorldPosition;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
@@ -143,7 +141,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound tag) {
+	public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
 		if (shooterId != null) {
 			tag.setString("shooterId", shooterId.toString());
 		}
@@ -156,7 +154,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound tag) {
+	public void readEntityFromNBT(@Nonnull NBTTagCompound tag) {
 		shooter = null;
 		shooterId = null;
 		shooterPlayer = null;
@@ -320,7 +318,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 							return;
 						}
 
-						if (MinecraftForge.EVENT_BUS.post(new BlockEvent.PlaceEvent(new BlockSnapshot(world, position, offsetState), blockState, player))) {
+						if (MinecraftForge.EVENT_BUS.post(new BlockEvent.PlaceEvent(new BlockSnapshot(world, position, offsetState), blockState, player, EnumHand.MAIN_HAND))) {
 							return;
 						}
 
@@ -419,7 +417,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 			if (current == null || current.provider.getDimension() != shooterPos.getDimension()) {
 				// Don't load another dimension unless we have to
-				World replace = force ? shooterPos.getWorld(FMLServerHandler.instance().getServer()) : shooterPos.getWorld();
+				World replace = force ? shooterPos.getWorld(FMLCommonHandler.instance().getMinecraftServerInstance()) : shooterPos.getWorld();
 
 				if (replace == null) {
 					syncFromEntity(fakePlayer, this);
