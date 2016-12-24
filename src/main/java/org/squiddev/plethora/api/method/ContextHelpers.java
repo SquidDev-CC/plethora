@@ -39,6 +39,28 @@ public final class ContextHelpers {
 	}
 
 	/**
+	 * Generate a Lua list with the metadata taken for each element in the list
+	 *
+	 * @param context The base context to use in getting metadata.
+	 * @param list    The list to get items from.
+	 * @return The converted list.
+	 */
+	@Nullable
+	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Object[] list) {
+		if (list == null) return Collections.emptyMap();
+
+		Map<Integer, Map<Object, Object>> map = Maps.newHashMapWithExpectedSize(list.length);
+		for (int i = 0; i < list.length; i++) {
+			Object element = list[i];
+			if (element != null) {
+				map.put(i + 1, context.makePartialChild(element).getMeta());
+			}
+		}
+
+		return map;
+	}
+
+	/**
 	 * Generate a Lua list with the {@link ILuaObject} taken for each element in the list.
 	 *
 	 * This uses the identity reference ({@link Reference#id(Object)}) to capture objects.

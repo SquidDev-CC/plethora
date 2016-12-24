@@ -43,7 +43,7 @@ public final class MethodsCraftingTask {
 	}
 
 	@BasicObjectMethod.Inject(
-		modId = RS.ID, value = ICraftingStep.class, worldThread = true,
+		modId = RS.ID, value = ICraftingTask.class, worldThread = true,
 		doc = "function():boolean -- Check if this task has finished."
 	)
 	public static Object[] isFinished(IContext<ICraftingTask> context, Object[] args) {
