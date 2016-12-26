@@ -15,7 +15,7 @@ arguments. One such example would be lasers, which consume more energy the highe
 It is possible to configure the rate at which the internal buffer regenerates, and the maximum size of the buffer
 through the `Cost System` section of the `plethora-core.cfg` configuration file (or in the Minecraft GUI). You can also
 set the base cost for every method in the same file. For more information about configuring Plethora,
-read [this document](configuring.html).
+read [this document](configuring.html#cost-system).
 
 There may be a time where you want to have a method consume significant amounts of energy, but not increase the size of
 the energy buffer. If so, you may wish to enable the `allowNegative` option. This allows the energy buffer to enter the
