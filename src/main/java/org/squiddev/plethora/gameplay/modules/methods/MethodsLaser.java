@@ -47,10 +47,18 @@ public final class MethodsLaser {
 
 				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
 				if (context.hasContext(TileManipulator.class)) {
+					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+					double y = pos.yCoord - 0.5;
+					double hOff = 1.2;
+					double vOff = 0.1;
+
+					// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
+					// the block below/above in most cases.
+					// Also offset to be just above/below the manipulator, depending on the pitch.
 					laser.setPosition(
-						pos.xCoord,
-						motionY < 0 ? pos.yCoord - 0.5 - 0.3 : pos.yCoord - 0.3 + BlockManipulator.OFFSET + 0.1,
-						pos.yCoord
+						pos.xCoord + motionX / length * hOff,
+						motionY < 0 ? y - vOff : y + BlockManipulator.OFFSET + vOff,
+						pos.zCoord + motionZ / length * hOff
 					);
 				} else if (context.hasContext(EntityLivingBase.class)) {
 					EntityLivingBase entity = context.getContext(EntityLivingBase.class);
@@ -58,6 +66,8 @@ public final class MethodsLaser {
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 					laser.setShooter(entity);
+
+					// Offset positions to be around the edge of the entity. Avoids damaging the entity.
 					laser.setPosition(
 						vector.xCoord + motionX / length * offset,
 						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,
