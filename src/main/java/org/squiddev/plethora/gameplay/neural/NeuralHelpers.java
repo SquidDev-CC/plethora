@@ -21,6 +21,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
 import org.squiddev.plethora.core.UnbakedContext;
@@ -92,8 +93,11 @@ public final class NeuralHelpers {
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
 
+			ResourceLocation module = moduleHandler.getModule();
+			if (ConfigCore.Blacklist.blacklistModules.contains(module.toString())) continue;
+
 			exists = true;
-			modules.add(moduleHandler.getModule());
+			modules.add(module);
 			additionalContext.addAll(moduleHandler.getAdditionalContext());
 		}
 
@@ -139,7 +143,7 @@ public final class NeuralHelpers {
 
 	public static DelayedExecutor getExecutor(ServerComputer computer) {
 		DelayedExecutor executor = executors.get(computer);
-		if(executor == null) {
+		if (executor == null) {
 			executors.put(computer, executor = new DelayedExecutor());
 		}
 		return executor;

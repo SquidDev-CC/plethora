@@ -36,10 +36,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
-import org.squiddev.plethora.core.MethodRegistry;
-import org.squiddev.plethora.core.MethodWrapperPeripheral;
-import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.core.UnbakedContext;
+import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 import org.squiddev.plethora.utils.Helpers;
@@ -172,8 +169,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
 
+			ResourceLocation module = moduleHandler.getModule();
+			if(ConfigCore.Blacklist.blacklistModules.contains(module.toString())) continue;
+
 			exists = true;
-			modules.add(moduleHandler.getModule());
+			modules.add(module);
 			additionalContext.addAll(moduleHandler.getAdditionalContext());
 		}
 

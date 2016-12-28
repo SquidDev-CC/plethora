@@ -56,6 +56,7 @@ gui.config.plethora.costsystem.limit=Limit
 gui.config.plethora.costsystem.allowNegative=Allow negative buffer
 gui.config.plethora.blacklist=Blacklist
 gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
+gui.config.plethora.blacklist.blacklistModules=Blacklisted modules
 gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
 gui.config.plethora.basecosts=Base Method Cost

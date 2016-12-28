@@ -105,6 +105,12 @@ public final class ConfigCore {
 		 */
 		@RequiresRestart
 		public static HashSet<String> blacklistMods;
+
+		/**
+		 * List of modules to blacklist.
+		 */
+		@RequiresRestart
+		public static HashSet<String> blacklistModules;
 	}
 
 	/**
