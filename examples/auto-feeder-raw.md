@@ -3,7 +3,7 @@ title: Auto feeder
 layout: default
 ---
 
-## Auto feeder <small>[Raw](examples/auto-feeder.lua) | [Annotated](examples/auto-feeder.md)</small>
+## Auto feeder <small>[Raw](auto-feeder.lua) | [Annotated](auto-feeder.html)</small>
 ```lua
 --- This script attempts to keep the player fully fed by checking their food level and scanning for food items.
 
@@ -15,10 +15,10 @@ end
 
 --- We require the entity sensor to get the food levels and the introspection module to access the player's
 --- inventory. We use `hasModule` to ensure they are both there.
-if not modules:hasModule("plethora:sensor") then
+if not modules.hasModule("plethora:sensor") then
 	error("The entity sensor is missing", 0)
 end
-if not modules:hasModule("plethora:introspection") then
+if not modules.hasModule("plethora:introspection") then
 	error("The introspection module is missing", 0)
 end
 
@@ -57,7 +57,7 @@ while true do
 		--- quicker. If we find a food item then we cache the slot for next time and exit from the loop.
 		if not item then
 			for slot, meta in pairs(inv.list()) do
-				local slotItem = inv.getItem(i)
+				local slotItem = inv.getItem(slot)
 				if slotItem and slotItem.consume then
 					print("Using food from slot " .. slot)
 					item = slotItem

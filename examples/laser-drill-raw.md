@@ -3,7 +3,7 @@ title: Laser drill
 layout: default
 ---
 
-## Laser drill <small>[Raw](examples/laser-drill.lua) | [Annotated](examples/laser-drill.md)</small>
+## Laser drill <small>[Raw](laser-drill.lua) | [Annotated](laser-drill.html)</small>
 ```lua
 --- This script fires a laser in the direction the player is looking when they sneak.
 

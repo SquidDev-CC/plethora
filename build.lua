@@ -6,39 +6,39 @@ local files = {
 	"laser-drill.lua",
 }
 
+local pre = "examples/"
 local eHandle = assert(io.open("_includes/example-list.html", "w+"))
 
 for i = 1, #files do
 	local file = files[i]
-	local path = "examples/" .. file
+	local stripped = file:gsub("%.lua$", "")
+	local name = stripped:gsub("-", " "):gsub("^%l", string.upper)
 
-	local name = file:gsub("%.lua$", ""):gsub("-", " "):gsub("^%l", string.upper)
-	local output = path:gsub("%.lua$", ".md")
-	local outputHtml = path:gsub("%.lua$", ".html")
-	local raw = path:gsub("%.lua$", "-raw.md")
+	local output = stripped
+	local raw = stripped .. "-raw"
 
 	print("Writing " .. output)
 
-	eHandle:write(("<li><a href=\"{{ %q | relative_url }}\">%s</a></li>\n"):format(outputHtml, name))
+	eHandle:write(("<li><a href=\"{{ %q | relative_url }}\">%s</a></li>\n"):format(pre .. output .. ".html", name))
 
-	local oHandle = io.open(output, "w+")
-	local rHandle = io.open(raw, "w+")
+	local oHandle = io.open(pre .. output .. ".md", "w+")
+	local rHandle = io.open(pre .. raw .. ".md", "w+")
 
 	oHandle:write("---\n")
 	oHandle:write(("title: %s\n"):format(name))
 	oHandle:write("layout: text\n")
 	oHandle:write("---\n\n")
-	oHandle:write(("## %s <small>[Raw](%s)</small>\n"):format(name, path, raw))
+	oHandle:write(("## %s <small>[Raw](%s)</small>\n"):format(name, file))
 
 	rHandle:write("---\n")
 	rHandle:write(("title: %s\n"):format(name))
 	rHandle:write("layout: default\n")
 	rHandle:write("---\n\n")
-	rHandle:write(("## %s <small>[Raw](%s) | [Annotated](%s)</small>\n```lua\n"):format(name, path, output))
+	rHandle:write(("## %s <small>[Raw](%s) | [Annotated](%s)</small>\n```lua\n"):format(name, file, output .. ".html"))
 
 	local code, empty = false, false
 
-	for line in io.lines(path) do
+	for line in io.lines(pre .. file) do
 		rHandle:write(line)
 		rHandle:write("\n")
 

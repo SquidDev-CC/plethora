@@ -3,7 +3,7 @@ title: Laser drill
 layout: text
 ---
 
-## Laser drill <small>[Raw](examples/laser-drill.lua)</small>
+## Laser drill <small>[Raw](laser-drill.lua)</small>
 This script fires a laser in the direction the player is looking when they sneak.
 
 Firstly we want to ensure that we have a neural interface and wrap it.

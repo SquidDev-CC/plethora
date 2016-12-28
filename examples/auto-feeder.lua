@@ -8,10 +8,10 @@ end
 
 --- We require the entity sensor to get the food levels and the introspection module to access the player's
 --- inventory. We use `hasModule` to ensure they are both there.
-if not modules:hasModule("plethora:sensor") then
+if not modules.hasModule("plethora:sensor") then
 	error("The entity sensor is missing", 0)
 end
-if not modules:hasModule("plethora:introspection") then
+if not modules.hasModule("plethora:introspection") then
 	error("The introspection module is missing", 0)
 end
 
@@ -50,7 +50,7 @@ while true do
 		--- quicker. If we find a food item then we cache the slot for next time and exit from the loop.
 		if not item then
 			for slot, meta in pairs(inv.list()) do
-				local slotItem = inv.getItem(i)
+				local slotItem = inv.getItem(slot)
 				if slotItem and slotItem.consume then
 					print("Using food from slot " .. slot)
 					item = slotItem
