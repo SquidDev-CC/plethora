@@ -14,11 +14,13 @@ for i = 1, #files do
 
 	local name = file:gsub("%.lua$", ""):gsub("-", " "):gsub("^%l", string.upper)
 	local output = path:gsub("%.lua$", ".md")
+	local outputHtml = path:gsub("%.lua$", ".html")
 	local raw = path:gsub("%.lua$", "-raw.md")
 
 	print("Writing " .. output)
 
-	eHandle:write(("<li><a href=\"{{ %q | absolute_url }}\">%s</a></li>\n"):format(output, name))
+	eHandle:write(("<li><a href=\"{{ %q | relative_url }}\">%s</a></li>\n"):format(outputHtml, name))
+
 	local oHandle = io.open(output, "w+")
 	local rHandle = io.open(raw, "w+")
 
