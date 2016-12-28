@@ -39,6 +39,12 @@ methods. Like peripherals, blacklists can be in several forms:
 You can get the name of methods by reading the `basecosts` section, or browsing the GitHub repository. You can also
 enable the `testing.debug` option and copy the relevant names from the console output.
 
+### Blacklisting modules
+The `blacklist.blacklistModules` configuration option allows you to disable specific modules. You will still be able to
+add a blacklisted module into a manipulator or neural interface, but it will not provide any methods or metadata, nor
+will it show up in `.listModules()` or `.hasModule()`. Note, this is only applied once the peripheral is reloaded (such
+as block updates).
+
 ### Cost system
 These options control various aspects of the default cost handler. You may wish
 to [read about the cost system](cost-system.html) first. The options here are relatively self-explanatory:
@@ -59,3 +65,8 @@ system, [see here](cost-system.html).
 
 This section contains an option for every method which is registered with Plethora, along with a description of what
 that method does. Whilst each method has a default cost of 0, you can configure it to be whatever you feel is suitable.
+
+### Reloading the config file
+It is possible to reload the `plethora-core.cfg` config file by executing `/plethora reload` in the server console. Do
+note, all blacklist options require a server restart and so will have no effect on the available methods, peripherals,
+etc...
