@@ -8,14 +8,6 @@ Plethora provides a series of configuration options to allow mod pack developers
 balance the use of specific features of the pack. Most options are documented within the `plethora-core.cfg` file,
 though I will go into more detail here.
 
-### Base method costs
-It is possible to set the cost that will be consumed every time a method is called. This can be used to restrict the
-rate at which powerful or computationally expensive functions are called. For more information about the cost
-system, [see here](cost-system.html).
-
-This section contains an option for every method which is registered with Plethora, along with a description of what
-that method does. Whilst each method has a default cost of 0, you can configure it to be whatever you feel is suitable.
-
 ### Blacklisting mod integration
 If you wish to disable integration with a specific mod then you should add its ID to the `blacklist.blacklistMods`
 list. This will disable all converters, meta providers, transfer locations and methods. For more fine grained control,
@@ -59,3 +51,11 @@ to [read about the cost system](cost-system.html) first. The options here are re
    wait between calling methods.
  - `allowNegative` allows the handler to fall in to negative energies, falling back to a more traditional rate limiting
    system. This is explained in more detail in the cost system documentation.
+
+### Base method costs
+It is possible to set the cost that will be consumed every time a method is called. This can be used to restrict the
+rate at which powerful or computationally expensive functions are called. For more information about the cost
+system, [see here](cost-system.html).
+
+This section contains an option for every method which is registered with Plethora, along with a description of what
+that method does. Whilst each method has a default cost of 0, you can configure it to be whatever you feel is suitable.
