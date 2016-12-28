@@ -50,6 +50,8 @@ footer {
 h2, h3 {
 	overflow-wrap: break-word;
 	word-break: break-all;
+
+	small { font-size: 0.5em; }
 }
 
 h2 {
@@ -95,9 +97,10 @@ pre.box, pre.highlight {
 }
 
 pre.highlight {
-	.o  { color: $base08; }
+	.o, .ow, .kd, .k { color: $base08; }
 	.s2 { color: $base09; }
 	.c1 { color: $grey03; }
+	.kc { color: $base0D; }
 }
 
 em { font-style: italic; }
@@ -107,7 +110,7 @@ p {
 	line-height: 1.3em;
 }
 
-p, table.table-grid, pre.box, ul.list, blockquote {
+p, table.table-grid, pre, ul, blockquote {
 	margin-top: 1em;
 	margin-bottom: 1em;
 
