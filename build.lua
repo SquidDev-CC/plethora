@@ -2,8 +2,9 @@
 --- Generates the example files
 
 local files = {
-	"auto-feeder.lua",
 	"laser-drill.lua",
+	"laser-sentry.lua",
+	"auto-feeder.lua",
 }
 
 local pre = "examples/"
