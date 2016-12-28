@@ -91,5 +91,6 @@ gui.config.plethora.sensor=Entity Sensor
 gui.config.plethora.sensor.radius=Sense radius
 
 gui.jei.plethora.modules=Modules
-gui.jei.plethora.modules.module=Usable as a module in:
-gui.jei.plethora.modules.peripheral=Usable as a peripheral in:
+gui.jei.plethora.modules.usable=Usable as a module in:
+gui.jei.plethora.peripherals=Peripherals
+gui.jei.plethora.peripherals.usable=Usable as a peripheral in:
