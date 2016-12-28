@@ -1,6 +1,6 @@
 package org.squiddev.plethora.api.method;
 
-import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.api.module.IModuleContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,16 +75,6 @@ public interface IPartialContext<T> {
 	Set<String> getTransferLocations();
 
 	/**
-	 * Check whether this context includes a given module.
-	 *
-	 * This will not change over the course of the context's lifetime.
-	 *
-	 * @param module The module to check
-	 * @return Whether this context has a the specified module
-	 */
-	boolean hasModule(@Nonnull ResourceLocation module);
-
-	/**
 	 * Get a collection of all modules in this context.
 	 *
 	 * This will not change over the course of the context's lifetime.
@@ -92,7 +82,7 @@ public interface IPartialContext<T> {
 	 * @return A read-only set of all available modules.
 	 */
 	@Nonnull
-	Set<ResourceLocation> getModules();
+	IModuleContainer getModules();
 
 	/**
 	 * Get the metadata for this object

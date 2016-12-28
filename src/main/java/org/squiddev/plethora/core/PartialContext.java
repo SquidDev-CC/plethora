@@ -2,15 +2,14 @@ package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.transfer.ITransferRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,13 +19,13 @@ public class PartialContext<T> implements IPartialContext<T> {
 	protected final T target;
 	protected final Object[] context;
 	protected final ICostHandler handler;
-	protected final Set<ResourceLocation> modules;
+	protected final IModuleContainer modules;
 
-	public PartialContext(@Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull Set<ResourceLocation> modules) {
+	public PartialContext(@Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull IModuleContainer modules) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;
-		this.modules = Collections.unmodifiableSet(modules);
+		this.modules = modules;
 	}
 
 	@Nonnull
@@ -130,14 +129,9 @@ public class PartialContext<T> implements IPartialContext<T> {
 		return out;
 	}
 
-	@Override
-	public boolean hasModule(@Nonnull ResourceLocation module) {
-		return modules.contains(module);
-	}
-
 	@Nonnull
 	@Override
-	public Set<ResourceLocation> getModules() {
+	public IModuleContainer getModules() {
 		return modules;
 	}
 

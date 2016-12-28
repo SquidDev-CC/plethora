@@ -6,26 +6,27 @@ import org.objectweb.asm.MethodVisitor;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.MethodBuilder;
-import org.squiddev.plethora.api.module.ModuleObjectMethod;
+import org.squiddev.plethora.api.module.IModuleContainer;
+import org.squiddev.plethora.api.module.ModuleContainerObjectMethod;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.*;
 
-@IMethodBuilder.Inject(ModuleObjectMethod.Inject.class)
-public class ModuleObjectMethodBuilder extends MethodBuilder<ModuleObjectMethod.Inject> {
-	public ModuleObjectMethodBuilder() throws NoSuchMethodException {
-		super(ModuleObjectMethod.class.getMethod("apply", IContext.class, Object[].class), ModuleObjectMethod.class);
+@IMethodBuilder.Inject(ModuleContainerObjectMethod.Inject.class)
+public class ModuleContainerObjectMethodBuilder extends MethodBuilder<ModuleContainerObjectMethod.Inject> {
+	public ModuleContainerObjectMethodBuilder() throws NoSuchMethodException {
+		super(ModuleContainerObjectMethod.class.getMethod("apply", IContext.class, Object[].class), ModuleContainerObjectMethod.class);
 	}
 
 	@Override
-	public Class<?> getTarget(@Nonnull Method method, @Nonnull ModuleObjectMethod.Inject annotation) {
-		return annotation.value();
+	public Class<?> getTarget(@Nonnull Method method, @Nonnull ModuleContainerObjectMethod.Inject annotation) {
+		return IModuleContainer.class;
 	}
 
 	@Override
-	public void writeClass(@Nonnull Method method, @Nonnull ModuleObjectMethod.Inject annotation, @Nonnull String className, @Nonnull ClassWriter writer) {
+	public void writeClass(@Nonnull Method method, @Nonnull ModuleContainerObjectMethod.Inject annotation, @Nonnull String className, @Nonnull ClassWriter writer) {
 		MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 
@@ -48,7 +49,7 @@ public class ModuleObjectMethodBuilder extends MethodBuilder<ModuleObjectMethod.
 			mv.visitLdcInsn(doc);
 		}
 
-		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/ModuleObjectMethod", "<init>", "(Ljava/lang/String;Ljava/util/Set;ZILjava/lang/String;)V", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "org/squiddev/plethora/api/module/ModuleContainerObjectMethod", "<init>", "(Ljava/lang/String;Ljava/util/Set;ZILjava/lang/String;)V", false);
 		mv.visitInsn(RETURN);
 
 		mv.visitMaxs(6, 1);

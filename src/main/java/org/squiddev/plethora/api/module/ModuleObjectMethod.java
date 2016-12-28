@@ -15,7 +15,8 @@ import java.lang.annotation.Target;
 import java.util.Set;
 
 /**
- * A method that requires a module to execute.
+ * A method that requires a module to execute. If you wish to target {@link IModuleContainer}, use
+ * {@link ModuleContainerMethod} instead.
  */
 public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> implements IModuleMethod<T> {
 	protected final Set<ResourceLocation> modules;
@@ -42,8 +43,9 @@ public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> impleme
 	public boolean canApply(@Nonnull IPartialContext<T> context) {
 		if (!super.canApply(context)) return false;
 
+		IModuleContainer container = context.getModules();
 		for (ResourceLocation module : modules) {
-			if (!context.hasModule(module)) return false;
+			if (!container.hasModule(module)) return false;
 		}
 
 		return true;
@@ -81,9 +83,16 @@ public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> impleme
 		/**
 		 * The modules this method requires.
 		 *
-		 * @return The target class.
+		 * @return The required modules.
 		 */
 		String[] module();
+
+		/**
+		 * The class this method targets.
+		 *
+		 * @return The target class.
+		 */
+		Class<?> value();
 
 		/**
 		 * The priority of the method.

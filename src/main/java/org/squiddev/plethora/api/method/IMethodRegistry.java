@@ -2,15 +2,14 @@ package org.squiddev.plethora.api.method;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A registry for metadata providers.
@@ -62,7 +61,7 @@ public interface IMethodRegistry {
 	 * @return The built context
 	 */
 	@Nonnull
-	<T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules, @Nonnull IReference<?>... context);
+	<T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<IModuleContainer> modules, @Nonnull IReference<?>... context);
 
 	/**
 	 * Get the cost handler for this object

@@ -1,22 +1,21 @@
 package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.ILuaObject;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Set;
 
 public class Context<T> extends PartialContext<T> implements IContext<T> {
 	private final IUnbakedContext<T> parent;
 
-	public Context(@Nonnull IUnbakedContext<T> parent, @Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull Set<ResourceLocation> modules) {
+	public Context(@Nonnull IUnbakedContext<T> parent, @Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull IModuleContainer modules) {
 		super(target, handler, context, modules);
 		this.parent = parent;
 	}

@@ -2,11 +2,10 @@ package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
 /**
  * A context whose references haven't been resolved
@@ -55,7 +54,7 @@ public interface IUnbakedContext<T> {
 	 * @param modules A reference which will all modules for this context. This must return a constant value.
 	 * @return The new context using the specified handlers
 	 */
-	IUnbakedContext<T> withModules(@Nonnull IReference<Set<ResourceLocation>> modules);
+	IUnbakedContext<T> withModules(@Nonnull IReference<IModuleContainer> modules);
 
 
 	/**

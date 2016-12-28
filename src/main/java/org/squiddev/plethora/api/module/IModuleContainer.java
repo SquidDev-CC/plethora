@@ -1,9 +1,6 @@
 package org.squiddev.plethora.api.module;
 
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -13,15 +10,24 @@ import java.util.Set;
  * as a target for {@link org.squiddev.plethora.api.method.IMethod} when module methods
  * do not target a specific object.
  */
-public interface IModuleContainer extends IReference<Set<ResourceLocation>> {
+public interface IModuleContainer {
 	/**
-	 * Get a list of collection of all modules.
+	 * Check whether this module container has a given module.
 	 *
-	 * You should avoid evaluating this directly: use {@link IPartialContext#getModules()}
-	 * instead.
+	 * This will not change over the course of the container's lifetime.
 	 *
-	 * @return A reference to the module collection. When evaluated this should return a constant value.
+	 * @param module The module to check
+	 * @return Whether this container has a the specified module
+	 */
+	boolean hasModule(@Nonnull ResourceLocation module);
+
+	/**
+	 * Get a collection of all modules in this container..
+	 *
+	 * This will not change over the course of the containers's lifetime.
+	 *
+	 * @return A read-only set of all available modules.
 	 */
 	@Nonnull
-	Set<ResourceLocation> get() throws LuaException;
+	Set<ResourceLocation> getModules();
 }

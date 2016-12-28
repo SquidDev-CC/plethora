@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * A top-level module method which requires a particular context object to execute.
  */
-public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMethod<IModuleContainer> implements ISubTargetedMethod<IModuleContainer, T> {
+public abstract class SubtargetedModuleObjectMethod<T> extends ModuleContainerObjectMethod implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
 	public SubtargetedModuleObjectMethod(String name, Set<ResourceLocation> modules, Class<T> klass, boolean worldThread) {
@@ -35,9 +35,10 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMetho
 		this.klass = klass;
 	}
 
+	@Nonnull
 	@Override
-	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
-		return super.canApply(context) && context.hasContext(klass);
+	public Class<T> getSubTarget() {
+		return klass;
 	}
 
 	@Nullable
@@ -48,12 +49,6 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleObjectMetho
 
 	@Nullable
 	public abstract Object[] apply(@Nonnull T target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException;
-
-	@Nonnull
-	@Override
-	public Class<T> getSubTarget() {
-		return klass;
-	}
 
 	/**
 	 * Delegate to a normal method from a {@link ModuleMethod}.
