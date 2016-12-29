@@ -4,14 +4,14 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleObjectMethod;
+import org.squiddev.plethora.api.module.ModuleContainerObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class MethodsIntrospection {
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 		module = PlethoraModules.INTROSPECTION_S, worldThread = true,
 		doc = "function():string -- Get this entity's UUID."
 	)
@@ -23,7 +23,7 @@ public final class MethodsIntrospection {
 		return new Object[]{entity.getUniqueID().toString()};
 	}
 
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 		module = PlethoraModules.INTROSPECTION_S, worldThread = true,
 		doc = "function():string -- Get this entity's name"
 	)
@@ -34,7 +34,7 @@ public final class MethodsIntrospection {
 		return new Object[]{entity.getName()};
 	}
 
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S}, worldThread = true,
 		doc = "function():string -- Get this entity's metadata."
 	)

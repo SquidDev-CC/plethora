@@ -5,16 +5,14 @@ import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.api.module.BasicModuleContainer;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import static org.squiddev.plethora.api.reference.Reference.entity;
@@ -78,7 +76,7 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 		return PlethoraAPI.instance().methodRegistry().makeContext(
 			id(object),
 			CostHelpers.getCostHandler(entity),
-			Reference.id(Collections.<ResourceLocation>emptySet()),
+			BasicModuleContainer.EMPTY_REF,
 			entity(entity)
 		).getObject();
 	}

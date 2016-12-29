@@ -3,14 +3,13 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A context which doesn't have solidified references.
@@ -19,10 +18,10 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<T> target;
 	private final IReference<?>[] context;
 	private final ICostHandler handler;
-	protected final IReference<Set<ResourceLocation>> modules;
+	protected final IReference<IModuleContainer> modules;
 	private final IResultExecutor executor;
 
-	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<Set<ResourceLocation>> modules, IResultExecutor executor) {
+	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<IModuleContainer> modules, IResultExecutor executor) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;
@@ -76,7 +75,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	}
 
 	@Override
-	public IUnbakedContext<T> withModules(@Nonnull IReference<Set<ResourceLocation>> modules) {
+	public IUnbakedContext<T> withModules(@Nonnull IReference<IModuleContainer> modules) {
 		Preconditions.checkNotNull(modules, "modules cannot be null");
 		return new UnbakedContext<T>(target, handler, context, modules, executor);
 	}

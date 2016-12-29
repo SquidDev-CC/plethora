@@ -28,7 +28,7 @@ public final class ConfigCore {
 
 	/**
 	 * Some methods have a particular cost: they
-	 * consume a set amount of fuel from their owner.
+	 * consume a set amount of energy from their owner.
 	 * This level regenerates over time.
 	 *
 	 * *Note:* These values only apply to the default handler.
@@ -36,7 +36,7 @@ public final class ConfigCore {
 	 */
 	public static class CostSystem {
 		/**
-		 * The fuel level all systems start at
+		 * The energy level all systems start at
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
@@ -44,7 +44,7 @@ public final class ConfigCore {
 		public static double initial;
 
 		/**
-		 * The amount of fuel regened each tick
+		 * The amount of energy regenerated each tick
 		 */
 		@DefaultDouble(10)
 		@Range(min = 0)
@@ -52,7 +52,7 @@ public final class ConfigCore {
 		public static double regen;
 
 		/**
-		 * The maximum fuel level an item can have
+		 * The maximum energy level an item can have
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
@@ -105,6 +105,12 @@ public final class ConfigCore {
 		 */
 		@RequiresRestart
 		public static HashSet<String> blacklistMods;
+
+		/**
+		 * List of modules to blacklist.
+		 */
+		@RequiresRestart
+		public static HashSet<String> blacklistModules;
 	}
 
 	/**

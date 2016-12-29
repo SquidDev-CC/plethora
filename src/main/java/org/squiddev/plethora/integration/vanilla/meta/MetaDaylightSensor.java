@@ -23,7 +23,7 @@ public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<BlockReference> context) {
-		if (!context.hasModule(IntegrationVanilla.daylightSensorMod)) return Collections.emptyMap();
+		if (!context.getModules().hasModule(IntegrationVanilla.daylightSensorMod)) return Collections.emptyMap();
 
 		IWorldLocation location = context.getTarget().getLocation();
 		World world = location.getWorld();

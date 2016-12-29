@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Property;
@@ -13,6 +12,7 @@ import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
@@ -27,7 +27,6 @@ import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
-	private final IReference<?>[] emptyReference = new IReference[0];
 
 	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
@@ -36,7 +35,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
 
-		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, null, 0, Integer.MAX_VALUE);
+		String comment = method.getName();
+		String doc = method.getDocString();
+		if (doc != null) comment += ": " + doc;
+		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, comment, 0, Integer.MAX_VALUE);
 
 		providers.put(target, method);
 
@@ -113,7 +115,7 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<Set<ResourceLocation>> modules, @Nonnull IReference<?>... context) {
+	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<IModuleContainer> modules, @Nonnull IReference<?>... context) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 		Preconditions.checkNotNull(context, "context cannot be null");

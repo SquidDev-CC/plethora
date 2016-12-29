@@ -17,11 +17,11 @@ public final class CostHelpers {
 	}
 
 	/**
-	 * Consume a set amount of fuel, error if not possible
+	 * Consume a set amount of energy, error if not possible
 	 *
 	 * @param handler The cost handler to use
 	 * @param amount  The amount to consume. This must be > 0.
-	 * @throws LuaException If there is insufficient fuel
+	 * @throws LuaException If there is insufficient energy
 	 */
 	public static void checkCost(@Nonnull ICostHandler handler, double amount) throws LuaException {
 		if (!handler.consume(amount)) {
@@ -30,12 +30,12 @@ public final class CostHelpers {
 	}
 
 	/**
-	 * Consume a set amount of fuel, error if not possible
+	 * Consume a set amount of energy, error if not possible
 	 *
 	 * @param handler The cost handler to use
 	 * @param amount  The amount to consume. This must be > 0.
 	 * @param message The message to throw with
-	 * @throws LuaException If there is insufficient fuel
+	 * @throws LuaException If there is insufficient energy
 	 */
 	public static void checkCost(@Nonnull ICostHandler handler, double amount, @Nonnull String message) throws LuaException {
 		if (!handler.consume(amount)) {

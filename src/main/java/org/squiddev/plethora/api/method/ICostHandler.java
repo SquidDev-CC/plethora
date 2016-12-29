@@ -10,7 +10,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * This is used to limit the rate methods are called.
  * This can be bound as a capability to an object.
  *
- * You should aim to regen the fuel level when possible
+ * You should aim to regenerate the energy level when possible
  *
  * @see org.squiddev.plethora.api.Constants#COST_HANDLER_CAPABILITY
  * @see IMethodRegistry#getCostHandler(ICapabilityProvider, net.minecraft.util.EnumFacing)
@@ -18,17 +18,17 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public interface ICostHandler {
 	/**
-	 * Get the current fuel level.
+	 * Get the current energy level.
 	 *
-	 * @return The current fuel level
+	 * @return The current energy level
 	 */
 	double get();
 
 	/**
-	 * Consume a set amount of fuel
+	 * Consume a set amount of energy
 	 *
 	 * @param amount The amount to consume. This must be >= 0.
-	 * @return If there is sufficient fuel
+	 * @return If there is sufficient energy
 	 */
 	boolean consume(double amount);
 }

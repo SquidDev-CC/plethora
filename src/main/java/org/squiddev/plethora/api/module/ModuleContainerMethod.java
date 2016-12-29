@@ -1,9 +1,10 @@
 package org.squiddev.plethora.api.module;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 
 import javax.annotation.Nonnull;
@@ -14,43 +15,51 @@ import java.lang.annotation.Target;
 import java.util.Set;
 
 /**
- * A top-level module method which requires a particular context object to execute.
+ * A method that requires a module to execute.
  */
-public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod implements ISubTargetedMethod<IModuleContainer, T> {
-	private final Class<T> klass;
+public abstract class ModuleContainerMethod extends BasicMethod<IModuleContainer> implements IModuleMethod<IModuleContainer> {
+	protected final Set<ResourceLocation> modules;
 
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass) {
-		this(name, modules, klass, 0, null);
+	public ModuleContainerMethod(String name, Set<ResourceLocation> modules) {
+		this(name, modules, 0, null);
 	}
 
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority) {
-		this(name, modules, klass, priority, null);
+	public ModuleContainerMethod(String name, Set<ResourceLocation> modules, int priority) {
+		this(name, modules, priority, null);
 	}
 
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, String docs) {
-		this(name, modules, klass, 0, docs);
+	public ModuleContainerMethod(String name, Set<ResourceLocation> modules, String doc) {
+		this(name, modules, 0, doc);
 	}
 
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority, String docs) {
-		super(name, modules, priority, docs);
-		this.klass = klass;
+	public ModuleContainerMethod(String name, Set<ResourceLocation> modules, int priority, String doc) {
+		super(name, priority, doc);
+		Preconditions.checkArgument(modules.size() > 0, "modules must be non-empty");
+		this.modules = modules;
 	}
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
-		return super.canApply(context) && context.hasContext(klass);
+		if (!super.canApply(context)) return false;
+
+		IModuleContainer container = context.getTarget();
+		for (ResourceLocation module : modules) {
+			if (!container.hasModule(module)) return false;
+		}
+
+		return true;
 	}
 
 	@Nonnull
 	@Override
-	public Class<T> getSubTarget() {
-		return klass;
+	public Set<ResourceLocation> getModules() {
+		return modules;
 	}
 
 	/**
-	 * Delegate to a normal method from a {@link ModuleMethod}.
+	 * Delegate to a normal method from a {@link ModuleContainerMethod}.
 	 *
-	 * The method should be a public and static with the same signature as {@link SubtargetedModuleMethod#apply(IUnbakedContext, Object[])}.
+	 * The method should be a public and static with the same signature as {@link ModuleContainerMethod#apply(IUnbakedContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
 	 * {@link IMethod#canApply(IPartialContext)} you should use a normal {@link IMethod} instead.
 	 *
@@ -74,15 +83,9 @@ public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod i
 		 * The modules this method requires.
 		 *
 		 * @return The target class.
+		 * @see ModuleContainerMethod#ModuleContainerMethod(String, Set)
 		 */
-		String[] module();
-
-		/**
-		 * The class this method targets
-		 *
-		 * @return The target class
-		 */
-		Class<?> target();
+		String[] value();
 
 		/**
 		 * The priority of the method.

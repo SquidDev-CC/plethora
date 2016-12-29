@@ -7,6 +7,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.Reference;
 
@@ -24,7 +25,7 @@ public class MethodsModules {
 	public static Object[] listModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		Map<Integer, String> modules = Maps.newHashMap();
 		int i = 0;
-		for (ResourceLocation module : context.getModules()) {
+		for (ResourceLocation module : context.getTarget().getModules()) {
 			modules.put(++i, module.toString());
 		}
 		return new Object[]{modules};
@@ -36,7 +37,7 @@ public class MethodsModules {
 	)
 	public static Object[] hasModule(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		ResourceLocation module = new ResourceLocation(getString(args, 0));
-		return new Object[]{context.hasModule(module)};
+		return new Object[]{context.getTarget().hasModule(module)};
 	}
 
 	@BasicObjectMethod.Inject(
@@ -44,33 +45,19 @@ public class MethodsModules {
 		doc = "function(names:string...):table|nil -- Gets the methods which require these modules"
 	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final ResourceLocation[] modules = new ResourceLocation[args.length];
-		boolean any = false;
+		Set<ResourceLocation> oldModules = context.getTarget().getModules();
+		Set<ResourceLocation> newModules = Sets.newHashSet();
+
 		for (int i = 0; i < args.length; i++) {
-			ResourceLocation module = modules[i] = new ResourceLocation(getString(args, i));
-			if (context.hasModule(module)) any = true;
+			ResourceLocation module = new ResourceLocation(getString(args, i));
+			if (oldModules.contains(module)) newModules.add(module);
 		}
 
-		if (!any) return null;
-
-		final IModuleContainer container = context.getTarget();
-		IModuleContainer filteredContainer = new IModuleContainer() {
-			@Nonnull
-			@Override
-			public Set<ResourceLocation> get() throws LuaException {
-				Set<ResourceLocation> existing = container.get();
-				Set<ResourceLocation> out = Sets.newHashSetWithExpectedSize(modules.length);
-				for (ResourceLocation module : modules) {
-					if (existing.contains(module)) out.add(module);
-				}
-				return out;
-			}
-		};
+		if (newModules.size() == 0) return null;
 
 		ILuaObject object = context
 			.unbake()
-			.makeChild(Reference.id(filteredContainer))
-			.withModules(filteredContainer)
+			.makeChild(Reference.id(new BasicModuleContainer(newModules)))
 			.getObject();
 
 		if (object.getMethodNames().length == 0) {

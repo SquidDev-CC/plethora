@@ -39,21 +39,17 @@ import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.api.reference.Reference;
-import org.squiddev.plethora.core.MethodRegistry;
-import org.squiddev.plethora.core.MethodWrapperPeripheral;
-import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.core.UnbakedContext;
+import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -190,8 +186,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
 
+			ResourceLocation module = moduleHandler.getModule();
+			if (ConfigCore.Blacklist.blacklistModules.contains(module.toString())) continue;
+
 			exists = true;
-			modules.add(moduleHandler.getModule());
+			modules.add(module);
 			additionalContext.addAll(moduleHandler.getAdditionalContext());
 		}
 
@@ -202,12 +201,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		contextData[contextData.length - 2] = tile(te);
 		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
 
-		final Set<ResourceLocation> moduleSet = Collections.unmodifiableSet(modules);
-
-		IModuleContainer container = new IModuleContainer() {
+		final IModuleContainer container = new BasicModuleContainer(modules);
+		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
 			@Nonnull
 			@Override
-			public Set<ResourceLocation> get() throws LuaException {
+			public IModuleContainer get() throws LuaException {
 				for (int i = 0; i < size; i++) {
 					ItemStack oldStack = stacks[i];
 					ItemStack newStack = manipulator.getStack(i);
@@ -217,14 +215,14 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 					}
 				}
 
-				return moduleSet;
+				return container;
 			}
 		};
 
 		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
-			Reference.id(container),
+			containerRef,
 			CostHelpers.getCostHandler(manipulator),
-			container,
+			containerRef,
 			contextData
 		);
 
