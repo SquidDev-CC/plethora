@@ -5,6 +5,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModRegistry;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
@@ -40,10 +41,14 @@ public class PeripheralsWrapper extends UseInRecipeWrapper {
 		registry.addRecipeHandlers(new UseInRecipeHandler<PeripheralsWrapper>(ID, PeripheralsWrapper.class));
 
 		List<PeripheralsWrapper> wrappers = Lists.newArrayList();
-		for (ItemStack stack : registry.getItemRegistry().getItemList()) {
+		for (ItemStack stack : registry.getIngredientRegistry().getIngredients(ItemStack.class)) {
 			if (isValid(stack)) wrappers.add(new PeripheralsWrapper(stack, helper));
 		}
 
 		registry.addRecipes(wrappers);
+
+		for (ItemStack stack : STACKS) {
+			registry.addRecipeCategoryCraftingItem(stack, PlethoraCore.ID + ":" + ID);
+		}
 	}
 }

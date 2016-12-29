@@ -3,8 +3,6 @@ package org.squiddev.plethora.integration.jei;
 import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
-import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
 
