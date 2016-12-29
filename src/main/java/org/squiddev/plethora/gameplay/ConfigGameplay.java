@@ -41,7 +41,7 @@ public final class ConfigGameplay {
 		public static double maximumPotency;
 
 		/**
-		 * The fuel cost per potency for a laser.
+		 * The energy cost per potency for a laser.
 		 * See Plethora.cfg#CostSystem for more info
 		 */
 		@DefaultDouble(10)
