@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +14,7 @@ import java.util.Map;
 @IMethod.Inject(IMethodCollection.class)
 public class MethodDocumentation extends BasicMethod<IMethodCollection> {
 	public MethodDocumentation() {
-		super("getDocs");
-	}
-
-	@Nullable
-	@Override
-	public String getDocString() {
-		return "function([name:string]):table|string|nil -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.";
+		super("getDocs", "function([name:string]):table|string|nil -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.");
 	}
 
 	@Nonnull

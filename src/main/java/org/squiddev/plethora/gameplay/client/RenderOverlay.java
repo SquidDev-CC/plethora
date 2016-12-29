@@ -174,7 +174,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		}
 	}
 
-	public static boolean isBlockOre(Block block, int meta) {
+	private static boolean isBlockOre(Block block, int meta) {
 		if (block == null) {
 			return false;
 		}

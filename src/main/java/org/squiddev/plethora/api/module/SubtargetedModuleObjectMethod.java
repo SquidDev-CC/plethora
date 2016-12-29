@@ -35,6 +35,11 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleContainerOb
 		this.klass = klass;
 	}
 
+	@Override
+	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
+		return super.canApply(context) && context.hasContext(klass);
+	}
+
 	@Nonnull
 	@Override
 	public Class<T> getSubTarget() {

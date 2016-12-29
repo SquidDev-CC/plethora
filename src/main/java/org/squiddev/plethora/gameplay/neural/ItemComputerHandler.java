@@ -2,22 +2,18 @@ package org.squiddev.plethora.gameplay.neural;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ClientComputer;
-import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.ItemBase.getTag;
-import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
-import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.getExecutor;
 
 /**
- * Attempt to get computer's from items
+ * Attempt to get computers from items
  */
 public final class ItemComputerHandler {
 	public static final int WIDTH = 39;
@@ -26,20 +22,27 @@ public final class ItemComputerHandler {
 	public static final String SESSION_ID = "session_id";
 	public static final String INSTANCE_ID = "instance_id";
 	public static final String COMPUTER_ID = "id";
+	public static final String ITEMS = "items";
 	public static final String DIRTY = "dirty";
-	public static final String ENTITY_MOST = "owner_most";
-	public static final String ENTITY_LEAST = "owner_least";
 
-	public static ServerComputer getServer(ItemStack stack, Entity owner, IInventory inventory) {
+	public static NeuralComputer getServer(ItemStack stack, EntityLivingBase owner, IInventory inventory) {
 		NBTTagCompound tag = getTag(stack);
 
 		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;
 		final int sessionId = manager.getSessionID();
 
-		ServerComputer computer;
+		NeuralComputer neural = null;
 		if (tag.getInteger(SESSION_ID) == sessionId && tag.hasKey(INSTANCE_ID) && manager.contains(tag.getInteger(INSTANCE_ID))) {
-			computer = manager.get(tag.getInteger(INSTANCE_ID));
-		} else {
+			ServerComputer computer = manager.get(tag.getInteger(INSTANCE_ID));
+
+			if (computer instanceof NeuralComputer) {
+				neural = (NeuralComputer) computer;
+			} else {
+				DebugLogger.error("Computer is not NeuralComputer but " + computer);
+			}
+		}
+
+		if (neural == null) {
 			int instanceId = manager.getUnusedInstanceID();
 
 			int computerId;
@@ -50,57 +53,37 @@ public final class ItemComputerHandler {
 			}
 
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
-			computer = new ServerComputer(owner.worldObj, computerId, label, instanceId, ComputerFamily.Advanced, WIDTH, HEIGHT);
-			manager.add(instanceId, computer);
+			neural = new NeuralComputer(owner.worldObj, computerId, label, instanceId);
 
-			setEntity(stack, computer, owner);
+			manager.add(instanceId, neural);
 
 			tag.setInteger(SESSION_ID, sessionId);
 			tag.setInteger(INSTANCE_ID, instanceId);
 			tag.setInteger(COMPUTER_ID, computerId);
-			tag.setByte(DIRTY, (byte) 0);
 
 			if (inventory != null) inventory.markDirty();
 		}
 
-		computer.setWorld(owner.worldObj);
+		neural.setWorld(owner.worldObj);
 
-		return computer;
+		return neural;
 	}
 
-	public static void setEntity(ItemStack stack, ServerComputer computer, Entity owner) {
-		NBTTagCompound tag = getTag(stack);
-		if (owner == null || !owner.isEntityAlive()) {
-			// Clear entity if it isn't there
-			tag.removeTag(ENTITY_LEAST);
-			tag.removeTag(ENTITY_MOST);
 
-			for (int slot = 0; slot < NeuralHelpers.INV_SIZE; slot++) {
-				computer.setPeripheral(slot, null);
-			}
-		} else {
-			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
-				// We skip the "back" slot
-				computer.setPeripheral(slot < BACK ? slot : slot + 1, NeuralHelpers.buildPeripheral(handler, slot));
-			}
-
-			computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, owner, getExecutor(computer)));
-
-			tag.setLong(ENTITY_LEAST, owner.getPersistentID().getLeastSignificantBits());
-			tag.setLong(ENTITY_MOST, owner.getPersistentID().getMostSignificantBits());
-		}
-		tag.setByte(DIRTY, (byte) 0);
-	}
-
-	public static ServerComputer tryGetServer(ItemStack stack) {
+	public static NeuralComputer tryGetServer(ItemStack stack) {
 		NBTTagCompound tag = getTag(stack);
 
 		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;
 		final int sessionId = manager.getSessionID();
 
 		if (tag.getInteger(SESSION_ID) == sessionId && tag.hasKey(INSTANCE_ID) && manager.contains(tag.getInteger(INSTANCE_ID))) {
-			return manager.get(tag.getInteger(INSTANCE_ID));
+			ServerComputer computer = manager.get(tag.getInteger(INSTANCE_ID));
+			if (computer instanceof NeuralComputer) {
+				return (NeuralComputer) computer;
+			} else {
+				DebugLogger.error("Computer is not NeuralComputer but " + computer);
+				return null;
+			}
 		} else {
 			return null;
 		}

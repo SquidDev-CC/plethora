@@ -18,7 +18,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	private final IReference<T> target;
 	private final IReference<?>[] context;
 	private final ICostHandler handler;
-	protected final IReference<IModuleContainer> modules;
+	private final IReference<IModuleContainer> modules;
 	private final IResultExecutor executor;
 
 	public UnbakedContext(IReference<T> target, ICostHandler handler, IReference<?>[] context, IReference<IModuleContainer> modules, IResultExecutor executor) {

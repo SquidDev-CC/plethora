@@ -7,6 +7,8 @@ import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -15,6 +17,7 @@ import java.io.IOException;
 /**
  * A GUI which captures all input
  */
+@SideOnly(Side.CLIENT)
 public class GuiCapture extends GuiScreen {
 	private final IComputer computer;
 	private WidgetTerminal terminalGui;

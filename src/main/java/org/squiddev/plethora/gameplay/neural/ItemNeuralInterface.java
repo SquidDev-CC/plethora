@@ -5,7 +5,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
@@ -20,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,9 +34,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.RecipeSorter;
-import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
@@ -49,9 +44,9 @@ import org.squiddev.plethora.utils.PlayerHelpers;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
+import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.COMPUTER_ID;
+import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.DIRTY;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
-import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.BACK;
 
 public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
@@ -110,40 +105,30 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
 			NBTTagCompound tag = ItemBase.getTag(stack);
-			ServerComputer computer;
+			NeuralComputer neural;
 
 			// Fetch computer
 			InventoryPlayer inventory = player instanceof EntityPlayer ? ((EntityPlayer) player).inventory : null;
 			if (forceActive) {
-				computer = ItemComputerHandler.getServer(stack, player, inventory);
-				computer.turnOn();
-				computer.keepAlive();
+				neural = ItemComputerHandler.getServer(stack, player, inventory);
+				neural.turnOn();
+				neural.keepAlive();
 			} else {
-				computer = ItemComputerHandler.tryGetServer(stack);
-				if (computer == null) return;
+				neural = ItemComputerHandler.tryGetServer(stack);
+				if (neural == null) return;
 			}
-
-			DelayedExecutor executor = NeuralHelpers.getExecutor(computer);
 
 			boolean dirty = false;
 
-			// Sync entity
-			long newMost = player.getUniqueID().getMostSignificantBits();
-			long newLeast = player.getUniqueID().getLeastSignificantBits();
-			if (tag.getLong(ENTITY_MOST) != newMost || tag.getLong(ENTITY_LEAST) != newLeast) {
-				ItemComputerHandler.setEntity(stack, computer, player);
-				dirty = true;
-			}
-
 			// Sync computer ID
-			int newId = computer.getID();
+			int newId = neural.getID();
 			if (!tag.hasKey(COMPUTER_ID) || tag.getInteger(COMPUTER_ID) != newId) {
 				tag.setInteger(COMPUTER_ID, newId);
 				dirty = true;
 			}
 
 			// Sync Label
-			String newLabel = computer.getLabel();
+			String newLabel = neural.getLabel();
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
 			if (!Objects.equal(newLabel, label)) {
 				if (newLabel == null || newLabel.isEmpty()) {
@@ -154,44 +139,19 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				dirty = true;
 			}
 
-			// Force an update on each peripheral item
-			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
-				ItemStack module = handler.getStackInSlot(slot);
-				if (module != null) {
-					IPeripheralHandler peripheralHandler = module.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);
-					if (peripheralHandler != null) {
-						peripheralHandler.update(
-							player.worldObj,
-							new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ),
-							player
-						);
-					}
-				}
-			}
-
-			// Sync peripherals
-			if (tag.getShort(DIRTY) != 0) {
-				short dirtyStatus = tag.getShort(DIRTY);
+			// Sync and update peripherals
+			short dirtyStatus = tag.getShort(DIRTY);
+			if (dirtyStatus != 0) {
 				tag.setShort(DIRTY, (short) 0);
 				dirty = true;
-
-				for (int slot = 0; slot < NeuralHelpers.PERIPHERAL_SIZE; slot++) {
-					if ((dirtyStatus & (1 << slot)) == 1 << slot) {
-						// We skip the "back" slot
-						computer.setPeripheral(slot < BACK ? slot : slot + 1, NeuralHelpers.buildPeripheral(handler, slot));
-					}
-				}
-
-				// If the modules have changed.
-				dirtyStatus >>= NeuralHelpers.PERIPHERAL_SIZE;
-				if (dirtyStatus != 0) {
-					computer.setPeripheral(BACK, NeuralHelpers.buildModules(handler, player, executor));
-				}
 			}
 
-			if (dirty && inventory != null) inventory.markDirty();
-			executor.update();
+			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			neural.update(player, handler, dirtyStatus);
+
+			if (dirty && inventory != null) {
+				inventory.markDirty();
+			}
 		}
 	}
 
@@ -350,7 +310,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	/**
 	 * Call the right click event earlier on.
 	 *
-	 * @param event The event to cancel
+	 * @param event The event to handle
 	 */
 	@SubscribeEvent
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {

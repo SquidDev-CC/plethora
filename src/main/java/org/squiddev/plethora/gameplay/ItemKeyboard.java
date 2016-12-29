@@ -128,12 +128,14 @@ public class ItemKeyboard extends ItemBase {
 		}
 
 		if (computer == null) return ActionResult.newResult(EnumActionResult.FAIL, stack);
+		if (world.isRemote) display(playerIn, computer);
 
-		if (world.isRemote) {
-			FMLClientHandler.instance().displayGuiScreen(playerIn, new GuiCapture(computer));
-		}
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+	}
 
-		return ActionResult.newResult(EnumActionResult.PASS, stack);
+	@SideOnly(Side.CLIENT)
+	private void display(EntityPlayer player, ClientComputer computer) {
+		FMLClientHandler.instance().displayGuiScreen(player, new GuiCapture(computer));
 	}
 
 	private static ClientComputer getBlockComputer(NBTTagCompound tag) {

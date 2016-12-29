@@ -12,15 +12,15 @@ import org.squiddev.plethora.utils.Helpers;
 import javax.annotation.Nonnull;
 
 public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper> {
-	public static final int recipeWidth = 160;
-	public static final int recipeHeight = 125;
+	private static final int RECIPE_WIDTH = 160;
+	private static final int RECIPE_HEIGHT = 125;
 
 	private final String id;
 	private final IDrawable background;
 
 	public UseInRecipeCategory(String id, IGuiHelper helper) {
 		this.id = id;
-		background = helper.createBlankDrawable(recipeWidth, recipeHeight);
+		background = helper.createBlankDrawable(RECIPE_WIDTH, RECIPE_HEIGHT);
 	}
 
 	@Nonnull
@@ -46,7 +46,7 @@ public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper>
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull UseInRecipeWrapper recipeWrapper) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
-		int xPos = (recipeWidth - 18) / 2;
+		int xPos = (RECIPE_WIDTH - 18) / 2;
 		guiItemStacks.init(0, true, xPos, 0);
 		guiItemStacks.setFromRecipe(0, recipeWrapper.getInputs());
 	}
@@ -55,7 +55,7 @@ public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper>
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull UseInRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
-		int xPos = (recipeWidth - 18) / 2;
+		int xPos = (RECIPE_WIDTH - 18) / 2;
 		guiItemStacks.init(0, true, xPos, 0);
 		guiItemStacks.set(ingredients);
 	}
