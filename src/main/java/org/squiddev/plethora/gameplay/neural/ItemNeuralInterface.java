@@ -328,7 +328,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	/**
 	 * Call the right click event earlier on.
 	 *
-	 * @param event
+	 * @param event The event to handle
 	 */
 	@SubscribeEvent
 	public void onEntityInteract(EntityInteractEvent event) {
@@ -341,7 +341,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	 * Cancel the right click air event on the client side and we've hit an entity.
 	 * Yes, this is horrible.
 	 *
-	 * @param event The event to cancel
+	 * @param event The event to handle
 	 */
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent

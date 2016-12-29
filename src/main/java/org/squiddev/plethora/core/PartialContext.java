@@ -16,10 +16,10 @@ import java.util.Set;
 import static org.squiddev.plethora.core.UnbakedContext.arrayCopy;
 
 public class PartialContext<T> implements IPartialContext<T> {
-	protected final T target;
-	protected final Object[] context;
-	protected final ICostHandler handler;
-	protected final IModuleContainer modules;
+	private final T target;
+	private final Object[] context;
+	private final ICostHandler handler;
+	private final IModuleContainer modules;
 
 	public PartialContext(@Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull IModuleContainer modules) {
 		this.target = target;

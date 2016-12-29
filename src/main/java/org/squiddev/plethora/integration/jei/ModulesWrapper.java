@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ModulesWrapper extends UseInRecipeWrapper {
-	public static final String ID = "modules";
+	private static final String ID = "modules";
 
 	private static final ItemStack[] STACKS = new ItemStack[]{
 		new ItemStack(Registry.itemNeuralInterface),

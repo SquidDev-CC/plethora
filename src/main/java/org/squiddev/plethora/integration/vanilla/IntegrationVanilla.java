@@ -25,9 +25,9 @@ public class IntegrationVanilla {
 	public static final ResourceLocation clockMod = new ResourceLocation(clock);
 	public static final ResourceLocation noteblockMod = new ResourceLocation(noteblock);
 
-	private static BasicModuleHandler daylightSensorCap = new BasicModuleHandler(daylightSensor, Item.getItemFromBlock(Blocks.daylight_detector));
-	private static BasicModuleHandler clockCap = new BasicModuleHandler(clock, Items.clock);
-	private static BasicModuleHandler noteblockCap = new BasicModuleHandler(noteblock, Item.getItemFromBlock(Blocks.noteblock));
+	private static final BasicModuleHandler daylightSensorCap = new BasicModuleHandler(daylightSensor, Item.getItemFromBlock(Blocks.daylight_detector));
+	private static final BasicModuleHandler clockCap = new BasicModuleHandler(clock, Items.clock);
+	private static final BasicModuleHandler noteblockCap = new BasicModuleHandler(noteblock, Item.getItemFromBlock(Blocks.noteblock));
 
 	public static void setup() {
 		IntegrationVanilla instance = new IntegrationVanilla();

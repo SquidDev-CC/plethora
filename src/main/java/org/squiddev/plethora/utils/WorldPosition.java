@@ -60,7 +60,6 @@ public final class WorldPosition {
 		return world;
 	}
 
-	@Nonnull
 	public int getDimension() {
 		return dimension;
 	}

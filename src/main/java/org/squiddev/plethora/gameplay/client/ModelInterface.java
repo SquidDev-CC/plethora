@@ -11,8 +11,8 @@ import org.squiddev.plethora.gameplay.Plethora;
  * Model for the neural interface
  */
 public class ModelInterface extends ModelBiped {
-	public static String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
-	public static ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
+	public static final String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
+	public static final ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
 
 	private static ModelInterface normalInstance;
 	private static ModelInterface monocleInstance;

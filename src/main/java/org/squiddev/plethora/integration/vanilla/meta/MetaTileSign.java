@@ -11,6 +11,7 @@ import java.util.Map;
 
 @IMetaProvider.Inject(value = TileEntitySign.class, namespace = "sign")
 public class MetaTileSign extends BasicMetaProvider<TileEntitySign> {
+	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull TileEntitySign object) {
 		return getSignLines(object);

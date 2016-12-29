@@ -19,7 +19,7 @@ import java.util.Set;
  * {@link ModuleContainerMethod} instead.
  */
 public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> implements IModuleMethod<T> {
-	protected final Set<ResourceLocation> modules;
+	private final Set<ResourceLocation> modules;
 
 	public ModuleObjectMethod(String name, Set<ResourceLocation> modules, boolean worldThread) {
 		this(name, modules, worldThread, 0, null);

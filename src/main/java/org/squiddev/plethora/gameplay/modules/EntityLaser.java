@@ -80,7 +80,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		this.shooterPos = new WorldPosition(world, shooter);
 	}
 
-	public void setShooter(EntityLivingBase shooter) {
+	public void setShooter(@Nullable EntityLivingBase shooter) {
 		this.shooter = shooter;
 		this.shooterId = shooter.getPersistentID();
 	}

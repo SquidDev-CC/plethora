@@ -18,7 +18,7 @@ import java.util.Set;
  * A method that requires a module to execute.
  */
 public abstract class ModuleContainerMethod extends BasicMethod<IModuleContainer> implements IModuleMethod<IModuleContainer> {
-	protected final Set<ResourceLocation> modules;
+	private final Set<ResourceLocation> modules;
 
 	public ModuleContainerMethod(String name, Set<ResourceLocation> modules) {
 		this(name, modules, 0, null);
