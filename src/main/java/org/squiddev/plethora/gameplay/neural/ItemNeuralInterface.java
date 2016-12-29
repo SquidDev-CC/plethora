@@ -7,7 +7,6 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.items.IComputerItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -45,6 +44,7 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -88,6 +88,21 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	@Nonnull
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		// Check if the entity we've just hit has a stack in the first slot. If so, use that instead.
+		RayTraceResult hit = PlayerHelpers.findHitGuess(player);
+		Entity entity = hit.entityHit;
+		if (hit.typeOfHit == RayTraceResult.Type.ENTITY && !(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase) {
+			if (((EntityLivingBase) entity).getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
+				return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+			}
+		}
+
+		return super.onItemRightClick(stack, world, player, hand);
 	}
 
 	private void onUpdate(ItemStack stack, EntityLivingBase player, boolean forceActive) {
@@ -341,31 +356,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.getEntityPlayer(), event.getTarget(), event.getHand())) {
 			event.setCanceled(true);
-		}
-	}
-
-	/**
-	 * Cancel the right click air event on the client side and we've hit an entity.
-	 * Yes, this is horrible.
-	 *
-	 * @param event The event to cancel
-	 */
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-		ItemStack current = event.getItemStack();
-		if (current == null || current.getItem() != this) return;
-
-		if (!event.isCanceled() && event.getEntityPlayer().worldObj.isRemote) {
-			RayTraceResult hit = Minecraft.getMinecraft().objectMouseOver;
-			Entity entity = hit.entityHit;
-			if (hit.typeOfHit == RayTraceResult.Type.ENTITY &&
-				!(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase
-				) {
-				if (((EntityLivingBase) entity).getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) == null && current.stackSize == 1) {
-					event.setCanceled(true);
-				}
-			}
 		}
 	}
 	//endregion

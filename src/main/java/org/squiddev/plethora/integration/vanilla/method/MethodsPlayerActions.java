@@ -1,18 +1,17 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -31,9 +30,9 @@ import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
@@ -96,7 +95,7 @@ public final class MethodsPlayerActions {
 
 		fakePlayer.load(entity);
 		try {
-			RayTraceResult hit = findHit(fakePlayer, entity);
+			RayTraceResult hit = PlayerHelpers.findHit(fakePlayer, entity);
 
 			if (hit != null) {
 				switch (hit.typeOfHit) {
@@ -120,7 +119,7 @@ public final class MethodsPlayerActions {
 
 	//region Use
 	private static MethodResult use(EntityPlayerMP player, EntityLivingBase original, EnumHand hand, int duration) {
-		RayTraceResult hit = findHit(player, original);
+		RayTraceResult hit = PlayerHelpers.findHit(player, original);
 		ItemStack stack = player.getHeldItemMainhand();
 		World world = player.worldObj;
 
@@ -236,79 +235,5 @@ public final class MethodsPlayerActions {
 
 		return null;
 	}
-
-	private static final Predicate<Entity> collidablePredicate = Predicates.and(
-		EntitySelectors.NOT_SPECTATING,
-		new Predicate<Entity>() {
-			public boolean apply(Entity entity) {
-				return entity.canBeCollidedWith();
-			}
-		}
-	);
 	//endregion
-
-	private static RayTraceResult findHit(EntityPlayerMP player, EntityLivingBase original) {
-		double range = player.interactionManager.getBlockReachDistance();
-
-		Vec3d origin = new Vec3d(
-			player.posX,
-			player.posY + original.getEyeHeight(),
-			player.posZ
-		);
-
-		Vec3d look = player.getLookVec();
-		Vec3d target = new Vec3d(
-			origin.xCoord + look.xCoord * range,
-			origin.yCoord + look.yCoord * range,
-			origin.zCoord + look.zCoord * range
-		);
-
-		RayTraceResult hit = player.worldObj.rayTraceBlocks(origin, target);
-
-		List<Entity> entityList = player.worldObj.getEntitiesInAABBexcluding(
-			original,
-			player.getEntityBoundingBox().addCoord(
-				look.xCoord * range,
-				look.yCoord * range,
-				look.zCoord * range
-			).expand(1, 1, 1), collidablePredicate);
-
-		Entity closestEntity = null;
-		Vec3d closestVec = null;
-		double closestDistance = range;
-		for (Entity entity : entityList) {
-			float size = entity.getCollisionBorderSize();
-			AxisAlignedBB box = entity.getEntityBoundingBox().expand((double) size, (double) size, (double) size);
-			RayTraceResult intercept = box.calculateIntercept(origin, target);
-
-			if (box.isVecInside(origin)) {
-				if (closestDistance >= 0.0D) {
-					closestEntity = entity;
-					closestVec = intercept == null ? origin : intercept.hitVec;
-					closestDistance = 0.0D;
-				}
-			} else if (intercept != null) {
-				double distance = origin.distanceTo(intercept.hitVec);
-
-				if (distance < closestDistance || closestDistance == 0.0D) {
-					if (entity == player.getRidingEntity() && !player.canRiderInteract()) {
-						if (closestDistance == 0.0D) {
-							closestEntity = entity;
-							closestVec = intercept.hitVec;
-						}
-					} else {
-						closestEntity = entity;
-						closestVec = intercept.hitVec;
-						closestDistance = distance;
-					}
-				}
-			}
-		}
-
-		if (closestEntity instanceof EntityLivingBase && closestDistance <= range && (hit == null || player.getDistanceSq(hit.getBlockPos()) > closestDistance * closestDistance)) {
-			return new RayTraceResult(closestEntity, closestVec);
-		} else {
-			return hit;
-		}
-	}
 }
