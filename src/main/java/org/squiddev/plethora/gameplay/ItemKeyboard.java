@@ -120,9 +120,13 @@ public class ItemKeyboard extends ItemBase {
 		}
 
 		if (computer == null) return stack;
-		FMLClientHandler.instance().displayGuiScreen(playerIn, new GuiCapture(computer));
-
+		display(playerIn, computer);
 		return stack;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void display(EntityPlayer player, ClientComputer computer) {
+		FMLClientHandler.instance().displayGuiScreen(player, new GuiCapture(computer));
 	}
 
 	private static ClientComputer getBlockComputer(NBTTagCompound tag) {

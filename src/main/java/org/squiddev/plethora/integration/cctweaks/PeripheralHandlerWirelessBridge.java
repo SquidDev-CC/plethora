@@ -152,6 +152,18 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 				return newMethods;
 			}
 
+			private boolean loadFromCard(ItemStack stack) {
+				if (stack != null && stack.getItem() instanceof IDataCard) {
+					IDataCard card = (IDataCard) stack.getItem();
+					if (PocketBinding.this.load(stack, card)) {
+						PocketBinding.this.save();
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			@Override
 			public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 				String[] methods = super.getMethodNames();
@@ -165,23 +177,11 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 							int size = inventory.getSizeInventory(), held = inventory.currentItem;
 							for (int i = 0; i < size; i++) {
 								ItemStack stack = inventory.getStackInSlot((i + held) % size);
-								if (stack != null && stack.getItem() instanceof IDataCard) {
-									IDataCard card = (IDataCard) stack.getItem();
-									if (PocketBinding.this.load(stack, card)) {
-										PocketBinding.this.save();
-										return new Object[]{true};
-									}
-								}
+								if (loadFromCard(stack)) return new Object[]{true};
 							}
 						} else {
 							ItemStack stack = entity.getHeldItem();
-							if (stack != null && stack.getItem() instanceof IDataCard) {
-								IDataCard card = (IDataCard) stack.getItem();
-								if (PocketBinding.this.load(stack, card)) {
-									PocketBinding.this.save();
-									return new Object[]{true};
-								}
-							}
+							if (loadFromCard(stack)) return new Object[]{true};
 						}
 
 						return new Object[]{false, "No card found"};

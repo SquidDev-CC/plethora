@@ -9,6 +9,7 @@ import org.squiddev.plethora.gameplay.ItemBase;
 
 import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.DIRTY;
+import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.ITEMS;
 
 /**
  * A horrible item handler implementation that saves to the item's NBT
@@ -41,13 +42,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		validateSlotIndex(slot);
 
 		NBTTagCompound tag = ItemBase.getTag(this.stack);
-		NBTTagCompound items;
-		if (tag.hasKey("items", 10)) {
-			items = tag.getCompoundTag("items");
-		} else {
-			tag.setTag("items", items = new NBTTagCompound());
-		}
-
+		NBTTagCompound items = getItems(tag);
 		if (stack == null) {
 			items.removeTag("item" + slot);
 		} else {
@@ -59,14 +54,15 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 
 	@Override
 	public ItemStack getStackInSlot(int slot) {
-		NBTTagCompound tag = ItemBase.getTag(stack);
-		if (tag.hasKey("items", 10)) {
-			NBTTagCompound items = tag.getCompoundTag("items");
-			if (items.hasKey("item" + slot, 10)) {
-				return ItemStack.loadItemStackFromNBT(items.getCompoundTag("item" + slot));
-			}
+		validateSlotIndex(slot);
+
+		NBTTagCompound tag = ItemBase.getTag(this.stack);
+		NBTTagCompound items = getItems(tag);
+		if (items.hasKey("item" + slot, 10)) {
+			return ItemStack.loadItemStackFromNBT(items.getCompoundTag("item" + slot));
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	@Override
@@ -144,4 +140,16 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 			return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
 		}
 	}
+
+	public static NBTTagCompound getItems(NBTTagCompound tag) {
+		NBTTagCompound items;
+		if (tag.hasKey(ITEMS, 10)) {
+			items = tag.getCompoundTag(ITEMS);
+		} else {
+			tag.setTag(ITEMS, items = new NBTTagCompound());
+		}
+
+		return items;
+	}
+
 }

@@ -4,13 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IPeripheralHandler;
@@ -25,22 +23,18 @@ import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.MethodWrapperPeripheral;
 import org.squiddev.plethora.core.UnbakedContext;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import static org.squiddev.plethora.api.reference.Reference.entity;
 
 public final class NeuralHelpers {
 	public static final int ARMOR_SLOT = 4;
-
-
-	private static final WeakHashMap<ServerComputer, DelayedExecutor> executors = new WeakHashMap<ServerComputer, DelayedExecutor>();
 
 	private NeuralHelpers() {
 		throw new IllegalStateException("Cannot instantiate");
@@ -63,8 +57,7 @@ public final class NeuralHelpers {
 		}
 	}
 
-	public static IPeripheral buildPeripheral(final IItemHandler handler, final int slot) {
-		final ItemStack stack = handler.getStackInSlot(slot);
+	public static IPeripheral buildPeripheral(@Nullable ItemStack stack) {
 		if (stack == null) return null;
 
 		IPeripheral peripheral = stack.getCapability(Constants.PERIPHERAL_CAPABILITY, null);
@@ -76,7 +69,7 @@ public final class NeuralHelpers {
 		return null;
 	}
 
-	public static IPeripheral buildModules(final IItemHandler handler, Entity owner, IExecutorFactory factory) {
+	public static IPeripheral buildModules(final ItemStack[] inventory, Entity owner, IExecutorFactory factory) {
 		final ItemStack[] stacks = new ItemStack[MODULE_SIZE];
 		Set<ResourceLocation> modules = Sets.newHashSet();
 
@@ -84,7 +77,7 @@ public final class NeuralHelpers {
 
 		boolean exists = false;
 		for (int i = 0; i < MODULE_SIZE; i++) {
-			ItemStack stack = handler.getStackInSlot(PERIPHERAL_SIZE + i);
+			ItemStack stack = inventory[PERIPHERAL_SIZE + i];
 			if (stack == null) continue;
 
 			stack = stacks[i] = stack.copy();
@@ -114,7 +107,7 @@ public final class NeuralHelpers {
 			public IModuleContainer get() throws LuaException {
 				for (int i = 0; i < MODULE_SIZE; i++) {
 					ItemStack oldStack = stacks[i];
-					ItemStack newStack = handler.getStackInSlot(PERIPHERAL_SIZE + i);
+					ItemStack newStack = inventory[PERIPHERAL_SIZE + i];
 					if (oldStack != null && !ItemStack.areItemStacksEqual(stacks[i], newStack)) {
 						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
@@ -133,17 +126,9 @@ public final class NeuralHelpers {
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
 		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral("plethora:modules", handler, paired.getFirst(), paired.getSecond(), factory);
+			return new MethodWrapperPeripheral("plethora:modules", inventory, paired.getFirst(), paired.getSecond(), factory);
 		} else {
 			return null;
 		}
-	}
-
-	public static DelayedExecutor getExecutor(ServerComputer computer) {
-		DelayedExecutor executor = executors.get(computer);
-		if (executor == null) {
-			executors.put(computer, executor = new DelayedExecutor());
-		}
-		return executor;
 	}
 }
