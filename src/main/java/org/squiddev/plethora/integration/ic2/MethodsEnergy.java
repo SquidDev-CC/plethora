@@ -9,6 +9,7 @@ import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import ic2.api.tile.IEnergyStorage;
+import ic2.core.IC2;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
@@ -21,7 +22,7 @@ import javax.annotation.Nullable;
  */
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = "IC2API",
+		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The amount of EU currently stored"
 	)
 	public static Object[] getEUStored(IContext<IEnergyStorage> target, Object[] args) {
@@ -29,7 +30,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = "IC2API",
+		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The maximum amount of EU that can be stored"
 	)
 	public static Object[] getEUCapacity(IContext<IEnergyStorage> target, Object[] args) {
@@ -37,7 +38,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = "IC2API",
+		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The maximum EU output per tick"
 	)
 	public static Object[] getEUOutput(IContext<IEnergyStorage> target, Object[] args) {
@@ -45,7 +46,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, worldThread = true, modId = "IC2API",
+		value = IEnergySink.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The maximum amount of EU that can be received"
 	)
 	public static Object[] getDemandedEnergy(IContext<IEnergySink> target, Object[] args) {
@@ -53,7 +54,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, worldThread = true, modId = "IC2API",
+		value = IEnergySink.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The tier of this EU sink. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
 	)
 	public static Object[] getSinkTier(IContext<IEnergySink> target, Object[] args) {
@@ -61,7 +62,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = "IC2API",
+		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The EU loss for this conductor"
 	)
 	public static Object[] getConductionLoss(IContext<IEnergyConductor> target, Object[] args) {
@@ -69,7 +70,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = "IC2API",
+		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the insulation can handle before shocking players"
 	)
 	public static Object[] getInsulationEnergyAbsorption(IContext<IEnergyConductor> target, Object[] args) {
@@ -77,7 +78,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = "IC2API",
+		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the insulation will handle before it is destroyed"
 	)
 	public static Object[] getInsulationBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
@@ -85,7 +86,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = "IC2API",
+		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the the conductor will handle before it melts"
 	)
 	public static Object[] getConductorBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
@@ -93,7 +94,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, worldThread = true, modId = "IC2API",
+		value = IEnergySource.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- EU output provided per tick"
 	)
 	public static Object[] getOfferedEnergy(IContext<IEnergySource> target, Object[] args) {
@@ -101,7 +102,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, worldThread = true, modId = "IC2API",
+		value = IEnergySource.class, worldThread = true, modId = IC2.MODID,
 		doc = "function():integer -- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
 	)
 	public static Object[] getSourceTier(IContext<IEnergySource> target, Object[] args) {
@@ -121,7 +122,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = "IC2API")
+	@IMethod.Inject(value = ItemStack.class, modId = IC2.MODID)
 	public static final class MethodGetEuStored extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
 		public MethodGetEuStored() {
 			super("getEuStored", true, "function():integer -- The amount of EU currently stored");
@@ -148,7 +149,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = "IC2API")
+	@IMethod.Inject(value = ItemStack.class, modId = IC2.MODID)
 	public static final class MethodGetEuCapacity extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
 		public MethodGetEuCapacity() {
 			super("getEuCapacity", true, "function():integer -- The maximum amount of EU that can be stored");

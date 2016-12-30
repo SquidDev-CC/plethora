@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.ic2;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.core.IC2;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,7 +14,7 @@ import javax.annotation.Nullable;
 /**
  * Gets the tile from a particular position
  */
-@IConverter.Inject(value = TileEntity.class, modId = "IC2API")
+@IConverter.Inject(value = TileEntity.class, modId = IC2.MODID)
 public class ConverterEnergyTile implements IConverter<TileEntity, IEnergyTile> {
 	@Nullable
 	@Override

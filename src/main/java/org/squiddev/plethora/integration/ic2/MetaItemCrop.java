@@ -5,6 +5,7 @@ import ic2.api.crops.CropCard;
 import ic2.api.crops.CropProperties;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
+import ic2.core.IC2;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -14,7 +15,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = "IC2API", namespace = "crop")
+@IMetaProvider.Inject(value = ItemStack.class, modId = IC2.MODID, namespace = "crop")
 public class MetaItemCrop extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
