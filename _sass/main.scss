@@ -174,12 +174,12 @@ code.class {
 		box-sizing: border-box;
 	}
 
-	&:nth-child(2n+1) .desc-image {
+	&:nth-of-type(2n+1) .desc-image {
 		padding-right: 10px;
 		order: 0;
 	}
 
-	&:nth-child(2n) .desc-image {
+	&:nth-of-type(2n) .desc-image {
 		padding-left: 10px;
 		order: 2;
 	}
@@ -202,4 +202,44 @@ code.class {
 			order: 2 !important;
 		}
 	}
+}
+
+.download {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+
+	.version {
+		$background: $header-back; // #00630C;
+
+		flex-basis: 300px;
+		max-width: 300px;
+		margin: 0px 15px 15px 15px;
+
+		h3 {
+			background: $background;
+			width: 100%;
+			padding: 5px;
+			border: none;
+			margin: 0px;
+			box-sizing: border-box;
+			padding: 10px;
+
+			@include link($grey09, lighten($background, 40%));
+		}
+
+		a { font-weight: normal; }
+
+	}
+
+	@media(max-width: 800px) {
+		flex-direction: column;
+
+		.version {
+			flex-basis: 100%;
+			max-width: 100%;
+			margin: 0px 0px 15px 0px;
+		}
+	}
+
 }
