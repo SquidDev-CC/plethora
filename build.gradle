@@ -146,7 +146,7 @@ curseforge {
 
 	project {
 		id = '248425'
-		releaseType = 'beta'
+		releaseType = 'release'
 		changelog = ''
 
 		relations {
