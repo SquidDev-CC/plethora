@@ -13,7 +13,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
  */
 public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 	private static final EntityEquipmentSlot[] VALUES = EntityEquipmentSlot.values();
-	private static final int SLOTS = 6;
+	private static final int SLOTS = VALUES.length;
 
 	private final EntityLivingBase entity;
 
@@ -29,7 +29,7 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 
 	@Override
 	public int getSlots() {
-		return 5;
+		return SLOTS;
 	}
 
 	@Override
@@ -43,7 +43,8 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 		if (stack != null && stack.stackSize != 0) {
 			validateSlotIndex(slot);
 
-			if (slot > 1 && !stack.getItem().isValidArmor(stack, VALUES[slot], entity)) {
+			EntityEquipmentSlot slotType = VALUES[slot];
+			if (slotType.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !stack.getItem().isValidArmor(stack, slotType, entity)) {
 				return stack;
 			}
 

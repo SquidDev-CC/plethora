@@ -122,14 +122,14 @@ public final class MethodsPlayerActions {
 	//region Use
 	private static MethodResult use(EntityPlayerMP player, EntityLivingBase original, EnumHand hand, int duration) {
 		RayTraceResult hit = PlayerHelpers.findHit(player, original);
-		ItemStack stack = player.getHeldItemMainhand();
+		ItemStack stack = player.getHeldItem(hand);
 		World world = player.worldObj;
 
 		if (hit != null) {
 			switch (hit.typeOfHit) {
 				case ENTITY:
 					if (stack != null) {
-						EnumActionResult result = player.interact(hit.entityHit, stack, EnumHand.MAIN_HAND);
+						EnumActionResult result = player.interact(hit.entityHit, stack, hand);
 						if (result != EnumActionResult.PASS) {
 							return MethodResult.result(result == EnumActionResult.SUCCESS, "entity", "interact");
 						}
@@ -181,7 +181,7 @@ public final class MethodsPlayerActions {
 	private static Object[] tryUseOnBlock(EntityPlayer player, World world, RayTraceResult hit, ItemStack stack, EnumHand hand, EnumFacing side) {
 		IBlockState state = world.getBlockState(hit.getBlockPos());
 		if (!state.getBlock().isAir(state, world, hit.getBlockPos())) {
-			if (MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, EnumHand.MAIN_HAND, stack, hit.getBlockPos(), side, hit.hitVec))) {
+			if (MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, hand, stack, hit.getBlockPos(), side, hit.hitVec))) {
 				return new Object[]{true, "block", "interact"};
 			}
 
