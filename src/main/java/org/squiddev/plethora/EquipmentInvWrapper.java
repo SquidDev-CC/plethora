@@ -48,7 +48,7 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 			}
 
 			ItemStack existing = getStackInSlot(slot);
-			int limit = 1;
+			int limit = stack.getMaxStackSize();
 			if (existing != null) {
 				if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
 					return stack;
