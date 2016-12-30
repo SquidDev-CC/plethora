@@ -6,13 +6,15 @@ title: Method reference
 <h2>Method reference</h2>
 
 <div class="method-list">
-	{% assign modules = site.data.methods | group_by: "module" | sort: 'name', 'first' %}
+	{% assign modules = site.data.methods | group_by: "modules" | sort: 'name', 'first' %}
+
 	<ul>
 		{% for module in modules %}
+			{% assign moduleNames = module.items.first.modules | join: ", " %}
 			<li>
-				<a href="#module-{{ module.name | slugify }}">
-					{% if module.name and module.name != "" %}
-						<code class="class">{{ module.name }}</code> module
+				<a href="#module-{{ moduleNames | slugify }}">
+					{% if moduleNames and moduleNames != "" %}
+						<code class="class">{{ moduleNames }}</code> module
 					{% else %}
 						Targeted methods
 					{% endif %}
@@ -22,9 +24,11 @@ title: Method reference
 	</ul>
 
 	{% for module in modules %}
-		<h3 id="module-{{module.name | slugify }}">
-			{% if module.name and module.name != "" %}
-				{{ module.name }}
+		{% assign moduleNames = module.items.first.modules | join: ", " %}
+
+		<h3 id="module-{{moduleNames | slugify }}">
+			{% if moduleNames and moduleNames != "" %}
+				{{ moduleNames }}
 			{% else %}
 				Targeted methods
 			{% endif %}
