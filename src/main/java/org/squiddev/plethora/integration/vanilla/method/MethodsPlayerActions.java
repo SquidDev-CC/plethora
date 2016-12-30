@@ -3,12 +3,14 @@ package org.squiddev.plethora.integration.vanilla.method;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -188,7 +190,17 @@ public final class MethodsPlayerActions {
 
 		if (stack.getItem() instanceof ItemBlock) {
 			ItemBlock itemBlock = (ItemBlock) stack.getItem();
-			if (!itemBlock.canPlaceBlockOnSide(world, pos, side, player, stack)) {
+
+			Block block = world.getBlockState(pos).getBlock();
+			BlockPos shiftPos = pos;
+			EnumFacing shiftSide = side;
+			if (block == Blocks.snow_layer && block.isReplaceable(world, pos)) {
+				shiftSide = EnumFacing.UP;
+			} else if (!block.isReplaceable(world, pos)) {
+				shiftPos = pos.offset(side);
+			}
+
+			if (!world.canBlockBePlaced(itemBlock.block, shiftPos, false, shiftSide, null, stack)) {
 				return null;
 			}
 		}

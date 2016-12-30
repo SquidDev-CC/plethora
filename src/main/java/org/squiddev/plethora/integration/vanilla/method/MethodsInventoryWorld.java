@@ -134,9 +134,7 @@ public class MethodsInventoryWorld {
 					IContext<IItemHandler> baked = context.bake();
 					IItemHandler handler = baked.getTarget();
 
-					if (slot != -1) {
-						assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
-					}
+					if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
 					IWorldLocation location = baked.getContext(IWorldLocation.class);
 					World world = location.getWorld();
@@ -147,25 +145,30 @@ public class MethodsInventoryWorld {
 						pos.getX() + 0.5 + RADIUS, pos.getY() + 0.5 + RADIUS, pos.getZ() + 0.5 + RADIUS
 					);
 
-					int inserted = 0;
-
+					int total = 0;
+					int remaining = limit;
 					for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.selectAnything)) {
 						ItemStack original = item.getEntityItem();
-						// TODO: Obey limit when inserting
 
-						ItemStack remaining = slot == -1 ? ItemHandlerHelper.insertItem(handler, original, false) : handler.insertItem(slot - 1, original, false);
-						if (remaining == null || remaining.stackSize == 0) {
+						ItemStack toInsert = original.copy();
+						if (toInsert.stackSize > remaining) toInsert.stackSize = remaining;
+
+						ItemStack rest = slot == -1 ? ItemHandlerHelper.insertItem(handler, toInsert, false) : handler.insertItem(slot - 1, toInsert, false);
+						int inserted = rest == null ? toInsert.stackSize : toInsert.stackSize - rest.stackSize;
+						remaining -= inserted;
+						total += inserted;
+
+						if (inserted >= original.stackSize) {
 							item.setDead();
-							inserted += original.stackSize;
 						} else {
-							item.setEntityItemStack(remaining);
-							inserted += original.stackSize - remaining.stackSize;
+							original.stackSize -= inserted;
+							item.setEntityItemStack(original);
 						}
 
-						if (inserted >= limit) break;
+						if (remaining <= 0) break;
 					}
 
-					return MethodResult.result(inserted);
+					return MethodResult.result(total);
 				}
 			});
 		}
