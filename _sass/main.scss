@@ -156,22 +156,20 @@ code.class {
 .desc {
 	.desc-row {
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: flex-start;
 		margin: 5px 0px;
 	}
 
 	.desc-text {
-		flex: 0 0 60%;
-		max-width: 60%;
+		flex: 0 1 100%;
+		max-width: 100%;
 		order: 1;
 	}
 
 	.desc-image, .desc-image {
-		flex: 0 0 40%;
-		max-width: 40%;
-		box-sizing: border-box;
+		flex: 0 0 350px;
+		max-width: 350px;
 	}
 
 	&:nth-of-type(2n+1) .desc-image {
