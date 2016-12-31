@@ -21,6 +21,8 @@ html, body {
 		box-sizing: border-box;
 		padding: 15px;
 		padding-bottom: $footer-height + 10px;
+		max-width: 1500px;
+		margin: 0px auto;
 	}
 
 	footer {
