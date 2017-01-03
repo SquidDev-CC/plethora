@@ -8,6 +8,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityDaylightDetector;
+import net.minecraft.tileentity.TileEntityNote;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -47,6 +50,16 @@ public class IntegrationVanilla {
 			} else if (block == Blocks.noteblock) {
 				event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void attachCapabilities(AttachCapabilitiesEvent.TileEntity event) {
+		TileEntity entity = event.getTileEntity();
+		if (entity instanceof TileEntityNote) {
+			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);
+		} else if (entity instanceof TileEntityDaylightDetector) {
+			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, daylightSensorCap);
 		}
 	}
 
