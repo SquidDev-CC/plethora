@@ -32,7 +32,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "function(instrument:string|number, pitch:number) -- Plays a note block note"
+		doc = "function(instrument:string|number, pitch:number[, volumne:number]) -- Plays a note block note"
 	)
 	public static MethodResult playNote(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		List<String> instruments = getInstruments();
@@ -55,8 +55,10 @@ public class MethodsNoteblock {
 		}
 
 		int pitch = getInt(arguments, 1);
+		final float volume = (float) optNumber(arguments, 2, 3);
 
 		assertBetween(pitch, 0, 24, "Pitch out of bounds (%s)");
+		assertBetween(volume, 0.1, 5, "Volume out of bounds (%s)");
 
 		final float adjPitch = (float) Math.pow(2d, (double) (pitch - 12) / 12d);
 
@@ -66,7 +68,7 @@ public class MethodsNoteblock {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
 				Vec3 pos = location.getLoc();
 
-				location.getWorld().playSoundEffect(pos.xCoord, pos.yCoord, pos.zCoord, "note." + name, 3, adjPitch);
+				location.getWorld().playSoundEffect(pos.xCoord, pos.yCoord, pos.zCoord, "note." + name, volume, adjPitch);
 				return MethodResult.empty();
 			}
 		});
@@ -74,7 +76,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "function(sound:string[, pitch:number][, volume:number]) -- Plays a note block note"
+		doc = "function(sound:string[, pitch:number][, volume:number]) -- Play a sound"
 	)
 	public static MethodResult playSound(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		final String sound = getString(arguments, 0);
