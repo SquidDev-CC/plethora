@@ -95,7 +95,7 @@ public class GuiNeuralInterface extends GuiContainer {
 	@Override
 	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
-		int x = Mouse.getEventX() * width / mc.displayHeight;
+		int x = Mouse.getEventX() * width / mc.displayWidth;
 		int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
 		terminalGui.handleMouseInput(x, y);
 	}
