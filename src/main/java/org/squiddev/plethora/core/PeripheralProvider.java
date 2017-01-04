@@ -15,6 +15,7 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
+import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -22,8 +23,6 @@ import org.squiddev.plethora.utils.Helpers;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.squiddev.plethora.api.reference.Reference.tile;
 
 /**
  * Wraps tile entities as a peripherals.
@@ -49,8 +48,9 @@ public class PeripheralProvider implements IPeripheralProvider {
 				MethodRegistry registry = MethodRegistry.instance;
 
 				ICostHandler handler = registry.getCostHandler(te, enumFacing);
-				IUnbakedContext<TileEntity> context = registry.makeContext(tile(te), handler, BasicModuleContainer.EMPTY_REF, new WorldLocation(world, blockPos));
-				IPartialContext<TileEntity> baked = new PartialContext<TileEntity>(te, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
+				BlockReference reference = new BlockReference(new WorldLocation(world, blockPos), world.getBlockState(blockPos), te);
+				IUnbakedContext<BlockReference> context = registry.makeContext(reference, handler, BasicModuleContainer.EMPTY_REF, new WorldLocation(world, blockPos));
+				IPartialContext<BlockReference> baked = new PartialContext<BlockReference>(reference, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
 
 				Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 				if (paired.getFirst().size() > 0) {
