@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.peripheral.PeripheralType;
@@ -37,11 +38,20 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+		return onItemUse(stack, world, player);
+	}
+
+	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking() && !world.isRemote) {
 			TileEntity tile = world.getTileEntity(pos);
 			NBTTagCompound tag = getTag(stack);
 			if (tile instanceof IComputerTile) {
+				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
+					return false;
+				}
+
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
 				tag.setInteger("z", pos.getZ());
@@ -104,23 +114,29 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn) {
-		if (playerIn.isSneaking() || !world.isRemote) return stack;
+	private boolean onItemUse(ItemStack stack, World world, EntityPlayer player) {
+		if (player.isSneaking()) return false;
+		if (!world.isRemote) return true;
 
 		ClientComputer computer;
 		NBTTagCompound tag = getTag(stack);
 		if (tag.hasKey("x", 99)) {
 			computer = getBlockComputer(tag);
 		} else {
-			ItemStack neural = NeuralHelpers.getStack(playerIn);
-			if (neural == null) return stack;
+			ItemStack neural = NeuralHelpers.getStack(player);
+			if (neural == null) return false;
 
 			computer = ItemComputerHandler.getClient(neural);
 		}
 
-		if (computer == null) return stack;
-		display(playerIn, computer);
+		if (computer == null) return false;
+		display(player, computer);
+		return true;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn) {
+		onItemUse(stack, world, playerIn);
 		return stack;
 	}
 
