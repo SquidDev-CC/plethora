@@ -1,8 +1,10 @@
-# module_s
+# Modules
 item.plethora.module.module_introspection.name=Introspection Module
+item.plethora.module.module_introspection.adjective=Introspective
 item.plethora.module.module_introspection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
 
 item.plethora.module.module_laser.name=Frickin' laser beam
+item.plethora.module.module_laser.adjective=Firing
 item.plethora.module.module_laser.desc=It fires lasers. 'nough said
 
 death.attack.laser=%1$s was vapourised by %2$s
@@ -10,23 +12,28 @@ death.attack.laser.item=%1$s was vapourised by %2$s using %3$s
 entity.Plethora.laser.name=Laser
 
 item.plethora.module.module_scanner.name=Block Scanner
+item.plethora.module.module_scanner.adjective=Scanner
 item.plethora.module.module_scanner.desc=Allows scanning blocks in the vicinity
 
 item.plethora.module.module_sensor.name=Entity Sensor
+item.plethora.module.module_sensor.adjective=Entity Sensor
 item.plethora.module.module_sensor.desc=Detects nearby entities, gathering data about them
 
 item.plethora.module.module_kinetic.name=Kinetic Augment
+item.plethora.module.module_kinetic.adjective=Kinetic
 item.plethora.module.module_kinetic.desc=Allows controlling your body via the neural interface
 
 item.plethora.module.module_unknown.name=Unknown module
 item.plethora.module.module_unknown.desc=What did you break this time?
 
+# Manipulator
 tile.plethora.manipulator.name=Manipulator
 tile.plethora.manipulator.mark_1.name=Manipulator Mk I
 tile.plethora.manipulator.mark_2.name=Manipulator Mk II
 tile.plethora.manipulator.mark_1.desc=Used to interface with a module from a computer
 tile.plethora.manipulator.mark_2.desc=Used to interface with multiple modules from a computer
 
+# Keyboard
 item.plethora.keyboard.name=Keyboard
 item.plethora.keyboard.desc=Type into computers remotely. Shift+Right-click to bind to a computer,
 item.plethora.keyboard.bound=Bound to block
@@ -57,6 +64,8 @@ gui.config.plethora.costsystem.allowNegative=Allow negative buffer
 gui.config.plethora.blacklist=Blacklist
 gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
 gui.config.plethora.blacklist.blacklistModules=Blacklisted modules
+gui.config.plethora.blacklist.blacklistModulesTurtle=Blacklisted turtle modules
+gui.config.plethora.blacklist.blacklistModulesPocket=Blacklisted pocket modules
 gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
 gui.config.plethora.basecosts=Base Method Cost
@@ -90,6 +99,7 @@ gui.config.plethora.scanner.radius=Scan radius
 gui.config.plethora.sensor=Entity Sensor
 gui.config.plethora.sensor.radius=Sense radius
 
+# JEI Integration
 gui.jei.plethora.modules=Modules
 gui.jei.plethora.modules.usable=Usable as a module in:
 gui.jei.plethora.peripherals=Peripherals

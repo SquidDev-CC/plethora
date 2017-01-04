@@ -29,7 +29,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
@@ -65,6 +67,20 @@ public final class ItemModule extends ItemBase {
 
 	private static final int MODULES = 5;
 
+	private static final int[] TURTLE_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+	};
+
+	private static final int[] POCKET_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+		INTROSPECTION_ID,
+		KINETIC_ID,
+	};
+
 	private static final int MAX_TICKS = 72000;
 	private static final int USE_TICKS = 30;
 
@@ -95,6 +111,20 @@ public final class ItemModule extends ItemBase {
 				return KINETIC;
 			default:
 				return "unknown";
+		}
+	}
+
+	public static boolean registerTurtle(int id) {
+		switch (id) {
+			case KINETIC_ID:
+			case INTROSPECTION_ID:
+				return false;
+			case SCANNER_ID:
+			case SENSOR_ID:
+			case LASER_ID:
+				return true;
+			default:
+				throw new IllegalArgumentException("No such module " + id);
 		}
 	}
 
@@ -217,6 +247,18 @@ public final class ItemModule extends ItemBase {
 	public void preInit() {
 		super.preInit();
 		EntityRegistry.registerModEntity(EntityLaser.class, "laser", 0, Plethora.instance, 64, 10, true);
+
+
+		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
+		for (int id : TURTLE_MODULES) {
+			ItemStack stack = new ItemStack(this, 1, id);
+			registry.registerTurtleUpgrade(stack);
+		}
+
+		for (int id : POCKET_MODULES) {
+			ItemStack stack = new ItemStack(this, 1, id);
+			registry.registerPocketUpgrade(stack);
+		}
 	}
 
 	@Override

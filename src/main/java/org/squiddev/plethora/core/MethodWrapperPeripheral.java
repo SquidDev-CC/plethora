@@ -83,6 +83,10 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	public void detach(IComputerAccess access) {
 	}
 
+	protected IExecutorFactory getExecutorFactory() {
+		return factory;
+	}
+
 	@Override
 	public boolean equals(IPeripheral other) {
 		if (this == other) return true;

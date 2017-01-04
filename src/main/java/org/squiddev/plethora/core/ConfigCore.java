@@ -109,8 +109,21 @@ public final class ConfigCore {
 		/**
 		 * List of modules to blacklist.
 		 */
-		@RequiresRestart
 		public static HashSet<String> blacklistModules;
+
+		/**
+		 * List of modules to blacklist from being mounted on a turtle.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesTurtle;
+
+		/**
+		 * List of modules to blacklist from being mounted on a pocket computer.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesPocket;
 	}
 
 	/**
