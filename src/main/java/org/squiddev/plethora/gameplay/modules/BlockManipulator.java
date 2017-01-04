@@ -153,6 +153,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		if (!(te instanceof TileManipulator)) return null;
 		final TileManipulator manipulator = (TileManipulator) te;
 
+		if (manipulator.getType() == null) return null;
 		final int size = manipulator.getType().size();
 
 		boolean exists = false;
