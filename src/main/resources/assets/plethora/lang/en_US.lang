@@ -66,6 +66,7 @@ gui.config.plethora.blacklist.blacklistMods=Blacklisted mods
 gui.config.plethora.blacklist.blacklistModules=Blacklisted modules
 gui.config.plethora.blacklist.blacklistModulesTurtle=Blacklisted turtle modules
 gui.config.plethora.blacklist.blacklistModulesPocket=Blacklisted pocket modules
+gui.config.plethora.blacklist.blacklistModulesTile=Blacklisted tile modules
 gui.config.plethora.blacklist.blacklistProviders=Blacklisted providers
 gui.config.plethora.blacklist.blacklistTileEntities=Blacklisted TileEntities
 gui.config.plethora.basecosts=Base Method Cost
