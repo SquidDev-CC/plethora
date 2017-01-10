@@ -90,9 +90,9 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		MethodRegistry registry = MethodRegistry.instance;
 
 		TileEntity te = turtle.getWorld().getTileEntity(turtle.getPosition());
-		ICostHandler handler;
+		ICostHandler cost;
 		if (te != null && te instanceof ITurtleTile) {
-			handler = registry.getCostHandler(te, null);
+			cost = registry.getCostHandler(te, null);
 		} else {
 			DebugLogger.warn("Cannot find turtle where access says it should be");
 			return null;
@@ -100,14 +100,14 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef,
-			handler,
+			cost,
 			containerRef,
 			new TurtleWorldLocation(turtle), Reference.id(turtle)
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
 			container,
-			handler,
+			cost,
 			new Object[]{new TurtleWorldLocation(turtle), turtle},
 			container
 		);

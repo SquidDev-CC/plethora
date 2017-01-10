@@ -80,9 +80,9 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		MethodRegistry registry = MethodRegistry.instance;
 
 		final Entity entity = access.getEntity();
-		ICostHandler handler;
+		ICostHandler cost;
 		if (entity != null) {
-			handler = registry.getCostHandler(entity, null);
+			cost = registry.getCostHandler(entity, null);
 		} else {
 			DebugLogger.warn("Cannot find entity for pocket computer");
 			return null;
@@ -120,7 +120,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef,
-			handler,
+			cost,
 			containerRef,
 			location,
 			new IReference<Entity>() {
@@ -136,7 +136,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
 			container,
-			handler,
+			cost,
 			new Object[]{location, entity},
 			container
 		);
