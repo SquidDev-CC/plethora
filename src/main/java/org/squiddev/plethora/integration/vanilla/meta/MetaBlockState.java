@@ -38,15 +38,9 @@ public class MetaBlockState extends BasicMetaProvider<IBlockState> {
 
 		MapColor mapCol = block.getMapColor(state);
 		if (mapCol != null) {
-			int col = mapCol.colorValue;
-
-			Map<String, Integer> colour = Maps.newHashMap();
-			colour.put("r", (col >> 16) & 0xFF);
-			colour.put("g", (col >> 8) & 0xFF);
-			colour.put("b", col & 0xFF);
-
+			int colour = mapCol.colorValue;
 			data.put("colour", colour);
-			data.put("color", Maps.newHashMap(colour));
+			data.put("color", colour);
 		}
 
 		return data;
