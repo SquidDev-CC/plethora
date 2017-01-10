@@ -18,11 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
-import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.utils.Helpers;
-
-import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_ENTITY;
-import static org.squiddev.plethora.gameplay.GuiHandler.GUI_FLAG_PLAYER;
 
 public class ItemNeuralConnector extends ItemBase {
 	public ItemNeuralConnector() {
@@ -37,7 +33,7 @@ public class ItemNeuralConnector extends ItemBase {
 				ServerComputer computer = ItemComputerHandler.getServer(neuralStack, player, player.inventory);
 				if (computer != null) {
 					computer.turnOn();
-					player.openGui(Plethora.instance, GuiHandler.GUI_NEURAL, player.worldObj, GUI_FLAG_PLAYER, 0, 0);
+					GuiHandler.openNeuralPlayer(player, world);
 				}
 			}
 		}
@@ -52,7 +48,7 @@ public class ItemNeuralConnector extends ItemBase {
 		ItemStack armor = NeuralHelpers.getStack(entity);
 		if (armor != null) {
 			if (!player.worldObj.isRemote) {
-				player.openGui(Plethora.instance, GuiHandler.GUI_NEURAL, player.worldObj, GUI_FLAG_ENTITY, entity.getEntityId(), 0);
+				GuiHandler.openNeuralEntity(player, player.worldObj, entity);
 			}
 			return true;
 		} else {

@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import org.squiddev.plethora.gameplay.ContainerKeyboard;
 
 import java.io.IOException;
 
@@ -18,17 +19,22 @@ import java.io.IOException;
  * A GUI which captures all input
  */
 @SideOnly(Side.CLIENT)
-public class GuiCapture extends GuiScreen {
+public class GuiKeyboard extends GuiScreen {
+	private final ContainerKeyboard container;
 	private final IComputer computer;
 	private WidgetTerminal terminalGui;
 
-	public GuiCapture(IComputer computer) {
+	public GuiKeyboard(IComputer computer) {
 		this.computer = computer;
+		this.container = new ContainerKeyboard(computer);
 	}
 
 	@Override
 	public void initGui() {
 		super.initGui();
+
+		mc.thePlayer.openContainer = container;
+
 		Terminal terminal = computer.getTerminal();
 		terminalGui = new WidgetTerminal(0, 0, terminal.getWidth(), terminal.getHeight(), new IComputerContainer() {
 			@Override
