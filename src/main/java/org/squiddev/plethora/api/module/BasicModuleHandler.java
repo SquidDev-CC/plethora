@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core;
+package org.squiddev.plethora.api.module;
 
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.Item;
@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -32,8 +31,8 @@ public class BasicModuleHandler implements IModuleHandler, ICapabilityProvider {
 	@SideOnly(Side.CLIENT)
 	private IBakedModel model;
 
-	public BasicModuleHandler(String id, Item item) {
-		this.id = new ResourceLocation(id);
+	public BasicModuleHandler(ResourceLocation id, Item item) {
+		this.id = id;
 		this.item = item;
 	}
 
@@ -49,11 +48,12 @@ public class BasicModuleHandler implements IModuleHandler, ICapabilityProvider {
 		return Collections.emptySet();
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Nonnull
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-		Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+		Matrix4f matrix = new Matrix4f();
+		matrix.setIdentity();
 		matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
 
 		IBakedModel model = this.model;

@@ -52,6 +52,11 @@ item.plethora.neuralInterface.desc=Goes in your helmet slot. Connect with the ne
 gui.plethora.neuralInterface.peripherals=View peripherals
 gui.plethora.neuralInterface.modules=View modules
 
+# Upgrade adjectives
+adjective.plethora.clock=Chronal
+adjective.plethora.daylight_detector=Photosensitive
+adjective.plethora.note_block=Acoustic
+
 # Creative tab
 itemGroup.plethora=Plethora
 

@@ -129,11 +129,17 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	public Pair<IBakedModel, Matrix4f> getModel(ITurtleAccess turtle, TurtleSide side) {
 		float xOffset = side == TurtleSide.Left ? -0.40625f : 0.40625f;
 		Matrix4f transform = new Matrix4f(
-			0.0F, 0.0F, -1.0F, 1 + xOffset,
-			0.0F, 1.0F, 0.0F, 0.0F,
-			1.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, -0.8F, 0.9f + xOffset,
+			0.0F, 0.8F, 0.0F, 0.1F,
+			0.8F, 0.0F, 0.0F, 0.075F,
 			0.0F, 0.0F, 0.0F, 1.0F
 		);
+
+		// Translate -0.5 0 -0.5
+		// Rotate -PI/2
+		// Scale 0.8
+		// Translate 0.5 0 0.5
+		// Translate xOffset 0.1 -0.025
 
 		Pair<IBakedModel, Matrix4f> pair = handler.getModel(0);
 		transform.mul(transform, pair.getRight());
