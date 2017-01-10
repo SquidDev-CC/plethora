@@ -58,14 +58,16 @@ public final class ItemModule extends ItemBase {
 	public static final String SCANNER = "scanner";
 	public static final String SENSOR = "sensor";
 	public static final String KINETIC = "kinetic";
+	public static final String CHAT = "chat";
 
 	public static final int INTROSPECTION_ID = 0;
 	public static final int LASER_ID = 1;
 	public static final int SCANNER_ID = 2;
 	public static final int SENSOR_ID = 3;
 	public static final int KINETIC_ID = 4;
+	public static final int CHAT_ID = 5;
 
-	private static final int MODULES = 5;
+	private static final int MODULES = 6;
 
 	private static final int[] TURTLE_MODULES = new int[]{
 		LASER_ID,
@@ -79,6 +81,7 @@ public final class ItemModule extends ItemBase {
 		SENSOR_ID,
 		INTROSPECTION_ID,
 		KINETIC_ID,
+		CHAT_ID,
 	};
 
 	private static final int MAX_TICKS = 72000;
@@ -109,22 +112,10 @@ public final class ItemModule extends ItemBase {
 				return SENSOR;
 			case KINETIC_ID:
 				return KINETIC;
+			case CHAT_ID:
+				return CHAT;
 			default:
 				return "unknown";
-		}
-	}
-
-	public static boolean registerTurtle(int id) {
-		switch (id) {
-			case KINETIC_ID:
-			case INTROSPECTION_ID:
-				return false;
-			case SCANNER_ID:
-			case SENSOR_ID:
-			case LASER_ID:
-				return true;
-			default:
-				throw new IllegalArgumentException("No such module " + id);
 		}
 	}
 
@@ -144,6 +135,7 @@ public final class ItemModule extends ItemBase {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
+			case CHAT_ID:
 				if (!world.isRemote && !(player instanceof FakePlayer)) {
 					if (player.isSneaking()) {
 						UUID id = player.getGameProfile().getId();
@@ -269,50 +261,60 @@ public final class ItemModule extends ItemBase {
 			"GCG",
 			"CHC",
 			"GCG",
-			'G', new ItemStack(Items.gold_ingot),
-			'H', new ItemStack(Items.diamond_helmet),
-			'C', new ItemStack(Blocks.ender_chest)
+			'G', Items.gold_ingot,
+			'H', Items.diamond_helmet,
+			'C', Blocks.ender_chest
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
 			"III",
 			"GDR",
 			"  I",
-			'D', new ItemStack(Items.diamond),
-			'I', new ItemStack(Items.iron_ingot),
-			'G', new ItemStack(Blocks.glass),
-			'R', new ItemStack(Items.redstone)
+			'D', Items.diamond,
+			'I', Items.iron_ingot,
+			'G', Blocks.glass,
+			'R', Items.redstone
 		);
-
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SCANNER_ID),
 			"EDE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.glass),
-			'I', new ItemStack(Items.iron_ingot),
-			'E', new ItemStack(Items.ender_pearl),
-			'D', new ItemStack(Blocks.dirt)
+			'G', Blocks.glass,
+			'I', Items.iron_ingot,
+			'E', Items.ender_pearl,
+			'D', Blocks.dirt
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SENSOR_ID),
 			"ERE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.glass),
-			'I', new ItemStack(Items.iron_ingot),
-			'E', new ItemStack(Items.ender_pearl),
-			'R', new ItemStack(Items.rotten_flesh)
+			'G', Blocks.glass,
+			'I', Items.iron_ingot,
+			'E', Items.ender_pearl,
+			'R', Items.rotten_flesh
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, KINETIC_ID),
 			"RGR",
 			"PBP",
 			"RGR",
-			'G', new ItemStack(Items.gold_ingot),
-			'R', new ItemStack(Items.redstone),
-			'P', new ItemStack(Blocks.piston),
-			'B', new ItemStack(Blocks.redstone_block)
+			'G', Items.gold_ingot,
+			'R', Items.redstone,
+			'P', Blocks.piston,
+			'B', Blocks.redstone_block
+		);
+
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, CHAT_ID),
+			" RS",
+			"WRN",
+			"IIS",
+			'R', Items.redstone,
+			'S', Blocks.stone,
+			'I', Items.iron_ingot,
+			'N', Blocks.noteblock,
+			'W', Blocks.wool
 		);
 	}
 

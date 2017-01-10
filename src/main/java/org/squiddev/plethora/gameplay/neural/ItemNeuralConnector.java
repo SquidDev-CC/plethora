@@ -106,9 +106,9 @@ public class ItemNeuralConnector extends ItemBase {
 			"  R",
 			"IIR",
 			"IEI",
-			'R', new ItemStack(Items.redstone),
-			'E', new ItemStack(Items.ender_pearl),
-			'I', new ItemStack(Items.iron_ingot)
+			'R', Items.redstone,
+			'E', Items.ender_pearl,
+			'I', Items.iron_ingot
 		);
 	}
 }

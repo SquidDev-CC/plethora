@@ -177,8 +177,8 @@ public class ItemKeyboard extends ItemBase {
 			"SSI",
 			"SSS",
 			'M', PeripheralItemFactory.create(PeripheralType.WirelessModem, null, 1),
-			'S', new ItemStack(Blocks.stone),
-			'I', new ItemStack(Items.iron_ingot)
+			'S', Blocks.stone,
+			'I', Items.iron_ingot
 		);
 
 		MinecraftForge.EVENT_BUS.register(this);

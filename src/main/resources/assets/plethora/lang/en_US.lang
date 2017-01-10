@@ -23,6 +23,10 @@ item.plethora.module.module_kinetic.name=Kinetic Augment
 item.plethora.module.module_kinetic.adjective=Kinetic
 item.plethora.module.module_kinetic.desc=Allows controlling your body via the neural interface
 
+item.plethora.module.module_chat.name=Chat recorder
+item.plethora.module.module_chat.adjective=Listening
+item.plethora.module.module_chat.desc=Allows listening and intercepting chat events
+
 item.plethora.module.module_unknown.name=Unknown module
 item.plethora.module.module_unknown.desc=What did you break this time?
 
