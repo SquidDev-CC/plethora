@@ -13,12 +13,12 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.squiddev.plethora.utils.Vec2i;
 
 public class ContainerNeuralInterface extends Container {
-	private static final int START_Y = 134;
+	public static final int START_Y = 134;
 
 	private static final int MAIN_START_X = 8;
-	private static final int NEURAL_START_X = 185;
+	public static final int NEURAL_START_X = 185;
 
-	private static final int S = 18;
+	public static final int S = 18;
 
 	public static final Vec2i POSITIONS[] = new Vec2i[]{
 		new Vec2i(NEURAL_START_X + 1 + S, START_Y + 1 + 2 * S),
