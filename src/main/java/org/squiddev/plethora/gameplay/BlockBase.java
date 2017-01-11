@@ -94,7 +94,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	public void breakBlock(World world, BlockPos block, IBlockState state) {
 		if (!world.isRemote) {
 			T tile = getTile(world, block);
-			if (tile != null) tile.onBroken();
+			if (tile != null) tile.broken();
 		}
 
 		super.breakBlock(world, block, state);

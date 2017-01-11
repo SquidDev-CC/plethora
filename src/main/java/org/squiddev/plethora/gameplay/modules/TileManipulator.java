@@ -141,7 +141,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 	}
 
 	@Override
-	public void onBroken() {
+	public void broken() {
 		if (stacks == null) return;
 
 		for (ItemStack stack : stacks) {
@@ -169,8 +169,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 	}
 
 	@Override
-	public void onUnload() {
-		super.onUnload();
+	public void removed() {
 		executor.reset();
 	}
 }
