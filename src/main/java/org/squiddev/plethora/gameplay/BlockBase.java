@@ -6,11 +6,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -19,8 +17,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
-
-import java.util.List;
 
 /**
  * Base class for all blocks
@@ -98,10 +94,6 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 		}
 
 		super.breakBlock(world, block, state);
-	}
-
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
-		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
 	}
 
 	@Override

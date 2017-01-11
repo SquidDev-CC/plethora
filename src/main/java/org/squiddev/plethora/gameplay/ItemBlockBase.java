@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
@@ -11,9 +12,6 @@ import java.util.List;
 public class ItemBlockBase extends ItemBlock {
 	public ItemBlockBase(Block block) {
 		super(block);
-		if (!(block instanceof BlockBase<?>)) {
-			throw new IllegalStateException("Cannot register " + block.getClass() + " with ItemBlockBase");
-		}
 
 		setHasSubtypes(true);
 		setMaxDamage(0);
@@ -22,7 +20,7 @@ public class ItemBlockBase extends ItemBlock {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
-		((BlockBase<?>) block).addInformation(stack, player, out, um);
+		out.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".desc"));
 	}
 
 	@Override
@@ -32,6 +30,10 @@ public class ItemBlockBase extends ItemBlock {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return ((BlockBase) block).getUnlocalizedName(stack.getItemDamage());
+		if (block instanceof BlockBase) {
+			return ((BlockBase) block).getUnlocalizedName(stack.getItemDamage());
+		} else {
+			return block.getUnlocalizedName();
+		}
 	}
 }

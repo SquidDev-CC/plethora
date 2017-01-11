@@ -9,6 +9,7 @@ import org.squiddev.plethora.gameplay.modules.BlockManipulator;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.neural.ItemNeuralConnector;
 import org.squiddev.plethora.gameplay.neural.ItemNeuralInterface;
+import org.squiddev.plethora.gameplay.redstone.BlockRedstoneIntegrator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +29,7 @@ public final class Registry {
 	public static ItemModule itemModule;
 	public static ItemKeyboard itemKeyboard;
 	public static BlockManipulator blockManipulator;
+	public static BlockRedstoneIntegrator blockRedstoneIntegrator;
 
 	private static void addModule(IModule module) {
 		if (module instanceof IClientModule) {
@@ -58,6 +60,8 @@ public final class Registry {
 		addModule(new RenderInterfaceLiving());
 
 		addModule(itemKeyboard = new ItemKeyboard());
+
+		addModule(blockRedstoneIntegrator = new BlockRedstoneIntegrator());
 	}
 
 	public static void preInit() {

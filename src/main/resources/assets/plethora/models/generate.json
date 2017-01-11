@@ -20,6 +20,9 @@
 			"neuralInterface": "plethora:items/neuralInterface",
 			"keyboard": "plethora:items/keyboard"
 		},
+		"both": {
+			"redstone_integrator": "plethora:blocks/redstone_integrator"
+		},
 		"itemblock": {
 			"manipulator.mark_1": "manipulator.mark_1",
 			"manipulator.mark_2": "manipulator.mark_2"

@@ -56,6 +56,10 @@ item.plethora.neuralInterface.desc=Goes in your helmet slot. Connect with the ne
 gui.plethora.neuralInterface.peripherals=View peripherals
 gui.plethora.neuralInterface.modules=View modules
 
+# Redstone integrator
+tile.plethora.redstone_integrator.name=Redstone integrator
+tile.plethora.redstone_integrator.desc=Get and set redstone levels for this block
+
 # Upgrade adjectives
 adjective.plethora.clock=Chronal
 adjective.plethora.daylight_detector=Photosensitive
