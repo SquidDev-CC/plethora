@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.reference.IReference;
@@ -325,7 +325,7 @@ public final class ItemModule extends ItemBase {
 		return new ItemModuleHandler(stack);
 	}
 
-	private static final class ItemModuleHandler implements IModuleHandler, ICapabilityProvider {
+	private static final class ItemModuleHandler extends AbstractModuleHandler implements ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
 
