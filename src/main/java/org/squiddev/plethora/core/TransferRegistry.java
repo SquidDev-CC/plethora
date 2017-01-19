@@ -158,6 +158,7 @@ public final class TransferRegistry implements ITransferRegistry {
 				ITransferProvider instance = asmClass.asSubclass(ITransferProvider.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, ITransferProvider.class);
 
 				Boolean primary = (Boolean) info.get("primary");
 				if (primary == null || primary) {

@@ -1,7 +1,9 @@
 package org.squiddev.plethora.utils;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
@@ -33,9 +35,13 @@ import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -303,5 +309,95 @@ public class Helpers {
 		}
 
 		return result;
+	}
+
+	public static List<Type[]> getTypeArgs(Class<?> klass, Class<?> target) {
+		TypeToken<?> initial = TypeToken.of(klass);
+
+		TypeToken<?>.TypeSet collection = target.isInterface()
+			? initial.getTypes().interfaces()
+			: initial.getTypes().classes();
+
+		List<Type[]> out = Lists.newArrayList();
+		for (TypeToken<?> tok : collection) {
+			if (tok.getRawType() == target) {
+				if (tok.getType() instanceof ParameterizedType) {
+					out.add(((ParameterizedType) tok.getType()).getActualTypeArguments());
+				}
+			}
+		}
+
+		return out;
+	}
+
+	/**
+	 * Assert that this class's specified target matches the appropriate generic parameter.
+	 *
+	 * This will error when in strict mode, as well as not accepting any valid but non-equal
+	 * targets (such as subtypes).
+	 *
+	 * @param klass  The class to check
+	 * @param target The specified target
+	 * @param iface  The parent class or interface which takes the target as a type parameter.
+	 * @throws IllegalArgumentException If no matching type can be found (and in strict mode).
+	 */
+	public static void assertTarget(Class<?> klass, Class<?> target, Class<?> iface) {
+		// Gather
+		TypeToken<?> initial = TypeToken.of(klass);
+
+		TypeToken<?>.TypeSet collection = iface.isInterface()
+			? initial.getTypes().interfaces()
+			: initial.getTypes().classes();
+
+		// Look for perfect matches first, otherwise build up a list of all args.
+		List<Type> allTargets = null;
+		for (TypeToken<?> tok : collection) {
+			if (tok.getRawType() == iface) {
+				if (tok.getType() instanceof ParameterizedType) {
+					Type[] args = ((ParameterizedType) tok.getType()).getActualTypeArguments();
+					if (args.length == 0) continue;
+
+					Type arg = args[0];
+					if (arg == target) return;
+
+					if (allTargets == null) allTargets = Lists.newArrayList();
+					allTargets.add(arg);
+				}
+			}
+		}
+
+		if (allTargets != null) {
+			boolean valid = false;
+			for (java.lang.reflect.Type arg : allTargets) {
+				// If the type argument is a subtype then work correctly.
+				if (arg instanceof Class<?> && ((Class<?>) arg).isAssignableFrom(target)) {
+					DebugLogger.warn("Specified target as " + target.getName() + " but got superclass" + arg + " for " + klass.getName());
+					valid |= !ConfigCore.Testing.strict;
+				} else if (arg instanceof TypeVariable) {
+					// Try to find something limited by this arg
+					TypeVariable var = (TypeVariable) arg;
+					for (Type bound : var.getBounds()) {
+						if (bound instanceof Class<?> && ((Class<?>) bound).isAssignableFrom(target)) {
+							DebugLogger.warn("Specified target as " + target.getName() + " but got generic parameter with matching bound " + var.getName() + " extends " + ((Class<?>) bound).getName() + " for " + klass.getName());
+							valid |= !ConfigCore.Testing.strict;
+						}
+					}
+				}
+			}
+			if (valid) return;
+		}
+
+		String message = "Annotation target " + target.getName() + " does not match type parameters";
+		if (allTargets == null) {
+			message += " (cannot find any type parameters)";
+		} else {
+			message += " (specified parameters are " + allTargets + ")";
+		}
+
+		if (ConfigCore.Testing.strict) {
+			throw new IllegalStateException(message);
+		} else {
+			DebugLogger.error(message);
+		}
 	}
 }

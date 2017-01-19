@@ -84,6 +84,7 @@ public class ConverterRegistry implements IConverterRegistry {
 				IConverter instance = asmClass.asSubclass(IConverter.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, IConverter.class);
 				registerConverter(target, instance);
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {

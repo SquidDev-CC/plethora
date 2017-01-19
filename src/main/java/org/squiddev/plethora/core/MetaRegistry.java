@@ -105,6 +105,8 @@ public final class MetaRegistry implements IMetaRegistry {
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, IMetaProvider.class);
+
 				String namespace = (String) info.get("namespace");
 				if (Strings.isNullOrEmpty(namespace)) {
 					registerMetaProvider(target, instance);

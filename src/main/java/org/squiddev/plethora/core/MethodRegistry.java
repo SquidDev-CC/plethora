@@ -227,6 +227,7 @@ public final class MethodRegistry implements IMethodRegistry {
 				IMethod instance = asmClass.asSubclass(IMethod.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, IMethod.class);
 				registerMethod(target, instance);
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {
