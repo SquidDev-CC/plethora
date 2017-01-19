@@ -2,7 +2,9 @@ package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -16,6 +18,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
+import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -82,26 +85,8 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		List<IMethod<?>> result = Lists.newArrayList();
 
-		HashSet<Class<?>> visited = Sets.newHashSet();
-		Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
-		visited.add(target);
-		toVisit.add(target);
-
-		while (toVisit.size() > 0) {
-			Class<?> klass = toVisit.poll();
+		for (Class<?> klass : new ClassIteratorIterable(target)) {
 			result.addAll(providers.get(klass));
-
-			Class<?> parent = klass.getSuperclass();
-			if (parent != null && visited.add(parent)) {
-				toVisit.add(parent);
-			}
-
-			for (Class<?> iface : klass.getInterfaces()) {
-				if (iface != null && visited.add(iface)) {
-					toVisit.add(iface);
-				}
-			}
 		}
 
 		return Collections.unmodifiableList(result);

@@ -7,11 +7,15 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.converter.IConverterRegistry;
+import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 public class ConverterRegistry implements IConverterRegistry {
 	public static final ConverterRegistry instance = new ConverterRegistry();
@@ -43,30 +47,12 @@ public class ConverterRegistry implements IConverterRegistry {
 			Object target = toConvert.remove();
 			result.add(target);
 
-			HashSet<Class<?>> visited = Sets.newHashSet();
-			Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
 			Class<?> initial = target.getClass();
-			visited.add(initial);
-			toVisit.add(initial);
-
-			while (toVisit.size() > 0) {
-				Class<?> klass = toVisit.poll();
+			for (Class<?> klass : new ClassIteratorIterable(initial)) {
 				for (IConverter<?, ?> converter : converters.get(klass)) {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
 					if (converted != null && allConverted.add(converted)) {
 						toConvert.add(converted);
-					}
-				}
-
-				Class<?> parent = klass.getSuperclass();
-				if (parent != null && visited.add(parent)) {
-					toVisit.add(parent);
-				}
-
-				for (Class<?> iface : klass.getInterfaces()) {
-					if (iface != null && visited.add(iface)) {
-						toVisit.add(iface);
 					}
 				}
 			}
