@@ -64,8 +64,6 @@ public final class ItemComputerHandler {
 			if (inventory != null) inventory.markDirty();
 		}
 
-		neural.setWorld(owner.worldObj);
-
 		return neural;
 	}
 

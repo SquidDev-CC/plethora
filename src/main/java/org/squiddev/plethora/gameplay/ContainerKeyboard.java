@@ -9,8 +9,12 @@ import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import org.squiddev.cctweaks.CCTweaks;
+import org.squiddev.cctweaks.api.IContainerComputer;
 
-public class ContainerKeyboard extends Container {
+@Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
+public class ContainerKeyboard extends Container implements IContainerComputer {
 	private final IComputer computer;
 
 	public ContainerKeyboard(IComputer computer) {
@@ -44,5 +48,10 @@ public class ContainerKeyboard extends Container {
 		}
 
 		return true;
+	}
+
+	@Override
+	public IComputer getComputer() {
+		return computer;
 	}
 }

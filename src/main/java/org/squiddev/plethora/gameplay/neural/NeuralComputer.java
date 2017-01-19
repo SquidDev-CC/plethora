@@ -52,6 +52,9 @@ public class NeuralComputer extends ServerComputer {
 			}
 		}
 
+		setWorld(owner.getEntityWorld());
+		setPosition(owner.getPosition());
+
 		// Sync changed slots
 		if (dirtyStatus != 0) {
 			for (int slot = 0; slot < INV_SIZE; slot++) {
