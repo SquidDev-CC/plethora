@@ -39,6 +39,11 @@ public class PlethoraFakePlayer extends FakePlayer {
 		playerNetServerHandler = new FakeNetHandler(this);
 	}
 
+	public PlethoraFakePlayer(WorldServer world, String name) {
+		super(world, new GameProfile(Constants.FAKEPLAYER_UUID, name));
+		playerNetServerHandler = new FakeNetHandler(this);
+	}
+
 	@Override
 	public boolean canAttackPlayer(EntityPlayer player) {
 		return true;
