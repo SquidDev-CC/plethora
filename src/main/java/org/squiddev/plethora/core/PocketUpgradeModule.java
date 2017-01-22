@@ -41,11 +41,13 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		this.adjective = adjective;
 	}
 
+	@Nonnull
 	@Override
 	public ResourceLocation getUpgradeID() {
 		return handler.getModule();
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalisedAdjective() {
 		return adjective;
@@ -57,7 +59,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	}
 
 	@Override
-	public IPeripheral createPeripheral(final IPocketAccess access) {
+	public IPeripheral createPeripheral(@Nonnull final IPocketAccess access) {
 		final ResourceLocation thisModule = handler.getModule();
 
 		String moduleName = thisModule.toString();
@@ -127,9 +129,9 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				@Nonnull
 				@Override
 				public Entity get() throws LuaException {
-					Entity entity = access.getEntity();
-					if (entity == null) throw new LuaException("Entity is missing");
-					return entity;
+					Entity accessEntity = access.getEntity();
+					if (accessEntity != entity) throw new LuaException("Entity has changed");
+					return accessEntity;
 				}
 			}
 		);
@@ -143,16 +145,24 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral(moduleName, this, paired.getFirst(), paired.getSecond(), new DelayedExecutor());
+			return new PocketPeripheral(this, access, paired.getFirst(), paired.getSecond(), new DelayedExecutor());
 		} else {
 			return null;
 		}
 	}
 
 	@Override
-	public void update(IPocketAccess access, IPeripheral peripheral) {
-		if (peripheral instanceof MethodWrapperPeripheral) {
-			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
+	public void update(@Nonnull IPocketAccess access, IPeripheral peripheral) {
+		if (peripheral instanceof PocketPeripheral) {
+			PocketPeripheral methodWrapper = (PocketPeripheral) peripheral;
+
+			// Invalidate peripheral
+			if (methodWrapper.getEntity() != access.getEntity()) {
+				access.invalidatePeripheral();
+			}
+
+			// Update the enqueued method
+			IExecutorFactory executor = methodWrapper.getExecutorFactory();
 			if (executor instanceof DelayedExecutor) {
 				((DelayedExecutor) executor).update();
 			}
@@ -160,7 +170,20 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	}
 
 	@Override
-	public boolean onRightClick(World world, IPocketAccess access, IPeripheral peripheral) {
+	public boolean onRightClick(@Nonnull World world, @Nonnull IPocketAccess access, IPeripheral peripheral) {
 		return false;
+	}
+
+	private static final class PocketPeripheral extends MethodWrapperPeripheral {
+		private Entity entity;
+
+		public PocketPeripheral(PocketUpgradeModule owner, IPocketAccess access, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
+			super(owner.getUpgradeID().toString(), owner, methods, contexts, factory);
+			this.entity = access.getEntity();
+		}
+
+		public Entity getEntity() {
+			return entity;
+		}
 	}
 }
