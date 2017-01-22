@@ -25,6 +25,7 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -120,20 +121,25 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			}
 		};
 
+		Collection<IReference<?>> additionalContext = handler.getAdditionalContext();
+		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
+		additionalContext.toArray(contextData);
+		contextData[contextData.length - 2] = location;
+		contextData[contextData.length - 1] = new IReference<Entity>() {
+			@Nonnull
+			@Override
+			public Entity get() throws LuaException {
+				Entity accessEntity = access.getEntity();
+				if (accessEntity != entity) throw new LuaException("Entity has changed");
+				return accessEntity;
+			}
+		};
+
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef,
 			cost,
 			containerRef,
-			location,
-			new IReference<Entity>() {
-				@Nonnull
-				@Override
-				public Entity get() throws LuaException {
-					Entity accessEntity = access.getEntity();
-					if (accessEntity != entity) throw new LuaException("Entity has changed");
-					return accessEntity;
-				}
-			}
+			contextData
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(

@@ -27,6 +27,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -98,11 +99,17 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			return null;
 		}
 
+		Collection<IReference<?>> additionalContext = handler.getAdditionalContext();
+		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
+		additionalContext.toArray(contextData);
+		contextData[contextData.length - 2] = new TurtleWorldLocation(turtle);
+		contextData[contextData.length - 1] = Reference.id(turtle);
+
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef,
 			cost,
 			containerRef,
-			new TurtleWorldLocation(turtle), Reference.id(turtle)
+			contextData
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
