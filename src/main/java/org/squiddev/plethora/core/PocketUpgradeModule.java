@@ -175,7 +175,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	}
 
 	private static final class PocketPeripheral extends MethodWrapperPeripheral {
-		private Entity entity;
+		private final Entity entity;
 
 		public PocketPeripheral(PocketUpgradeModule owner, IPocketAccess access, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
 			super(owner.getUpgradeID().toString(), owner, methods, contexts, factory);

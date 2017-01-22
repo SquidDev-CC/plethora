@@ -71,10 +71,7 @@ public class RenderOverlay extends Module implements IClientModule {
 			if (!(o instanceof BlockStack)) return false;
 
 			BlockStack that = (BlockStack) o;
-
-			if (meta != that.meta) return false;
-			return block.equals(that.block);
-
+			return meta == that.meta && block.equals(that.block);
 		}
 
 		@Override

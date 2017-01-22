@@ -58,6 +58,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 		return world;
 	}
 
+	@Nonnull
 	@Override
 	public BlockPos getPosition() {
 		return pos;

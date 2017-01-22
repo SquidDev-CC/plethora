@@ -20,6 +20,7 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -115,24 +116,24 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void attachToNetwork(INetworkAccess network, String name) {
+	public void attachToNetwork(@Nonnull INetworkAccess network, @Nonnull String name) {
 		getDelegate().add(network);
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void detachFromNetwork(INetworkAccess network, String name) {
+	public void detachFromNetwork(@Nonnull INetworkAccess network, @Nonnull String name) {
 		getDelegate().remove(network);
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void networkInvalidated(INetworkAccess network, Map<String, IPeripheral> oldPeripherals, Map<String, IPeripheral> newPeripherals) {
+	public void networkInvalidated(@Nonnull INetworkAccess network, @Nonnull Map<String, IPeripheral> oldPeripherals, @Nonnull Map<String, IPeripheral> newPeripherals) {
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void receivePacket(INetworkAccess network, Packet packet, double distanceTravelled) {
+	public void receivePacket(@Nonnull INetworkAccess network, @Nonnull Packet packet, double distanceTravelled) {
 	}
 
 	@Override

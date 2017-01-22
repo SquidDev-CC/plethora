@@ -87,7 +87,6 @@ public class BlockReference implements IReference<BlockReference> {
 			if (!Objects.equal(thisTile, thatTile)) return false;
 		}
 
-		if (tile != null ? !tile.equals(that.tile) : that.tile != null) return false;
 		return state.equals(that.state);
 	}
 

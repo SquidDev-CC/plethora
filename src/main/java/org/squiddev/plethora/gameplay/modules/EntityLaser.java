@@ -24,6 +24,7 @@ import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.utils.WorldPosition;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
@@ -80,7 +81,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		this.shooterPos = new WorldPosition(world, shooter);
 	}
 
-	public void setShooter(@Nullable EntityLivingBase shooter) {
+	public void setShooter(@Nonnull EntityLivingBase shooter) {
 		this.shooter = shooter;
 		this.shooterId = shooter.getPersistentID();
 	}

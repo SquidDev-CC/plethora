@@ -96,11 +96,7 @@ public class DisableAI {
 
 		@Override
 		public void deserializeNBT(NBTTagCompound tag) {
-			if (tag == null) {
-				disabled = false;
-			} else {
-				disabled = tag.getBoolean("disabled");
-			}
+			disabled = tag != null && tag.getBoolean("disabled");
 		}
 	}
 }
