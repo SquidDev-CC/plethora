@@ -37,11 +37,13 @@ public class PlethoraFakePlayer extends FakePlayer {
 	public PlethoraFakePlayer(WorldServer world) {
 		super(world, profile);
 		playerNetServerHandler = new FakeNetHandler(this);
+		setSize(0, 0);
 	}
 
 	public PlethoraFakePlayer(WorldServer world, String name) {
 		super(world, new GameProfile(Constants.FAKEPLAYER_UUID, name));
 		playerNetServerHandler = new FakeNetHandler(this);
+		setSize(0, 0);
 	}
 
 	@Override
@@ -50,13 +52,8 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	@Override
-	public float getEyeHeight() {
-		return 0.0F;
-	}
-
-	@Override
 	public float getDefaultEyeHeight() {
-		return 0.0F;
+		return 0;
 	}
 
 	@Override
@@ -141,7 +138,8 @@ public class PlethoraFakePlayer extends FakePlayer {
 		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 		newRotationYaw = rotationYawHead = rotationYaw;
 		newRotationPitch = rotationPitch;
-		height = from.height;
+		setSize(from.width, from.height);
+		eyeHeight = from.height;
 
 		setSneaking(from.isSneaking());
 
@@ -163,6 +161,8 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	public void unload(EntityLivingBase from) {
 		inventory.currentItem = 0;
+		setSize(0, 0);
+		eyeHeight = getDefaultEyeHeight();
 
 		for (int i = 0; i < 5; i++) {
 			ItemStack stack = getEquipmentInSlot(i);

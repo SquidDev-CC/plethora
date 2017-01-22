@@ -6,12 +6,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import static org.squiddev.plethora.gameplay.Plethora.*;
@@ -33,11 +33,15 @@ public class Plethora {
 
 	private static PlethoraCreativeTab tab;
 
+	public static SimpleNetworkWrapper network;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigGameplay.init(event.getSuggestedConfigurationFile());
 
 		EntityRegistry.registerModEntity(PlethoraFakePlayer.class, ID + ":fakePlayer", 1, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
+
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
 
 		tab = new PlethoraCreativeTab();
 		Registry.setup();
@@ -62,6 +66,16 @@ public class Plethora {
 		if (eventArgs.modID.equals(Plethora.ID)) {
 			ConfigGameplay.sync();
 		}
+	}
+
+	@EventHandler
+	public void onServerStopping(FMLServerStoppedEvent e) {
+		RenderOverlay.clearChatMessages();
+	}
+
+	@EventHandler
+	public void onServerStarting(FMLServerStartedEvent e) {
+		RenderOverlay.clearChatMessages();
 	}
 
 	private static class PlethoraCreativeTab extends CreativeTabs {
