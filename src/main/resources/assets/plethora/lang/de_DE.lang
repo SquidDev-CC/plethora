@@ -61,7 +61,7 @@ tile.plethora.redstone_integrator.name=Redstone-Integrierer
 tile.plethora.redstone_integrator.desc=Ändert die Redstonesignalstärke dieses Blockes.
 
 # Upgrade adjectives
-adjective.plethora.clock=Zeitliche(-r)
+adjective.plethora.clock=Temporale(-r)
 adjective.plethora.daylight_detector=Lichtempfindliche(-r)
 adjective.plethora.note_block=Akustische(-r)
 
