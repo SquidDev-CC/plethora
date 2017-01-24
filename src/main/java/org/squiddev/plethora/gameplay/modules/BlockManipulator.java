@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.LuaException;
@@ -15,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -32,6 +34,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
+import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.reference.IReference;
@@ -42,7 +45,9 @@ import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.squiddev.plethora.api.reference.Reference.tile;
@@ -155,10 +160,9 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		if (manipulator.getType() == null) return null;
 		final int size = manipulator.getType().size();
 
-		boolean exists = false;
 		final ItemStack[] stacks = new ItemStack[size];
 		Set<ResourceLocation> modules = Sets.newHashSet();
-		BasicContextBuilder builder = new BasicContextBuilder();
+		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = manipulator.getStack(i);
 			if (stack == null) continue;
@@ -171,18 +175,30 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			ResourceLocation module = moduleHandler.getModule();
 			if (ConfigCore.Blacklist.blacklistModules.contains(module.toString())) continue;
 
-			exists = true;
 			modules.add(module);
-			moduleHandler.getAdditionalContext(builder);
+			moduleHandlers.add(moduleHandler);
 		}
 
-		if (!exists) return null;
+		if (modules.isEmpty()) return null;
+
+		final IModuleContainer container = new BasicModuleContainer(modules);
+		Map<ResourceLocation, ManipulatorAccess> accessMap = Maps.newHashMap();
+
+		BasicContextBuilder builder = new BasicContextBuilder();
+		for (IModuleHandler handler : moduleHandlers) {
+			ResourceLocation module = handler.getModule();
+			ManipulatorAccess access = accessMap.get(module);
+			if (access == null) {
+				accessMap.put(module, access = new ManipulatorAccess(manipulator, handler, container));
+			}
+
+			handler.getAdditionalContext(access, builder);
+		}
 
 		builder.addContext(te, tile(te));
 		builder.<IWorldLocation>addContext(new WorldLocation(world, blockPos));
 
 		ICostHandler cost = CostHelpers.getCostHandler(manipulator);
-		final IModuleContainer container = new BasicModuleContainer(modules);
 		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
 			@Nonnull
 			@Override
@@ -210,7 +226,11 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			return new MethodWrapperPeripheral("plethora:modules", te, paired, manipulator.getFactory());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("plethora:modules", te, paired, manipulator.getFactory());
+			for (ManipulatorAccess access : accessMap.values()) {
+				access.wrapper = peripheral;
+			}
+			return peripheral;
 		} else {
 			return null;
 		}
@@ -237,6 +257,56 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 				event.setCanceled(true);
 				break;
 			}
+		}
+	}
+
+	private static final class ManipulatorAccess implements IModuleAccess {
+		private TrackingWrapperPeripheral wrapper;
+
+		private final TileManipulator tile;
+		private final IWorldLocation location;
+		private final ResourceLocation module;
+		private final IModuleContainer container;
+
+		private ManipulatorAccess(TileManipulator tile, IModuleHandler module, IModuleContainer container) {
+			this.tile = tile;
+			this.location = new WorldLocation(tile.getWorld(), tile.getPos());
+			this.module = module.getModule();
+			this.container = container;
+		}
+
+		@Nonnull
+		@Override
+		public Object getOwner() {
+			return tile;
+		}
+
+		@Nonnull
+		@Override
+		public IWorldLocation getLocation() {
+			return location;
+		}
+
+		@Nonnull
+		@Override
+		public IModuleContainer getContainer() {
+			return container;
+		}
+
+		@Nonnull
+		@Override
+		public NBTTagCompound getData() {
+			return tile.getModuleData(module);
+		}
+
+		@Override
+		public void markDataDirty() {
+			tile.markModuleDataDirty();
+		}
+
+		@Override
+		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
+			if (wrapper != null) wrapper.queueEvent(event, args);
 		}
 	}
 }

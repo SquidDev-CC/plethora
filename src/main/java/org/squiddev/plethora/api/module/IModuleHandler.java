@@ -26,9 +26,10 @@ public interface IModuleHandler {
 	/**
 	 * Used to get additional context from a stack
 	 *
+	 * @param access  The module access we are using.
 	 * @param builder The builder to add additional context to.
 	 */
-	void getAdditionalContext(@Nonnull IContextBuilder builder);
+	void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder);
 
 	/**
 	 * Get a model from this stack

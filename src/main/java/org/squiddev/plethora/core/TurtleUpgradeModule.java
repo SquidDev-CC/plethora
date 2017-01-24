@@ -6,6 +6,7 @@ import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.TurtleWorldLocation;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
@@ -23,6 +25,7 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
@@ -74,16 +77,6 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			return null;
 		}
 
-		final IModuleContainer container = new SingletonModuleContainer(thisModule);
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
-			@Nonnull
-			@Override
-			public IModuleContainer get() throws LuaException {
-				if (turtle.getUpgrade(side) != TurtleUpgradeModule.this) throw new LuaException("The upgrade is gone");
-				return container;
-			}
-		};
-
 		MethodRegistry registry = MethodRegistry.instance;
 
 		TileEntity te = turtle.getWorld().getTileEntity(turtle.getPosition());
@@ -95,11 +88,22 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			return null;
 		}
 
+		final TurtleModuleAccess access = new TurtleModuleAccess(turtle, side, handler);
 		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(builder);
+		handler.getAdditionalContext(access, builder);
 
 		builder.<IWorldLocation>addContext(new TurtleWorldLocation(turtle));
 		builder.addContext(turtle, Reference.id(turtle));
+
+		final IModuleContainer container = access.getContainer();
+		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+			@Nonnull
+			@Override
+			public IModuleContainer get() throws LuaException {
+				if (turtle.getUpgrade(side) != TurtleUpgradeModule.this) throw new LuaException("The upgrade is gone");
+				return container;
+			}
+		};
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef, cost, containerRef, builder.getReferenceArray());
@@ -110,7 +114,9 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			return new MethodWrapperPeripheral(moduleName, this, paired, new DelayedExecutor());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new DelayedExecutor());
+			access.wrapper = peripheral;
+			return peripheral;
 		} else {
 			return null;
 		}
@@ -151,6 +157,56 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			if (executor instanceof DelayedExecutor) {
 				((DelayedExecutor) executor).update();
 			}
+		}
+	}
+
+	private static final class TurtleModuleAccess implements IModuleAccess {
+		private TrackingWrapperPeripheral wrapper;
+
+		private final ITurtleAccess access;
+		private final TurtleSide side;
+		private final IWorldLocation location;
+		private final IModuleContainer container;
+
+		private TurtleModuleAccess(ITurtleAccess access, TurtleSide side, IModuleHandler handler) {
+			this.access = access;
+			this.side = side;
+			this.location = new TurtleWorldLocation(access);
+			this.container = new SingletonModuleContainer(handler.getModule());
+		}
+
+		@Nonnull
+		@Override
+		public Object getOwner() {
+			return access;
+		}
+
+		@Nonnull
+		@Override
+		public IWorldLocation getLocation() {
+			return location;
+		}
+
+		@Nonnull
+		@Override
+		public IModuleContainer getContainer() {
+			return container;
+		}
+
+		@Nonnull
+		@Override
+		public NBTTagCompound getData() {
+			return access.getUpgradeNBTData(side);
+		}
+
+		@Override
+		public void markDataDirty() {
+			access.updateUpgradeNBTData(side);
+		}
+
+		@Override
+		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
+			if (wrapper != null) wrapper.queueEvent(event, args);
 		}
 	}
 }

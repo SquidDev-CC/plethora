@@ -12,6 +12,6 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractModuleHandler implements IModuleHandler {
 	@Override
-	public void getAdditionalContext(@Nonnull IContextBuilder builder) {
+	public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 	}
 }

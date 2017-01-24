@@ -32,6 +32,7 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
+import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
@@ -355,7 +356,7 @@ public final class ItemModule extends ItemBase {
 		}
 
 		@Override
-		public void getAdditionalContext(@Nonnull IContextBuilder builder) {
+		public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 			Entity entity = getEntity(stack);
 			if (entity != null) {
 				builder.addContext(entity, new EntityReference<Entity>(entity));

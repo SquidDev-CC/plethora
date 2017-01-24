@@ -130,8 +130,10 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				dirty = true;
 			}
 
-			IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			neural.update(player, handler, dirtyStatus);
+
+			if (neural.update(player, stack, dirtyStatus)) {
+				dirty = true;
+			}
 
 			if (dirty && inventory != null) {
 				inventory.markDirty();

@@ -1,17 +1,17 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
+
+import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
@@ -20,6 +20,7 @@ import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 public final class TileManipulator extends TileBase implements ITickable {
 	private ManipulatorType type;
 	private ItemStack[] stacks;
+	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 
 	private final DelayedExecutor executor = new DelayedExecutor();
 
@@ -49,6 +50,17 @@ public final class TileManipulator extends TileBase implements ITickable {
 		return stacks[slot];
 	}
 
+	public NBTTagCompound getModuleData(ResourceLocation location) {
+		NBTTagCompound tag = moduleData.get(location);
+		if (tag == null) moduleData.put(location, tag = new NBTTagCompound());
+		return tag;
+	}
+
+	public void markModuleDataDirty() {
+		markDirty();
+		worldObj.markBlockForUpdate(pos);
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -74,6 +86,16 @@ public final class TileManipulator extends TileBase implements ITickable {
 				tag.removeTag("stack" + i);
 			}
 		}
+
+		if (moduleData.isEmpty()) {
+			tag.removeTag("data");
+		} else {
+			NBTTagCompound data = tag.getCompoundTag("data");
+			for (Map.Entry<ResourceLocation, NBTTagCompound> entry : this.moduleData.entrySet()) {
+				data.setTag(entry.getKey().toString(), entry.getValue());
+			}
+		}
+
 		return true;
 	}
 
@@ -92,6 +114,11 @@ public final class TileManipulator extends TileBase implements ITickable {
 			} else {
 				stacks[i] = null;
 			}
+		}
+
+		NBTTagCompound data = tag.getCompoundTag("data");
+		for (String key : data.getKeySet()) {
+			moduleData.put(new ResourceLocation(key), data.getCompoundTag(key));
 		}
 	}
 
