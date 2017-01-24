@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.api.pocket.IPocketAccess;
 import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.EntityWorldLocation;
+import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -145,7 +146,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new DelayedExecutor());
+			return new PocketPeripheral(this, access, paired, new DelayedExecutor(), builder.getAttachments());
 		} else {
 			return null;
 		}
@@ -177,8 +178,8 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	private static final class PocketPeripheral extends TrackingWrapperPeripheral {
 		private final Entity entity;
 
-		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory) {
-			super(owner.getUpgradeID().toString(), owner, methods, factory);
+		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
+			super(owner.getUpgradeID().toString(), owner, methods, factory, attachments);
 			this.entity = access.entity;
 			access.wrapper = this;
 		}

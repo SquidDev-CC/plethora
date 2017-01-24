@@ -2,6 +2,7 @@ package org.squiddev.plethora.api.method;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -14,6 +15,7 @@ import java.util.List;
 public class BasicContextBuilder implements IContextBuilder {
 	private final List<Object> objects = Lists.newArrayList();
 	private final List<IReference<?>> references = Lists.newArrayList();
+	private final List<IAttachable> attachments = Lists.newArrayList();
 
 	@Override
 	public <T> void addContext(@Nonnull T baked, @Nonnull IReference<T> reference) {
@@ -30,6 +32,11 @@ public class BasicContextBuilder implements IContextBuilder {
 
 		objects.add(object);
 		references.add(object);
+	}
+
+	@Override
+	public void addAttachable(@Nonnull IAttachable attachable) {
+		attachments.add(attachable);
 	}
 
 	@Nonnull
@@ -54,5 +61,9 @@ public class BasicContextBuilder implements IContextBuilder {
 		IReference<?>[] out = new IReference<?>[references.size()];
 		references.toArray(out);
 		return out;
+	}
+
+	public List<IAttachable> getAttachments() {
+		return Collections.unmodifiableList(attachments);
 	}
 }

@@ -114,7 +114,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new DelayedExecutor());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new DelayedExecutor(), builder.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {

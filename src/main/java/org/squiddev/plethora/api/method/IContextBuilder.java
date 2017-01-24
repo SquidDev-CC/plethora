@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -22,4 +23,11 @@ public interface IContextBuilder {
 	 * @param object The object
 	 */
 	<T extends IReference<T>> void addContext(@Nonnull T object);
+
+	/**
+	 * Add an an attachment listener
+	 *
+	 * @param attachable An attachable object which listens to when the resulting object is attached.
+	 */
+	void addAttachable(@Nonnull IAttachable attachable);
 }
