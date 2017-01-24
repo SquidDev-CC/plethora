@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.IContainerComputer;
+import org.squiddev.plethora.gameplay.registry.Registry;
 
 @Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
 public class ContainerKeyboard extends Container implements IContainerComputer {
@@ -23,6 +24,10 @@ public class ContainerKeyboard extends Container implements IContainerComputer {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
+		if (player.getHeldItem() == null || player.getHeldItem().getItem() != Registry.itemKeyboard) {
+			return false;
+		}
+
 		if (computer instanceof ServerComputer) {
 			ServerComputer computer = (ServerComputer) this.computer;
 

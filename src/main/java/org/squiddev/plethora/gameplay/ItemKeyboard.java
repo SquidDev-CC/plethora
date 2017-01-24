@@ -106,8 +106,11 @@ public class ItemKeyboard extends ItemBase {
 				if (remote != null && remote.isBlockLoaded(pos)) {
 					TileEntity tile = remote.getTileEntity(pos);
 					if (tile instanceof IComputerTile) {
-						tag.setInteger(INSTANCE_ID, ((IComputerTile) tile).getComputer().getInstanceID());
-						dirty = true;
+						IComputer computer = ((IComputerTile) tile).getComputer();
+						if (computer != null) {
+							tag.setInteger(INSTANCE_ID, computer.getInstanceID());
+							dirty = true;
+						}
 					}
 				}
 			}
