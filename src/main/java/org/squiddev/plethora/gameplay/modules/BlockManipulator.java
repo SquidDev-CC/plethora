@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.LuaException;
@@ -27,11 +26,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -159,7 +158,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		boolean exists = false;
 		final ItemStack[] stacks = new ItemStack[size];
 		Set<ResourceLocation> modules = Sets.newHashSet();
-		List<IReference<?>> additionalContext = Lists.newArrayList();
+		BasicContextBuilder builder = new BasicContextBuilder();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = manipulator.getStack(i);
 			if (stack == null) continue;
@@ -174,16 +173,15 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 			exists = true;
 			modules.add(module);
-			additionalContext.addAll(moduleHandler.getAdditionalContext());
+			moduleHandler.getAdditionalContext(builder);
 		}
 
 		if (!exists) return null;
 
-		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
-		additionalContext.toArray(contextData);
-		contextData[contextData.length - 2] = tile(te);
-		contextData[contextData.length - 1] = new WorldLocation(world, blockPos);
+		builder.addContext(te, tile(te));
+		builder.<IWorldLocation>addContext(new WorldLocation(world, blockPos));
 
+		ICostHandler cost = CostHelpers.getCostHandler(manipulator);
 		final IModuleContainer container = new BasicModuleContainer(modules);
 		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
 			@Nonnull
@@ -203,15 +201,16 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		};
 
 		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
-			containerRef,
-			CostHelpers.getCostHandler(manipulator),
-			containerRef,
-			contextData
+			containerRef, cost, containerRef, builder.getReferenceArray()
 		);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, UnbakedContext.tryBake(context));
-		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral("plethora:modules", te, paired.getFirst(), paired.getSecond(), manipulator.getFactory());
+		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
+			container, cost, builder.getObjectsArray(), container
+		);
+
+		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
+		if (paired.getLeft().size() > 0) {
+			return new MethodWrapperPeripheral("plethora:modules", te, paired, manipulator.getFactory());
 		} else {
 			return null;
 		}

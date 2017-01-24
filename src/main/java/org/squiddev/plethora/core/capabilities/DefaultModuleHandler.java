@@ -36,6 +36,6 @@ public final class DefaultModuleHandler extends AbstractModuleHandler {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-		return Pair.of(getMesher().getModelManager().getMissingModel(), new Matrix4f());
+		return Pair.of(getMesher().getModelManager().getMissingModel(), identity);
 	}
 }

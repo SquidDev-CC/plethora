@@ -3,7 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.util.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
@@ -89,10 +89,11 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	@Nonnull
 	@Override
 	public ILuaObject getObject() {
+		// TODO: Remove this method
 		IContext<T> baked = tryBake(this);
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(this, baked);
+		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(this, baked);
 
-		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond());
+		return new MethodWrapperLuaObject(pair.getLeft(), pair.getRight());
 	}
 
 	@Nonnull
@@ -111,7 +112,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		System.arraycopy(src, 0, to, start, src.length);
 	}
 
-	public static <T> IContext<T> tryBake(IUnbakedContext<T> context) {
+	private static <T> IContext<T> tryBake(IUnbakedContext<T> context) {
 		try {
 			return context.bake();
 		} catch (LuaException e) {

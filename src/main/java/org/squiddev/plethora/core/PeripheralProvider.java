@@ -6,8 +6,8 @@ import dan200.computercraft.shared.peripheral.common.IPeripheralTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ICostHandler;
@@ -52,9 +52,9 @@ public class PeripheralProvider implements IPeripheralProvider {
 				IUnbakedContext<BlockReference> context = registry.makeContext(reference, handler, BasicModuleContainer.EMPTY_REF, new WorldLocation(world, blockPos));
 				IPartialContext<BlockReference> baked = new PartialContext<BlockReference>(reference, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
 
-				Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
-				if (paired.getFirst().size() > 0) {
-					return new MethodWrapperPeripheral(te, paired.getFirst(), paired.getSecond(), DefaultExecutor.INSTANCE);
+				Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+				if (paired.getLeft().size() > 0) {
+					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, DefaultExecutor.INSTANCE);
 				}
 			} catch (RuntimeException e) {
 				DebugLogger.error("Error getting peripheral", e);

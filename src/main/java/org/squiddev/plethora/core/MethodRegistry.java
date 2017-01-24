@@ -6,10 +6,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.apache.commons.lang3.tuple.Pair;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
@@ -134,7 +134,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		return property.getInt();
 	}
 
-	public Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {
+	public Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
 		HashMap<String, Integer> methodLookup = new HashMap<String, Integer>();
@@ -201,7 +201,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			}
 		}
 
-		return new Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>>(methods, contexts);
+		return Pair.<List<IMethod<?>>, List<IUnbakedContext<?>>>of(methods, contexts);
 	}
 
 	@SuppressWarnings("unchecked")

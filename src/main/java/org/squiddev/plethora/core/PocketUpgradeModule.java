@@ -6,16 +6,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.api.pocket.IPocketAccess;
 import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
@@ -25,7 +22,6 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -121,11 +117,10 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			}
 		};
 
-		Collection<IReference<?>> additionalContext = handler.getAdditionalContext();
-		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
-		additionalContext.toArray(contextData);
-		contextData[contextData.length - 2] = location;
-		contextData[contextData.length - 1] = new IReference<Entity>() {
+		BasicContextBuilder builder = new BasicContextBuilder();
+		handler.getAdditionalContext(builder);
+		builder.addContext(location);
+		builder.addContext(entity, new IReference<Entity>() {
 			@Nonnull
 			@Override
 			public Entity get() throws LuaException {
@@ -133,25 +128,19 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				if (accessEntity != entity) throw new LuaException("Entity has changed");
 				return accessEntity;
 			}
-		};
+		});
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef,
-			cost,
-			containerRef,
-			contextData
+			containerRef, cost, containerRef, builder.getReferenceArray()
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container,
-			cost,
-			new Object[]{location, entity},
-			container
+			container, cost, builder.getObjectsArray(), container
 		);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
-		if (paired.getFirst().size() > 0) {
-			return new PocketPeripheral(this, access, paired.getFirst(), paired.getSecond(), new DelayedExecutor());
+		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		if (paired.getLeft().size() > 0) {
+			return new PocketPeripheral(this, access, paired, new DelayedExecutor());
 		} else {
 			return null;
 		}
@@ -183,8 +172,8 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	private static final class PocketPeripheral extends MethodWrapperPeripheral {
 		private final Entity entity;
 
-		public PocketPeripheral(PocketUpgradeModule owner, IPocketAccess access, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
-			super(owner.getUpgradeID().toString(), owner, methods, contexts, factory);
+		public PocketPeripheral(PocketUpgradeModule owner, IPocketAccess access, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory) {
+			super(owner.getUpgradeID().toString(), owner, methods, factory);
 			this.entity = access.getEntity();
 		}
 

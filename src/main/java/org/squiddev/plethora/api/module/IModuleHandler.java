@@ -6,11 +6,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.method.IContextBuilder;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
-import java.util.Collection;
 
 /**
  * A capability which provides a module
@@ -27,10 +26,9 @@ public interface IModuleHandler {
 	/**
 	 * Used to get additional context from a stack
 	 *
-	 * @return The additional context items.
+	 * @param builder The builder to add additional context to.
 	 */
-	@Nonnull
-	Collection<IReference<?>> getAdditionalContext();
+	void getAdditionalContext(@Nonnull IContextBuilder builder);
 
 	/**
 	 * Get a model from this stack

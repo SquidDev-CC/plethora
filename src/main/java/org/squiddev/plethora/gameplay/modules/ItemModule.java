@@ -30,10 +30,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
-import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -43,8 +43,6 @@ import org.squiddev.plethora.utils.Helpers;
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -356,14 +354,11 @@ public final class ItemModule extends ItemBase {
 			}
 		}
 
-		@Nonnull
 		@Override
-		public Collection<IReference<?>> getAdditionalContext() {
+		public void getAdditionalContext(@Nonnull IContextBuilder builder) {
 			Entity entity = getEntity(stack);
 			if (entity != null) {
-				return Collections.<IReference<?>>singleton(new EntityReference<Entity>(entity));
-			} else {
-				return Collections.emptyList();
+				builder.addContext(entity, new EntityReference<Entity>(entity));
 			}
 		}
 

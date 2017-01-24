@@ -9,13 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import org.apache.commons.lang3.tuple.Pair;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.TurtleWorldLocation;
-import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
@@ -27,7 +24,6 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -99,29 +95,22 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			return null;
 		}
 
-		Collection<IReference<?>> additionalContext = handler.getAdditionalContext();
-		IReference<?>[] contextData = new IReference[additionalContext.size() + 2];
-		additionalContext.toArray(contextData);
-		contextData[contextData.length - 2] = new TurtleWorldLocation(turtle);
-		contextData[contextData.length - 1] = Reference.id(turtle);
+		BasicContextBuilder builder = new BasicContextBuilder();
+		handler.getAdditionalContext(builder);
+
+		builder.<IWorldLocation>addContext(new TurtleWorldLocation(turtle));
+		builder.addContext(turtle, Reference.id(turtle));
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef,
-			cost,
-			containerRef,
-			contextData
-		);
+			containerRef, cost, containerRef, builder.getReferenceArray());
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container,
-			cost,
-			new Object[]{new TurtleWorldLocation(turtle), turtle},
-			container
+			container, cost, builder.getObjectsArray(), container
 		);
 
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
-		if (paired.getFirst().size() > 0) {
-			return new MethodWrapperPeripheral(moduleName, this, paired.getFirst(), paired.getSecond(), new DelayedExecutor());
+		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		if (paired.getLeft().size() > 0) {
+			return new MethodWrapperPeripheral(moduleName, this, paired, new DelayedExecutor());
 		} else {
 			return null;
 		}

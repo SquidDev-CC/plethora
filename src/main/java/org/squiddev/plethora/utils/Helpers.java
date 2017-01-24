@@ -295,6 +295,17 @@ public class Helpers {
 		}
 	}
 
+	@Nonnull
+	public static String tryGetName(Object owner) {
+		try {
+			return getName(owner);
+		} catch (Throwable e) {
+			DebugLogger.error("Error getting data for " + owner.getClass().getName(), e);
+			return owner.getClass().getSimpleName();
+		}
+	}
+
+
 	public static boolean onEntityInteract(Item item, EntityPlayer player, Entity target) {
 		if (!(target instanceof EntityLivingBase)) return false;
 
@@ -309,25 +320,6 @@ public class Helpers {
 		}
 
 		return result;
-	}
-
-	public static List<Type[]> getTypeArgs(Class<?> klass, Class<?> target) {
-		TypeToken<?> initial = TypeToken.of(klass);
-
-		TypeToken<?>.TypeSet collection = target.isInterface()
-			? initial.getTypes().interfaces()
-			: initial.getTypes().classes();
-
-		List<Type[]> out = Lists.newArrayList();
-		for (TypeToken<?> tok : collection) {
-			if (tok.getRawType() == target) {
-				if (tok.getType() instanceof ParameterizedType) {
-					out.add(((ParameterizedType) tok.getType()).getActualTypeArguments());
-				}
-			}
-		}
-
-		return out;
 	}
 
 	/**
