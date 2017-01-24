@@ -16,18 +16,20 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
+import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 
 public final class MethodsChat {
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S,
-		target = EntityLivingBase.class,
+		module = PlethoraModules.CHAT_S, target = EntityLivingBase.class,
 		doc = "function(message:string) -- Send a message to everyone"
 	)
 	@Nonnull
@@ -60,7 +62,7 @@ public final class MethodsChat {
 					// We include the position of the entity
 					name = entity.getDisplayName().createCopy();
 					name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, name.getUnformattedText());
+					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, entity, name.getUnformattedText());
 					fakePlayer.load(entity);
 					player = fakePlayer;
 				} else {
@@ -79,8 +81,7 @@ public final class MethodsChat {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S,
-		target = EntityLivingBase.class,
+		module = PlethoraModules.CHAT_S, target = EntityLivingBase.class,
 		doc = "function(message:string) -- Send a message to yourself"
 	)
 	@Nonnull
@@ -103,5 +104,51 @@ public final class MethodsChat {
 				return MethodResult.empty();
 			}
 		});
+	}
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.CHAT_S, target = Listener.class,
+		doc = "function(pattern:string) -- Capture all chat messages matching a Lua pattern, preventing them from being said."
+	)
+	@Nonnull
+	public static MethodResult capture(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
+		final String pattern = getString(args, 0);
+
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModuleContainer> context = unbaked.bake();
+				context.getContext(Listener.class).addPattern(pattern);
+				return MethodResult.empty();
+			}
+		});
+	}
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.CHAT_S, target = Listener.class,
+		doc = "function(pattern:string):boolean -- Remove a capture added by capture(pattern)."
+	)
+	@Nonnull
+	public static MethodResult uncapture(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
+		final String pattern = getString(args, 0);
+
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModuleContainer> context = unbaked.bake();
+				boolean removed = context.getContext(Listener.class).removePattern(pattern);
+				return MethodResult.result(removed);
+			}
+		});
+	}
+
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.CHAT_S, worldThread = true, target = Listener.class,
+		doc = "function() -- Remove all listeners added by capture()."
+	)
+	@Nullable
+	public static Object[] clearCaptures(Listener listener, @Nonnull final IContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
+		listener.clearPatterns();
+		return null;
 	}
 }

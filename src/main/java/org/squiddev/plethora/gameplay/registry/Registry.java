@@ -6,6 +6,7 @@ import org.squiddev.plethora.gameplay.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
+import org.squiddev.plethora.gameplay.modules.ChatListener;
 import org.squiddev.plethora.gameplay.modules.ChatVisualiser;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.neural.ItemNeuralConnector;
@@ -56,6 +57,7 @@ public final class Registry {
 		addModule(blockManipulator = new BlockManipulator());
 		addModule(new RenderOverlay());
 		addModule(new ChatVisualiser());
+		addModule(new ChatListener());
 
 		addModule(itemNeuralInterface = new ItemNeuralInterface());
 		addModule(new ItemNeuralConnector());

@@ -361,6 +361,18 @@ public final class ItemModule extends ItemBase {
 			if (entity != null) {
 				builder.addContext(entity, new EntityReference<Entity>(entity));
 			}
+
+			if (stack.getItemDamage() == CHAT_ID) {
+				// Add a chat listener if we've got an entity (and are a chat module).
+				Object owner = access.getOwner();
+				Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
+
+				if (ownerEntity != null) {
+					ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
+					builder.addContext(listener);
+					builder.addAttachable(listener);
+				}
+			}
 		}
 
 		@Nonnull

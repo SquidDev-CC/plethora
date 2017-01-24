@@ -21,6 +21,7 @@ import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.utils.FakeNetHandler;
 
+import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 public class PlethoraFakePlayer extends FakePlayer {
@@ -28,22 +29,34 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	private static final GameProfile profile = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
 
+	private final WeakReference<Entity> owner;
+
 	private BlockPos digPosition;
 	private Block digBlock;
 
 	private int currentDamage = -1;
 	private int currentDamageState = -1;
 
-	public PlethoraFakePlayer(WorldServer world) {
+	public PlethoraFakePlayer(WorldServer world, Entity owner) {
 		super(world, profile);
 		playerNetServerHandler = new FakeNetHandler(this);
 		setSize(0, 0);
+		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
 	}
 
-	public PlethoraFakePlayer(WorldServer world, String name) {
+	public PlethoraFakePlayer(WorldServer world, Entity owner, String name) {
 		super(world, new GameProfile(Constants.FAKEPLAYER_UUID, name));
 		playerNetServerHandler = new FakeNetHandler(this);
 		setSize(0, 0);
+		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
+	}
+
+	public PlethoraFakePlayer(WorldServer world) {
+		this(world, (Entity) null);
+	}
+
+	public PlethoraFakePlayer(WorldServer world, String name) {
+		this(world, null, name);
 	}
 
 	@Override
@@ -193,10 +206,14 @@ public class PlethoraFakePlayer extends FakePlayer {
 		inventory.markDirty();
 	}
 
+	public Entity getOwner() {
+		return owner == null ? null : owner.get();
+	}
+
 	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity) {
 		PlethoraFakePlayer fake = registeredPlayers.get(entity);
 		if (fake == null) {
-			fake = new PlethoraFakePlayer(world);
+			fake = new PlethoraFakePlayer(world, entity);
 			registeredPlayers.put(entity, fake);
 		}
 
