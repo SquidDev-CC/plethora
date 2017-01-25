@@ -113,6 +113,11 @@ gui.config.plethora.scanner.radius=Scan radius
 gui.config.plethora.sensor=Entity Sensor
 gui.config.plethora.sensor.radius=Sense radius
 
+gui.config.plethora.chat=Chat recorder
+gui.config.plethora.chat.maxLength=Maximum length
+gui.config.plethora.chat.allowFormatting=Allow format codes
+gui.config.plethora.chat.allowMobs=Allow mobs in chat
+
 # JEI Integration
 gui.jei.plethora.modules=Modules
 gui.jei.plethora.modules.usable=Usable as a module in:

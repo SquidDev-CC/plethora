@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
@@ -17,6 +16,7 @@ import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
@@ -35,12 +35,7 @@ public final class MethodsChat {
 	@Nonnull
 	public static MethodResult say(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
 		final String message = getString(args, 0);
-
-		for (int i = 0; i < message.length(); ++i) {
-			if (!ChatAllowedCharacters.isAllowedCharacter(message.charAt(i))) {
-				throw new LuaException("Illegal character '" + message.charAt(i) + "'");
-			}
-		}
+		validateMessage(message);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -57,6 +52,8 @@ public final class MethodsChat {
 					player = (EntityPlayerMP) entity;
 
 				} else if (entity.worldObj instanceof WorldServer) {
+					if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
+
 					BlockPos pos = entity.getPosition();
 
 					// We include the position of the entity
@@ -87,12 +84,7 @@ public final class MethodsChat {
 	@Nonnull
 	public static MethodResult tell(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
 		final String message = getString(args, 0);
-
-		for (int i = 0; i < message.length(); ++i) {
-			if (!ChatAllowedCharacters.isAllowedCharacter(message.charAt(i))) {
-				throw new LuaException("Illegal character '" + message.charAt(i) + "'");
-			}
-		}
+		validateMessage(message);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -104,6 +96,19 @@ public final class MethodsChat {
 				return MethodResult.empty();
 			}
 		});
+	}
+
+	private static void validateMessage(String message) throws LuaException {
+		if (ConfigGameplay.Chat.maxLength > 0 && message.length() > ConfigGameplay.Chat.maxLength) {
+			throw new LuaException(String.format("Message is too long (was %d, maximum is %d)", message.length(), ConfigGameplay.Chat.maxLength));
+		}
+
+		for (int i = 0; i < message.length(); ++i) {
+			char character = message.charAt(i);
+			if (character < 32 || character == 127 || (character == 167 && !ConfigGameplay.Chat.allowFormatting)) {
+				throw new LuaException("Illegal character '" + message.charAt(i) + "'");
+			}
+		}
 	}
 
 	@SubtargetedModuleMethod.Inject(
