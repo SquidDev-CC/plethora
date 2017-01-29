@@ -1,7 +1,7 @@
 package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.ILuaObject;
-import net.minecraft.util.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IMethod;
@@ -35,7 +35,7 @@ public class Context<T> extends PartialContext<T> implements IContext<T> {
 	@Nonnull
 	@Override
 	public ILuaObject getObject() {
-		Tuple<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(parent, this);
-		return new MethodWrapperLuaObject(pair.getFirst(), pair.getSecond());
+		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> pair = MethodRegistry.instance.getMethodsPaired(parent, this);
+		return new MethodWrapperLuaObject(pair.getLeft(), pair.getRight());
 	}
 }

@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.fml.common.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.network.INetworkAccess;
 import org.squiddev.cctweaks.api.network.INetworkedPeripheral;
@@ -17,9 +18,8 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
-import org.squiddev.plethora.utils.DebugLogger;
-import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +39,6 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	private Object delegate;
 
-	public MethodWrapperPeripheral(Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
-		this(tryGetName(owner), owner, methods, contexts, factory);
-	}
-
 	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
 		super(methods, contexts);
 		this.owner = owner;
@@ -50,13 +46,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		this.factory = factory;
 	}
 
-	private static String tryGetName(Object owner) {
-		try {
-			return Helpers.getName(owner).replace('.', '_');
-		} catch (Throwable e) {
-			DebugLogger.error("Error getting data for " + owner.getClass().getName(), e);
-			return owner.getClass().getSimpleName().replace('.', '_');
-		}
+	public MethodWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory) {
+		this(name, owner, methods.getLeft(), methods.getRight(), factory);
 	}
 
 	@Override
@@ -81,6 +72,10 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	public void detach(IComputerAccess access) {
+	}
+
+	protected IExecutorFactory getExecutorFactory() {
+		return factory;
 	}
 
 	@Override
@@ -111,24 +106,24 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void attachToNetwork(INetworkAccess network, String name) {
+	public void attachToNetwork(@Nonnull INetworkAccess network, @Nonnull String name) {
 		getDelegate().add(network);
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void detachFromNetwork(INetworkAccess network, String name) {
+	public void detachFromNetwork(@Nonnull INetworkAccess network, @Nonnull String name) {
 		getDelegate().remove(network);
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void networkInvalidated(INetworkAccess network, Map<String, IPeripheral> oldPeripherals, Map<String, IPeripheral> newPeripherals) {
+	public void networkInvalidated(@Nonnull INetworkAccess network, @Nonnull Map<String, IPeripheral> oldPeripherals, @Nonnull Map<String, IPeripheral> newPeripherals) {
 	}
 
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	public void receivePacket(INetworkAccess network, Packet packet, double distanceTravelled) {
+	public void receivePacket(@Nonnull INetworkAccess network, @Nonnull Packet packet, double distanceTravelled) {
 	}
 
 	@Override

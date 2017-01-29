@@ -1,16 +1,16 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.gameplay.modules.BlockManipulator;
 import org.squiddev.plethora.gameplay.modules.EntityLaser;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
-import org.squiddev.plethora.gameplay.modules.TileManipulator;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
@@ -46,18 +46,27 @@ public final class MethodsLaser {
 				Vec3d pos = location.getLoc();
 
 				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
-				if (context.hasContext(TileManipulator.class)) {
+				if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
-					double y = pos.yCoord - 0.5;
 					double hOff = 1.2;
 					double vOff = 0.1;
 
 					// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
 					// the block below/above in most cases.
 					// Also offset to be just above/below the manipulator, depending on the pitch.
+
+					double yOffset;
+					if (pitch < -60) {
+						yOffset = 0.5 + vOff;
+					} else if (pitch > 60) {
+						yOffset = -0.5 - vOff;
+					} else {
+						yOffset = 0;
+					}
+
 					laser.setPosition(
 						pos.xCoord + motionX / length * hOff,
-						motionY < 0 ? y - vOff : y + BlockManipulator.OFFSET + vOff,
+						pos.yCoord + yOffset,
 						pos.zCoord + motionZ / length * hOff
 					);
 				} else if (context.hasContext(EntityLivingBase.class)) {
@@ -73,6 +82,8 @@ public final class MethodsLaser {
 						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,
 						vector.zCoord + motionZ / length * offset
 					);
+				} else {
+					laser.setPosition(pos.xCoord, pos.yCoord, pos.zCoord);
 				}
 
 				laser.setPotency(potency);

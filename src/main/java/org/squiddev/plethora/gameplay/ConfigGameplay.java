@@ -1,10 +1,7 @@
 package org.squiddev.plethora.gameplay;
 
 import net.minecraftforge.common.config.Configuration;
-import org.squiddev.configgen.Config;
-import org.squiddev.configgen.DefaultDouble;
-import org.squiddev.configgen.DefaultInt;
-import org.squiddev.configgen.Range;
+import org.squiddev.configgen.*;
 import org.squiddev.plethora.gameplay.ConfigGameplayForgeLoader;
 
 import java.io.File;
@@ -146,5 +143,29 @@ public final class ConfigGameplay {
 		@DefaultInt(16)
 		@Range(min = 0)
 		public static int radius;
+	}
+
+	public static class Chat {
+		/**
+		 * The maximum length a chat message can be.
+		 *
+		 * Set to 0 to disable
+		 */
+		@DefaultInt(100)
+		@Range(min = 0)
+		public static int maxLength;
+
+		/**
+		 * Whether formatting codes are allowed in chat messages.
+		 */
+		@DefaultBoolean(false)
+		public static boolean allowFormatting;
+
+		/**
+		 * Whether mobs are allowed to post chat messages. Otherwise
+		 * this is just limited to players.
+		 */
+		@DefaultBoolean(true)
+		public static boolean allowMobs;
 	}
 }

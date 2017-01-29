@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
-import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.PlethoraAPI;
@@ -13,6 +11,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -76,26 +75,8 @@ public final class MetaRegistry implements IMetaRegistry {
 
 		List<IMetaProvider<?>> result = Lists.newArrayList();
 
-		HashSet<Class<?>> visited = Sets.newHashSet();
-		Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
-		visited.add(target);
-		toVisit.add(target);
-
-		while (toVisit.size() > 0) {
-			Class<?> klass = toVisit.poll();
+		for (Class<?> klass : new ClassIteratorIterable(target)) {
 			result.addAll(providers.get(klass));
-
-			Class<?> parent = klass.getSuperclass();
-			if (parent != null && visited.add(parent)) {
-				toVisit.add(parent);
-			}
-
-			for (Class<?> iface : klass.getInterfaces()) {
-				if (iface != null && visited.add(iface)) {
-					toVisit.add(iface);
-				}
-			}
 		}
 
 		return Collections.unmodifiableList(result);
@@ -124,6 +105,8 @@ public final class MetaRegistry implements IMetaRegistry {
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, IMetaProvider.class);
+
 				String namespace = (String) info.get("namespace");
 				if (Strings.isNullOrEmpty(namespace)) {
 					registerMetaProvider(target, instance);

@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 public class BlockReference implements IReference<BlockReference> {
 	private final IWorldLocation location;
 	private final WeakReference<TileEntity> tile;
-	private final IBlockState state;
+	private IBlockState state;
 
 	public BlockReference(@Nonnull IWorldLocation location, @Nonnull IBlockState state, @Nullable TileEntity tile) {
 		this.location = location;
@@ -36,7 +36,7 @@ public class BlockReference implements IReference<BlockReference> {
 		IBlockState newState = world.getBlockState(pos);
 		TileEntity newTe = world.getTileEntity(pos);
 
-		if (!state.equals(newState)) throw new LuaException("The block is no longer there");
+		if (state.getBlock() != newState.getBlock()) throw new LuaException("The block is no longer there");
 
 		if (tile == null && newTe != null) {
 			throw new LuaException("The block has changed");
@@ -48,6 +48,9 @@ public class BlockReference implements IReference<BlockReference> {
 				throw new LuaException("The block has changed");
 			}
 		}
+
+		// Update the block state if everything is OK
+		state = newState;
 
 		return this;
 	}
@@ -84,14 +87,13 @@ public class BlockReference implements IReference<BlockReference> {
 			if (!Objects.equal(thisTile, thatTile)) return false;
 		}
 
-		if (tile != null ? !tile.equals(that.tile) : that.tile != null) return false;
 		return state.equals(that.state);
 	}
 
 	@Override
 	public int hashCode() {
 		int result = location.hashCode();
-		result = 31 * result + state.hashCode();
+		result = 31 * result + state.getBlock().hashCode();
 		return result;
 	}
 }

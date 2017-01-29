@@ -95,21 +95,42 @@ public abstract class TileBase extends TileEntity {
 	/**
 	 * Called when this tile is broken
 	 */
-	public void onBroken() {
+	public void broken() {
 	}
 
-	public void onUnload() {
+	/**
+	 * Called when the TileEntity is unloaded or invalidated
+	 */
+	public void removed() {
+	}
+
+	/**
+	 * Called when the TileEntity is validated
+	 */
+	public void created() {
 	}
 
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		onUnload();
+		if (worldObj == null || !worldObj.isRemote) {
+			removed();
+		}
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		onUnload();
+		if (worldObj == null || !worldObj.isRemote) {
+			removed();
+		}
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		if (worldObj == null || !worldObj.isRemote) {
+			created();
+		}
 	}
 }

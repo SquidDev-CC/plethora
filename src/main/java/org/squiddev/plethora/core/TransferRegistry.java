@@ -2,12 +2,16 @@ package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 import org.squiddev.plethora.api.transfer.ITransferRegistry;
+import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -83,32 +87,13 @@ public final class TransferRegistry implements ITransferRegistry {
 	private <T> Collection<ITransferProvider<? super T>> getTransferProviders(Class<T> target, Multimap<Class<?>, ITransferProvider<?>> providers) {
 		ArrayList<ITransferProvider<? super T>> result = Lists.newArrayList();
 
-		HashSet<Class<?>> visited = Sets.newHashSet();
-		Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
-		visited.add(target);
-		toVisit.add(target);
-
-		while (toVisit.size() > 0) {
-			Class<?> klass = toVisit.poll();
-
+		for (Class<?> klass : new ClassIteratorIterable(target)) {
 			Collection<ITransferProvider<?>> items = providers.get(klass);
 			int size = items.size();
 			if (size > 0) {
 				result.ensureCapacity(result.size() + size);
 				for (ITransferProvider provider : items) {
 					result.add(provider);
-				}
-			}
-
-			Class<?> parent = klass.getSuperclass();
-			if (parent != null && visited.add(parent)) {
-				toVisit.add(parent);
-			}
-
-			for (Class<?> iface : klass.getInterfaces()) {
-				if (iface != null && visited.add(iface)) {
-					toVisit.add(iface);
 				}
 			}
 		}
@@ -119,29 +104,11 @@ public final class TransferRegistry implements ITransferRegistry {
 	@SuppressWarnings("unchecked")
 	private Object getTransferPart(Object object, String key, Multimap<Class<?>, ITransferProvider<?>> providers) {
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
-			HashSet<Class<?>> visited = Sets.newHashSet();
-			Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
 			Class<?> target = converted.getClass();
-			visited.add(target);
-			toVisit.add(target);
-
-			while (toVisit.size() > 0) {
-				Class<?> klass = toVisit.poll();
+			for (Class<?> klass : new ClassIteratorIterable(target)) {
 				for (ITransferProvider provider : providers.get(klass)) {
 					Object result = provider.getTransferLocation(converted, key);
 					if (result != null) return result;
-				}
-
-				Class<?> parent = klass.getSuperclass();
-				if (parent != null && visited.add(parent)) {
-					toVisit.add(parent);
-				}
-
-				for (Class<?> iface : klass.getInterfaces()) {
-					if (iface != null && visited.add(iface)) {
-						toVisit.add(iface);
-					}
 				}
 			}
 		}
@@ -157,28 +124,10 @@ public final class TransferRegistry implements ITransferRegistry {
 
 		Multimap<Class<?>, ITransferProvider<?>> lookup = primary ? this.primary : this.secondary;
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
-			HashSet<Class<?>> visited = Sets.newHashSet();
-			Queue<Class<?>> toVisit = Queues.newArrayDeque();
-
 			Class<?> target = converted.getClass();
-			visited.add(target);
-			toVisit.add(target);
-
-			while (toVisit.size() > 0) {
-				Class<?> klass = toVisit.poll();
+			for (Class<?> klass : new ClassIteratorIterable(target)) {
 				for (ITransferProvider provider : lookup.get(klass)) {
 					parts.addAll(provider.getTransferLocations(converted));
-				}
-
-				Class<?> parent = klass.getSuperclass();
-				if (parent != null && visited.add(parent)) {
-					toVisit.add(parent);
-				}
-
-				for (Class<?> iface : klass.getInterfaces()) {
-					if (iface != null && visited.add(iface)) {
-						toVisit.add(iface);
-					}
 				}
 			}
 		}
@@ -209,6 +158,7 @@ public final class TransferRegistry implements ITransferRegistry {
 				ITransferProvider instance = asmClass.asSubclass(ITransferProvider.class).newInstance();
 
 				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
+				Helpers.assertTarget(asmClass, target, ITransferProvider.class);
 
 				Boolean primary = (Boolean) info.get("primary");
 				if (primary == null || primary) {

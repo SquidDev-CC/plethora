@@ -1,26 +1,31 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import dan200.computercraft.shared.computer.core.IComputer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
+import org.squiddev.cctweaks.CCTweaks;
+import org.squiddev.cctweaks.api.IContainerComputer;
 import org.squiddev.plethora.utils.Vec2i;
 
 import javax.annotation.Nullable;
 
-public class ContainerNeuralInterface extends Container {
-	private static final int START_Y = 134;
+@Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
+public class ContainerNeuralInterface extends Container implements IContainerComputer {
+	public static final int START_Y = 134;
 
 	private static final int MAIN_START_X = 8;
-	private static final int NEURAL_START_X = 185;
+	public static final int NEURAL_START_X = 185;
 
-	private static final int S = 18;
+	public static final int S = 18;
 
 	public static final Vec2i POSITIONS[] = new Vec2i[]{
 		new Vec2i(NEURAL_START_X + 1 + S, START_Y + 1 + 2 * S),
@@ -143,5 +148,11 @@ public class ContainerNeuralInterface extends Container {
 		}
 
 		return flag;
+	}
+
+	@Nullable
+	@Override
+	public IComputer getComputer() {
+		return ItemComputerHandler.tryGetServer(stack);
 	}
 }

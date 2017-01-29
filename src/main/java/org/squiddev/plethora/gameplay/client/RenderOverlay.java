@@ -35,12 +35,12 @@ import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
+import static org.squiddev.plethora.gameplay.modules.ChatVisualiser.ChatMessage;
 
 /**
  * Renders overlays for various modules
@@ -49,6 +49,17 @@ public class RenderOverlay extends Module implements IClientModule {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/misc/flare.png");
 
 	private int ticks;
+
+	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<ChatMessage>();
+
+	@SideOnly(Side.CLIENT)
+	public static void addMessage(ChatMessage message) {
+		chatMessages.add(message);
+	}
+
+	public static void clearChatMessages() {
+		chatMessages.clear();
+	}
 
 	private static final class BlockStack {
 		public final Block block;
@@ -65,10 +76,7 @@ public class RenderOverlay extends Module implements IClientModule {
 			if (!(o instanceof BlockStack)) return false;
 
 			BlockStack that = (BlockStack) o;
-
-			if (meta != that.meta) return false;
-			return block.equals(that.block);
-
+			return meta == that.meta && block.equals(that.block);
 		}
 
 		@Override
@@ -111,6 +119,13 @@ public class RenderOverlay extends Module implements IClientModule {
 		EntityPlayer player = minecraft.thePlayer;
 		World world = player.worldObj;
 
+		// "Tick" each iterator and remove them.
+		for (Iterator<ChatMessage> messages = chatMessages.iterator(); messages.hasNext(); ) {
+			if (messages.next().decrement()) {
+				messages.remove();
+			}
+		}
+
 		if (stack != null && stack.getItem() == Registry.itemModule) {
 			minecraft.getTextureManager().bindTexture(TEXTURE);
 
@@ -140,7 +155,7 @@ public class RenderOverlay extends Module implements IClientModule {
 						if (entity != minecraft.thePlayer) {
 							renderFlare(
 								entity.posX, entity.posY + (entity.height / 2), entity.posZ,
-								entity.getEntityId(), renderManager
+								entity.getEntityId(), 1.0f, renderManager
 							);
 						}
 					}
@@ -157,12 +172,25 @@ public class RenderOverlay extends Module implements IClientModule {
 								Block block = state.getBlock();
 
 								if (isBlockOre(block, block.getMetaFromState(state))) {
-									renderFlare(oX + 0.5, oY + 0.5, oZ + 0.5, block.getRegistryName().hashCode(), renderManager);
+									renderFlare(oX + 0.5, oY + 0.5, oZ + 0.5, block.getRegistryName().hashCode(), 1.0f, renderManager);
 								}
 							}
 						}
 					}
 					break;
+				}
+				case ItemModule.CHAT_ID: {
+					for (ChatMessage message : chatMessages) {
+						if (message.getWorld() == world.provider.getDimensionId()) {
+							Vec3 pos = message.getPosition();
+							renderFlare(
+								pos.xCoord, pos.yCoord, pos.zCoord,
+								message.getId(), message.getCount() * 2.0f / ChatMessage.TIME, renderManager
+							);
+
+							// TODO: Display chat too.
+						}
+					}
 				}
 			}
 
@@ -205,7 +233,7 @@ public class RenderOverlay extends Module implements IClientModule {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void renderFlare(double x, double y, double z, int id, RenderManager manager) {
+	private void renderFlare(double x, double y, double z, int id, float size, RenderManager manager) {
 		// Generate an offset based off the hash code
 		float offset = (float) (id % (Math.PI * 2));
 
@@ -225,7 +253,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		));
 
 		// The size is function of ticks and the id: ensures slightly different sizes
-		float size = 0.2f + MathHelper.sin(ticks / 100.0f + offset) / 16.0f;
+		size *= 0.2f + MathHelper.sin(ticks / 100.0f + offset) / 16.0f;
 
 		// Prepare to render
 		Tessellator tessellator = Tessellator.getInstance();

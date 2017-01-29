@@ -194,6 +194,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				Class<? extends Annotation> target = Class.forName(((Type) info.get("value")).getClassName()).asSubclass(Annotation.class);
+				Helpers.assertTarget(asmClass, target, IMethodBuilder.class);
 				addBuilder(target, instance);
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {

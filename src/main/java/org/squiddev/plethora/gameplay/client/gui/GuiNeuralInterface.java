@@ -18,12 +18,13 @@ import org.squiddev.plethora.utils.Vec2i;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface.SWAP;
+import static org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.WIDTH;
 
 public class GuiNeuralInterface extends GuiContainer {
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/gui/neuralInterface.png");
+	private static final int ICON_Y = 224;
 
 	private final IComputer computer;
 	private WidgetTerminal terminalGui;
@@ -95,7 +96,7 @@ public class GuiNeuralInterface extends GuiContainer {
 	@Override
 	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
-		int x = Mouse.getEventX() * width / mc.displayHeight;
+		int x = Mouse.getEventX() * width / mc.displayWidth;
 		int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
 		terminalGui.handleMouseInput(x, y);
 	}
@@ -111,10 +112,19 @@ public class GuiNeuralInterface extends GuiContainer {
 		terminalGui.draw(mc, 0, 0, mouseX, mouseY);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(BACKGROUND);
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		drawTexturedModalRect(guiLeft + SWAP.x, guiTop + SWAP.y, peripherals ? 0 : 16, 224, 16, 16);
+
+		drawTexturedRect(0, 0, 0, 0, xSize, ySize);
+		drawTexturedRect(SWAP.x, SWAP.y, peripherals ? 0 : 16, ICON_Y, 16, 16);
+
+		if (peripherals) {
+			drawTexturedRect(NEURAL_START_X + 1 + S, START_Y + 1, 32, ICON_Y, 16, 16); // Top
+			drawTexturedRect(NEURAL_START_X + 1, START_Y + 1 + S, 50, ICON_Y, 16 * 3, 16); // Middle
+			drawTexturedRect(NEURAL_START_X + 1 + S, START_Y + 1 + 2 * S, 104, ICON_Y, 16, 16); // Bottom
+		}
+	}
+
+	private void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
+		drawTexturedModalRect(guiLeft + x, guiTop + y, u, v, width, height);
 	}
 
 	@Override

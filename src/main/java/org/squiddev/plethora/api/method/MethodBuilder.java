@@ -199,7 +199,7 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 				Class<?> expectedArg = expectedArgs[i];
 
 				if (arg != expectedArg) {
-					errors.add("Bad arg #" + arg + ": expected " + expectedArg.getName() + ", got " + arg.getName());
+					errors.add("Bad arg #" + (i + 1) + ": expected " + expectedArg.getName() + ", got " + arg.getName());
 				}
 			}
 		}

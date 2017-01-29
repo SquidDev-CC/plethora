@@ -1,8 +1,12 @@
 package org.squiddev.plethora.gameplay;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.ClientComputer;
+import dan200.computercraft.shared.computer.core.ComputerRegistry;
+import dan200.computercraft.shared.computer.core.IComputer;
+import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.entity.Entity;
@@ -20,11 +24,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.gameplay.client.gui.GuiCapture;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import org.squiddev.plethora.utils.Helpers;
@@ -40,6 +45,11 @@ public class ItemKeyboard extends ItemBase {
 		super("keyboard", 1);
 	}
 
+	@Override
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+		return onItemUse(stack, world, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+	}
+
 	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -49,6 +59,10 @@ public class ItemKeyboard extends ItemBase {
 			TileEntity tile = world.getTileEntity(pos);
 			NBTTagCompound tag = getTag(stack);
 			if (tile instanceof IComputerTile) {
+				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
+					return false;
+				}
+
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
 				tag.setInteger("z", pos.getZ());
@@ -99,8 +113,11 @@ public class ItemKeyboard extends ItemBase {
 				if (remote != null && remote.isBlockLoaded(pos)) {
 					TileEntity tile = remote.getTileEntity(pos);
 					if (tile instanceof IComputerTile) {
-						tag.setInteger(INSTANCE_ID, ((IComputerTile) tile).getComputer().getInstanceID());
-						dirty = true;
+						IComputer computer = ((IComputerTile) tile).getComputer();
+						if (computer != null) {
+							tag.setInteger(INSTANCE_ID, computer.getInstanceID());
+							dirty = true;
+						}
 					}
 				}
 			}
@@ -111,38 +128,37 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer playerIn, EnumHand hand) {
-		if (playerIn.isSneaking()) return ActionResult.newResult(EnumActionResult.PASS, stack);
+	private boolean onItemUse(ItemStack stack, World world, EntityPlayer player) {
+		if (player.isSneaking()) return false;
+		if (world.isRemote) return true;
 
-		ClientComputer computer;
+		ServerComputer computer;
 		NBTTagCompound tag = getTag(stack);
 		if (tag.hasKey("x", 99)) {
-			computer = getBlockComputer(tag);
+			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
-			ItemStack neural = NeuralHelpers.getStack(playerIn);
-			if (neural == null) return ActionResult.newResult(EnumActionResult.FAIL, stack);
+			ItemStack neural = NeuralHelpers.getStack(player);
+			if (neural == null) return false;
 
-			computer = ItemComputerHandler.getClient(neural);
+			computer = ItemComputerHandler.getServer(neural, player, player.inventory);
 		}
 
-		if (computer == null) return ActionResult.newResult(EnumActionResult.FAIL, stack);
-		if (world.isRemote) display(playerIn, computer);
-
-		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+		if (computer == null) return false;
+		GuiHandler.openKeyboard(player, world, computer);
+		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void display(EntityPlayer player, ClientComputer computer) {
-		FMLClientHandler.instance().displayGuiScreen(player, new GuiCapture(computer));
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn) {
+		onItemUse(stack, world, playerIn);
+		return stack;
 	}
 
-	private static ClientComputer getBlockComputer(NBTTagCompound tag) {
+	private static <T extends IComputer> T getBlockComputer(ComputerRegistry<T> registry, NBTTagCompound tag) {
 		if (!tag.hasKey(SESSION_ID, 99) || !tag.hasKey(INSTANCE_ID, 99)) return null;
 
 		int instance = tag.getInteger(INSTANCE_ID);
-		return ComputerCraft.clientComputerRegistry.get(instance);
+		return registry.get(instance);
 	}
 
 	@Override
@@ -152,7 +168,7 @@ public class ItemKeyboard extends ItemBase {
 
 		NBTTagCompound tag = getTag(stack);
 		if (tag.hasKey("x", 99)) {
-			ClientComputer computer = getBlockComputer(tag);
+			ClientComputer computer = getBlockComputer(ComputerCraft.clientComputerRegistry, tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
 			if (computer != null) {
 				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.binding", position));
@@ -171,8 +187,23 @@ public class ItemKeyboard extends ItemBase {
 			"SSI",
 			"SSS",
 			'M', PeripheralItemFactory.create(PeripheralType.WirelessModem, null, 1),
-			'S', new ItemStack(Blocks.STONE),
-			'I', new ItemStack(Items.IRON_INGOT)
+			'S', Blocks.STONE,
+			'I', Items.IRON_INGOT
 		);
+
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
+
+		ItemStack stack = event.entityLiving.getHeldItem();
+		if (stack == null || stack.getItem() != this) return;
+
+		// Cancel all right clicks on blocks with this item
+		if (!event.entityPlayer.isSneaking()) {
+			event.setCanceled(true);
+		}
 	}
 }

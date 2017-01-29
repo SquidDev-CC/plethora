@@ -5,11 +5,10 @@ import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
@@ -17,23 +16,18 @@ import javax.annotation.Nonnull;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.COMPUTER_ID;
 
-public class CraftingNeuralInterface extends ShapedRecipes {
+public class CraftingNeuralInterface extends ShapedOreRecipe {
 	public CraftingNeuralInterface() {
-		super(3, 3, getRecipe(), new ItemStack(Registry.itemNeuralInterface));
-	}
-
-	private static ItemStack[] getRecipe() {
-		ItemStack iron = new ItemStack(Items.IRON_INGOT);
-		ItemStack gold = new ItemStack(Items.GOLD_INGOT);
-		ItemStack reds = new ItemStack(Items.REDSTONE);
-		ItemStack modm = PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1);
-		ItemStack pock = PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false);
-
-		return new ItemStack[]{
-			null, null, gold,
-			iron, pock, reds,
-			null, gold, modm
-		};
+		super(new ItemStack(Registry.itemNeuralInterface),
+			"  G",
+			"IPR",
+			" GM",
+			'G', "ingotGold",
+			'I', "ingotIron",
+			'R', "dustRedstone",
+			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
+			'P', PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false)
+		);
 	}
 
 	@Override

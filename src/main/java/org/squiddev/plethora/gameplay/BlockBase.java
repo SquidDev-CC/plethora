@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -101,7 +100,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	public void breakBlock(World world, @Nonnull BlockPos block, @Nonnull IBlockState state) {
 		if (!world.isRemote) {
 			T tile = getTile(world, block);
-			if (tile != null) tile.onBroken();
+			if (tile != null) tile.broken();
 		}
 
 		super.breakBlock(world, block, state);

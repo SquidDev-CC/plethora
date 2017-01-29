@@ -27,7 +27,10 @@ public class MetaItemArmor extends BasicMetaProvider<ItemStack> {
 			data.put("armorType", armor.armorType.getName());
 
 			int color = armor.getColor(stack);
-			if (color >= 0) data.put("color", color);
+			if (color >= 0) {
+				data.put("color", color);
+				data.put("colour", color);
+			}
 
 			return data;
 		} else {

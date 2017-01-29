@@ -29,9 +29,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.IContextBuilder;
+import org.squiddev.plethora.api.module.AbstractModuleHandler;
+import org.squiddev.plethora.api.module.IModuleAccess;
+import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
-import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -41,8 +44,6 @@ import org.squiddev.plethora.utils.Helpers;
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,14 +57,31 @@ public final class ItemModule extends ItemBase {
 	public static final String SCANNER = "scanner";
 	public static final String SENSOR = "sensor";
 	public static final String KINETIC = "kinetic";
+	public static final String CHAT = "chat";
 
 	public static final int INTROSPECTION_ID = 0;
 	public static final int LASER_ID = 1;
 	public static final int SCANNER_ID = 2;
 	public static final int SENSOR_ID = 3;
 	public static final int KINETIC_ID = 4;
+	public static final int CHAT_ID = 5;
 
-	private static final int MODULES = 5;
+	private static final int MODULES = 6;
+
+	private static final int[] TURTLE_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+	};
+
+	private static final int[] POCKET_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+		INTROSPECTION_ID,
+		KINETIC_ID,
+		CHAT_ID,
+	};
 
 	private static final int MAX_TICKS = 72000;
 	private static final int USE_TICKS = 30;
@@ -93,6 +111,8 @@ public final class ItemModule extends ItemBase {
 				return SENSOR;
 			case KINETIC_ID:
 				return KINETIC;
+			case CHAT_ID:
+				return CHAT;
 			default:
 				return "unknown";
 		}
@@ -116,6 +136,7 @@ public final class ItemModule extends ItemBase {
 	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
+			case CHAT_ID:
 				if (!world.isRemote && !(player instanceof FakePlayer)) {
 					if (player.isSneaking()) {
 						UUID id = player.getGameProfile().getId();
@@ -220,6 +241,18 @@ public final class ItemModule extends ItemBase {
 	public void preInit() {
 		super.preInit();
 		EntityRegistry.registerModEntity(EntityLaser.class, "laser", 0, Plethora.instance, 64, 10, true);
+
+
+		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
+		for (int id : TURTLE_MODULES) {
+			ItemStack stack = new ItemStack(this, 1, id);
+			registry.registerTurtleUpgrade(stack);
+		}
+
+		for (int id : POCKET_MODULES) {
+			ItemStack stack = new ItemStack(this, 1, id);
+			registry.registerPocketUpgrade(stack);
+		}
 	}
 
 	@Override
@@ -230,50 +263,60 @@ public final class ItemModule extends ItemBase {
 			"GCG",
 			"CHC",
 			"GCG",
-			'G', new ItemStack(Items.GOLD_INGOT),
-			'H', new ItemStack(Items.DIAMOND_HELMET),
-			'C', new ItemStack(Blocks.ENDER_CHEST)
+			'G', Items.GOLD_INGOT,
+			'H', Items.DIAMOND_HELMET,
+			'C', Blocks.ENDER_CHEST
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
 			"III",
 			"GDR",
 			"  I",
-			'D', new ItemStack(Items.DIAMOND),
-			'I', new ItemStack(Items.IRON_INGOT),
-			'G', new ItemStack(Blocks.GLASS),
-			'R', new ItemStack(Items.REDSTONE)
+			'D', Items.DIAMOND,
+			'I', Items.IRON_INGOT,
+			'G', Blocks.GLASS,
+			'R', Items.REDSTONE
 		);
-
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SCANNER_ID),
 			"EDE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.GLASS),
-			'I', new ItemStack(Items.IRON_INGOT),
-			'E', new ItemStack(Items.ENDER_PEARL),
-			'D', new ItemStack(Blocks.DIRT)
+			'G', Blocks.GLASS,
+			'I', Items.IRON_INGOT,
+			'E', Items.ENDER_PEARL,
+			'D', Blocks.DIRT
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SENSOR_ID),
 			"ERE",
 			"IGI",
 			"III",
-			'G', new ItemStack(Blocks.GLASS),
-			'I', new ItemStack(Items.IRON_INGOT),
-			'E', new ItemStack(Items.ENDER_PEARL),
-			'R', new ItemStack(Items.ROTTEN_FLESH)
+			'G', Blocks.GLASS,
+			'I', Items.IRON_INGOT,
+			'E', Items.ENDER_PEARL,
+			'R', Items.ROTTEN_FLESH
 		);
 
 		GameRegistry.addShapedRecipe(new ItemStack(this, 1, KINETIC_ID),
 			"RGR",
 			"PBP",
 			"RGR",
-			'G', new ItemStack(Items.GOLD_INGOT),
-			'R', new ItemStack(Items.REDSTONE),
-			'P', new ItemStack(Blocks.PISTON),
-			'B', new ItemStack(Blocks.REDSTONE_BLOCK)
+			'G', Items.GOLD_INGOT,
+			'R', Items.REDSTONE,
+			'P', Blocks.PISTON,
+			'B', Blocks.REDSTONE_BLOCK
+		);
+
+		GameRegistry.addShapedRecipe(new ItemStack(this, 1, CHAT_ID),
+			" RS",
+			"WRN",
+			"IIS",
+			'R', Items.REDSTONE,
+			'S', Blocks.STONE,
+			'I', Items.IRON_INGOT,
+			'N', Blocks.NOTEBLOCK,
+			'W', Blocks.WOOL
 		);
 	}
 
@@ -285,7 +328,7 @@ public final class ItemModule extends ItemBase {
 		return new ItemModuleHandler(stack);
 	}
 
-	private static final class ItemModuleHandler implements IModuleHandler, ICapabilityProvider {
+	private static final class ItemModuleHandler extends AbstractModuleHandler implements ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
 
@@ -316,14 +359,23 @@ public final class ItemModule extends ItemBase {
 			}
 		}
 
-		@Nonnull
 		@Override
-		public Collection<IReference<?>> getAdditionalContext() {
+		public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 			Entity entity = getEntity(stack);
 			if (entity != null) {
-				return Collections.<IReference<?>>singleton(new EntityReference<Entity>(entity));
-			} else {
-				return Collections.emptyList();
+				builder.addContext(entity, new EntityReference<Entity>(entity));
+			}
+
+			if (stack.getItemDamage() == CHAT_ID) {
+				// Add a chat listener if we've got an entity (and are a chat module).
+				Object owner = access.getOwner();
+				Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
+
+				if (ownerEntity != null) {
+					ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
+					builder.addContext(listener);
+					builder.addAttachable(listener);
+				}
 			}
 		}
 

@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
 
@@ -10,9 +11,6 @@ import javax.annotation.Nonnull;
 public class ItemBlockBase extends ItemBlock {
 	public ItemBlockBase(Block block) {
 		super(block);
-		if (!(block instanceof BlockBase<?>)) {
-			throw new IllegalStateException("Cannot register " + block.getClass() + " with ItemBlockBase");
-		}
 
 		setHasSubtypes(true);
 		setMaxDamage(0);
@@ -26,6 +24,10 @@ public class ItemBlockBase extends ItemBlock {
 	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return ((BlockBase) block).getUnlocalizedName(stack.getItemDamage());
+		if (block instanceof BlockBase) {
+			return ((BlockBase) block).getUnlocalizedName(stack.getItemDamage());
+		} else {
+			return block.getUnlocalizedName();
+		}
 	}
 }

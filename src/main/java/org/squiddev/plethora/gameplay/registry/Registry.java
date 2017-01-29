@@ -6,9 +6,12 @@ import org.squiddev.plethora.gameplay.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
+import org.squiddev.plethora.gameplay.modules.ChatListener;
+import org.squiddev.plethora.gameplay.modules.ChatVisualiser;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.neural.ItemNeuralConnector;
 import org.squiddev.plethora.gameplay.neural.ItemNeuralInterface;
+import org.squiddev.plethora.gameplay.redstone.BlockRedstoneIntegrator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +31,7 @@ public final class Registry {
 	public static ItemModule itemModule;
 	public static ItemKeyboard itemKeyboard;
 	public static BlockManipulator blockManipulator;
+	public static BlockRedstoneIntegrator blockRedstoneIntegrator;
 
 	private static void addModule(IModule module) {
 		if (module instanceof IClientModule) {
@@ -52,12 +56,16 @@ public final class Registry {
 		addModule(itemModule = new ItemModule());
 		addModule(blockManipulator = new BlockManipulator());
 		addModule(new RenderOverlay());
+		addModule(new ChatVisualiser());
+		addModule(new ChatListener());
 
 		addModule(itemNeuralInterface = new ItemNeuralInterface());
 		addModule(new ItemNeuralConnector());
 		addModule(new RenderInterfaceLiving());
 
 		addModule(itemKeyboard = new ItemKeyboard());
+
+		addModule(blockRedstoneIntegrator = new BlockRedstoneIntegrator());
 	}
 
 	public static void preInit() {

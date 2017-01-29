@@ -109,8 +109,31 @@ public final class ConfigCore {
 		/**
 		 * List of modules to blacklist.
 		 */
-		@RequiresRestart
 		public static HashSet<String> blacklistModules;
+
+		/**
+		 * List of modules to blacklist from being mounted on a turtle.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesTurtle;
+
+		/**
+		 * List of modules to blacklist from being mounted on a pocket computer.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesPocket;
+
+		/**
+		 * List of modules to blacklist from being mounted from a tile.
+		 *
+		 * For instance, the note block tile exposes the minecraft:noteblock module, allowing
+		 * you to use that module from the tile's peripheral, rather than through a manipulator.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesTile;
 	}
 
 	/**

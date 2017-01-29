@@ -24,6 +24,7 @@ public final class ItemComputerHandler {
 	public static final String COMPUTER_ID = "id";
 	public static final String ITEMS = "items";
 	public static final String DIRTY = "dirty";
+	public static final String MODULE_DATA = "module_data";
 
 	public static NeuralComputer getServer(ItemStack stack, EntityLivingBase owner, IInventory inventory) {
 		NBTTagCompound tag = getTag(stack);
@@ -54,6 +55,7 @@ public final class ItemComputerHandler {
 
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
 			neural = new NeuralComputer(owner.worldObj, computerId, label, instanceId);
+			neural.readModuleData(tag.getCompoundTag(MODULE_DATA));
 
 			manager.add(instanceId, neural);
 
@@ -63,8 +65,6 @@ public final class ItemComputerHandler {
 
 			if (inventory != null) inventory.markDirty();
 		}
-
-		neural.setWorld(owner.worldObj);
 
 		return neural;
 	}
