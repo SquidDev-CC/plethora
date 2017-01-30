@@ -9,8 +9,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.util.RedstoneUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.DebugLogger;
 

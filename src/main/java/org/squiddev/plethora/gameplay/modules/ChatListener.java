@@ -29,17 +29,15 @@ public class ChatListener extends Module {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onServerChat(ServerChatEvent event) {
-		Entity sender;
-		if (event.player instanceof PlethoraFakePlayer) {
-			Entity owner = ((PlethoraFakePlayer) event.player).getOwner();
-			sender = owner == null ? event.player : owner;
-		} else {
-			sender = event.player;
+		Entity sender = event.getPlayer();
+		if (sender instanceof PlethoraFakePlayer) {
+			Entity owner = ((PlethoraFakePlayer) sender).getOwner();
+			sender = owner == null ? sender : owner;
 		}
 
 		for (Listener listener : listeners) {
 			if (listener.owner == sender) {
-				if (listener.handle(event.message)) {
+				if (listener.handle(event.getMessage())) {
 					event.setCanceled(true);
 				}
 			}

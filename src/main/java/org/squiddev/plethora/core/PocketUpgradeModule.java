@@ -5,9 +5,9 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.api.pocket.IPocketAccess;
@@ -108,7 +108,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 			@Nonnull
 			@Override
-			public Vec3 getLoc() {
+			public Vec3d getLoc() {
 				return pocket.getEntity().getPositionVector();
 			}
 

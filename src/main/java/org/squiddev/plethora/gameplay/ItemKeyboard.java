@@ -45,9 +45,10 @@ public class ItemKeyboard extends ItemBase {
 		super("keyboard", 1);
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-		return onItemUse(stack, world, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+		return onItemUse(stack, world, player);
 	}
 
 	@Nonnull
@@ -60,7 +61,7 @@ public class ItemKeyboard extends ItemBase {
 			NBTTagCompound tag = getTag(stack);
 			if (tile instanceof IComputerTile) {
 				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
-					return false;
+					return EnumActionResult.FAIL;
 				}
 
 				tag.setInteger("x", pos.getX());
@@ -128,9 +129,9 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
-	private boolean onItemUse(ItemStack stack, World world, EntityPlayer player) {
-		if (player.isSneaking()) return false;
-		if (world.isRemote) return true;
+	private EnumActionResult onItemUse(ItemStack stack, World world, EntityPlayer player) {
+		if (player.isSneaking()) return EnumActionResult.PASS;
+		if (world.isRemote) return EnumActionResult.SUCCESS;
 
 		ServerComputer computer;
 		NBTTagCompound tag = getTag(stack);
@@ -138,20 +139,21 @@ public class ItemKeyboard extends ItemBase {
 			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
 			ItemStack neural = NeuralHelpers.getStack(player);
-			if (neural == null) return false;
+			if (neural == null) return EnumActionResult.FAIL;
 
 			computer = ItemComputerHandler.getServer(neural, player, player.inventory);
 		}
 
-		if (computer == null) return false;
+		if (computer == null) return EnumActionResult.FAIL;
 		GuiHandler.openKeyboard(player, world, computer);
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer playerIn) {
-		onItemUse(stack, world, playerIn);
-		return stack;
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		EnumActionResult result = onItemUse(stack, world, player);
+		return ActionResult.newResult(result, stack);
 	}
 
 	private static <T extends IComputer> T getBlockComputer(ComputerRegistry<T> registry, NBTTagCompound tag) {
@@ -195,14 +197,11 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
-
-		ItemStack stack = event.entityLiving.getHeldItem();
-		if (stack == null || stack.getItem() != this) return;
+	public void onPlayerClickBlock(PlayerInteractEvent.RightClickBlock event) {
+		if (!Helpers.isHolding(event.getEntityLiving(), this)) return;
 
 		// Cancel all right clicks on blocks with this item
-		if (!event.entityPlayer.isSneaking()) {
+		if (!event.getEntityLiving().isSneaking()) {
 			event.setCanceled(true);
 		}
 	}

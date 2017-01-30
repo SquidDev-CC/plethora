@@ -10,8 +10,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -26,6 +28,7 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -41,16 +44,17 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	private static final String NAME = "redstone_integrator";
 
 	public BlockRedstoneIntegrator() {
-		super(Material.rock);
+		super(Material.ROCK);
 
 		setHardness(2);
 		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + NAME);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
+	@Nonnull
 	@Override
 	@Optional.Method(modid = "This mod should never exist: just a hack to remove this method")
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
 		return new TileRedstoneIntegrator();
 	}
 
@@ -69,9 +73,11 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 		return new TileRedstoneIntegrator();
 	}
 
+	@Nonnull
 	@Override
-	public int getRenderType() {
-		return 3;
+	@SuppressWarnings("deprecation")
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
@@ -81,7 +87,8 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@Override
 	public void preInit() {
-		GameRegistry.registerBlock(this, ItemBlockBase.class, NAME);
+		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
+		GameRegistry.register(new ItemBlockBase(this), new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
 		GameRegistry.registerTileEntity(TileRedstoneIntegrator.class, Plethora.RESOURCE_DOMAIN + ":" + NAME);
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -127,12 +134,13 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@SubscribeEvent
 	public void handleUnload(WorldEvent.Unload e) {
-		if (!e.world.isRemote) {
+		World eventWorld = e.getWorld();
+		if (!eventWorld.isRemote) {
 			synchronized (toTick) {
 				Iterator<TileRedstoneIntegrator> iter = toTick.iterator();
 				while (iter.hasNext()) {
 					World world = iter.next().getWorld();
-					if (world == null || world == e.world) iter.remove();
+					if (world == null || world == eventWorld) iter.remove();
 				}
 			}
 		}

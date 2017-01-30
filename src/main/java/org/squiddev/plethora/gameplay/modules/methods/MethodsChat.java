@@ -3,9 +3,9 @@ package org.squiddev.plethora.gameplay.modules.methods;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,7 +44,7 @@ public final class MethodsChat {
 				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
 
 				EntityPlayerMP player;
-				IChatComponent name;
+				ITextComponent name;
 
 				// Attempt to guess who is posting it and their position.
 				if (entity instanceof EntityPlayerMP) {
@@ -67,11 +67,11 @@ public final class MethodsChat {
 				}
 
 				// Create the chat event and post to chat
-				ChatComponentTranslation translateChat = new ChatComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
+				TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
 				ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
 				if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
 
-				player.mcServer.getConfigurationManager().sendChatMsgImpl(event.getComponent(), false);
+				player.mcServer.getPlayerList().sendChatMsgImpl(event.getComponent(), false);
 				return MethodResult.empty();
 			}
 		});

@@ -1,21 +1,26 @@
 package org.squiddev.plethora.gameplay.modules;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.*;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.executor.DelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
@@ -62,7 +67,9 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 	public void markModuleDataDirty() {
 		markDirty();
-		worldObj.markBlockForUpdate(pos);
+		BlockPos pos = getPos();
+		IBlockState state = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
 	}
 
 	@Override
@@ -99,8 +106,6 @@ public final class TileManipulator extends TileBase implements ITickable {
 				data.setTag(entry.getKey().toString(), entry.getValue());
 			}
 		}
-
-		return true;
 	}
 
 	@Override

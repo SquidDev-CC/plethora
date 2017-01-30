@@ -1,7 +1,7 @@
 package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -48,14 +48,14 @@ public class IntegrationVanilla {
 		DisableAI.register();
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
-		registry.registerPocketUpgrade(new ItemStack(Items.clock), "adjective.plethora.clock");
-		registry.registerTurtleUpgrade(new ItemStack(Items.clock), "adjective.plethora.clock");
+		registry.registerPocketUpgrade(new ItemStack(Items.CLOCK), "adjective.plethora.clock");
+		registry.registerTurtleUpgrade(new ItemStack(Items.CLOCK), "adjective.plethora.clock");
 
-		registry.registerPocketUpgrade(new ItemStack(Blocks.daylight_detector), "adjective.plethora.daylight_detector");
-		registry.registerTurtleUpgrade(new ItemStack(Blocks.daylight_detector), daylightSensorHandlerModel, "adjective.plethora.daylight_detector");
+		registry.registerPocketUpgrade(new ItemStack(Blocks.DAYLIGHT_DETECTOR), "adjective.plethora.daylight_detector");
+		registry.registerTurtleUpgrade(new ItemStack(Blocks.DAYLIGHT_DETECTOR), daylightSensorHandlerModel, "adjective.plethora.daylight_detector");
 
-		registry.registerPocketUpgrade(new ItemStack(Blocks.noteblock), "adjective.plethora.note_block");
-		registry.registerTurtleUpgrade(new ItemStack(Blocks.noteblock), noteblockHandlerModel, "adjective.plethora.note_block");
+		registry.registerPocketUpgrade(new ItemStack(Blocks.NOTEBLOCK), "adjective.plethora.note_block");
+		registry.registerTurtleUpgrade(new ItemStack(Blocks.NOTEBLOCK), noteblockHandlerModel, "adjective.plethora.note_block");
 	}
 
 	@SubscribeEvent
@@ -101,7 +101,7 @@ public class IntegrationVanilla {
 		}
 	}
 
-	private static final BasicModuleHandler daylightSensorHandlerModel = new BasicModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.daylight_detector)) {
+	private static final BasicModuleHandler daylightSensorHandlerModel = new BasicModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR)) {
 		@Nonnull
 		@Override
 		@SideOnly(Side.CLIENT)
@@ -122,7 +122,7 @@ public class IntegrationVanilla {
 		}
 	};
 
-	private static final BasicModuleHandler noteblockHandlerModel = new BasicModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.noteblock)) {
+	private static final BasicModuleHandler noteblockHandlerModel = new BasicModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK)) {
 		@Nonnull
 		@Override
 		@SideOnly(Side.CLIENT)

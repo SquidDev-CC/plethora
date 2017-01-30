@@ -404,4 +404,24 @@ public class Helpers {
 			DebugLogger.error(message);
 		}
 	}
+
+	public static boolean isHolding(EntityLivingBase entity, Item item) {
+		ItemStack left = entity.getHeldItem(EnumHand.MAIN_HAND);
+		if (left != null && left.getItem() == item) return true;
+
+		ItemStack right = entity.getHeldItem(EnumHand.OFF_HAND);
+		if (right != null && right.getItem() == item) return true;
+
+		return false;
+	}
+
+	public static boolean isHolding(EntityLivingBase entity, Item item, int damage) {
+		ItemStack left = entity.getHeldItem(EnumHand.MAIN_HAND);
+		if (left != null && left.getItem() == item && left.getItemDamage() == damage) return true;
+
+		ItemStack right = entity.getHeldItem(EnumHand.OFF_HAND);
+		if (right != null && right.getItem() == item && right.getItemDamage() == damage) return true;
+
+		return false;
+	}
 }

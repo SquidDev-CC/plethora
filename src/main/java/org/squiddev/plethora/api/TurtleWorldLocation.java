@@ -3,8 +3,8 @@ package org.squiddev.plethora.api;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -34,9 +34,9 @@ public class TurtleWorldLocation implements IWorldLocation {
 
 	@Nonnull
 	@Override
-	public Vec3 getLoc() {
+	public Vec3d getLoc() {
 		BlockPos pos = turtle.getPosition();
-		return new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+		return new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}
 
 	@Nonnull

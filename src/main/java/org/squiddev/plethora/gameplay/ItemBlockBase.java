@@ -3,10 +3,8 @@ package org.squiddev.plethora.gameplay;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
-
 
 public class ItemBlockBase extends ItemBlock {
 	public ItemBlockBase(Block block) {

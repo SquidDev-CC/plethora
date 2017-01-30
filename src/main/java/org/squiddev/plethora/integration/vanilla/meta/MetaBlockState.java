@@ -3,28 +3,32 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
 @IMetaProvider.Inject(value = IBlockState.class)
-public class MetaBlockState extends BasicMetaProvider<IBlockState> {
+public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IBlockState state) {
+	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IBlockState> context) {
 		HashMap<Object, Object> data = Maps.newHashMap();
 
-		Block block = object.getBlock();
-		if (block != null) data.put("metadata", block.getMetaFromState(object));
+		IBlockState state = context.getTarget();
+		Block block = state.getBlock();
+		if (block != null) data.put("metadata", block.getMetaFromState(state));
 
-		HashMap<Object, Object> state = Maps.newHashMap();
+		HashMap<Object, Object> stateProperties = Maps.newHashMap();
 		data.put("state", state);
-		for (Map.Entry<IProperty<?>, Comparable<?>> item : object.getProperties().entrySet()) {
+		for (Map.Entry<IProperty<?>, Comparable<?>> item : state.getProperties().entrySet()) {
 			Object value = item.getValue();
 			if (!(value instanceof String) && !(value instanceof Number) && !(value instanceof Boolean)) {
 				value = value.toString();
@@ -32,11 +36,14 @@ public class MetaBlockState extends BasicMetaProvider<IBlockState> {
 			stateProperties.put(item.getKey().getName(), value);
 		}
 
+		Material material = state.getMaterial();
+		data.put("material", PlethoraAPI.instance().metaRegistry().getMeta(context.makePartialChild(material)));
+
 		int level = block.getHarvestLevel(state);
 		if (level >= 0) data.put("harvestLevel", level);
 		data.put("harvestTool", block.getHarvestTool(state));
 
-		MapColor mapCol = block.getMapColor(state);
+		MapColor mapCol = state.getMapColor();
 		if (mapCol != null) {
 			int colour = mapCol.colorValue;
 			data.put("colour", colour);

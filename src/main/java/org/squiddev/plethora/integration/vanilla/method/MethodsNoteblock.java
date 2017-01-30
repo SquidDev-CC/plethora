@@ -62,7 +62,7 @@ public class MethodsNoteblock {
 			sound = instruments.get(instrument);
 		} else if (arguments[0] instanceof String) {
 			String name = (String) arguments[0];
-			sound = getInstrument(name);
+			sound = getInstrument("block.note." + name);
 			if (sound == null) throw new LuaException("Unknown instrument '" + name + "'");
 		} else {
 			throw badArgument(arguments[0], 0, "string|number");

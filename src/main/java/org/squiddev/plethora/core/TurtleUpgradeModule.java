@@ -4,7 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

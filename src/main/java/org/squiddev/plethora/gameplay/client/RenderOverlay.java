@@ -181,8 +181,8 @@ public class RenderOverlay extends Module implements IClientModule {
 				}
 				case ItemModule.CHAT_ID: {
 					for (ChatMessage message : chatMessages) {
-						if (message.getWorld() == world.provider.getDimensionId()) {
-							Vec3 pos = message.getPosition();
+						if (message.getWorld() == world.provider.getDimension()) {
+							Vec3d pos = message.getPosition();
 							renderFlare(
 								pos.xCoord, pos.yCoord, pos.zCoord,
 								message.getId(), message.getCount() * 2.0f / ChatMessage.TIME, renderManager

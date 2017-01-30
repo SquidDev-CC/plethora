@@ -1,9 +1,8 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -20,11 +19,10 @@ public class MetaBlockReference extends BasicMetaProvider<BlockReference> {
 		Map<Object, Object> data = Maps.newHashMap();
 
 		IBlockState state = reference.getState();
-		Block block = state.getBlock();
 		World world = reference.getLocation().getWorld();
 		BlockPos pos = reference.getLocation().getPos();
 
-		data.put("hardness", block.getBlockHardness(world, pos));
+		data.put("hardness", state.getBlockHardness(world, pos));
 
 		return data;
 	}

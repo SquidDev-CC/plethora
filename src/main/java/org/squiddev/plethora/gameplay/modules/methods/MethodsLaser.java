@@ -4,7 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Vec3;
+import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
