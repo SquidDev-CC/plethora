@@ -82,6 +82,15 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	@Override
+	public boolean isSilent() {
+		return true;
+	}
+
+	@Override
+	public void playSound(String name, float volume, float pitch) {
+	}
+
+	@Override
 	public Vec3 getPositionVector() {
 		return new Vec3(posX, posY, posZ);
 	}
