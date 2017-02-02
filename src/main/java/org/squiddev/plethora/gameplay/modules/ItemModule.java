@@ -145,7 +145,9 @@ public final class ItemModule extends ItemBase {
 							compound.setString("bound_name", player.getName());
 						}
 					} else {
-						player.displayGUIChest(player.getInventoryEnderChest());
+						if (stack.getItemDamage() == INTROSPECTION_ID) {
+							player.displayGUIChest(player.getInventoryEnderChest());
+						}
 					}
 				}
 
