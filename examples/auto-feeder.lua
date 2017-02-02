@@ -1,7 +1,7 @@
 --- This script attempts to keep the player fully fed by checking their food level and scanning for food items.
 
 --- Firstly we find a manipulator or neural interface and error if it is not there.
-local modules = peripheral.find("plethora:modules")
+local modules = peripheral.find("manipulator") or peripheral.find("neuralInterface")
 if not modules then
 	error("Must have neural interface or manipulator", 0)
 end

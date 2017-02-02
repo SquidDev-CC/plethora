@@ -1,7 +1,7 @@
 --- This script fires a laser in the direction the player is looking when they sneak.
 
 --- Firstly we want to ensure that we have a neural interface and wrap it.
-local modules = peripheral.find("plethora:modules")
+local modules = peripheral.find("neuralInterface")
 if not modules then
 	error("Must have a neural interface", 0)
 end
