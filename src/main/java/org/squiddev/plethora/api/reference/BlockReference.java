@@ -15,11 +15,13 @@ import java.lang.ref.WeakReference;
 public class BlockReference implements IReference<BlockReference> {
 	private final IWorldLocation location;
 	private final WeakReference<TileEntity> tile;
+	private final int tileHash;
 	private IBlockState state;
 
 	public BlockReference(@Nonnull IWorldLocation location, @Nonnull IBlockState state, @Nullable TileEntity tile) {
 		this.location = location;
 		this.tile = tile == null ? null : new WeakReference<TileEntity>(tile);
+		this.tileHash = tile == null ? 0 : tile.hashCode();
 		this.state = state;
 	}
 
@@ -36,11 +38,12 @@ public class BlockReference implements IReference<BlockReference> {
 		IBlockState newState = world.getBlockState(pos);
 		TileEntity newTe = world.getTileEntity(pos);
 
-		if (state.getBlock() != newState.getBlock()) throw new LuaException("The block is no longer there");
+		if (tile == null) {
+			// We only monitor block changes if we can't compare the TE
+			if (state.getBlock() != newState.getBlock()) throw new LuaException("The block is no longer there");
 
-		if (tile == null && newTe != null) {
-			throw new LuaException("The block has changed");
-		} else if (tile != null) {
+			if (newTe != null) throw new LuaException("The block has changed");
+		} else {
 			TileEntity oldTe = tile.get();
 			if (oldTe == null) {
 				throw new LuaException("The block is no longer there");
@@ -77,7 +80,8 @@ public class BlockReference implements IReference<BlockReference> {
 
 		BlockReference that = (BlockReference) o;
 
-		if (!location.equals(that.location)) return false;
+		if (!location.equals(that.location) || tileHash != that.tileHash) return false;
+
 		if (tile != that.tile) {
 			if (tile == null) return false;
 
@@ -87,13 +91,11 @@ public class BlockReference implements IReference<BlockReference> {
 			if (!Objects.equal(thisTile, thatTile)) return false;
 		}
 
-		return state.equals(that.state);
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = location.hashCode();
-		result = 31 * result + state.getBlock().hashCode();
-		return result;
+		return location.hashCode() + 31 * tileHash;
 	}
 }
