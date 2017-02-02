@@ -8,7 +8,7 @@ layout: default
 --- This program finds hostile mobs and fires lasers at them, acting like a sentry tower.
 
 --- We check that a manipulator exists and wrap it.
-local modules =  = peripheral.find("manipulator")
+local modules = peripheral.find("manipulator")
 if not modules then
 	error("Cannot find manipulator", 0)
 end
