@@ -138,7 +138,7 @@ public final class NeuralHelpers {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("plethora:modules", owner, paired, computer.getExecutor(), builder.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments());
 			for (NeuralAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}
