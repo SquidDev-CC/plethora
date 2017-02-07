@@ -5,7 +5,6 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.peripheral.common.IPeripheralTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;

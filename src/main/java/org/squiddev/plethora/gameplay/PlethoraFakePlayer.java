@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -23,6 +24,7 @@ import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.utils.FakeNetHandler;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
@@ -85,7 +87,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	@Override
-	public void playSound(String name, float volume, float pitch) {
+	public void playSound(@Nonnull SoundEvent soundIn, float volume, float pitch) {
 	}
 
 	@Override

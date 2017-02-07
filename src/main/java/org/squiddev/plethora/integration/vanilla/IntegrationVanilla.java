@@ -75,7 +75,10 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("deprecation")
 	public void attachCapabilities(AttachCapabilitiesEvent.TileEntity event) {
+		// We're meant to use AttachCapabilitiesEvent<TileEntity>, but leaving this for compat
+
 		TileEntity entity = event.getTileEntity();
 		if (entity instanceof TileEntityNote) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);

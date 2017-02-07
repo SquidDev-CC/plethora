@@ -15,6 +15,8 @@ import org.squiddev.cctweaks.api.IContainerComputer;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
+
 @Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
 public class ContainerKeyboard extends Container implements IContainerComputer {
 	private final IComputer computer;
@@ -24,7 +26,7 @@ public class ContainerKeyboard extends Container implements IContainerComputer {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(@Nonnull EntityPlayer player) {
 		if (!Helpers.isHolding(player, Registry.itemKeyboard)) return false;
 
 		if (computer instanceof ServerComputer) {
