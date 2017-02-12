@@ -28,7 +28,7 @@ archivesBaseName = "plethora"
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}"
 	runDir = "run-${project.mc_version}"
-	mappings = "snapshot_20161111"
+	mappings = "snapshot_20161220"
 
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
@@ -58,8 +58,8 @@ repositories {
 	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2311/39/[module][revision](.[ext])" }
 
 	// Chameleon + Storage Drawers
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2349/653/[module]-[revision](.[ext])" }
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2353/147/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/893/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2367/598/[module]-[revision](.[ext])" }
 
 	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
@@ -82,7 +82,7 @@ repositories {
 	maven { url 'http://maven.epoxide.xyz' }
 
 	// Forestry
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/227/[module]_[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2379/506/[module]_[revision](.[ext])" }
 
 	// Applied Energistics 2
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
@@ -90,30 +90,30 @@ repositories {
 
 dependencies {
 	compile "ComputerCraft:ComputerCraft:${project.cc_version}"
-	deobfCompile "mezz.jei:jei_${project.mc_version}:3.13.6.392"
+	deobfCompile "mezz.jei:jei_${project.mc_version}:4.2.5.233"
 
-	provided "org.squiddev:CCTweaks:${project.mc_version}-1.3.0:dev"
+	provided "org.squiddev:CCTweaks:${project.mc_version}-1.3.0-pre0:dev"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
-	provided "buildcraft:buildcraft:7.2.7:dev" // Won't run on 1.10.2 but just here for the future
-	provided "com.azanor.baubles:Baubles:${project.mc_version}-1.3.6.50:deobf"
-	provided "net.darkhax.tesla:Tesla:${mc_version}-1.2.1.50:deobf"
+	provided "buildcraft:buildcraft:7.2.7:dev" // Won't run on 1.11.2 but just here for the future
+	provided "com.azanor.baubles:Baubles:1.11-1.4.3.57:deobf"
+	provided "net.darkhax.tesla:Tesla:1.11-1.3.0.51:deobf"
 
 	// Tinker's + Dependencies
-	deobfProvided "slimeknights:TConstruct:${project.mc_version}-2.6.1.464"
-	deobfProvided "slimeknights.mantle:Mantle:${project.mc_version}-1.1.3.199"
+	deobfProvided "slimeknights:TConstruct:1.10.2-2.6.1.464" // Won't run on 1.11 yet
+	deobfProvided "slimeknights.mantle:Mantle:1.10.2-1.1.3.199" // Won't run on 1.11 yet
 
 	// Storage drawers + Dependencies
-	deobfProvided "curseMods:Chameleon:1.10-2.2.0"
-	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-3.5.8"
+	deobfProvided "curseMods:Chameleon:1.11-3.0.2"
+	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-4.1.0"
 
 	deobfProvided "MCMultiPart:MCMultiPart:1.3.0:universal"
-	deobfProvided "refinedstorage:refinedstorage:1.2.5-576"
-	deobfProvided "curseMods:forestry:${project.mc_version}-5.2.16.340"
+	deobfProvided "refinedstorage:refinedstorage:1.4-953"
+	deobfProvided "curseMods:forestry:${project.mc_version}-5.3.1.34"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
-	compile "org.squiddev:unborked:${mc_version}-${cc_version}-1.0.2:dev"
+	compile "org.squiddev:unborked:${mc_version}-${cc_version}-1.1.2:dev"
 }
 
 processResources {
