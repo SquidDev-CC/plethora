@@ -99,12 +99,12 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
-		Helpers.setupModel(Item.getItemFromBlock(this), 0, NAME);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+		Helpers.setupModel(Item.getItemFromBlock(this), 0, NAME);
 	}
 
 	public static void enqueueTick(TileRedstoneIntegrator tile) {

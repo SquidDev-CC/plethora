@@ -219,15 +219,11 @@ public final class ItemModule extends ItemBase {
 	//region Registering
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientInit() {
+	public void clientPreInit() {
 		for (int i = 0; i < MODULES; i++) {
 			Helpers.setupModel(this, i, "module_" + getName(i));
 		}
-	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
 			@Override
 			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {

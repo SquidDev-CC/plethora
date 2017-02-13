@@ -272,7 +272,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String existing) {
-		return Plethora.RESOURCE_DOMAIN + ":textures/models/neuralInterface.png";
+		return Plethora.RESOURCE_DOMAIN + ":textures/models/neural_interface.png";
 	}
 
 
@@ -359,12 +359,12 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
-		Helpers.setupModel(this, 0, NAME);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+		Helpers.setupModel(this, 0, NAME);
 	}
 	//endregion
 }

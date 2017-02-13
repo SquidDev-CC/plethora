@@ -23,7 +23,7 @@ import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.WIDTH;
 
 public class GuiNeuralInterface extends GuiContainer {
-	private static final ResourceLocation BACKGROUND = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/gui/neuralInterface.png");
+	private static final ResourceLocation BACKGROUND = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/gui/neural_interface.png");
 	private static final int ICON_Y = 224;
 
 	private final IComputer computer;

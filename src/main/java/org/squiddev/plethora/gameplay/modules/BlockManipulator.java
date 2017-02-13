@@ -131,7 +131,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientInit() {
+	public void clientPreInit() {
 		for (ManipulatorType type : VALUES) {
 			Helpers.setupModel(Item.getItemFromBlock(this), type.ordinal(), name + "." + type.getName());
 		}

@@ -1,5 +1,6 @@
 package org.squiddev.plethora.utils;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -10,7 +11,6 @@ import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
@@ -138,13 +139,16 @@ public class Helpers {
 		return nextId(world, peripheral.getType());
 	}
 
+	public static String snakeCase(String name) {
+		return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static void setupModel(Item item, int damage, String name) {
-		name = Plethora.RESOURCE_DOMAIN + ":" + name;
+		name = Plethora.RESOURCE_DOMAIN + ":" + snakeCase(name);
 
 		ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
-		ModelBakery.registerItemVariants(item, res);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, damage, res);
+		ModelLoader.setCustomModelResourceLocation(item, damage, res);
 	}
 
 	public static final Random RANDOM = new Random();

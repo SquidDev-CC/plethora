@@ -10,14 +10,14 @@
 	},
 	"simple": {
 		"item": {
-			"module_introspection": "plethora:items/moduleIntrospection",
-			"module_scanner": "plethora:items/moduleScanner",
-			"module_sensor": "plethora:items/moduleSensor",
-			"module_kinetic": "plethora:items/moduleKinetic",
-			"module_chat": "plethora:items/moduleChat",
-			"module": "plethora:items/moduleUnknown",
-			"neuralConnector": "plethora:items/neuralConnector",
-			"neuralInterface": "plethora:items/neuralInterface",
+			"module_introspection": "plethora:items/module_introspection",
+			"module_scanner": "plethora:items/module_scanner",
+			"module_sensor": "plethora:items/module_sensor",
+			"module_kinetic": "plethora:items/module_kinetic",
+			"module_chat": "plethora:items/module_chat",
+			"module": "plethora:items/module_inknown",
+			"neural_connector": "plethora:items/neural_connector",
+			"neural_interface": "plethora:items/neural_interface",
 			"keyboard": "plethora:items/keyboard"
 		},
 		"both": {
