@@ -61,7 +61,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-		if (entity.isChild() || entity instanceof EntityPlayer) return false;
+		if (!NeuralRegistry.instance.canEquip(entity)) return false;
 
 		if (entity.getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
 			if (!player.worldObj.isRemote) {
