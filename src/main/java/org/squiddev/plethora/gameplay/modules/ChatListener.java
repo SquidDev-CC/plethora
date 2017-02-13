@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -27,7 +26,7 @@ public class ChatListener extends Module {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent
 	public void onServerChat(ServerChatEvent event) {
 		Entity sender;
 		if (event.player instanceof PlethoraFakePlayer) {
@@ -37,12 +36,19 @@ public class ChatListener extends Module {
 			sender = event.player;
 		}
 
+		// Handle captures
 		for (Listener listener : listeners) {
 			if (listener.owner == sender) {
-				if (listener.handle(event.message)) {
+				if (listener.handleCapture(event.message)) {
 					event.setCanceled(true);
+					return;
 				}
 			}
+		}
+
+		// Handle chat messages for everyone
+		for (Listener listener : listeners) {
+			listener.handleMessage(sender, event.message);
 		}
 	}
 
@@ -68,9 +74,7 @@ public class ChatListener extends Module {
 			patterns.clear();
 		}
 
-		private boolean handle(String message) {
-			access.queueEvent("chat_message", message);
-
+		private boolean handleCapture(String message) {
 			for (String pattern : patterns) {
 				if (LuaPattern.matches(message, pattern)) {
 					access.queueEvent("chat_capture", message, pattern);
@@ -79,6 +83,10 @@ public class ChatListener extends Module {
 			}
 
 			return false;
+		}
+
+		private void handleMessage(Entity sender, String message) {
+			access.queueEvent("chat_message", sender.getDisplayName().getUnformattedText(), message, sender.getPersistentID().toString());
 		}
 
 		@Override
