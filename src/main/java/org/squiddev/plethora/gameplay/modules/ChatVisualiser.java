@@ -25,7 +25,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 public class ChatVisualiser extends Module implements IMessageHandler<ChatVisualiser.ChatMessage, IMessage> {
 	@Override
 	public void preInit() {
-		Plethora.network.registerMessage(ChatVisualiser.class, ChatMessage.class, 0, Side.CLIENT);
+		Plethora.network.registerMessage(this, ChatMessage.class, 0, Side.CLIENT);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

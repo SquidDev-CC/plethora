@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -9,7 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import org.squiddev.plethora.gameplay.client.gui.GuiKeyboard;
+import org.squiddev.plethora.gameplay.client.gui.GuiMinecartComputer;
 import org.squiddev.plethora.gameplay.client.gui.GuiNeuralInterface;
+import org.squiddev.plethora.gameplay.minecart.ContainerMinecartComputer;
+import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 import org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -17,6 +21,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 public class GuiHandler implements IGuiHandler {
 	private static final int GUI_NEURAL = 101;
 	private static final int GUI_KEYBOARD = 102;
+	private static final int GUI_MINECART = 103;
 
 	private static final int GUI_FLAG_PLAYER = 0;
 	private static final int GUI_FLAG_ENTITY = 1;
@@ -32,6 +37,19 @@ public class GuiHandler implements IGuiHandler {
 				ServerComputer computer = ComputerCraft.serverComputerRegistry.get(x);
 				return computer == null ? null : new GuiKeyboard(computer);
 			}
+			case GUI_MINECART: {
+				Entity entity = world.getEntityByID(x);
+				if (entity instanceof EntityMinecartComputer) {
+					EntityMinecartComputer minecart = (EntityMinecartComputer) entity;
+					ClientComputer computer = minecart.getClientComputer();
+
+					DebugLogger.debug("Got " + computer);
+
+					if (computer != null) return new GuiMinecartComputer(minecart, computer);
+				}
+
+				return null;
+			}
 		}
 
 		return null;
@@ -46,6 +64,10 @@ public class GuiHandler implements IGuiHandler {
 			case GUI_KEYBOARD: {
 				ServerComputer computer = ComputerCraft.serverComputerRegistry.get(x);
 				return computer == null ? null : new ContainerKeyboard(computer);
+			}
+			case GUI_MINECART: {
+				Entity entity = world.getEntityByID(x);
+				return entity instanceof EntityMinecartComputer ? new ContainerMinecartComputer((EntityMinecartComputer) entity) : null;
 			}
 		}
 
@@ -86,5 +108,9 @@ public class GuiHandler implements IGuiHandler {
 
 	public static void openNeuralEntity(EntityPlayer player, World world, EntityLivingBase entity) {
 		player.openGui(Plethora.instance, GUI_NEURAL, world, GUI_FLAG_ENTITY, entity.getEntityId(), 0);
+	}
+
+	public static void openMinecart(EntityPlayer player, World world, EntityMinecartComputer computer) {
+		player.openGui(Plethora.instance, GUI_MINECART, world, computer.getEntityId(), 0, 0);
 	}
 }

@@ -50,6 +50,7 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
+import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -235,7 +236,7 @@ public final class ItemModule extends ItemBase {
 	@Override
 	public void preInit() {
 		super.preInit();
-		EntityRegistry.registerModEntity(EntityLaser.class, "laser", 0, Plethora.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(EntityLaser.class, ID + ":laser", 0, Plethora.instance, 64, 10, true);
 
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
