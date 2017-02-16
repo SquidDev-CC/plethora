@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
+import org.squiddev.plethora.utils.TinySlot;
 
 import java.util.List;
 
@@ -130,10 +131,10 @@ public class ItemKeyboard extends ItemBase {
 		if (tag.hasKey("x", 99)) {
 			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
-			ItemStack neural = NeuralHelpers.getStack(player);
-			if (neural == null) return false;
+			TinySlot slot = NeuralHelpers.getSlot(player);
+			if (slot == null) return false;
 
-			computer = ItemComputerHandler.getServer(neural, player, player.inventory);
+			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot.getInventory());
 		}
 
 		if (computer == null) return false;

@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.TinySlot;
 
 public class ItemNeuralConnector extends ItemBase {
 	public ItemNeuralConnector() {
@@ -28,9 +29,9 @@ public class ItemNeuralConnector extends ItemBase {
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (!world.isRemote) {
-			ItemStack neuralStack = NeuralHelpers.getStack(player);
+			TinySlot neuralStack = NeuralHelpers.getSlot(player);
 			if (neuralStack != null) {
-				ServerComputer computer = ItemComputerHandler.getServer(neuralStack, player, player.inventory);
+				ServerComputer computer = ItemComputerHandler.getServer(neuralStack.getStack(), player, neuralStack.getInventory());
 				if (computer != null) {
 					computer.turnOn();
 					GuiHandler.openNeuralPlayer(player, world);

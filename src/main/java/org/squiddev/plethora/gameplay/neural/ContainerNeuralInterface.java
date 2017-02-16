@@ -76,7 +76,7 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return player != null && player.isEntityAlive() && parent.isEntityAlive() && stack == parent.getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT);
+		return player != null && player.isEntityAlive() && parent.isEntityAlive() && stack == NeuralHelpers.getStack(player);
 	}
 
 	public ItemStack getStack() {

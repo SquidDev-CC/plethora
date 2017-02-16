@@ -1,5 +1,9 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.IBauble;
+import baubles.common.Baubles;
 import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
@@ -12,7 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,6 +33,7 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,13 +46,15 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.TinySlot;
 
 import java.util.List;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.COMPUTER_ID;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.DIRTY;
 
-public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = Baubles.MODID)
+public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -84,7 +91,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 	}
 
-	private void onUpdate(ItemStack stack, EntityLivingBase player, boolean forceActive) {
+	private void onUpdate(ItemStack stack, IInventory inventory, EntityLivingBase player, boolean forceActive) {
 		if (player.worldObj.isRemote) {
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
@@ -92,7 +99,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			NeuralComputer neural;
 
 			// Fetch computer
-			InventoryPlayer inventory = player instanceof EntityPlayer ? ((EntityPlayer) player).inventory : null;
 			if (forceActive) {
 				neural = ItemComputerHandler.getServer(stack, player, inventory);
 				neural.turnOn();
@@ -199,6 +205,57 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return ComputerFamily.Advanced;
 	}
 
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		IInventory inventory = BaublesApi.getBaubles(player);
+		if (inventory.getStackInSlot(NeuralHelpers.BAUBLES_SLOT) == null) {
+			if (!world.isRemote) {
+				inventory.setInventorySlotContents(NeuralHelpers.BAUBLES_SLOT, stack.copy());
+				if (!player.capabilities.isCreativeMode) stack.stackSize--;
+			}
+
+			return stack;
+		}
+
+		return super.onItemRightClick(stack, world, player);
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public BaubleType getBaubleType(ItemStack stack) {
+		return BaubleType.AMULET;
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public void onWornTick(ItemStack stack, EntityLivingBase player) {
+		if (!(player instanceof EntityPlayer)) return;
+		onUpdate(stack, BaublesApi.getBaubles((EntityPlayer) player), player, true);
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public void onUnequipped(ItemStack stack, EntityLivingBase player) {
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public boolean canEquip(ItemStack stack, EntityLivingBase player) {
+		return true;
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public boolean canUnequip(ItemStack stack, EntityLivingBase player) {
+		return true;
+	}
+
 	private static class InvProvider implements ICapabilityProvider {
 		private final IItemHandler inv;
 
@@ -252,14 +309,15 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		super.onArmorTick(world, player, stack);
-		onUpdate(stack, player, true);
+		onUpdate(stack, player.inventory, player, true);
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int um1, boolean um2) {
 		super.onUpdate(stack, world, entity, um1, um2);
 		if (entity instanceof EntityLivingBase) {
-			onUpdate(stack, (EntityLivingBase) entity, false);
+			IInventory inventory = entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory : null;
+			onUpdate(stack, inventory, (EntityLivingBase) entity, false);
 		}
 	}
 
@@ -285,9 +343,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public void onEntityLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) return;
 
-		ItemStack stack = NeuralHelpers.getStack(event.entityLiving);
-		if (stack != null) {
-			onUpdate(stack, event.entityLiving, true);
+		TinySlot slot = NeuralHelpers.getSlot(event.entityLiving);
+		if (slot != null) {
+			onUpdate(slot.getStack(), slot.getInventory(), event.entityLiving, true);
 		}
 	}
 

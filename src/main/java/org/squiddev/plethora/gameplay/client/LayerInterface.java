@@ -35,7 +35,7 @@ public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 
 	@Override
 	public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-		if (NeuralHelpers.getStack(entity) == null || entity.isPotionActive(Potion.invisibility)) {
+		if (NeuralHelpers.getSlot(entity) == null || entity.isPotionActive(Potion.invisibility)) {
 			return;
 		}
 
