@@ -8,18 +8,22 @@ import dan200.computercraft.shared.computer.core.*;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -34,14 +38,31 @@ import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.Module;
+import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public class EntityMinecartComputer extends EntityMinecart {
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
+
+	private static final AxisAlignedBB[] BOUNDS = new AxisAlignedBB[]{
+		// The main block: simply there to avoid reaching "through" the block.
+		new AxisAlignedBB(0, 0, -1, 1, 1, 0),
+
+		new AxisAlignedBB(0.125, -0.125, -0.875, 0.875, 0., -0.125),
+		new AxisAlignedBB(0.125, 1, -0.875, 0.875, 1.125, -0.125),
+		new AxisAlignedBB(0.125, 0.125, -1.125, 0.875, 0.875, -1),
+		new AxisAlignedBB(0.125, 0.125, 0, 0.875, 0.875, 0.125),
+		new AxisAlignedBB(-0.125, 0.125, -0.875, 0., 0.875, -0.125),
+		new AxisAlignedBB(1, 0.125, -0.875, 1.125, 0.875, -0.125),
+	};
 
 	private static final int INSTANCE_SLOT = 23;
 	private static final int SESSION_SLOT = 24;
@@ -131,7 +152,22 @@ public class EntityMinecartComputer extends EntityMinecart {
 	public boolean interactFirst(EntityPlayer player) {
 		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player))) return true;
 
-		if (!this.worldObj.isRemote) {
+		if (!worldObj.isRemote) {
+			Matrix4f trans = getTranslationMatrix(1);
+			Vec3 from = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+			Vec3 look = player.getLook(1.0f);
+			double reach = 5;
+			if (player instanceof EntityPlayerMP) {
+				reach = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+			}
+			Vec3 to = new Vec3(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+
+			int slot = getIntersectSlot(from, to, trans);
+			if (slot >= 0) {
+				DebugLogger.debug("Got slot " + EnumFacing.VALUES[slot] + " in " + from + " -> " + to);
+				return true;
+			}
+
 			if (isUsable(player)) {
 				ServerComputer computer = getServerComputer();
 				computer.turnOn();
@@ -276,6 +312,11 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 	}
 
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox() {
+		return super.getCollisionBoundingBox();
+	}
+
 	public boolean isUsable(EntityPlayer player) {
 		if (isDead || player.getDistanceSqToEntity(this) > 64.0D) return false;
 
@@ -297,6 +338,112 @@ public class EntityMinecartComputer extends EntityMinecart {
 		} else {
 			return true;
 		}
+	}
+
+	private Matrix4f getTranslationMatrix(float partialTicks) {
+		// Tiny bit of random offset
+		long id = (long) getEntityId() * 493286711L;
+		id = id * id * 4392167121L + id * 98761L;
+		float ox = (((float) (id >> 16 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+		float oy = (((float) (id >> 20 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+		float oz = (((float) (id >> 24 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+
+		double x = lastTickPosX + (posX - lastTickPosX) * partialTicks;
+		double y = lastTickPosY + (posY - lastTickPosY) * partialTicks;
+		double z = lastTickPosZ + (posZ - lastTickPosZ) * partialTicks;
+		float pitch = prevRotationPitch + (rotationPitch - prevRotationPitch) * partialTicks;
+		float yaw = prevRotationYaw + (rotationYaw - prevRotationYaw) * partialTicks;
+
+		Vec3 offsetPos = func_70489_a(x, y, z);
+
+		if (offsetPos != null) {
+			final double offset = 0.3;
+			Vec3 posOff = func_70495_a(x, y, z, offset);
+			Vec3 negOff = func_70495_a(x, y, z, -offset);
+
+			if (posOff == null) posOff = offsetPos;
+			if (negOff == null) negOff = offsetPos;
+
+			x = offsetPos.xCoord;
+			y = (posOff.yCoord + negOff.yCoord) / 2.0D;
+			z = offsetPos.zCoord;
+			Vec3 invoff = negOff.addVector(-posOff.xCoord, -posOff.yCoord, -posOff.zCoord);
+
+			if (invoff.lengthVector() != 0.0D) {
+				invoff = invoff.normalize();
+				yaw = (float) (Math.atan2(invoff.zCoord, invoff.xCoord) * 180.0D / Math.PI);
+				pitch = (float) (Math.atan(invoff.yCoord) * 73.0D);
+			}
+		}
+
+		// Set up the translation matrix.
+		// This could probably be "inlined" but it'll do.
+		Matrix4f temp = new Matrix4f();
+		Matrix4f trans = new Matrix4f();
+		trans.setIdentity();
+
+		temp.setIdentity();
+		temp.setTranslation(new Vector3f((float) x + ox, (float) y + 0.375f + oy, (float) z + oz));
+		trans.mul(temp);
+
+		temp.setIdentity();
+		temp.rotY((float) Math.toRadians(180 - yaw));
+		trans.mul(temp);
+
+		temp.setIdentity();
+		temp.rotZ((float) Math.toRadians(-pitch));
+		trans.mul(temp);
+
+		float amplitude = (float) getRollingAmplitude() - partialTicks;
+		float roll = getDamage() - partialTicks;
+
+		if (roll < 0.0F) roll = 0.0F;
+
+		if (amplitude > 0.0F) {
+			temp.setIdentity();
+			temp.rotX((float) Math.toRadians(MathHelper.sin(amplitude) * amplitude * roll / 10.0F * (float) getRollingDirection()));
+			trans.mul(temp);
+		}
+
+		trans.setScale(0.75F);
+
+		int offset = getDisplayTileOffset();
+		temp.setIdentity();
+		temp.setTranslation(new Vector3f(-0.5F, (float) (offset - 8) / 16.0F, 0.5F));
+		trans.mul(temp);
+
+		return trans;
+	}
+
+	private static int getIntersectSlot(Vec3 fromVec, Vec3 toVec, Matrix4f transform) {
+		Matrix4f inv = new Matrix4f();
+		inv.invert(transform);
+
+		// Convert the vectors into "minecart" space
+		Vector4f to = new Vector4f((float) toVec.xCoord, (float) toVec.yCoord, (float) toVec.zCoord, 1);
+		inv.transform(to);
+
+		Vector4f from = new Vector4f((float) fromVec.xCoord, (float) fromVec.yCoord, (float) fromVec.zCoord, 1);
+		inv.transform(from);
+
+		Vector4f step = new Vector4f();
+		step.sub(to, from);
+		step.scale(1 / 100.0f);
+
+		// Now ray-trace to find where they intersect with the bounding box.
+		for (int offset = 0; offset <= 100; offset++) {
+			for (int i = 0; i < BOUNDS.length; i++) {
+				AxisAlignedBB bb = BOUNDS[i];
+				if (bb.isVecInside(new Vec3(from.getX(), from.getY(), from.getZ()))) {
+					// If we got the actual block itself then pretend nothing happened.
+					return i - 1;
+				}
+			}
+
+			from.add(step);
+		}
+
+		return -1;
 	}
 
 	public static class MinecartModule extends Module {
@@ -345,6 +492,43 @@ public class EntityMinecartComputer extends EntityMinecart {
 				stack.stackSize--;
 				if (stack.stackSize <= 0) player.setCurrentItemOrArmor(0, null);
 			}
+		}
+
+		@SubscribeEvent
+		@SideOnly(Side.CLIENT)
+		public void drawHighlight(DrawBlockHighlightEvent event) {
+			if (event.target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) return;
+			if (!(event.target.entityHit instanceof EntityMinecartComputer)) return;
+
+			EntityMinecartComputer minecart = (EntityMinecartComputer) event.target.entityHit;
+
+			float partialTicks = event.partialTicks;
+			GlStateManager.pushMatrix();
+
+			Matrix4f trans = minecart.getTranslationMatrix(partialTicks);
+
+			Matrix4f inv = new Matrix4f();
+			inv.invert(trans);
+
+			Entity player = Minecraft.getMinecraft().getRenderViewEntity();
+			int slot = getIntersectSlot(event.target.hitVec, player.getPositionEyes(partialTicks), trans);
+
+			// Shift everything back to be relative to the player
+			GlStateManager.translate(
+				-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks)
+			);
+
+			ForgeHooksClient.multiplyCurrentGlMatrix(trans);
+
+			if (slot >= 0) {
+				RenderHelper.renderBoundingBox(BOUNDS[slot]);
+			}
+
+			GlStateManager.popMatrix();
+
+			event.setCanceled(true);
 		}
 	}
 }
