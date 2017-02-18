@@ -19,4 +19,10 @@ public final class IdentityReference<T> implements IReference<T> {
 	public T get() throws LuaException {
 		return object;
 	}
+
+	@Nonnull
+	@Override
+	public T safeGet() throws LuaException {
+		return object;
+	}
 }

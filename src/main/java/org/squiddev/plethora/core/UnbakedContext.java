@@ -44,6 +44,19 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 
 	@Nonnull
 	@Override
+	public IContext<T> safeBake() throws LuaException {
+		T value = target.safeGet();
+
+		Object[] baked = new Object[context.length];
+		for (int i = baked.length - 1; i >= 0; i--) {
+			baked[i] = context[i].safeGet();
+		}
+
+		return new Context<T>(this, value, handler, baked, modules.safeGet());
+	}
+
+	@Nonnull
+	@Override
 	public <U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> newTarget, @Nonnull IReference<?>... newContext) {
 		Preconditions.checkNotNull(newTarget, "target cannot be null");
 		Preconditions.checkNotNull(newContext, "context cannot be null");

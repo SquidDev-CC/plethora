@@ -44,4 +44,10 @@ public class TurtleWorldLocation implements IWorldLocation {
 	public IWorldLocation get() throws LuaException {
 		return this;
 	}
+
+	@Nonnull
+	@Override
+	public IWorldLocation safeGet() throws LuaException {
+		return new WorldLocation(turtle.getWorld(), turtle.getPosition());
+	}
 }

@@ -396,4 +396,19 @@ public class Helpers {
 			DebugLogger.error(message);
 		}
 	}
+
+	public static int hashStack(ItemStack stack) {
+		int hash = stack.getItem().hashCode() * 31 + stack.getItemDamage();
+		if (stack.hasTagCompound()) hash = hash * 31 + stack.getTagCompound().hashCode();
+		return hash;
+	}
+
+	public static int hashStacks(ItemStack[] stacks) {
+		int hash = 0;
+		for (ItemStack stack : stacks) {
+			hash *= 31;
+			if (stack != null) hash += Helpers.hashStack(stack);
+		}
+		return hash;
+	}
 }

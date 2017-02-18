@@ -103,6 +103,12 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 				if (turtle.getUpgrade(side) != TurtleUpgradeModule.this) throw new LuaException("The upgrade is gone");
 				return container;
 			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				return get();
+			}
 		};
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(

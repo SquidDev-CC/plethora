@@ -60,7 +60,7 @@ public final class MethodsInventory {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IItemHandler.class, worldThread = true,
+		value = IItemHandler.class, worldThread = false,
 		doc = "function():integer -- The size of the inventory"
 	)
 	public static Object[] size(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {

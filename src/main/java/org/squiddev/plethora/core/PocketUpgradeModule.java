@@ -15,6 +15,7 @@ import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -91,6 +92,12 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				}
 				return container;
 			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				return get();
+			}
 		};
 
 		IWorldLocation location = new IWorldLocation() {
@@ -121,6 +128,17 @@ class PocketUpgradeModule implements IPocketUpgrade {
 					return this;
 				}
 			}
+
+			@Nonnull
+			@Override
+			public IWorldLocation safeGet() throws LuaException {
+				Entity entity = pocket.getEntity();
+				if (entity == null) {
+					throw new LuaException("Entity is not there");
+				} else {
+					return new WorldLocation(entity.getEntityWorld(), entity.getPosition());
+				}
+			}
 		};
 
 		BasicContextBuilder builder = new BasicContextBuilder();
@@ -133,6 +151,12 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				Entity accessEntity = pocket.getEntity();
 				if (accessEntity != entity) throw new LuaException("Entity has changed");
 				return accessEntity;
+			}
+
+			@Nonnull
+			@Override
+			public Entity safeGet() throws LuaException {
+				return get();
 			}
 		});
 

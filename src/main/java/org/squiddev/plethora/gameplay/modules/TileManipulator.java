@@ -11,6 +11,7 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
@@ -20,6 +21,8 @@ import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 public final class TileManipulator extends TileBase implements ITickable {
 	private ManipulatorType type;
 	private ItemStack[] stacks;
+	private int stackHash;
+
 	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 
 	private final DelayedExecutor executor = new DelayedExecutor();
@@ -48,6 +51,10 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 	public ItemStack getStack(int slot) {
 		return stacks[slot];
+	}
+
+	public int getStackHash() {
+		return stackHash;
 	}
 
 	public NBTTagCompound getModuleData(ResourceLocation location) {
@@ -116,6 +123,8 @@ public final class TileManipulator extends TileBase implements ITickable {
 			}
 		}
 
+		stackHash = Helpers.hashStacks(stacks);
+
 		NBTTagCompound data = tag.getCompoundTag("data");
 		for (String key : data.getKeySet()) {
 			moduleData.put(new ResourceLocation(key), data.getCompoundTag(key));
@@ -146,12 +155,14 @@ public final class TileManipulator extends TileBase implements ITickable {
 					}
 
 					stacks[i] = null;
+					stackHash = Helpers.hashStacks(stacks);
 					markForUpdate();
 
 					break;
 				} else if (stack == null && heldStack != null && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
 					stacks[i] = heldStack.copy();
 					stacks[i].stackSize = 1;
+					stackHash = Helpers.hashStacks(stacks);
 
 					if (!player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
@@ -176,6 +187,9 @@ public final class TileManipulator extends TileBase implements ITickable {
 				Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
 			}
 		}
+
+		Arrays.fill(stacks, null);
+		stackHash = 0;
 	}
 
 	public double incrementRotation() {

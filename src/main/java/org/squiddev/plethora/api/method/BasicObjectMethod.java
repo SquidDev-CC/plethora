@@ -45,7 +45,7 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 				}
 			});
 		} else {
-			return MethodResult.result(apply(context.bake(), args));
+			return MethodResult.result(apply(context.safeBake(), args));
 		}
 	}
 

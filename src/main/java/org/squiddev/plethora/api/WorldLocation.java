@@ -28,6 +28,15 @@ public final class WorldLocation implements IWorldLocation {
 		this.loc = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}
 
+	public WorldLocation(@Nonnull World world, @Nonnull Vec3 pos) {
+		Preconditions.checkNotNull(world, "world cannot be null");
+		Preconditions.checkNotNull(pos, "pos cannot be null");
+
+		this.world = world;
+		this.pos = new BlockPos(pos.xCoord, pos.yCoord + 0.5, pos.zCoord);
+		this.loc = pos;
+	}
+
 	public WorldLocation(@Nonnull World world, int x, int y, int z) {
 		this(world, new BlockPos(x, y, z));
 	}
@@ -53,6 +62,12 @@ public final class WorldLocation implements IWorldLocation {
 	@Nonnull
 	@Override
 	public IWorldLocation get() throws LuaException {
+		return this;
+	}
+
+	@Nonnull
+	@Override
+	public IWorldLocation safeGet() throws LuaException {
 		return this;
 	}
 }

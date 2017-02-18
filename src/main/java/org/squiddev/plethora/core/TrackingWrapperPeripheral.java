@@ -7,6 +7,7 @@ import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.TrackingExecutor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,12 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@link MethodWrapperPeripheral} which trackes
  */
 public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
+	private final TrackingExecutor trackingFactory;
 	private final Collection<IAttachable> attachments;
 	private final Set<IComputerAccess> accesses = Collections.newSetFromMap(new ConcurrentHashMap<IComputerAccess, Boolean>());
 
 	public TrackingWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, Collection<IAttachable> attachments) {
-		super(name, owner, methods, factory);
+		super(name, owner, methods, new TrackingExecutor(factory));
 		this.attachments = attachments;
+		this.trackingFactory = (TrackingExecutor)getExecutorFactory();
 	}
 
 	@Override
@@ -39,6 +42,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 		}
 
 		if (count == 0) {
+			trackingFactory.setAttached(true);
 			for (IAttachable attachable : attachments) {
 				attachable.attach();
 			}
@@ -56,6 +60,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 		}
 
 		if (count == 0) {
+			trackingFactory.setAttached(false);
 			for (IAttachable attachable : attachments) {
 				attachable.detach();
 			}

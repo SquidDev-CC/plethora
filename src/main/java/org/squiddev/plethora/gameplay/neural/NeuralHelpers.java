@@ -92,10 +92,11 @@ public final class NeuralHelpers {
 		return null;
 	}
 
-	public static IPeripheral buildModules(NeuralComputer computer, final ItemStack[] inventory, Entity owner) {
+	public static IPeripheral buildModules(final NeuralComputer computer, final ItemStack[] inventory, Entity owner) {
 		final ItemStack[] stacks = new ItemStack[MODULE_SIZE];
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
+		final int stackHash = computer.getStackHash();
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
 			ItemStack stack = inventory[PERIPHERAL_SIZE + i];
@@ -145,6 +146,16 @@ public final class NeuralHelpers {
 						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
 				}
+				return container;
+			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				if (stackHash != computer.getStackHash()) {
+					throw new LuaException("A module has changed");
+				}
+
 				return container;
 			}
 		};

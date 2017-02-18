@@ -104,5 +104,11 @@ public class ChatListener extends Module {
 		public Listener get() throws LuaException {
 			return this;
 		}
+
+		@Nonnull
+		@Override
+		public Listener safeGet() throws LuaException {
+			return this;
+		}
 	}
 }

@@ -160,6 +160,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		if (manipulator.getType() == null) return null;
 		final int size = manipulator.getType().size();
 
+		final int stackHash = manipulator.getStackHash();
+
 		final ItemStack[] stacks = new ItemStack[size];
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
@@ -203,6 +205,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
+				if (manipulator.isInvalid()) throw new LuaException("Manipulator is no longer there");
+
 				for (int i = 0; i < size; i++) {
 					ItemStack oldStack = stacks[i];
 					ItemStack newStack = manipulator.getStack(i);
@@ -210,6 +214,18 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
+				}
+
+				return container;
+			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				if (manipulator.isInvalid()) throw new LuaException("Manipulator is no longer there");
+
+				if (stackHash != manipulator.getStackHash()) {
+					throw new LuaException("A module has changed");
 				}
 
 				return container;

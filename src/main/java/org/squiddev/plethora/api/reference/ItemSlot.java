@@ -14,6 +14,7 @@ public class ItemSlot implements IReference<ItemSlot> {
 	private final ItemStack stack;
 	private final int slot;
 	private final int meta;
+	private boolean valid = true;
 
 	@Nonnull
 	private final IItemHandler inventory;
@@ -75,8 +76,18 @@ public class ItemSlot implements IReference<ItemSlot> {
 					(!stack.isItemStackDamageable() && meta != newStack.getItemDamage())
 				)
 			) {
+			valid = false;
 			throw new LuaException("The stack is no longer there");
 		}
+
+		valid = true;
+		return this;
+	}
+
+	@Nonnull
+	@Override
+	public ItemSlot safeGet() throws LuaException {
+		if (!valid) throw new LuaException("The stack is no longer there");
 		return this;
 	}
 }
