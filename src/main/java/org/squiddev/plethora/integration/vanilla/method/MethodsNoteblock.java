@@ -32,7 +32,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "function(instrument:string|number, pitch:number[, volumne:number]) -- Plays a note block note"
+		doc = "function(instrument:string|number, pitch:number[, volume:number]) -- Plays a note block note"
 	)
 	public static MethodResult playNote(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		List<String> instruments = getInstruments();
@@ -62,7 +62,8 @@ public class MethodsNoteblock {
 
 		final float adjPitch = (float) Math.pow(2d, (double) (pitch - 12) / 12d);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
+		context.safeBake();
+		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
@@ -71,7 +72,9 @@ public class MethodsNoteblock {
 				location.getWorld().playSoundEffect(pos.xCoord, pos.yCoord, pos.zCoord, "note." + name, volume, adjPitch);
 				return MethodResult.empty();
 			}
-		});
+		}));
+
+		return MethodResult.empty();
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -86,7 +89,8 @@ public class MethodsNoteblock {
 		assertBetween(pitch, 0, 2, "Pitch out of bounds (%s)");
 		assertBetween(volume, 0.1, 5, "Volume out of bounds (%s)");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
+		context.safeBake();
+		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
@@ -95,6 +99,8 @@ public class MethodsNoteblock {
 				location.getWorld().playSoundEffect(pos.xCoord, pos.yCoord, pos.zCoord, sound, volume, pitch);
 				return MethodResult.empty();
 			}
-		});
+		}));
+
+		return MethodResult.empty();
 	}
 }
