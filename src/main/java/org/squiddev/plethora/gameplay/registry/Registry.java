@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.gameplay.ItemKeyboard;
+import org.squiddev.plethora.gameplay.keyboard.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;

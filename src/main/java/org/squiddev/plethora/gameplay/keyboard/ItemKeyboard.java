@@ -1,4 +1,4 @@
-package org.squiddev.plethora.gameplay;
+package org.squiddev.plethora.gameplay.keyboard;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.common.TileGeneric;
@@ -28,6 +28,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.GuiHandler;
+import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import org.squiddev.plethora.utils.TinySlot;

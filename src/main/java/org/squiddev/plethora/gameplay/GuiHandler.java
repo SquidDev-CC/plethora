@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import org.squiddev.plethora.gameplay.client.gui.GuiKeyboard;
 import org.squiddev.plethora.gameplay.client.gui.GuiMinecartComputer;
 import org.squiddev.plethora.gameplay.client.gui.GuiNeuralInterface;
+import org.squiddev.plethora.gameplay.keyboard.ContainerKeyboard;
 import org.squiddev.plethora.gameplay.minecart.ContainerMinecartComputer;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 import org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface;
