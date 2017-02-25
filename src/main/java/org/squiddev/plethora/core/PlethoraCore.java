@@ -22,6 +22,7 @@ import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.capabilities.DefaultModuleHandler;
 import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
 import org.squiddev.plethora.core.capabilities.DefaultStorage;
+import org.squiddev.plethora.core.executor.SharedDelayedExecutor;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
@@ -91,6 +92,7 @@ public class PlethoraCore {
 	public void onServerStart(FMLServerStartedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
+			SharedDelayedExecutor.INSTANCE.reset();
 		}
 	}
 
@@ -98,6 +100,7 @@ public class PlethoraCore {
 	public void onServerStopped(FMLServerStoppedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
+			SharedDelayedExecutor.INSTANCE.reset();
 		}
 	}
 
@@ -120,6 +123,7 @@ public class PlethoraCore {
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			DefaultCostHandler.update();
+			SharedDelayedExecutor.INSTANCE.update();
 		}
 	}
 

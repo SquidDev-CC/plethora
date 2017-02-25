@@ -22,7 +22,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
@@ -170,7 +170,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new DelayedExecutor(), builder.getAttachments());
+			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), builder.getAttachments());
 		} else {
 			return null;
 		}
@@ -188,8 +188,8 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 			// Update the enqueued method
 			IExecutorFactory executor = methodWrapper.getExecutorFactory();
-			if (executor instanceof DelayedExecutor) {
-				((DelayedExecutor) executor).update();
+			if (executor instanceof ContextDelayedExecutor) {
+				((ContextDelayedExecutor) executor).update();
 			}
 		}
 	}

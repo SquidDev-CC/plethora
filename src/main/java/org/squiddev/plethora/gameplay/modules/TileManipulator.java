@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.utils.Helpers;
@@ -25,7 +25,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 
-	private final DelayedExecutor executor = new DelayedExecutor();
+	private final ContextDelayedExecutor executor = new ContextDelayedExecutor();
 
 	// Lazily loaded render options
 	private double offset = -1;

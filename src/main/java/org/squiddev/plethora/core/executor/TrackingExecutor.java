@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core.executor;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -34,6 +35,16 @@ public class TrackingExecutor implements IExecutorFactory {
 				}
 
 				return executor.execute(result, context);
+			}
+
+			@Nonnull
+			@Override
+			public ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException {
+				if (!isAttached) {
+					throw new LuaException("The peripheral is no longer attached");
+				}
+
+				return executor.executeAsync(result);
 			}
 		};
 	}

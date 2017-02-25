@@ -20,7 +20,7 @@ import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
@@ -120,7 +120,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new DelayedExecutor(), builder.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), builder.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
@@ -160,8 +160,8 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		if (peripheral instanceof MethodWrapperPeripheral) {
 			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
 
-			if (executor instanceof DelayedExecutor) {
-				((DelayedExecutor) executor).update();
+			if (executor instanceof ContextDelayedExecutor) {
+				((ContextDelayedExecutor) executor).update();
 			}
 		}
 	}

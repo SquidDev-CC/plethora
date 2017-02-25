@@ -14,7 +14,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -34,7 +34,7 @@ public class NeuralComputer extends ServerComputer {
 	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 	private boolean moduleDataDirty = false;
 
-	private final DelayedExecutor executor = new DelayedExecutor();
+	private final ContextDelayedExecutor executor = new ContextDelayedExecutor();
 
 	public NeuralComputer(World world, int computerID, String label, int instanceID) {
 		super(world, computerID, label, instanceID, ComputerFamily.Advanced, WIDTH, HEIGHT);
