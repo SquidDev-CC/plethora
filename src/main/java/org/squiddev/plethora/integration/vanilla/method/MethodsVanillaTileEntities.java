@@ -12,60 +12,40 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
 import java.util.concurrent.Callable;
 
 public class MethodsVanillaTileEntities {
-	@BasicMethod.Inject(
-		value = TileEntityFurnace.class,
+	@BasicObjectMethod.Inject(
+		value = TileEntityFurnace.class, worldThread = false,
 		doc = "function():int -- Number of ticks of fuel left"
 	)
-	public static MethodResult getRemainingBurnTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				// furnaceBurnTime
-				return MethodResult.result(context.bake().getTarget().getField(0));
-			}
-		});
+	public static Object[] getRemainingBurnTime(final IContext<TileEntityFurnace> context, Object[] args) {
+		// furnaceBurnTime
+		return new Object[]{context.getTarget().getField(0)};
 	}
 
-	@BasicMethod.Inject(
-		value = TileEntityFurnace.class,
+	@BasicObjectMethod.Inject(
+		value = TileEntityFurnace.class, worldThread = false,
 		doc = "function():int -- Number of ticks of burning the current fuel provides"
 	)
-	public static MethodResult getBurnTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				// currentItemBurnTime
-				return MethodResult.result(context.bake().getTarget().getField(1));
-			}
-		});
+	public static Object[] getBurnTime(final IContext<TileEntityFurnace> context, Object[] args) {
+		// currentItemBurnTime
+		return new Object[]{context.getTarget().getField(1)};
 	}
 
-	@BasicMethod.Inject(
-		value = TileEntityFurnace.class,
+	@BasicObjectMethod.Inject(
+		value = TileEntityFurnace.class, worldThread = false,
 		doc = "function():int -- Number of ticks the current item has cooked for"
 	)
-	public static MethodResult getCookTime(final IUnbakedContext<TileEntityFurnace> context, Object[] args) {
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				// cookTime
-				return MethodResult.result(context.bake().getTarget().getField(2));
-			}
-		});
+	public static Object[] getCookTime(final IContext<TileEntityFurnace> context, Object[] args) {
+		// cookTime
+		return new Object[]{context.getTarget().getField(2)};
 	}
 
-	@BasicMethod.Inject(
-		value = TileEntityBrewingStand.class,
+	@BasicObjectMethod.Inject(
+		value = TileEntityBrewingStand.class, worldThread = false,
 		doc = "function():int -- Number of ticks the current potion has brewed for"
 	)
-	public static MethodResult getBrewTime(final IUnbakedContext<TileEntityBrewingStand> context, Object[] args) {
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				// brewTime
-				return MethodResult.result(context.bake().getTarget().getField(0));
-			}
-		});
+	public static Object[] getBrewTime(final IContext<TileEntityBrewingStand> context, Object[] args) {
+		// brewTime
+		return new Object[]{context.getTarget().getField(0)};
 	}
 
 	@BasicObjectMethod.Inject(

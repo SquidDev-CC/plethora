@@ -111,44 +111,30 @@ public final class MethodsChat {
 		}
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class,
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
 		doc = "function(pattern:string) -- Capture all chat messages matching a Lua pattern, preventing them from being said."
 	)
-	@Nonnull
-	public static MethodResult capture(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final String pattern = getString(args, 0);
-
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				context.getContext(Listener.class).addPattern(pattern);
-				return MethodResult.empty();
-			}
-		});
-	}
-
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class,
-		doc = "function(pattern:string):boolean -- Remove a capture added by capture(pattern)."
-	)
-	@Nonnull
-	public static MethodResult uncapture(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final String pattern = getString(args, 0);
-
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				boolean removed = context.getContext(Listener.class).removePattern(pattern);
-				return MethodResult.result(removed);
-			}
-		});
+	@Nullable
+	public static Object[] capture(Listener listener, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		String pattern = getString(args, 0);
+		listener.addPattern(pattern);
+		return null;
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.CHAT_S, worldThread = true, target = Listener.class,
+		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
+		doc = "function(pattern:string):boolean -- Remove a capture added by capture(pattern)."
+	)
+	@Nonnull
+	public static Object[] uncapture(Listener listener, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		String pattern = getString(args, 0);
+		boolean removed = listener.removePattern(pattern);
+		return new Object[]{removed};
+	}
+
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
 		doc = "function() -- Remove all listeners added by capture()."
 	)
 	@Nullable

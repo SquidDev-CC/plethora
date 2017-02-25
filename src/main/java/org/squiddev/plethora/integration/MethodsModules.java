@@ -19,7 +19,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
 
 public class MethodsModules {
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class, worldThread = false,
 		doc = "function():table -- Lists all modules available"
 	)
 	public static Object[] listModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -32,7 +32,7 @@ public class MethodsModules {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class, worldThread = false,
 		doc = "function(name:string):boolean -- Checks whether a module is available"
 	)
 	public static Object[] hasModule(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -41,7 +41,7 @@ public class MethodsModules {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class, worldThread = false,
 		doc = "function(names:string...):table|nil -- Gets the methods which require these modules"
 	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {

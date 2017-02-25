@@ -62,19 +62,19 @@ public class ChatListener extends Module {
 			this.owner = owner;
 		}
 
-		public void addPattern(String pattern) {
+		public synchronized void addPattern(String pattern) {
 			patterns.add(pattern);
 		}
 
-		public boolean removePattern(String pattern) {
+		public synchronized boolean removePattern(String pattern) {
 			return patterns.remove(pattern);
 		}
 
-		public void clearPatterns() {
+		public synchronized void clearPatterns() {
 			patterns.clear();
 		}
 
-		private boolean handleCapture(String message) {
+		private synchronized boolean handleCapture(String message) {
 			for (String pattern : patterns) {
 				if (LuaPattern.matches(message, pattern)) {
 					access.queueEvent("chat_capture", message, pattern);
