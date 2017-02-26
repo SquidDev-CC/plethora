@@ -51,7 +51,7 @@ h2, h3 {
 	overflow-wrap: break-word;
 	word-break: break-all;
 
-	small { font-size: 0.5em; }
+	small, .small { font-size: 0.5em; }
 }
 
 h2 {

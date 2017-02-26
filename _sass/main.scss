@@ -158,7 +158,7 @@ code.class {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
-		margin: 5px 0px;
+		margin: 5px 0px 10px 0px;
 	}
 
 	.desc-text {
@@ -208,7 +208,7 @@ code.class {
 	justify-content: center;
 
 	.version {
-		$background: $header-back; // #00630C;
+		$background: $header-back;
 
 		flex-basis: 300px;
 		max-width: 300px;
