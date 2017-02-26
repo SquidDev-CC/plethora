@@ -45,7 +45,7 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 				}
 			});
 		} else {
-			return MethodResult.result(apply(context.bake(), args));
+			return MethodResult.result(apply(context.safeBake(), args));
 		}
 	}
 
@@ -62,6 +62,11 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 	 */
 	@Nullable
 	public abstract Object[] apply(@Nonnull IContext<T> context, @Nonnull Object[] args) throws LuaException;
+
+	@Override
+	public boolean willYield() {
+		return worldThread;
+	}
 
 	/**
 	 * Delegate to a normal method from a {@link BasicObjectMethod}.

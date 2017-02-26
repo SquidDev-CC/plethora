@@ -1,4 +1,4 @@
-package org.squiddev.plethora.gameplay;
+package org.squiddev.plethora.gameplay.keyboard;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.TileComputerBase;

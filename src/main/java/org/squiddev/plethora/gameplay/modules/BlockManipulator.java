@@ -146,7 +146,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientInit() {
+	public void clientPreInit() {
 		for (ManipulatorType type : VALUES) {
 			Helpers.setupModel(Item.getItemFromBlock(this), type.ordinal(), name + "." + type.getName());
 		}
@@ -176,6 +176,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		if (manipulator.getType() == null) return null;
 		final int size = manipulator.getType().size();
+
+		final int stackHash = manipulator.getStackHash();
 
 		final ItemStack[] stacks = new ItemStack[size];
 		Set<ResourceLocation> modules = Sets.newHashSet();
@@ -220,6 +222,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
+				if (manipulator.isInvalid()) throw new LuaException("Manipulator is no longer there");
+
 				for (int i = 0; i < size; i++) {
 					ItemStack oldStack = stacks[i];
 					ItemStack newStack = manipulator.getStack(i);
@@ -227,6 +231,18 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
+				}
+
+				return container;
+			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				if (manipulator.isInvalid()) throw new LuaException("Manipulator is no longer there");
+
+				if (stackHash != manipulator.getStackHash()) {
+					throw new LuaException("A module has changed");
 				}
 
 				return container;
@@ -243,7 +259,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("manipulator", te, paired, manipulator.getFactory(), builder.getAttachments());
+			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getFactory(), builder.getAttachments(), stackHash);
 			for (ManipulatorAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}

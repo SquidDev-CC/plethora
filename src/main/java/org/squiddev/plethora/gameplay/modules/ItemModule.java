@@ -50,6 +50,7 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
+import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -222,15 +223,11 @@ public final class ItemModule extends ItemBase {
 	//region Registering
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientInit() {
+	public void clientPreInit() {
 		for (int i = 0; i < MODULES; i++) {
 			Helpers.setupModel(this, i, "module_" + getName(i));
 		}
-	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
 			@Override
 			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {
@@ -242,7 +239,7 @@ public final class ItemModule extends ItemBase {
 	@Override
 	public void preInit() {
 		super.preInit();
-		EntityRegistry.registerModEntity(EntityLaser.class, "laser", 0, Plethora.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(EntityLaser.class, ID + ":laser", 0, Plethora.instance, 64, 10, true);
 
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();

@@ -14,12 +14,27 @@ public interface IUnbakedContext<T> {
 	/**
 	 * Bake a context, ensuring all references are valid
 	 *
+	 * Note, this method is NOT thread safe and MUST be called from the server thread. Use {@link #safeBake()} if
+	 * you need a safe version.
+	 *
 	 * @return The baked context
 	 * @throws LuaException If
 	 * @see IReference#get()
 	 */
 	@Nonnull
 	IContext<T> bake() throws LuaException;
+
+	/**
+	 * Bake a context, ensuring all references are valid.
+	 *
+	 * This method is thread safe, though the result object may not be safe to use on any thread.
+	 *
+	 * @return The baked context
+	 * @throws LuaException If
+	 * @see IReference#safeGet()
+	 */
+	@Nonnull
+	IContext<T> safeBake() throws LuaException;
 
 	/**
 	 * Make a child context

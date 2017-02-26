@@ -18,13 +18,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.registry.Module;
+import org.squiddev.plethora.gameplay.registry.Packets;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.Helpers;
 
 public class ChatVisualiser extends Module implements IMessageHandler<ChatVisualiser.ChatMessage, IMessage> {
 	@Override
 	public void preInit() {
-		Plethora.network.registerMessage(ChatVisualiser.class, ChatMessage.class, 0, Side.CLIENT);
+		Plethora.network.registerMessage(this, ChatMessage.class, Packets.CHAT_MESSAGE, Side.CLIENT);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

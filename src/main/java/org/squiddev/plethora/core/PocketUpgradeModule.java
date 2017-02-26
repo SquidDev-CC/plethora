@@ -5,6 +5,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -15,13 +16,14 @@ import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.DebugLogger;
 
@@ -91,6 +93,12 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				}
 				return container;
 			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				return get();
+			}
 		};
 
 		IWorldLocation location = new IWorldLocation() {
@@ -121,6 +129,17 @@ class PocketUpgradeModule implements IPocketUpgrade {
 					return this;
 				}
 			}
+
+			@Nonnull
+			@Override
+			public IWorldLocation safeGet() throws LuaException {
+				Entity entity = pocket.getEntity();
+				if (entity == null) {
+					throw new LuaException("Entity is not there");
+				} else {
+					return new WorldLocation(entity.getEntityWorld(), entity.getPosition());
+				}
+			}
 		};
 
 		BasicContextBuilder builder = new BasicContextBuilder();
@@ -134,6 +153,12 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				if (accessEntity != entity) throw new LuaException("Entity has changed");
 				return accessEntity;
 			}
+
+			@Nonnull
+			@Override
+			public Entity safeGet() throws LuaException {
+				return get();
+			}
 		});
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
@@ -146,7 +171,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new DelayedExecutor(), builder.getAttachments());
+			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), builder.getAttachments());
 		} else {
 			return null;
 		}
@@ -164,9 +189,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 			// Update the enqueued method
 			IExecutorFactory executor = methodWrapper.getExecutorFactory();
-			if (executor instanceof DelayedExecutor) {
-				((DelayedExecutor) executor).update();
-			}
+			if (executor instanceof ITickable) ((ITickable) executor).update();
 		}
 	}
 
@@ -186,6 +209,11 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		public Entity getEntity() {
 			return entity;
+		}
+
+		@Override
+		public boolean equals(IPeripheral other) {
+			return super.equals(other) && other instanceof PocketPeripheral && entity == ((PocketPeripheral) other).entity;
 		}
 	}
 

@@ -14,7 +14,7 @@ public interface IModuleAccess {
 	 * The owner of this module container. This is probably a {@link net.minecraft.tileentity.TileEntity} or
 	 * {@link net.minecraft.entity.EntityLivingBase}.
 	 *
-	 * @return The module's owner
+	 * @return The module's owner. This is constant for the lifetime of the module access.
 	 */
 	@Nonnull
 	Object getOwner();

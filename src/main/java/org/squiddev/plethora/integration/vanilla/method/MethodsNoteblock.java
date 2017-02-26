@@ -47,7 +47,7 @@ public class MethodsNoteblock {
 
 	@SubtargetedModuleMethod.Inject(
 		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
-		doc = "function(instrument:string|number, pitch:number[, volumne:number]) -- Plays a note block note"
+		doc = "function(instrument:string|number, pitch:number[, volume:number]) -- Plays a note block note"
 	)
 	public static MethodResult playNote(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
 		List<SoundEvent> instruments = getInstruments();
@@ -76,7 +76,8 @@ public class MethodsNoteblock {
 
 		final float adjPitch = (float) Math.pow(2d, (double) (pitch - 12) / 12d);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
+		context.safeBake();
+		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
@@ -85,7 +86,9 @@ public class MethodsNoteblock {
 				location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
 				return MethodResult.empty();
 			}
-		});
+		}));
+
+		return MethodResult.empty();
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -103,7 +106,8 @@ public class MethodsNoteblock {
 		final SoundEvent sound = SoundEvent.REGISTRY.getObject(new ResourceLocation(name));
 		if (sound == null) throw new LuaException("No such sound '" + name + "'");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
+		context.safeBake();
+		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
@@ -112,6 +116,8 @@ public class MethodsNoteblock {
 				location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, pitch);
 				return MethodResult.empty();
 			}
-		});
+		}));
+
+		return MethodResult.empty();
 	}
 }

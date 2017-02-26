@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
+import org.squiddev.plethora.gameplay.keyboard.ServerKeyListener;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
@@ -73,11 +74,13 @@ public class Plethora {
 	@EventHandler
 	public void onServerStopping(FMLServerStoppedEvent e) {
 		RenderOverlay.clearChatMessages();
+		ServerKeyListener.clear();
 	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartedEvent e) {
 		RenderOverlay.clearChatMessages();
+		ServerKeyListener.clear();
 	}
 
 	private static class PlethoraCreativeTab extends CreativeTabs {

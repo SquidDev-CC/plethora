@@ -16,7 +16,7 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
  */
 public class MethodsDaylightSensor {
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = false,
 		doc = "function():boolean -- Whether this world has a sky"
 	)
 	public static Object[] hasSky(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
@@ -49,7 +49,7 @@ public class MethodsDaylightSensor {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = false,
 		doc = "function():string -- The weather in the current world"
 	)
 	public static Object[] getWeather(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {

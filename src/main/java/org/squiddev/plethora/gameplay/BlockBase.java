@@ -139,11 +139,11 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
-		Helpers.setupModel(Item.getItemFromBlock(this), 0, name);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+		Helpers.setupModel(Item.getItemFromBlock(this), 0, name);
 	}
 }

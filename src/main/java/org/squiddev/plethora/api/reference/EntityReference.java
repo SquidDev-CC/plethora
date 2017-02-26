@@ -24,4 +24,13 @@ public class EntityReference<T extends Entity> implements IReference<T> {
 
 		return value;
 	}
+
+	@Nonnull
+	@Override
+	public T safeGet() throws LuaException {
+		T value = entity.get();
+		if (value == null || value.isDead) throw new LuaException("The entity is no longer there");
+
+		return value;
+	}
 }

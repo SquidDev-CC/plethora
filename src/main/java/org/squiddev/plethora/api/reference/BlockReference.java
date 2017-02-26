@@ -17,6 +17,7 @@ public class BlockReference implements IReference<BlockReference> {
 	private final WeakReference<TileEntity> tile;
 	private final int tileHash;
 	private IBlockState state;
+	private boolean valid = true;
 
 	public BlockReference(@Nonnull IWorldLocation location, @Nonnull IBlockState state, @Nullable TileEntity tile) {
 		this.location = location;
@@ -40,20 +41,42 @@ public class BlockReference implements IReference<BlockReference> {
 
 		if (tile == null) {
 			// We only monitor block changes if we can't compare the TE
-			if (state.getBlock() != newState.getBlock()) throw new LuaException("The block is no longer there");
+			if (state.getBlock() != newState.getBlock()) {
+				valid = false;
+				throw new LuaException("The block is no longer there");
+			}
 
-			if (newTe != null) throw new LuaException("The block has changed");
+			if (newTe != null) {
+				valid = false;
+				throw new LuaException("The block has changed");
+			}
 		} else {
 			TileEntity oldTe = tile.get();
 			if (oldTe == null) {
+				valid = false;
 				throw new LuaException("The block is no longer there");
 			} else if (!oldTe.equals(newTe)) {
+				valid = false;
 				throw new LuaException("The block has changed");
 			}
 		}
 
 		// Update the block state if everything is OK
 		state = newState;
+
+		valid = true;
+		return this;
+	}
+
+	@Nonnull
+	@Override
+	public BlockReference safeGet() throws LuaException {
+		if (!valid) throw new LuaException("The block has changed");
+
+		if (tile != null) {
+			TileEntity oldTe = tile.get();
+			if (oldTe == null || oldTe.isInvalid()) throw new LuaException("The block has changed");
+		}
 
 		return this;
 	}

@@ -14,8 +14,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.core.executor.DelayedExecutor;
+import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -28,11 +29,12 @@ public class NeuralComputer extends ServerComputer {
 	private UUID entityId;
 
 	private final ItemStack[] stacks = new ItemStack[INV_SIZE];
+	private int stackHash;
 
 	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 	private boolean moduleDataDirty = false;
 
-	private final DelayedExecutor executor = new DelayedExecutor();
+	private final ContextDelayedExecutor executor = new ContextDelayedExecutor();
 
 	public NeuralComputer(World world, int computerID, String label, int instanceID) {
 		super(world, computerID, label, instanceID, ComputerFamily.Advanced, WIDTH, HEIGHT);
@@ -56,6 +58,10 @@ public class NeuralComputer extends ServerComputer {
 
 	public void markModuleDataDirty() {
 		moduleDataDirty = true;
+	}
+
+	public int getStackHash() {
+		return stackHash;
 	}
 
 	/**
@@ -87,6 +93,8 @@ public class NeuralComputer extends ServerComputer {
 					stacks[slot] = handler.getStackInSlot(slot);
 				}
 			}
+
+			stackHash = Helpers.hashStacks(stacks);
 		}
 
 		// Update peripherals

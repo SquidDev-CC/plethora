@@ -1,5 +1,7 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import baubles.api.BaublesApi;
+import baubles.common.Baubles;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
@@ -7,9 +9,12 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
@@ -25,7 +30,9 @@ import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PartialContext;
 import org.squiddev.plethora.core.TrackingWrapperPeripheral;
+import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
 import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +44,7 @@ import static org.squiddev.plethora.api.reference.Reference.entity;
 
 public final class NeuralHelpers {
 	public static final EntityEquipmentSlot ARMOR_SLOT = EntityEquipmentSlot.HEAD;
+	public static final int BAUBLES_SLOT = 0;
 
 	private NeuralHelpers() {
 		throw new IllegalStateException("Cannot instantiate");
@@ -49,14 +57,29 @@ public final class NeuralHelpers {
 
 	public static final int BACK = 2;
 
-	public static ItemStack getStack(EntityLivingBase entity) {
+	@Nullable
+	public static TinySlot getSlot(EntityLivingBase entity) {
 		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
 		if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
-			return stack;
-		} else {
-			return null;
+			return new TinySlot(stack, entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory : null);
 		}
+
+		if (Loader.isModLoaded(Baubles.MODID) && entity instanceof EntityPlayer) {
+			IInventory inventory = BaublesApi.getBaubles((EntityPlayer) entity);
+			stack = inventory.getStackInSlot(BAUBLES_SLOT);
+			if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
+				return new TinySlot(stack, inventory);
+			}
+		}
+
+		return null;
+	}
+
+	@Nullable
+	public static ItemStack getStack(EntityLivingBase entity) {
+		TinySlot slot = getSlot(entity);
+		return slot == null ? null : slot.getStack();
 	}
 
 	public static IPeripheral buildPeripheral(@Nullable ItemStack stack) {
@@ -71,10 +94,11 @@ public final class NeuralHelpers {
 		return null;
 	}
 
-	public static IPeripheral buildModules(NeuralComputer computer, final ItemStack[] inventory, Entity owner) {
+	public static IPeripheral buildModules(final NeuralComputer computer, final ItemStack[] inventory, Entity owner) {
 		final ItemStack[] stacks = new ItemStack[MODULE_SIZE];
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
+		final int stackHash = computer.getStackHash();
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
 			ItemStack stack = inventory[PERIPHERAL_SIZE + i];
@@ -126,6 +150,16 @@ public final class NeuralHelpers {
 				}
 				return container;
 			}
+
+			@Nonnull
+			@Override
+			public IModuleContainer safeGet() throws LuaException {
+				if (stackHash != computer.getStackHash()) {
+					throw new LuaException("A module has changed");
+				}
+
+				return container;
+			}
 		};
 
 		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
@@ -138,7 +172,7 @@ public final class NeuralHelpers {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments());
+			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), stackHash);
 			for (NeuralAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}

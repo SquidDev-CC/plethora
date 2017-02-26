@@ -1,4 +1,4 @@
-package org.squiddev.plethora.gameplay;
+package org.squiddev.plethora.gameplay.keyboard;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.common.TileGeneric;
@@ -11,6 +11,7 @@ import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -22,17 +23,33 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IAttachable;
+import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.IContextBuilder;
+import org.squiddev.plethora.api.module.BasicModuleHandler;
+import org.squiddev.plethora.api.module.IModuleAccess;
+import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.gameplay.GuiHandler;
+import org.squiddev.plethora.gameplay.ItemBase;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.gameplay.registry.Packets;
+import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -58,11 +75,13 @@ public class ItemKeyboard extends ItemBase {
 			if (world.isRemote) return EnumActionResult.SUCCESS;
 
 			TileEntity tile = world.getTileEntity(pos);
-			NBTTagCompound tag = getTag(stack);
+			NBTTagCompound tag = stack.getTagCompound();
 			if (tile instanceof IComputerTile) {
 				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
 					return EnumActionResult.FAIL;
 				}
+
+				if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
 
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
@@ -74,7 +93,7 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(INSTANCE_ID);
 
 				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.bound")));
-			} else if (tag.hasKey("x")) {
+			} else if (tag != null && tag.hasKey("x")) {
 				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.cleared")));
 
 				tag.removeTag("x");
@@ -84,6 +103,10 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 			}
+
+			// Clear the tag compound: pocket upgrades check this when determining if something can be stacked
+			// so we want the default to be null.
+			if (tag != null && tag.hasNoTags()) stack.setTagCompound(null);
 
 			player.inventory.markDirty();
 
@@ -98,8 +121,8 @@ public class ItemKeyboard extends ItemBase {
 		super.onUpdate(stack, world, entity, itemSlot, isSelected);
 		if (world.isRemote) return;
 
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			int session = ComputerCraft.serverComputerRegistry.getSessionID();
 			boolean dirty = false;
 			if (tag.getInteger(SESSION_ID) != session) {
@@ -134,14 +157,14 @@ public class ItemKeyboard extends ItemBase {
 		if (world.isRemote) return EnumActionResult.SUCCESS;
 
 		ServerComputer computer;
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
-			ItemStack neural = NeuralHelpers.getStack(player);
-			if (neural == null) return EnumActionResult.FAIL;
+			TinySlot slot = NeuralHelpers.getSlot(player);
+			if (slot == null) return EnumActionResult.FAIL;
 
-			computer = ItemComputerHandler.getServer(neural, player, player.inventory);
+			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot.getInventory());
 		}
 
 		if (computer == null) return EnumActionResult.FAIL;
@@ -168,8 +191,8 @@ public class ItemKeyboard extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
 
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			ClientComputer computer = getBlockComputer(ComputerCraft.clientComputerRegistry, tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
 			if (computer != null) {
@@ -178,6 +201,23 @@ public class ItemKeyboard extends ItemBase {
 				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.broken", position));
 			}
 		}
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return KeyboardModule.INSTANCE;
+	}
+
+	@Override
+	public void preInit() {
+		super.preInit();
+
+		ClientKeyListener listener = new ClientKeyListener();
+		MinecraftForge.EVENT_BUS.register(listener);
+		Plethora.network.registerMessage(listener, ListenMessage.class, Packets.LISTEN_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new ServerKeyListener(), KeyMessage.class, Packets.KEY_MESSAGE, Side.SERVER);
+
+		PlethoraAPI.instance().moduleRegistry().registerPocketUpgrade(new ItemStack(this));
 	}
 
 	@Override
@@ -203,6 +243,46 @@ public class ItemKeyboard extends ItemBase {
 		// Cancel all right clicks on blocks with this item
 		if (!event.getEntityLiving().isSneaking()) {
 			event.setCanceled(true);
+		}
+	}
+
+	private static class KeyboardModule extends BasicModuleHandler implements ICapabilityProvider, IModuleHandler {
+		public static KeyboardModule INSTANCE = new KeyboardModule();
+
+		private KeyboardModule() {
+			super(new ResourceLocation(Plethora.ID, "keyboard"), Registry.itemKeyboard);
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY ? (T) this : null;
+		}
+
+		@Override
+		public void getAdditionalContext(@Nonnull final IModuleAccess access, @Nonnull IContextBuilder builder) {
+			super.getAdditionalContext(access, builder);
+
+			Object owner = access.getOwner();
+			if (owner instanceof EntityPlayerMP) {
+				final EntityPlayerMP player = (EntityPlayerMP) owner;
+				builder.addAttachable(new IAttachable() {
+					@Override
+					public void attach() {
+						ServerKeyListener.add(player, access);
+					}
+
+					@Override
+					public void detach() {
+						ServerKeyListener.remove(player, access);
+					}
+				});
+			}
 		}
 	}
 }

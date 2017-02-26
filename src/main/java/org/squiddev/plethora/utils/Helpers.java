@@ -1,5 +1,6 @@
 package org.squiddev.plethora.utils;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -23,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
@@ -151,13 +153,16 @@ public class Helpers {
 		return nextId(world, peripheral.getType());
 	}
 
+	public static String snakeCase(String name) {
+		return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static void setupModel(Item item, int damage, String name) {
-		name = Plethora.RESOURCE_DOMAIN + ":" + name;
+		name = Plethora.RESOURCE_DOMAIN + ":" + snakeCase(name);
 
 		net.minecraft.client.renderer.block.model.ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
-		ModelBakery.registerItemVariants(item, res);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, damage, res);
+		ModelLoader.setCustomModelResourceLocation(item, damage, res);
 	}
 
 	public static final Random RANDOM = new Random();
@@ -403,6 +408,21 @@ public class Helpers {
 		} else {
 			DebugLogger.error(message);
 		}
+	}
+
+	public static int hashStack(ItemStack stack) {
+		int hash = stack.getItem().hashCode() * 31 + stack.getItemDamage();
+		if (stack.hasTagCompound()) hash = hash * 31 + stack.getTagCompound().hashCode();
+		return hash;
+	}
+
+	public static int hashStacks(ItemStack[] stacks) {
+		int hash = 0;
+		for (ItemStack stack : stacks) {
+			hash *= 31;
+			if (stack != null) hash += Helpers.hashStack(stack);
+		}
+		return hash;
 	}
 
 	public static boolean isHolding(EntityLivingBase entity, Item item) {

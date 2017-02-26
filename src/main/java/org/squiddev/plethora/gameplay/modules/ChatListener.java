@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -27,7 +26,7 @@ public class ChatListener extends Module {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent
 	public void onServerChat(ServerChatEvent event) {
 		Entity sender = event.getPlayer();
 		if (sender instanceof PlethoraFakePlayer) {
@@ -35,12 +34,19 @@ public class ChatListener extends Module {
 			sender = owner == null ? sender : owner;
 		}
 
+		// Handle captures
 		for (Listener listener : listeners) {
 			if (listener.owner == sender) {
-				if (listener.handle(event.getMessage())) {
+				if (listener.handleCapture(event.getMessage())) {
 					event.setCanceled(true);
+					return;
 				}
 			}
+		}
+
+		// Handle chat messages for everyone
+		for (Listener listener : listeners) {
+			listener.handleMessage(sender, event.message);
 		}
 	}
 
@@ -54,21 +60,19 @@ public class ChatListener extends Module {
 			this.owner = owner;
 		}
 
-		public void addPattern(String pattern) {
+		public synchronized void addPattern(String pattern) {
 			patterns.add(pattern);
 		}
 
-		public boolean removePattern(String pattern) {
+		public synchronized boolean removePattern(String pattern) {
 			return patterns.remove(pattern);
 		}
 
-		public void clearPatterns() {
+		public synchronized void clearPatterns() {
 			patterns.clear();
 		}
 
-		private boolean handle(String message) {
-			access.queueEvent("chat_message", message);
-
+		private synchronized boolean handleCapture(String message) {
 			for (String pattern : patterns) {
 				if (LuaPattern.matches(message, pattern)) {
 					access.queueEvent("chat_capture", message, pattern);
@@ -77,6 +81,10 @@ public class ChatListener extends Module {
 			}
 
 			return false;
+		}
+
+		private void handleMessage(Entity sender, String message) {
+			access.queueEvent("chat_message", sender.getDisplayName().getUnformattedText(), message, sender.getPersistentID().toString());
 		}
 
 		@Override
@@ -92,6 +100,12 @@ public class ChatListener extends Module {
 		@Nonnull
 		@Override
 		public Listener get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public Listener safeGet() throws LuaException {
 			return this;
 		}
 	}

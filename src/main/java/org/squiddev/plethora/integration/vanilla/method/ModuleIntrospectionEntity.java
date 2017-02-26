@@ -23,7 +23,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
  */
 public class ModuleIntrospectionEntity {
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityPlayer.class, worldThread = true,
+		module = PlethoraModules.INTROSPECTION_S, target = EntityPlayer.class, worldThread = false,
 		doc = "function():table -- Get this player's inventory"
 	)
 	@Nullable
@@ -34,7 +34,7 @@ public class ModuleIntrospectionEntity {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityLivingBase.class, worldThread = true,
+		module = PlethoraModules.INTROSPECTION_S, target = EntityLivingBase.class, worldThread = false,
 		doc = "function():table -- Get this entity's held item and armor"
 	)
 	@Nullable
@@ -45,7 +45,7 @@ public class ModuleIntrospectionEntity {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityPlayer.class, worldThread = true,
+		module = PlethoraModules.INTROSPECTION_S, target = EntityPlayer.class, worldThread = false,
 		doc = "function():table -- Get this player's ender chest"
 	)
 	@Nullable

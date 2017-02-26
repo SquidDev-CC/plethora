@@ -1,26 +1,18 @@
 package org.squiddev.plethora.core.executor;
 
-
-import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.plethora.api.method.IResultExecutor;
+import net.minecraft.util.ITickable;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-/**
- * Delaying version of {@link dan200.computercraft.core.computer.MainThread}.
- *
- * The implementation of this is a bit odd. It involves a linked list rather than
- * a normal ArrayList as we need to remove any item, whilst still allowing new tasks
- * to be added.
- */
-public final class DelayedExecutor implements IExecutorFactory {
+public class AbstractDelayedExecutor implements ITickable {
 	private static final String EVENT_NAME = "plethora_task";
 
 	private static final int MAX_TASKS_TOTAL = 5000;
@@ -33,7 +25,13 @@ public final class DelayedExecutor implements IExecutorFactory {
 	private final Object lock = new Object();
 	private long lastTask = 0;
 
-	private boolean addTask(LuaTask task) {
+	protected long nextId() {
+		synchronized (lock) {
+			return ++lastTask;
+		}
+	}
+
+	protected boolean addTask(LuaTask task) {
 		synchronized (lock) {
 			if (taskCount < MAX_TASKS_TOTAL) {
 				if (last != null) last.next = task;
@@ -47,6 +45,7 @@ public final class DelayedExecutor implements IExecutorFactory {
 		}
 	}
 
+	@Override
 	public void update() {
 		LuaTask previous = null;
 		LuaTask task = first;
@@ -76,12 +75,12 @@ public final class DelayedExecutor implements IExecutorFactory {
 		}
 	}
 
-	private void cancel(long id) {
+	private void cancel(LuaTask search) {
 		synchronized (lock) {
 			LuaTask previous = null;
 			LuaTask task = first;
 			while (task != null) {
-				if (task.id == id) {
+				if (task == search) {
 					if (previous == null) {
 						first = task.next;
 					} else {
@@ -98,71 +97,33 @@ public final class DelayedExecutor implements IExecutorFactory {
 	}
 
 	public void reset() {
+		LuaTask task = first;
+		while (task != null) {
+			task.onCancel();
+			task = task.next;
+		}
+
 		first = null;
 		last = null;
 		taskCount = 0;
 		lastTask = 0;
 	}
 
-	@Nonnull
-	public IResultExecutor createExecutor(@Nullable final IComputerAccess access) {
-		if (access == null) {
-			return DefaultExecutor.INSTANCE;
-		}
-
-		return new IResultExecutor() {
-			@Nullable
-			@Override
-			public Object[] execute(@Nonnull MethodResult result, @Nonnull ILuaContext context) throws LuaException, InterruptedException {
-				Preconditions.checkNotNull(result, "result cannot be null");
-
-				if (result.isFinal()) {
-					return result.getResult();
-				} else {
-					long id;
-					synchronized (lock) {
-						id = ++lastTask;
-					}
-
-					LuaTask task = new LuaTask(access, result, id);
-					if (addTask(task)) {
-						return task.await(context);
-					} else {
-						throw new LuaException("Too many tasks");
-					}
-				}
-			}
-		};
-	}
-
-
-	private final class LuaTask {
-		// Linked list shenanigans
+	protected abstract static class LuaTask {
 		private LuaTask next;
-
-		// Resuming info
-		private final long id;
-		private final IComputerAccess access;
-
 		private int remaining;
 		private Callable<MethodResult> task;
-		private Object[] result;
 
-		private LuaTask(IComputerAccess access, MethodResult task, long id) {
-			this.id = id;
-			this.access = access;
-
+		protected LuaTask(MethodResult task) {
 			this.task = task.getCallback();
 			remaining = task.getDelay();
 		}
 
-		private void yieldSuccess() {
-			access.queueEvent(EVENT_NAME, new Object[]{id, true});
-		}
+		protected abstract void onSuccess(Object[] result);
 
-		private void yieldFailure(String message) {
-			access.queueEvent(EVENT_NAME, new Object[]{id, false, message});
-		}
+		protected abstract void onFailure(Throwable e);
+
+		protected abstract void onCancel();
 
 		private void update() {
 			if (remaining < 0) {
@@ -176,17 +137,16 @@ public final class DelayedExecutor implements IExecutorFactory {
 				try {
 					MethodResult next = task.call();
 					if (next.isFinal()) {
-						result = next.getResult();
-						yieldSuccess();
+						onSuccess(next.getResult());
 					} else {
 						task = next.getCallback();
 						remaining = next.getDelay();
 					}
 				} catch (LuaException e) {
-					yieldFailure(e.getMessage());
+					onFailure(e);
 				} catch (Throwable e) {
 					DebugLogger.error("Error in task: ", e);
-					yieldFailure("Java Exception Thrown: " + e.toString());
+					onFailure(e);
 				}
 			} else {
 				remaining--;
@@ -195,6 +155,40 @@ public final class DelayedExecutor implements IExecutorFactory {
 
 		public boolean isDone() {
 			return remaining < 0;
+		}
+	}
+
+
+	protected final class SyncLuaTask extends LuaTask {
+		// Resuming info
+		private final IComputerAccess access;
+		private Object[] result;
+		private final long id;
+
+		public SyncLuaTask(IComputerAccess access, MethodResult task, long id) {
+			super(task);
+			this.id = id;
+			this.access = access;
+		}
+
+		@Override
+		protected void onSuccess(Object[] result) {
+			this.result = result;
+			access.queueEvent(EVENT_NAME, new Object[]{id, true});
+		}
+
+		@Override
+		protected void onFailure(Throwable e) {
+			String message = e instanceof LuaException
+				? e.getMessage()
+				: "Java Exception Thrown: " + e.toString();
+
+			access.queueEvent(EVENT_NAME, new Object[]{id, false, message});
+		}
+
+		@Override
+		protected void onCancel() {
+			access.queueEvent(EVENT_NAME, new Object[]{id, false, "Task cancelled"});
 		}
 
 		public Object[] await(ILuaContext context) throws LuaException, InterruptedException {
@@ -205,10 +199,10 @@ public final class DelayedExecutor implements IExecutorFactory {
 				}
 				while (response.length < 3 || !(response[1] instanceof Number) || !(response[2] instanceof Boolean) || (long) ((Number) response[1]).intValue() != id);
 			} catch (InterruptedException e) {
-				cancel(id);
+				cancel(this);
 				throw e;
 			} catch (LuaException e) {
-				cancel(id);
+				cancel(this);
 				throw e;
 			}
 
@@ -221,6 +215,46 @@ public final class DelayedExecutor implements IExecutorFactory {
 			} else {
 				return result;
 			}
+		}
+	}
+
+	private final class DirectFuture<V> extends AbstractFuture<V> {
+		@Override
+		public boolean set(@Nullable V value) {
+			return super.set(value);
+		}
+
+		@Override
+		public boolean setException(Throwable throwable) {
+			return super.setException(throwable);
+		}
+	}
+
+	protected final class AsyncLuaTask extends LuaTask {
+		private final DirectFuture<Object[]> future;
+
+		public AsyncLuaTask(MethodResult task) {
+			super(task);
+			this.future = new DirectFuture<Object[]>();
+		}
+
+		@Override
+		protected void onSuccess(Object[] result) {
+			future.set(result);
+		}
+
+		@Override
+		protected void onFailure(Throwable e) {
+			future.setException(e);
+		}
+
+		@Override
+		protected void onCancel() {
+			future.cancel(true);
+		}
+
+		public ListenableFuture<Object[]> getFuture() {
+			return future;
 		}
 	}
 }

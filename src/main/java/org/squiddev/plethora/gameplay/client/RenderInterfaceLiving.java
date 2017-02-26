@@ -1,13 +1,16 @@
 package org.squiddev.plethora.gameplay.client;
 
+import baubles.common.Baubles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,6 +69,13 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		inject(EntitySquid.class, 2, 3, -2);
 		inject(EntityVillager.class, 0, 0, 0);
 		inject(EntityWolf.class, 0, 4, 3);
+
+		// Inject the baubles renderer
+		if (Loader.isModLoaded(Baubles.MODID)) {
+			for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
+				render.addLayer(new LayerBaublesInterface(render.getMainModel()));
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

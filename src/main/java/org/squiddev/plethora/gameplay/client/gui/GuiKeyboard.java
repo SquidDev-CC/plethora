@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.squiddev.plethora.gameplay.ContainerKeyboard;
+import org.squiddev.plethora.gameplay.keyboard.ContainerKeyboard;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.io.IOException;

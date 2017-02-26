@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core.executor;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
@@ -41,6 +42,12 @@ public final class DefaultExecutor implements IResultExecutor, IExecutorFactory 
 			}
 			return task.returnValue;
 		}
+	}
+
+	@Nonnull
+	@Override
+	public ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException {
+		return SharedDelayedExecutor.INSTANCE.executeAsync(result);
 	}
 
 	@Nonnull

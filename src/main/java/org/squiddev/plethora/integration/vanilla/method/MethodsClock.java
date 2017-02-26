@@ -12,7 +12,7 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
  */
 public class MethodsClock {
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = false,
 		doc = "function():integer -- The game time in ticks"
 	)
 	public static Object[] getTime(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
@@ -21,7 +21,7 @@ public class MethodsClock {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = false,
 		doc = "function():integer -- The current day of this world"
 	)
 	public static Object[] getDay(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
@@ -30,7 +30,7 @@ public class MethodsClock {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = false,
 		doc = "function():number -- The angle the sun or moon lies at in degrees. 0 is directly overhead."
 	)
 	public static Object[] getCelestialAngle(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
@@ -39,7 +39,7 @@ public class MethodsClock {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.clock, target = IWorldLocation.class, worldThread = false,
 		doc = "function():number -- The current phase of the moon"
 	)
 	public static Object[] getMoonPhase(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {

@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 public class BoundedEntityReference<T extends Entity> extends EntityReference<T> {
 	private final IWorldLocation location;
 	private final int radius;
+	private boolean valid = true;
 
 	public BoundedEntityReference(T entity, IWorldLocation location, int radius) {
 		super(entity);
@@ -33,9 +34,19 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 				pos.yCoord < -radius || pos.yCoord > radius ||
 				pos.zCoord < -radius || pos.zCoord > radius
 			) {
+			valid = false;
 			throw new LuaException("The entity is out of range");
 		}
 
+		valid = true;
+		return entity;
+	}
+
+	@Nonnull
+	@Override
+	public T safeGet() throws LuaException {
+		T entity = super.safeGet();
+		if (!valid) throw new LuaException("The entity is out of range");
 		return entity;
 	}
 }
