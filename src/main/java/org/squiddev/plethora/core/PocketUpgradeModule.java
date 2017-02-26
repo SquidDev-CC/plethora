@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -188,9 +189,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 			// Update the enqueued method
 			IExecutorFactory executor = methodWrapper.getExecutorFactory();
-			if (executor instanceof ContextDelayedExecutor) {
-				((ContextDelayedExecutor) executor).update();
-			}
+			if (executor instanceof ITickable) ((ITickable) executor).update();
 		}
 	}
 

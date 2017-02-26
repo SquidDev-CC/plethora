@@ -4,13 +4,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.util.ITickable;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TrackingExecutor implements IExecutorFactory {
+public class TrackingExecutor implements IExecutorFactory, ITickable {
 	private final IExecutorFactory parent;
 	private boolean isAttached;
 
@@ -47,5 +48,10 @@ public class TrackingExecutor implements IExecutorFactory {
 				return executor.executeAsync(result);
 			}
 		};
+	}
+
+	@Override
+	public void update() {
+		if (parent instanceof ITickable) ((ITickable) parent).update();
 	}
 }

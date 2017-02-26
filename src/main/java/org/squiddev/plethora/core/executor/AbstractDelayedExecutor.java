@@ -5,13 +5,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.util.ITickable;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-public class AbstractDelayedExecutor {
+public class AbstractDelayedExecutor implements ITickable {
 	private static final String EVENT_NAME = "plethora_task";
 
 	private static final int MAX_TASKS_TOTAL = 5000;
@@ -44,6 +45,7 @@ public class AbstractDelayedExecutor {
 		}
 	}
 
+	@Override
 	public void update() {
 		LuaTask previous = null;
 		LuaTask task = first;

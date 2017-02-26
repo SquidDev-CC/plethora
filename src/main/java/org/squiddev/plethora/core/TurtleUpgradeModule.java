@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -159,10 +160,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		IPeripheral peripheral = turtle.getPeripheral(side);
 		if (peripheral instanceof MethodWrapperPeripheral) {
 			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
-
-			if (executor instanceof ContextDelayedExecutor) {
-				((ContextDelayedExecutor) executor).update();
-			}
+			if (executor instanceof ITickable) ((ITickable) executor).update();
 		}
 	}
 
