@@ -56,6 +56,17 @@ public class GuiNeuralInterface extends GuiContainer {
 	}
 
 	@Override
+	public void handleInput() throws IOException {
+		// JEI incorrectly sets the repeat events filter, so we force it here.
+		boolean previous = Keyboard.areRepeatEventsEnabled();
+		if (!previous) Keyboard.enableRepeatEvents(true);
+
+		super.handleInput();
+
+		if (!previous) Keyboard.enableRepeatEvents(false);
+	}
+
+	@Override
 	public void onGuiClosed() {
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents(false);
