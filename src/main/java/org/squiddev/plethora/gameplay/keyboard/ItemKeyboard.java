@@ -11,29 +11,40 @@ import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IAttachable;
+import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.IContextBuilder;
+import org.squiddev.plethora.api.module.BasicModuleHandler;
+import org.squiddev.plethora.api.module.IModuleAccess;
+import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
+import org.squiddev.plethora.gameplay.registry.Packets;
+import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.TinySlot;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.INSTANCE_ID;
@@ -175,6 +186,23 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return KeyboardModule.INSTANCE;
+	}
+
+	@Override
+	public void preInit() {
+		super.preInit();
+
+		ClientKeyListener listener = new ClientKeyListener();
+		MinecraftForge.EVENT_BUS.register(listener);
+		Plethora.network.registerMessage(listener, ListenMessage.class, Packets.LISTEN_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new ServerKeyListener(), KeyMessage.class, Packets.KEY_MESSAGE, Side.SERVER);
+
+		PlethoraAPI.instance().moduleRegistry().registerPocketUpgrade(new ItemStack(this));
+	}
+
+	@Override
 	public void init() {
 		super.init();
 
@@ -200,6 +228,46 @@ public class ItemKeyboard extends ItemBase {
 		// Cancel all right clicks on blocks with this item
 		if (!event.entityPlayer.isSneaking()) {
 			event.setCanceled(true);
+		}
+	}
+
+	private static class KeyboardModule extends BasicModuleHandler implements ICapabilityProvider, IModuleHandler {
+		public static KeyboardModule INSTANCE = new KeyboardModule();
+
+		private KeyboardModule() {
+			super(new ResourceLocation(Plethora.ID, "keyboard"), Registry.itemKeyboard);
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			return capability == Constants.MODULE_HANDLER_CAPABILITY ? (T) this : null;
+		}
+
+		@Override
+		public void getAdditionalContext(@Nonnull final IModuleAccess access, @Nonnull IContextBuilder builder) {
+			super.getAdditionalContext(access, builder);
+
+			Object owner = access.getOwner();
+			if (owner instanceof EntityPlayerMP) {
+				final EntityPlayerMP player = (EntityPlayerMP) owner;
+				builder.addAttachable(new IAttachable() {
+					@Override
+					public void attach() {
+						ServerKeyListener.add(player, access);
+					}
+
+					@Override
+					public void detach() {
+						ServerKeyListener.remove(player, access);
+					}
+				});
+			}
 		}
 	}
 }
