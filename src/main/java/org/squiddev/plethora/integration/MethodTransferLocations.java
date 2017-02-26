@@ -6,7 +6,6 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -15,22 +14,9 @@ import java.util.concurrent.Callable;
  * Lists all available transfer locations
  */
 @IMethod.Inject(IMethodCollection.class)
-public class MethodTransferLocations implements IMethod<IMethodCollection> {
-	@Nonnull
-	@Override
-	public String getName() {
-		return "getTransferLocations";
-	}
-
-	@Nullable
-	@Override
-	public String getDocString() {
-		return "function([location:string]):table -- Get a list of all available objects which can be transferred to or from";
-	}
-
-	@Override
-	public int getPriority() {
-		return 0;
+public class MethodTransferLocations extends BasicMethod<IMethodCollection> {
+	public MethodTransferLocations() {
+		super("getTransferLocations", "function([location:string]):table -- Get a list of all available objects which can be transferred to or from");
 	}
 
 	@Override
