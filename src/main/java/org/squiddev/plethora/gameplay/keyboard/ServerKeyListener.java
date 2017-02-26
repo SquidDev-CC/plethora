@@ -23,9 +23,11 @@ public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> 
 			if (accesses == null) listeners.put(player, accesses = Sets.newHashSet());
 
 			// Notify the client to start listening
-			if (accesses.isEmpty() && accesses.add(access)) {
+			if (accesses.isEmpty()) {
 				Plethora.network.sendTo(new ListenMessage(true), player);
 			}
+
+			accesses.add(access);
 		}
 	}
 
@@ -61,7 +63,7 @@ public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> 
 					}
 
 					for (Integer up : message.ups) {
-						access.queueEvent("key_up", up, "keyboard");
+						access.queueEvent("key_up", up);
 					}
 				}
 			}

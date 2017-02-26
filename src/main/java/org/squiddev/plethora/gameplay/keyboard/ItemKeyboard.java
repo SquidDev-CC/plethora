@@ -64,11 +64,13 @@ public class ItemKeyboard extends ItemBase {
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking() && !world.isRemote) {
 			TileEntity tile = world.getTileEntity(pos);
-			NBTTagCompound tag = getTag(stack);
+			NBTTagCompound tag = stack.getTagCompound();
 			if (tile instanceof IComputerTile) {
 				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
 					return false;
 				}
+
+				if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
 
 				tag.setInteger("x", pos.getX());
 				tag.setInteger("y", pos.getY());
@@ -80,7 +82,7 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(INSTANCE_ID);
 
 				player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("item.plethora.keyboard.bound")));
-			} else if (tag.hasKey("x")) {
+			} else if (tag != null && tag.hasKey("x")) {
 				player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("item.plethora.keyboard.cleared")));
 
 				tag.removeTag("x");
@@ -90,6 +92,10 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 			}
+
+			// Clear the tag compound: pocket upgrades check this when determining if something can be stacked
+			// so we want the default to be null.
+			if (tag != null && tag.hasNoTags()) stack.setTagCompound(null);
 
 			player.inventory.markDirty();
 
@@ -104,8 +110,8 @@ public class ItemKeyboard extends ItemBase {
 		super.onUpdate(stack, world, entity, itemSlot, isSelected);
 		if (world.isRemote) return;
 
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			int session = ComputerCraft.serverComputerRegistry.getSessionID();
 			boolean dirty = false;
 			if (tag.getInteger(SESSION_ID) != session) {
@@ -140,8 +146,8 @@ public class ItemKeyboard extends ItemBase {
 		if (world.isRemote) return true;
 
 		ServerComputer computer;
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
 			TinySlot slot = NeuralHelpers.getSlot(player);
@@ -173,8 +179,8 @@ public class ItemKeyboard extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
 		super.addInformation(stack, player, out, um);
 
-		NBTTagCompound tag = getTag(stack);
-		if (tag.hasKey("x", 99)) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("x", 99)) {
 			ClientComputer computer = getBlockComputer(ComputerCraft.clientComputerRegistry, tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
 			if (computer != null) {
