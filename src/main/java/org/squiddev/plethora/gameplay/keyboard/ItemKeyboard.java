@@ -17,13 +17,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,9 +42,9 @@ import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.gameplay.registry.Packets;
 import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
@@ -164,7 +160,7 @@ public class ItemKeyboard extends ItemBase {
 			TinySlot slot = NeuralHelpers.getSlot(player);
 			if (slot == null) return EnumActionResult.FAIL;
 
-			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot.getInventory());
+			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot);
 		}
 
 		if (computer == null) return EnumActionResult.FAIL;
@@ -203,6 +199,7 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return KeyboardModule.INSTANCE;

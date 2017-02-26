@@ -42,7 +42,7 @@ public class ItemNeuralConnector extends ItemBase {
 		if (!world.isRemote) {
 			TinySlot neuralStack = NeuralHelpers.getSlot(player);
 			if (neuralStack != null) {
-				ServerComputer computer = ItemComputerHandler.getServer(neuralStack.getStack(), player, neuralStack.getInventory());
+				ServerComputer computer = ItemComputerHandler.getServer(neuralStack.getStack(), player, neuralStack);
 				if (computer != null) {
 					computer.turnOn();
 					GuiHandler.openNeuralPlayer(player, world);

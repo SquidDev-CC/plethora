@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Optional;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.IContainerComputer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
@@ -18,7 +19,7 @@ public class ContainerMinecartComputer extends Container implements IContainerCo
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(@Nonnull EntityPlayer player) {
 		return minecart.isUsable(player);
 	}
 

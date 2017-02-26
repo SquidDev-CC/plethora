@@ -46,7 +46,7 @@ public class ChatListener extends Module {
 
 		// Handle chat messages for everyone
 		for (Listener listener : listeners) {
-			listener.handleMessage(sender, event.message);
+			listener.handleMessage(sender, event.getMessage());
 		}
 	}
 

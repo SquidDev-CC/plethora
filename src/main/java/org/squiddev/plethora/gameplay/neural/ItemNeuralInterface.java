@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.neural;
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
@@ -15,7 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -31,6 +31,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -44,8 +45,8 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
-import org.squiddev.plethora.utils.TinySlot;
 import org.squiddev.plethora.utils.PlayerHelpers;
+import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -104,10 +105,24 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			}
 		}
 
+		if (Loader.isModLoaded(Baubles.MODID)) {
+			IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
+			for (int slot : NeuralHelpers.getBaubleType().getValidSlots()) {
+				if (handler.getStackInSlot(slot) == null) {
+					if (!world.isRemote) {
+						handler.setStackInSlot(slot, stack.copy());
+						if (!player.capabilities.isCreativeMode) stack.stackSize--;
+					}
+
+					return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+				}
+			}
+		}
+
 		return super.onItemRightClick(stack, world, player, hand);
 	}
 
-	private void onUpdate(ItemStack stack, IInventory inventory, EntityLivingBase player, boolean forceActive) {
+	private void onUpdate(ItemStack stack, TinySlot inventory, EntityLivingBase player, boolean forceActive) {
 		if (player.worldObj.isRemote) {
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
@@ -224,31 +239,22 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	@Optional.Method(modid = Baubles.MODID)
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		IInventory inventory = BaublesApi.getBaubles(player);
-		if (inventory.getStackInSlot(NeuralHelpers.BAUBLES_SLOT) == null) {
-			if (!world.isRemote) {
-				inventory.setInventorySlotContents(NeuralHelpers.BAUBLES_SLOT, stack.copy());
-				if (!player.capabilities.isCreativeMode) stack.stackSize--;
-			}
-
-			return stack;
-		}
-
-		return super.onItemRightClick(stack, world, player);
-	}
-
-	@Override
-	@Optional.Method(modid = Baubles.MODID)
 	public BaubleType getBaubleType(ItemStack stack) {
-		return BaubleType.AMULET;
+		return NeuralHelpers.getBaubleType();
 	}
 
 	@Override
 	@Optional.Method(modid = Baubles.MODID)
 	public void onWornTick(ItemStack stack, EntityLivingBase player) {
 		if (!(player instanceof EntityPlayer)) return;
-		onUpdate(stack, BaublesApi.getBaubles((EntityPlayer) player), player, true);
+
+		IBaublesItemHandler handler = BaublesApi.getBaublesHandler((EntityPlayer) player);
+		for (int slot : NeuralHelpers.getBaubleType().getValidSlots()) {
+			ItemStack slotStack = handler.getStackInSlot(slot);
+			if (slotStack == stack) {
+				onUpdate(stack, new TinySlot.BaublesSlot(stack, handler, slot), player, true);
+			}
+		}
 	}
 
 	@Override
@@ -271,6 +277,12 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Optional.Method(modid = Baubles.MODID)
 	public boolean canUnequip(ItemStack stack, EntityLivingBase player) {
 		return true;
+	}
+
+	@Override
+	@Optional.Method(modid = Baubles.MODID)
+	public boolean willAutoSync(ItemStack itemstack, EntityLivingBase player) {
+		return false;
 	}
 
 	private static class InvProvider implements ICapabilityProvider {
@@ -326,15 +338,20 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		super.onArmorTick(world, player, stack);
-		onUpdate(stack, player.inventory, player, true);
+		onUpdate(stack, new TinySlot.InventorySlot(stack, player.inventory), player, true);
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int um1, boolean um2) {
 		super.onUpdate(stack, world, entity, um1, um2);
 		if (entity instanceof EntityLivingBase) {
-			IInventory inventory = entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory : null;
-			onUpdate(stack, inventory, (EntityLivingBase) entity, false);
+			TinySlot slot;
+			if (entity instanceof EntityPlayer) {
+				slot = new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
+			} else {
+				slot = new TinySlot(stack);
+			}
+			onUpdate(stack, slot, (EntityLivingBase) entity, false);
 		}
 	}
 
@@ -363,7 +380,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 		TinySlot slot = NeuralHelpers.getSlot(event.getEntityLiving());
 		if (slot != null) {
-			onUpdate(slot.getStack(), slot.getInventory(), event.getEntityLiving(), true);
+			onUpdate(slot.getStack(), slot, event.getEntityLiving(), true);
 		}
 	}
 

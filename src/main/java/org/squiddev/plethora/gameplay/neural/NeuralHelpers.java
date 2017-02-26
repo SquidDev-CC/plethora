@@ -1,6 +1,8 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -8,13 +10,13 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
@@ -44,7 +46,6 @@ import static org.squiddev.plethora.api.reference.Reference.entity;
 
 public final class NeuralHelpers {
 	public static final EntityEquipmentSlot ARMOR_SLOT = EntityEquipmentSlot.HEAD;
-	public static final int BAUBLES_SLOT = 0;
 
 	private NeuralHelpers() {
 		throw new IllegalStateException("Cannot instantiate");
@@ -62,14 +63,35 @@ public final class NeuralHelpers {
 		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
 		if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
-			return new TinySlot(stack, entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory : null);
+			if (entity instanceof EntityPlayer) {
+				return new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
+			} else {
+				return new TinySlot(stack);
+			}
 		}
 
 		if (Loader.isModLoaded(Baubles.MODID) && entity instanceof EntityPlayer) {
-			IInventory inventory = BaublesApi.getBaubles((EntityPlayer) entity);
-			stack = inventory.getStackInSlot(BAUBLES_SLOT);
+			TinySlot slot = getBauble((EntityPlayer) entity);
+			if (slot != null) return slot;
+		}
+
+		return null;
+	}
+
+	@Nonnull
+	@Optional.Method(modid = Baubles.MODID)
+	public static BaubleType getBaubleType() {
+		return BaubleType.HEAD;
+	}
+
+	@Nullable
+	@Optional.Method(modid = Baubles.MODID)
+	public static TinySlot getBauble(@Nonnull EntityPlayer player) {
+		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
+		for (int slot : getBaubleType().getValidSlots()) {
+			ItemStack stack = handler.getStackInSlot(slot);
 			if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
-				return new TinySlot(stack, inventory);
+				return new TinySlot.BaublesSlot(stack, handler, slot);
 			}
 		}
 

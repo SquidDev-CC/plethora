@@ -12,17 +12,22 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,9 +44,9 @@ import static org.squiddev.plethora.gameplay.Plethora.ID;
 public class EntityMinecartComputer extends EntityMinecart {
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
 
-	private static final int INSTANCE_SLOT = 23;
-	private static final int SESSION_SLOT = 24;
-	private static final int FAMILY_SLOT = 25;
+	private static final DataParameter<Integer> INSTANCE_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> SESSION_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
+	private static final DataParameter<Byte> FAMILY_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.BYTE);
 
 	private int id;
 	private boolean on;
@@ -78,25 +83,25 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 	protected void entityInit() {
 		super.entityInit();
-		dataWatcher.addObject(INSTANCE_SLOT, -1);
-		dataWatcher.addObject(SESSION_SLOT, -1);
-		dataWatcher.addObject(FAMILY_SLOT, (byte) 0);
+		dataManager.register(INSTANCE_SLOT, -1);
+		dataManager.register(SESSION_SLOT, -1);
+		dataManager.register(FAMILY_SLOT, (byte) 0);
 	}
 
 	private int getInstanceId() {
-		return dataWatcher.getWatchableObjectInt(INSTANCE_SLOT);
+		return dataManager.get(INSTANCE_SLOT);
 	}
 
 	private int getSessionId() {
-		return dataWatcher.getWatchableObjectInt(SESSION_SLOT);
+		return dataManager.get(SESSION_SLOT);
 	}
 
 	public ComputerFamily getFamily() {
-		return FAMILIES[dataWatcher.getWatchableObjectByte(FAMILY_SLOT)];
+		return FAMILIES[dataManager.get(FAMILY_SLOT)];
 	}
 
 	private void setFamily(ComputerFamily family) {
-		dataWatcher.updateObject(FAMILY_SLOT, (byte) family.ordinal());
+		dataManager.set(FAMILY_SLOT, (byte) family.ordinal());
 	}
 
 	@Override
@@ -121,8 +126,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 
 	@Override
-	public boolean interactFirst(EntityPlayer player) {
-		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player))) return true;
+	public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand) {
+		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, stack, hand))) return true;
 
 		if (!this.worldObj.isRemote) {
 			if (isUsable(player)) {
@@ -137,7 +142,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound tag) {
+	public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
 
 		tag.setInteger("computerId", id);
@@ -173,8 +178,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 			manager.add(instanceId, computer);
 
-			dataWatcher.updateObject(SESSION_SLOT, sessionId);
-			dataWatcher.updateObject(INSTANCE_SLOT, instanceId);
+			dataManager.set(SESSION_SLOT, sessionId);
+			dataManager.set(INSTANCE_SLOT, instanceId);
 		}
 
 		return computer;
@@ -202,9 +207,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 		return computer;
 	}
 
+	@Nonnull
 	@Override
-	public EnumMinecartType getMinecartType() {
-		return EnumMinecartType.RIDEABLE;
+	public Type getType() {
+		return Type.RIDEABLE;
 	}
 
 	@Override
@@ -212,6 +218,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	@SuppressWarnings("unchecked")
 	public IBlockState getDisplayTile() {
@@ -251,7 +258,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		setDead();
 
 		if (worldObj.getGameRules().getBoolean("doEntityDrops")) {
-			entityDropItem(new ItemStack(Items.minecart, 1), 0);
+			entityDropItem(new ItemStack(Items.MINECART, 1), 0);
 			entityDropItem(ComputerItemFactory.create(id, getCustomNameTag(), getFamily()), 0);
 		}
 	}
@@ -262,16 +269,16 @@ public class EntityMinecartComputer extends EntityMinecart {
 		if (getFamily() == ComputerFamily.Command) {
 			if (worldObj.isRemote) return true;
 
-			MinecraftServer server = MinecraftServer.getServer();
+			MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).mcServer : null;
 			if (server == null || !server.isCommandBlockEnabled()) {
-				player.addChatComponentMessage(new ChatComponentTranslation("advMode.notEnabled"));
+				player.addChatComponentMessage(new TextComponentTranslation("advMode.notEnabled"));
 				return false;
 			}
 
 			if (ComputerCraft.canPlayerUseCommands(player) && player.capabilities.isCreativeMode) {
 				return true;
 			} else {
-				player.addChatComponentMessage(new ChatComponentTranslation("advMode.notAllowed"));
+				player.addChatComponentMessage(new TextComponentTranslation("advMode.notAllowed"));
 				return false;
 			}
 		} else {
@@ -287,10 +294,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 
 		@SubscribeEvent
-		public void onEntityInteraction(EntityInteractEvent event) {
-			EntityPlayer player = event.entityPlayer;
+		public void onEntityInteraction(PlayerInteractEvent.EntityInteract event) {
+			EntityPlayer player = event.getEntityPlayer();
 
-			ItemStack stack = player.getHeldItem();
+			ItemStack stack = event.getItemStack();
 			if (stack == null) return;
 
 			Item item = stack.getItem();
@@ -298,7 +305,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 				return;
 			}
 
-			Entity target = event.target;
+			Entity target = event.getTarget();
 			if (!(target instanceof EntityMinecartEmpty)) return;
 
 			EntityMinecartEmpty minecart = (EntityMinecartEmpty) target;
@@ -310,7 +317,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			String label = computerItem.getLabel(stack);
 			ComputerFamily family = computerItem.getFamily(stack);
 
-			player.swingItem();
+			player.swingArm(event.getHand());
 			if (minecart.worldObj.isRemote) return;
 
 			event.setCanceled(true);
@@ -319,7 +326,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 			if (!player.capabilities.isCreativeMode) {
 				stack.stackSize--;
-				if (stack.stackSize <= 0) player.setCurrentItemOrArmor(0, null);
+				if (stack.stackSize <= 0) player.setHeldItem(event.getHand(), null);
 			}
 		}
 	}

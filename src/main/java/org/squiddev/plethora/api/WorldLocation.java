@@ -28,7 +28,7 @@ public final class WorldLocation implements IWorldLocation {
 		this.loc = new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}
 
-	public WorldLocation(@Nonnull World world, @Nonnull Vec3 pos) {
+	public WorldLocation(@Nonnull World world, @Nonnull Vec3d pos) {
 		Preconditions.checkNotNull(world, "world cannot be null");
 		Preconditions.checkNotNull(pos, "pos cannot be null");
 

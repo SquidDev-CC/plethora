@@ -1,25 +1,18 @@
 package org.squiddev.plethora.utils;
 
+import baubles.api.cap.IBaublesItemHandler;
 import com.google.common.base.Preconditions;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public final class TinySlot {
-	private final IInventory inventory;
+public class TinySlot {
 	private final ItemStack stack;
 
-	public TinySlot(ItemStack stack, IInventory inventory) {
+	public TinySlot(@Nonnull ItemStack stack) {
 		Preconditions.checkNotNull(stack, "stack cannot be null");
-
-		this.inventory = inventory;
 		this.stack = stack;
-	}
-
-	public TinySlot(ItemStack stack) {
-		this(stack, null);
 	}
 
 	@Nonnull
@@ -28,11 +21,35 @@ public final class TinySlot {
 	}
 
 	public void markDirty() {
-		if (inventory != null) inventory.markDirty();
 	}
 
-	@Nullable
-	public IInventory getInventory() {
-		return inventory;
+	public static class InventorySlot extends TinySlot {
+		private final IInventory inventory;
+
+		public InventorySlot(@Nonnull ItemStack stack, @Nonnull IInventory inventory) {
+			super(stack);
+			this.inventory = inventory;
+		}
+
+		@Override
+		public void markDirty() {
+			inventory.markDirty();
+		}
+	}
+
+	public static class BaublesSlot extends TinySlot {
+		private final IBaublesItemHandler handler;
+		private final int slot;
+
+		public BaublesSlot(@Nonnull ItemStack stack, @Nonnull IBaublesItemHandler handler, int slot) {
+			super(stack);
+			this.handler = handler;
+			this.slot = slot;
+		}
+
+		@Override
+		public void markDirty() {
+			handler.setChanged(slot, true);
+		}
 	}
 }

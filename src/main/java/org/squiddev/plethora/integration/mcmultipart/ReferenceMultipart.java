@@ -29,4 +29,10 @@ public class ReferenceMultipart implements IReference<IMultipart> {
 
 		return part;
 	}
+
+	@Nonnull
+	@Override
+	public IMultipart safeGet() throws LuaException {
+		return get();
+	}
 }

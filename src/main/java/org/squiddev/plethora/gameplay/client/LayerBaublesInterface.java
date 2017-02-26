@@ -1,15 +1,15 @@
 package org.squiddev.plethora.gameplay.client;
 
-import baubles.api.BaublesApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
+import net.minecraft.init.MobEffects;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.utils.TinySlot;
+
+import javax.annotation.Nonnull;
 
 public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 	private final ModelPlayer model;
@@ -20,13 +20,13 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 	}
 
 	@Override
-	public void doRenderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-		if (player.isPotionActive(Potion.invisibility)) {
+	public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+		if (player.isPotionActive(MobEffects.INVISIBILITY)) {
 			return;
 		}
 
-		ItemStack stack = BaublesApi.getBaubles(player).getStackInSlot(NeuralHelpers.BAUBLES_SLOT);
-		if (stack == null || stack.getItem() != Registry.itemNeuralInterface) return;
+		TinySlot stack = NeuralHelpers.getBauble(player);
+		if (stack == null) return;
 
 		GlStateManager.pushMatrix();
 		GlStateManager.disableCull();
@@ -34,7 +34,7 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 		model.bipedHeadwear.postRender(PIXEL);
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-		if (player.getEquipmentInSlot(NeuralHelpers.ARMOR_SLOT) != null) {
+		if (player.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) != null) {
 			GlStateManager.translate(0.05f, 0, -0.05f);
 		}
 
