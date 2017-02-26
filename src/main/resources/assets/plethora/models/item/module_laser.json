@@ -1,7 +1,7 @@
 {
 	"parent": "builtin/generated",
 	"textures": {
-		"layer0": "plethora:items/moduleLaser"
+		"layer0": "plethora:items/module_laser"
 	},
 	"display": {
 		"thirdperson": {
