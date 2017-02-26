@@ -30,7 +30,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.Module;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -144,7 +143,6 @@ public class EntityMinecartComputer extends EntityMinecart {
 		tag.setInteger("computerId", id);
 		tag.setByte("family", (byte) getFamily().ordinal());
 		tag.setBoolean("on", startOn || on);
-		DebugLogger.debug("Is on " + (startOn || on));
 	}
 
 	@Override
@@ -170,6 +168,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 			computer = new ServerComputer(worldObj, id, getName(), instanceId, getFamily(), 51, 19);
 			computer.setWorld(getEntityWorld());
 			computer.setPosition(getPosition());
+
+			// TODO: Inject command API where required
 
 			manager.add(instanceId, computer);
 
