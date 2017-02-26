@@ -39,6 +39,7 @@ tile.plethora.manipulator.mark_2.desc=Used to interface with multiple modules fr
 
 # Keyboard
 item.plethora.keyboard.name=Keyboard
+item.plethora.keyboard.adjective=Interactive
 item.plethora.keyboard.desc=Type into computers remotely. Shift+Right-click to bind to a computer,
 item.plethora.keyboard.bound=Bound to block
 item.plethora.keyboard.cleared=Binding cleared
