@@ -91,7 +91,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 	}
 
-	private void onUpdate(ItemStack stack, IInventory inventory, EntityLivingBase player, boolean forceActive) {
+	private void onUpdate(ItemStack stack, TinySlot inventory, EntityLivingBase player, boolean forceActive) {
 		if (player.worldObj.isRemote) {
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
@@ -231,7 +231,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Optional.Method(modid = Baubles.MODID)
 	public void onWornTick(ItemStack stack, EntityLivingBase player) {
 		if (!(player instanceof EntityPlayer)) return;
-		onUpdate(stack, BaublesApi.getBaubles((EntityPlayer) player), player, true);
+		onUpdate(stack, new TinySlot.InventorySlot(stack, BaublesApi.getBaubles((EntityPlayer) player)), player, true);
 	}
 
 	@Override
@@ -309,15 +309,20 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		super.onArmorTick(world, player, stack);
-		onUpdate(stack, player.inventory, player, true);
+		onUpdate(stack, new TinySlot.InventorySlot(stack, player.inventory), player, true);
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int um1, boolean um2) {
 		super.onUpdate(stack, world, entity, um1, um2);
 		if (entity instanceof EntityLivingBase) {
-			IInventory inventory = entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory : null;
-			onUpdate(stack, inventory, (EntityLivingBase) entity, false);
+			TinySlot slot;
+			if (entity instanceof EntityPlayer) {
+				slot = new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
+			} else {
+				slot = new TinySlot(stack);
+			}
+			onUpdate(stack, slot, (EntityLivingBase) entity, false);
 		}
 	}
 
@@ -345,7 +350,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 		TinySlot slot = NeuralHelpers.getSlot(event.entityLiving);
 		if (slot != null) {
-			onUpdate(slot.getStack(), slot.getInventory(), event.entityLiving, true);
+			onUpdate(slot.getStack(), slot, event.entityLiving, true);
 		}
 	}
 

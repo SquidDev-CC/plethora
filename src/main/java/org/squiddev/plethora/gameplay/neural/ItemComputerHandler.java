@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.utils.TinySlot;
 
 import static org.squiddev.plethora.gameplay.ItemBase.getTag;
 
@@ -26,7 +27,7 @@ public final class ItemComputerHandler {
 	public static final String DIRTY = "dirty";
 	public static final String MODULE_DATA = "module_data";
 
-	public static NeuralComputer getServer(ItemStack stack, EntityLivingBase owner, IInventory inventory) {
+	public static NeuralComputer getServer(ItemStack stack, EntityLivingBase owner, TinySlot inventory) {
 		NBTTagCompound tag = getTag(stack);
 
 		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;

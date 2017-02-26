@@ -153,7 +153,7 @@ public class ItemKeyboard extends ItemBase {
 			TinySlot slot = NeuralHelpers.getSlot(player);
 			if (slot == null) return false;
 
-			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot.getInventory());
+			computer = ItemComputerHandler.getServer(slot.getStack(), player, slot);
 		}
 
 		if (computer == null) return false;

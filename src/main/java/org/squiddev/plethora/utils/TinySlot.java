@@ -5,21 +5,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public final class TinySlot {
-	private final IInventory inventory;
+public class TinySlot {
 	private final ItemStack stack;
 
-	public TinySlot(ItemStack stack, IInventory inventory) {
+	public TinySlot(@Nonnull ItemStack stack) {
 		Preconditions.checkNotNull(stack, "stack cannot be null");
-
-		this.inventory = inventory;
 		this.stack = stack;
-	}
-
-	public TinySlot(ItemStack stack) {
-		this(stack, null);
 	}
 
 	@Nonnull
@@ -28,11 +20,19 @@ public final class TinySlot {
 	}
 
 	public void markDirty() {
-		if (inventory != null) inventory.markDirty();
 	}
 
-	@Nullable
-	public IInventory getInventory() {
-		return inventory;
+	public static class InventorySlot extends TinySlot {
+		private final IInventory inventory;
+
+		public InventorySlot(@Nonnull ItemStack stack, @Nonnull IInventory inventory) {
+			super(stack);
+			this.inventory = inventory;
+		}
+
+		@Override
+		public void markDirty() {
+			inventory.markDirty();
+		}
 	}
 }
