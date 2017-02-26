@@ -15,7 +15,7 @@
 			"module_sensor": "plethora:items/module_sensor",
 			"module_kinetic": "plethora:items/module_kinetic",
 			"module_chat": "plethora:items/module_chat",
-			"module": "plethora:items/module_inknown",
+			"module": "plethora:items/module_unknown",
 			"neural_connector": "plethora:items/neural_connector",
 			"neural_interface": "plethora:items/neural_interface",
 			"keyboard": "plethora:items/keyboard"
