@@ -29,6 +29,7 @@ import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PartialContext;
 import org.squiddev.plethora.core.TrackingWrapperPeripheral;
+import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.TinySlot;
 
@@ -170,7 +171,7 @@ public final class NeuralHelpers {
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments());
+			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), stackHash);
 			for (NeuralAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}

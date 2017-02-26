@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link MethodWrapperPeripheral} which trackes
+ * {@link MethodWrapperPeripheral} which tracks peripherals attached to it.
  */
 public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 	private final TrackingExecutor trackingFactory;
@@ -28,7 +28,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 	public TrackingWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, Collection<IAttachable> attachments) {
 		super(name, owner, methods, new TrackingExecutor(factory));
 		this.attachments = attachments;
-		this.trackingFactory = (TrackingExecutor)getExecutorFactory();
+		this.trackingFactory = (TrackingExecutor) getExecutorFactory();
 	}
 
 	@Override

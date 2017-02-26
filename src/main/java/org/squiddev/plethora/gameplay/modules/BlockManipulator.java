@@ -242,7 +242,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral("manipulator", te, paired, manipulator.getFactory(), builder.getAttachments());
+			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getFactory(), builder.getAttachments(), stackHash);
 			for (ManipulatorAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}

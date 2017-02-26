@@ -211,6 +211,11 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		public Entity getEntity() {
 			return entity;
 		}
+
+		@Override
+		public boolean equals(IPeripheral other) {
+			return super.equals(other) && other instanceof PocketPeripheral && entity == ((PocketPeripheral) other).entity;
+		}
 	}
 
 	private static final class PocketModuleAccess implements IModuleAccess {
