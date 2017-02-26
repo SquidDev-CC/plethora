@@ -213,6 +213,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public IBlockState getDisplayTile() {
 		ComputerFamily family = getFamily();
 		IComputer computer = worldObj.isRemote ? getClientComputer() : getServerComputer();
