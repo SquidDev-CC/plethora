@@ -38,9 +38,9 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 		EntityPlayerMP sender = event.getPlayer();
 		ChatMessage message = new ChatMessage(sender, event.getComponent());
 
-		for (EntityPlayerMP player : players.getPlayerList()) {
+		for (EntityPlayerMP player : players.getPlayers()) {
 			if (Helpers.isHolding(player, Registry.itemModule, ItemModule.CHAT_ID)) {
-				if (player != sender && player.worldObj == sender.worldObj && player.getDistanceToEntity(sender) <= distance) {
+				if (player != sender && player.getEntityWorld() == sender.getEntityWorld() && player.getDistanceToEntity(sender) <= distance) {
 					Plethora.network.sendTo(message, player);
 				}
 			}
@@ -66,7 +66,7 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 
 		public ChatMessage(Entity entity, ITextComponent message) {
 			this(
-				entity.worldObj.provider.getDimension(),
+				entity.getEntityWorld().provider.getDimension(),
 				new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ),
 				message
 			);

@@ -37,7 +37,7 @@ public class PlethoraCore {
 	public static final String ID = "plethora-core";
 	public static final String NAME = "Plethora Core";
 	public static final String VERSION = "${mod_version}";
-	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},)";
+	public static final String DEPENDENCIES = "required-after:computercraft@[${cc_version},)";
 	public static final ResourceLocation PERIPHERAL_HANDLER_KEY = new ResourceLocation(Plethora.ID, "peripheralHandler");
 
 	private ASMDataTable asmData;

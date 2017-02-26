@@ -10,7 +10,7 @@
 			"SquidDev"
 		],
 		"dependencies": [
-			"ComputerCraft"
+			"computercraft"
 		]
 	},
 	{
@@ -24,7 +24,7 @@
 			"SquidDev"
 		],
 		"dependencies": [
-			"ComputerCraft"
+			"computercraft"
 		]
 	}
 ]

@@ -23,6 +23,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,7 +61,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	}
 
 	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family) {
-		super(minecart.worldObj, minecart.posX, minecart.posY, minecart.posZ);
+		super(minecart.getEntityWorld(), minecart.posX, minecart.posY, minecart.posZ);
 
 		rotationPitch = minecart.rotationPitch;
 		rotationYaw = minecart.rotationYaw;
@@ -107,7 +108,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		if (worldObj.isRemote) return;
+		if (getEntityWorld().isRemote) return;
 
 		ServerComputer computer = getServerComputer();
 		computer.setWorld(getEntityWorld());
@@ -126,15 +127,15 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand) {
-		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, stack, hand))) return true;
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
+		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, hand))) return true;
 
-		if (!this.worldObj.isRemote) {
+		if (!this.getEntityWorld().isRemote) {
 			if (isUsable(player)) {
 				ServerComputer computer = getServerComputer();
 				computer.turnOn();
 				// computer.sendState(player); // We manually send the state as sometimes it doesn't sync correctly
-				GuiHandler.openMinecart(player, player.worldObj, this);
+				GuiHandler.openMinecart(player, player.getEntityWorld(), this);
 			}
 		}
 
@@ -170,7 +171,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (computer == null) {
 			instanceId = manager.getUnusedInstanceID();
-			computer = new ServerComputer(worldObj, id, getName(), instanceId, getFamily(), 51, 19);
+			computer = new ServerComputer(getEntityWorld(), id, getName(), instanceId, getFamily(), 51, 19);
 			computer.setWorld(getEntityWorld());
 			computer.setPosition(getPosition());
 
@@ -223,7 +224,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	@SuppressWarnings("unchecked")
 	public IBlockState getDisplayTile() {
 		ComputerFamily family = getFamily();
-		IComputer computer = worldObj.isRemote ? getClientComputer() : getServerComputer();
+		IComputer computer = getEntityWorld().isRemote ? getClientComputer() : getServerComputer();
 
 		ComputerState state = ComputerState.Off;
 		if (computer != null) {
@@ -257,7 +258,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	public void killMinecart(DamageSource source) {
 		setDead();
 
-		if (worldObj.getGameRules().getBoolean("doEntityDrops")) {
+		if (getEntityWorld().getGameRules().getBoolean("doEntityDrops")) {
 			entityDropItem(new ItemStack(Items.MINECART, 1), 0);
 			entityDropItem(ComputerItemFactory.create(id, getCustomNameTag(), getFamily()), 0);
 		}
@@ -267,18 +268,18 @@ public class EntityMinecartComputer extends EntityMinecart {
 		if (isDead || player.getDistanceSqToEntity(this) > 64.0D) return false;
 
 		if (getFamily() == ComputerFamily.Command) {
-			if (worldObj.isRemote) return true;
+			if (getEntityWorld().isRemote) return true;
 
 			MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).mcServer : null;
 			if (server == null || !server.isCommandBlockEnabled()) {
-				player.addChatComponentMessage(new TextComponentTranslation("advMode.notEnabled"));
+				player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
 				return false;
 			}
 
 			if (ComputerCraft.canPlayerUseCommands(player) && player.capabilities.isCreativeMode) {
 				return true;
 			} else {
-				player.addChatComponentMessage(new TextComponentTranslation("advMode.notAllowed"));
+				player.sendMessage(new TextComponentTranslation("advMode.notAllowed"));
 				return false;
 			}
 		} else {
@@ -289,7 +290,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	public static class MinecartModule extends Module {
 		@Override
 		public void preInit() {
-			EntityRegistry.registerModEntity(EntityMinecartComputer.class, ID + ":minecartComputer", 2, Plethora.instance, 80, 3, true);
+			EntityRegistry.registerModEntity(new ResourceLocation(ID, "minecartComputer"), EntityMinecartComputer.class, ID + ":minecartComputer", 2, Plethora.instance, 80, 3, true);
 			MinecraftForge.EVENT_BUS.register(this);
 		}
 
@@ -298,7 +299,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			EntityPlayer player = event.getEntityPlayer();
 
 			ItemStack stack = event.getItemStack();
-			if (stack == null) return;
+			if (stack.isEmpty()) return;
 
 			Item item = stack.getItem();
 			if (item != Item.getItemFromBlock(ComputerCraft.Blocks.commandComputer) && item != Item.getItemFromBlock(ComputerCraft.Blocks.computer)) {
@@ -318,15 +319,15 @@ public class EntityMinecartComputer extends EntityMinecart {
 			ComputerFamily family = computerItem.getFamily(stack);
 
 			player.swingArm(event.getHand());
-			if (minecart.worldObj.isRemote) return;
+			if (minecart.getEntityWorld().isRemote) return;
 
 			event.setCanceled(true);
 			minecart.setDead();
-			minecart.worldObj.spawnEntityInWorld(new EntityMinecartComputer(minecart, id, label, family));
+			minecart.getEntityWorld().spawnEntity(new EntityMinecartComputer(minecart, id, label, family));
 
 			if (!player.capabilities.isCreativeMode) {
-				stack.stackSize--;
-				if (stack.stackSize <= 0) player.setHeldItem(event.getHand(), null);
+				stack.grow(-1);
+				if (stack.isEmpty()) player.setHeldItem(event.getHand(), ItemStack.EMPTY);
 			}
 		}
 	}

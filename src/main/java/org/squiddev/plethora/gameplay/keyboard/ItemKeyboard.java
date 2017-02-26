@@ -60,17 +60,18 @@ public class ItemKeyboard extends ItemBase {
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-		return onItemUse(stack, world, player);
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+		return onItemUse(player.getHeldItem(hand), world, player);
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking()) {
 			if (world.isRemote) return EnumActionResult.SUCCESS;
 
 			TileEntity tile = world.getTileEntity(pos);
+			ItemStack stack = player.getHeldItem(hand);
 			NBTTagCompound tag = stack.getTagCompound();
 			if (tile instanceof IComputerTile) {
 				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
@@ -88,9 +89,9 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 
-				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.bound")));
+				player.sendMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.bound")));
 			} else if (tag != null && tag.hasKey("x")) {
-				player.addChatMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.cleared")));
+				player.sendMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.cleared")));
 
 				tag.removeTag("x");
 				tag.removeTag("y");
@@ -170,7 +171,8 @@ public class ItemKeyboard extends ItemBase {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		EnumActionResult result = onItemUse(stack, world, player);
 		return ActionResult.newResult(result, stack);
 	}
@@ -251,13 +253,13 @@ public class ItemKeyboard extends ItemBase {
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 			return capability == Constants.MODULE_HANDLER_CAPABILITY;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 			return capability == Constants.MODULE_HANDLER_CAPABILITY ? (T) this : null;
 		}
 

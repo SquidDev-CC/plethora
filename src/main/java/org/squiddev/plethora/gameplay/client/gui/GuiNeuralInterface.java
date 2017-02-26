@@ -169,11 +169,11 @@ public class GuiNeuralInterface extends GuiContainer {
 			Slot slot = slots[i];
 			if (visible) {
 				Vec2i pos = ContainerNeuralInterface.POSITIONS[i];
-				slot.xDisplayPosition = pos.x;
-				slot.yDisplayPosition = pos.y;
+				slot.xPos = pos.x;
+				slot.yPos = pos.y;
 			} else {
-				slot.yDisplayPosition = -2000;
-				slot.xDisplayPosition = -2000;
+				slot.xPos = -2000;
+				slot.yPos = -2000;
 			}
 		}
 	}

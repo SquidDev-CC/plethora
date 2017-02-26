@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -11,9 +10,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Base tile for all TileEntities
@@ -66,23 +65,23 @@ public abstract class TileBase extends TileEntity {
 	 */
 	public void markForUpdate() {
 		markDirty();
+		World worldObj = getWorld();
 		BlockPos pos = getPos();
 		IBlockState state = worldObj.getBlockState(pos);
 		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
-		worldObj.notifyNeighborsOfStateChange(pos, blockType);
+		worldObj.notifyNeighborsOfStateChange(pos, blockType, false);
 	}
 
 	/**
 	 * Called when the block is activated
 	 *
-	 * @param player    The player who triggered this
-	 * @param hand      The hand it was clicked with
-	 * @param heldStack The stack the player is holding
-	 * @param side      The side the block is activated on
-	 * @param hit       The position the hit occurred
+	 * @param player The player who triggered this
+	 * @param hand   The hand it was clicked with
+	 * @param side   The side the block is activated on
+	 * @param hit    The position the hit occurred
 	 * @return If the event succeeded
 	 */
-	public boolean onActivated(EntityPlayer player, EnumHand hand, @Nullable ItemStack heldStack, EnumFacing side, Vec3d hit) {
+	public boolean onActivated(EntityPlayer player, EnumHand hand, EnumFacing side, Vec3d hit) {
 		return false;
 	}
 
@@ -113,6 +112,7 @@ public abstract class TileBase extends TileEntity {
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
+		World worldObj = getWorld();
 		if (worldObj == null || !worldObj.isRemote) {
 			removed();
 		}
@@ -121,6 +121,7 @@ public abstract class TileBase extends TileEntity {
 	@Override
 	public void invalidate() {
 		super.invalidate();
+		World worldObj = getWorld();
 		if (worldObj == null || !worldObj.isRemote) {
 			removed();
 		}
@@ -129,6 +130,7 @@ public abstract class TileBase extends TileEntity {
 	@Override
 	public void validate() {
 		super.validate();
+		World worldObj = getWorld();
 		if (worldObj == null || !worldObj.isRemote) {
 			created();
 		}

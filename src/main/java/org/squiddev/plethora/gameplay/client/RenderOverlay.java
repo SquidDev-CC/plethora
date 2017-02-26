@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -107,7 +108,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		if (ticks > Math.PI * 2 * 1000) ticks = 0;
 
 		Minecraft minecraft = Minecraft.getMinecraft();
-		EntityPlayer player = minecraft.thePlayer;
+		EntityPlayer player = minecraft.player;
 		for (EnumHand hand : EnumHand.values()) {
 			renderOverlay(event, player.getHeldItem(hand));
 		}
@@ -116,8 +117,8 @@ public class RenderOverlay extends Module implements IClientModule {
 	@SideOnly(Side.CLIENT)
 	private void renderOverlay(RenderWorldLastEvent event, ItemStack stack) {
 		Minecraft minecraft = Minecraft.getMinecraft();
-		EntityPlayer player = minecraft.thePlayer;
-		World world = player.worldObj;
+		EntityPlayer player = minecraft.player;
+		World world = player.getEntityWorld();
 
 		// "Tick" each iterator and remove them.
 		for (Iterator<ChatMessage> messages = chatMessages.iterator(); messages.hasNext(); ) {
@@ -152,7 +153,7 @@ public class RenderOverlay extends Module implements IClientModule {
 					));
 
 					for (EntityLivingBase entity : entities) {
-						if (entity != minecraft.thePlayer) {
+						if (entity != player) {
 							renderFlare(
 								entity.posX, entity.posY + (entity.height / 2), entity.posZ,
 								entity.getEntityId(), 1.0f, renderManager
@@ -211,7 +212,7 @@ public class RenderOverlay extends Module implements IClientModule {
 			return true;
 		}
 
-		if (Item.getItemFromBlock(block) == null) {
+		if (Item.getItemFromBlock(block) == Items.AIR) {
 			return false;
 		}
 

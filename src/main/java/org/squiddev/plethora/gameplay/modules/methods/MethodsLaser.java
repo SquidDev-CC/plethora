@@ -89,7 +89,7 @@ public final class MethodsLaser {
 				laser.setPotency(potency);
 				laser.setThrowableHeading(motionX, motionY, motionZ, 1.5f, 0);
 
-				location.getWorld().spawnEntityInWorld(laser);
+				location.getWorld().spawnEntity(laser);
 
 				return MethodResult.empty();
 			}

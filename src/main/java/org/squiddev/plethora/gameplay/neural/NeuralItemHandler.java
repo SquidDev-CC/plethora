@@ -7,6 +7,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.gameplay.ItemBase;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.api.Constants.*;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.DIRTY;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.ITEMS;
@@ -33,17 +35,13 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		return NeuralHelpers.INV_SIZE;
 	}
 
-	protected int getStackLimit(int slot, ItemStack stack) {
-		return 1;
-	}
-
 	@Override
-	public void setStackInSlot(int slot, ItemStack stack) {
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
 		validateSlotIndex(slot);
 
 		NBTTagCompound tag = ItemBase.getTag(this.stack);
 		NBTTagCompound items = getItems(tag);
-		if (stack == null) {
+		if (stack.isEmpty()) {
 			items.removeTag("item" + slot);
 		} else {
 			items.setTag("item" + slot, stack.serializeNBT());
@@ -52,6 +50,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		tag.setShort(DIRTY, (short) (tag.getShort(DIRTY) | 1 << slot));
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		validateSlotIndex(slot);
@@ -59,15 +58,16 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		NBTTagCompound tag = ItemBase.getTag(this.stack);
 		NBTTagCompound items = getItems(tag);
 		if (items.hasKey("item" + slot, 10)) {
-			return ItemStack.loadItemStackFromNBT(items.getCompoundTag("item" + slot));
+			return new ItemStack(items.getCompoundTag("item" + slot));
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (stack == null || getStackInSlot(slot) != null) return stack;
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		if (stack.isEmpty() || !getStackInSlot(slot).isEmpty()) return stack;
 
 		if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
 			if (stack.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
@@ -83,62 +83,69 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		}
 	}
 
-	private ItemStack doInsert(int slot, ItemStack stack, boolean simulate) {
-		if (stack == null || stack.stackSize == 0) return null;
+	@Nonnull
+	private ItemStack doInsert(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		if (stack.isEmpty()) return ItemStack.EMPTY;
 
 		validateSlotIndex(slot);
 
 		ItemStack existing = getStackInSlot(slot);
-		int limit = getStackLimit(slot, stack);
+		int limit = getSlotLimit(slot);
 
-		if (existing != null) {
+		if (!existing.isEmpty()) {
 			if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
 				return stack;
 			}
 
-			limit -= existing.stackSize;
+			limit -= existing.getCount();
 		}
 
 		if (limit <= 0) return stack;
 
-		boolean reachedLimit = stack.stackSize > limit;
+		boolean reachedLimit = stack.getCount() > limit;
 
 		if (!simulate) {
-			if (existing == null) {
+			if (existing.isEmpty()) {
 				setStackInSlot(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
 			} else {
-				existing.stackSize += reachedLimit ? limit : stack.stackSize;
+				existing.grow(reachedLimit ? limit : stack.getCount());
 				setStackInSlot(slot, existing);
 			}
 		}
 
-		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
+		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (amount == 0) return null;
+		if (amount == 0) return ItemStack.EMPTY;
 
 		validateSlotIndex(slot);
 
 		ItemStack existing = getStackInSlot(slot);
 
-		if (existing == null) return null;
+		if (existing.isEmpty()) return ItemStack.EMPTY;
 
 		int toExtract = Math.min(amount, existing.getMaxStackSize());
 
-		if (existing.stackSize <= toExtract) {
+		if (existing.getCount() <= toExtract) {
 			if (!simulate) {
-				setStackInSlot(slot, null);
+				setStackInSlot(slot, ItemStack.EMPTY);
 			}
 			return existing;
 		} else {
 			if (!simulate) {
-				setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+				setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
 			}
 
 			return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
 		}
+	}
+
+	@Override
+	public int getSlotLimit(int slot) {
+		return 1;
 	}
 
 	public static NBTTagCompound getItems(NBTTagCompound tag) {

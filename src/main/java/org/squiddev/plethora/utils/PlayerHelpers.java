@@ -28,7 +28,7 @@ public class PlayerHelpers {
 	public static RayTraceResult findHitGuess(EntityPlayer player) {
 		if (player instanceof EntityPlayerMP) {
 			return findHit((EntityPlayerMP) player);
-		} else if (player.worldObj.isRemote && player instanceof EntityPlayerSP) {
+		} else if (player.getEntityWorld().isRemote && player instanceof EntityPlayerSP) {
 			return Minecraft.getMinecraft().objectMouseOver;
 		} else {
 			return findHit(player, 4.5);
@@ -57,9 +57,9 @@ public class PlayerHelpers {
 			origin.zCoord + look.zCoord * range
 		);
 
-		RayTraceResult hit = entity.worldObj.rayTraceBlocks(origin, target);
+		RayTraceResult hit = entity.getEntityWorld().rayTraceBlocks(origin, target);
 
-		List<Entity> entityList = entity.worldObj.getEntitiesInAABBexcluding(
+		List<Entity> entityList = entity.getEntityWorld().getEntitiesInAABBexcluding(
 			entity,
 			entity.getEntityBoundingBox().addCoord(
 				look.xCoord * range,

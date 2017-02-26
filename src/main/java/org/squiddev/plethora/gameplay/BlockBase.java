@@ -71,15 +71,15 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileBase tile = getTile(world, pos);
-		return tile != null && tile.onActivated(player, hand, heldItem, side, new Vec3d(hitX, hitY, hitZ));
+		return tile != null && tile.onActivated(player, hand, side, new Vec3d(hitX, hitY, hitZ));
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock) {
-		super.neighborChanged(state, world, pos, neighborBlock);
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+		super.neighborChanged(state, world, pos, neighborBlock, fromPos);
 
 		if (world.isRemote) return;
 

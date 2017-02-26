@@ -11,6 +11,7 @@ import dan200.computercraft.shared.util.RedstoneUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.DebugLogger;
 
@@ -32,7 +33,8 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private final Set<IComputerAccess> computers = Sets.newHashSet();
 
 	private void updateInput() {
-		if (worldObj == null || this.worldObj.isRemote || isInvalid() || !worldObj.isBlockLoaded(pos)) return;
+		World worldObj = getWorld();
+		if (worldObj == null || worldObj.isRemote || isInvalid() || !worldObj.isBlockLoaded(pos)) return;
 
 		boolean changed = false;
 		for (EnumFacing dir : EnumFacing.VALUES) {
@@ -71,6 +73,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	void updateOnce() {
+		World worldObj = getWorld();
 		if (worldObj == null || worldObj.isRemote || isInvalid() || !worldObj.isBlockLoaded(pos)) return;
 
 		if (outputDirty) {

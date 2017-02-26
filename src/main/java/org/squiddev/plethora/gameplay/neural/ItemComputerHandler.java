@@ -11,6 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.TinySlot;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.gameplay.ItemBase.getTag;
 
 /**
@@ -27,7 +29,7 @@ public final class ItemComputerHandler {
 	public static final String DIRTY = "dirty";
 	public static final String MODULE_DATA = "module_data";
 
-	public static NeuralComputer getServer(ItemStack stack, EntityLivingBase owner, TinySlot inventory) {
+	public static NeuralComputer getServer(@Nonnull ItemStack stack, EntityLivingBase owner, TinySlot inventory) {
 		NBTTagCompound tag = getTag(stack);
 
 		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;
@@ -51,11 +53,11 @@ public final class ItemComputerHandler {
 			if (tag.hasKey(COMPUTER_ID)) {
 				computerId = tag.getInteger(COMPUTER_ID);
 			} else {
-				computerId = ComputerCraft.createUniqueNumberedSaveDir(owner.worldObj, "computer");
+				computerId = ComputerCraft.createUniqueNumberedSaveDir(owner.getEntityWorld(), "computer");
 			}
 
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
-			neural = new NeuralComputer(owner.worldObj, computerId, label, instanceId);
+			neural = new NeuralComputer(owner.getEntityWorld(), computerId, label, instanceId);
 			neural.readModuleData(tag.getCompoundTag(MODULE_DATA));
 
 			manager.add(instanceId, neural);
@@ -71,7 +73,7 @@ public final class ItemComputerHandler {
 	}
 
 
-	public static NeuralComputer tryGetServer(ItemStack stack) {
+	public static NeuralComputer tryGetServer(@Nonnull ItemStack stack) {
 		NBTTagCompound tag = getTag(stack);
 
 		final ServerComputerRegistry manager = ComputerCraft.serverComputerRegistry;
@@ -90,7 +92,7 @@ public final class ItemComputerHandler {
 		}
 	}
 
-	public static ClientComputer getClient(ItemStack stack) {
+	public static ClientComputer getClient(@Nonnull ItemStack stack) {
 		NBTTagCompound tag = getTag(stack);
 		int instanceId = tag.getInteger(INSTANCE_ID);
 		if (instanceId < 0) return null;

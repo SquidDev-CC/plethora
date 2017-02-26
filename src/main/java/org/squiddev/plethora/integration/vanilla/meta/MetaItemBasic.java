@@ -52,7 +52,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 
 		data.put("name", stack.getItem().getRegistryName().toString());
 		data.put("damage", stack.getItemDamage());
-		data.put("count", stack.stackSize);
+		data.put("count", stack.getCount());
 		data.put("nbtHash", getNBTHash(stack));
 
 		return data;

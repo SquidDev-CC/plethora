@@ -91,8 +91,8 @@ public class MethodsInventoryWorld {
 		}
 	}
 
-	private static int dropItem(IWorldLocation location, ItemStack stack, EnumFacing direction) {
-		if (stack == null || stack.stackSize == 0) return 0;
+	private static int dropItem(IWorldLocation location, @Nonnull ItemStack stack, EnumFacing direction) {
+		if (stack.isEmpty()) return 0;
 
 		World world = location.getWorld();
 		Vec3d pos = location.getLoc();
@@ -106,9 +106,9 @@ public class MethodsInventoryWorld {
 
 		EntityItem entity = new EntityItem(world, pos.xCoord, pos.yCoord, pos.zCoord, stack.copy());
 		entity.setDefaultPickupDelay();
-		world.spawnEntityInWorld(entity);
+		world.spawnEntity(entity);
 
-		return stack.stackSize;
+		return stack.getCount();
 	}
 
 	@IMethod.Inject(IItemHandler.class)
@@ -155,17 +155,17 @@ public class MethodsInventoryWorld {
 						ItemStack original = item.getEntityItem();
 
 						ItemStack toInsert = original.copy();
-						if (toInsert.stackSize > remaining) toInsert.stackSize = remaining;
+						if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
 
 						ItemStack rest = slot == -1 ? ItemHandlerHelper.insertItem(handler, toInsert, false) : handler.insertItem(slot - 1, toInsert, false);
-						int inserted = rest == null ? toInsert.stackSize : toInsert.stackSize - rest.stackSize;
+						int inserted = rest.isEmpty() ? toInsert.getCount() : toInsert.getCount() - rest.getCount();
 						remaining -= inserted;
 						total += inserted;
 
-						if (inserted >= original.stackSize) {
+						if (inserted >= original.getCount()) {
 							item.setDead();
 						} else {
-							original.stackSize -= inserted;
+							original.grow(-inserted);
 							item.setEntityItemStack(original);
 						}
 

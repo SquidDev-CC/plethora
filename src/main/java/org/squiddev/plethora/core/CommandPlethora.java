@@ -21,17 +21,17 @@ import java.io.PrintStream;
 public class CommandPlethora extends CommandBase {
 	@Nonnull
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "plethora";
 	}
 
 	@Nonnull
 	@Override
-	public String getCommandUsage(@Nonnull ICommandSender sender) {
+	public String getUsage(@Nonnull ICommandSender sender) {
 		return "dump|reload";
 	}
 
-	private String getCommandUsage(String type) {
+	private String getUsage(String type) {
 		if (type.equals("dump")) {
 			return "dump <name>";
 		} else if (type.equals("reload")) {
@@ -43,11 +43,11 @@ public class CommandPlethora extends CommandBase {
 
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
-		if (args.length < 1 || Strings.isNullOrEmpty(args[0])) throw new CommandException(getCommandUsage(sender));
+		if (args.length < 1 || Strings.isNullOrEmpty(args[0])) throw new CommandException(getUsage(sender));
 
 		String type = args[0];
 		if (type.equals("dump")) {
-			if (args.length < 2 || Strings.isNullOrEmpty(args[1])) throw new CommandException(getCommandUsage(type));
+			if (args.length < 2 || Strings.isNullOrEmpty(args[1])) throw new CommandException(getUsage(type));
 
 			String name = args[1];
 			try {
@@ -73,7 +73,7 @@ public class CommandPlethora extends CommandBase {
 					file.close();
 				}
 
-				sender.addChatMessage(new TextComponentString("Documentation written to " + name));
+				sender.sendMessage(new TextComponentString("Documentation written to " + name));
 			} catch (Throwable e) {
 				DebugLogger.error("Cannot handle " + name, e);
 				throw new CommandException(e.toString());

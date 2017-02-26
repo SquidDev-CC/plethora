@@ -1,7 +1,8 @@
 package org.squiddev.plethora.gameplay;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,7 +26,7 @@ public class Plethora {
 	public static final String NAME = "Plethora";
 	public static final String VERSION = "${mod_version}";
 	public static final String RESOURCE_DOMAIN = "plethora";
-	public static final String DEPENDENCIES = "required-after:ComputerCraft@[${cc_version},);required-after:plethora-core";
+	public static final String DEPENDENCIES = "required-after:computercraft@[${cc_version},);required-after:plethora-core";
 
 	public static CreativeTabs getCreativeTab() {
 		return tab;
@@ -42,7 +43,7 @@ public class Plethora {
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigGameplay.init(event.getSuggestedConfigurationFile());
 
-		EntityRegistry.registerModEntity(PlethoraFakePlayer.class, ID + ":fakePlayer", 1, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
+		EntityRegistry.registerModEntity(new ResourceLocation(ID, "fakePlayer"), PlethoraFakePlayer.class, ID + ":fakePlayer", 1, instance, Integer.MAX_VALUE, Integer.MAX_VALUE, false);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
 
@@ -90,8 +91,8 @@ public class Plethora {
 
 		@Nonnull
 		@Override
-		public Item getTabIconItem() {
-			return Registry.itemNeuralInterface;
+		public ItemStack getTabIconItem() {
+			return new ItemStack(Registry.itemNeuralInterface);
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class MethodsBeeHousing {
 	public static Object[] getQueen(IContext<IBeeHousing> context, Object[] arg) {
 		ItemStack queen = context.getTarget().getBeeInventory().getQueen();
 		return new Object[]{
-			queen == null
+			queen.isEmpty()
 				? null
 				: context.makePartialChild(queen).getMeta()
 		};
@@ -32,7 +32,7 @@ public class MethodsBeeHousing {
 	public static Object[] getDrone(IContext<IBeeHousing> context, Object[] arg) {
 		ItemStack drone = context.getTarget().getBeeInventory().getDrone();
 		return new Object[]{
-			drone == null
+			drone.isEmpty()
 				? null
 				: context.makePartialChild(drone).getMeta()
 		};

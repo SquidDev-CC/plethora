@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
+
 /**
  * The entity this references
  */
@@ -22,7 +24,7 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public void setStackInSlot(int slot, ItemStack stack) {
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
 		validateSlotIndex(slot);
 		entity.setItemStackToSlot(VALUES[slot], stack);
 	}
@@ -38,9 +40,10 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 		return entity.getItemStackFromSlot(VALUES[slot]);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (stack != null && stack.stackSize != 0) {
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		if (!stack.isEmpty()) {
 			validateSlotIndex(slot);
 
 			EntityEquipmentSlot slotType = VALUES[slot];
@@ -50,56 +53,57 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 
 			ItemStack existing = getStackInSlot(slot);
 			int limit = stack.getMaxStackSize();
-			if (existing != null) {
+			if (!existing.isEmpty()) {
 				if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
 					return stack;
 				}
 
-				limit -= existing.stackSize;
+				limit -= existing.getCount();
 			}
 
 			if (limit <= 0) {
 				return stack;
 			} else {
-				boolean reachedLimit = stack.stackSize > limit;
+				boolean reachedLimit = stack.getCount() > limit;
 				if (!simulate) {
-					if (existing == null) {
+					if (existing.isEmpty()) {
 						setStackInSlot(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
 					} else {
-						existing.stackSize += reachedLimit ? limit : stack.stackSize;
+						existing.grow(reachedLimit ? limit : stack.getCount());
 					}
 					onContentsChanged(slot);
 				}
 
-				return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
+				return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
 			}
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
 
+	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		if (amount == 0) {
-			return null;
+			return ItemStack.EMPTY;
 		} else {
 			validateSlotIndex(slot);
 			ItemStack existing = getStackInSlot(slot);
-			if (existing == null) {
-				return null;
+			if (existing.isEmpty()) {
+				return ItemStack.EMPTY;
 			} else {
 				int toExtract = Math.min(amount, existing.getMaxStackSize());
-				if (existing.stackSize <= toExtract) {
+				if (existing.getCount() <= toExtract) {
 					if (!simulate) {
-						setStackInSlot(slot, null);
+						setStackInSlot(slot, ItemStack.EMPTY);
 						onContentsChanged(slot);
 					}
 
 					return existing;
 				} else {
 					if (!simulate) {
-						setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+						setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
 						onContentsChanged(slot);
 					}
 
@@ -107,6 +111,11 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int getSlotLimit(int slot) {
+		return 64;
 	}
 
 	private void validateSlotIndex(int slot) {

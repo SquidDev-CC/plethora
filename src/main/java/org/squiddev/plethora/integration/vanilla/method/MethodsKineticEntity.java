@@ -3,21 +3,19 @@ package org.squiddev.plethora.integration.vanilla.method;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -101,7 +99,7 @@ public final class MethodsKineticEntity {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntitySkeleton.class,
+		module = PlethoraModules.KINETIC_S, target = AbstractSkeleton.class,
 		doc = "function(potency:number) -- Fire an arrow in the direction the skeleton is looking"
 	)
 	@Nonnull
@@ -116,14 +114,16 @@ public final class MethodsKineticEntity {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				EntitySkeleton skeleton = context.getContext(EntitySkeleton.class);
+				AbstractSkeleton skeleton = context.getContext(AbstractSkeleton.class);
 
 				ItemStack stack = skeleton.getHeldItem(EnumHand.MAIN_HAND);
-				if (stack == null || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
+				if (stack.isEmpty() || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
 
 				IWorldLocation location = context.getContext(IWorldLocation.class);
 
-				EntityTippedArrow arrow = new EntityTippedArrow(location.getWorld(), skeleton);
+				EntityArrow arrow = (EntityArrow) ReflectionHelper
+					.findMethod(AbstractSkeleton.class, null, new String[]{"func_190726_a", "getArrow"}, float.class)
+					.invoke(skeleton, skeleton, potency);
 
 				float rotationYaw = skeleton.rotationYaw;
 				float rotationPitch = skeleton.rotationPitch;
@@ -138,25 +138,11 @@ public final class MethodsKineticEntity {
 				if (power > 0) damage += power * 0.5 + 0.5;
 				arrow.setDamage(damage);
 
-				int punch = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
-				if (punch > 0) arrow.setKnockbackStrength(punch);
-
 				if (potency == 1.0) arrow.setIsCritical(true);
-
-				if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0 || skeleton.getSkeletonType() == SkeletonType.WITHER) {
-					arrow.setFire(100);
-				}
-
-				ItemStack offhandArrow = skeleton.getHeldItem(EnumHand.OFF_HAND);
-				if (offhandArrow != null && offhandArrow.getItem() == Items.TIPPED_ARROW) {
-					arrow.setPotionEffect(offhandArrow);
-				} else if (skeleton.getSkeletonType() == SkeletonType.STRAY) {
-					arrow.addEffect(new PotionEffect(MobEffects.SLOWNESS, 600));
-				}
 
 				skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
 
-				location.getWorld().spawnEntityInWorld(arrow);
+				location.getWorld().spawnEntity(arrow);
 				return MethodResult.empty();
 			}
 		});

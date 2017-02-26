@@ -42,16 +42,6 @@ public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper>
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull UseInRecipeWrapper recipeWrapper) {
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-
-		int xPos = (RECIPE_WIDTH - 18) / 2;
-		guiItemStacks.init(0, true, xPos, 0);
-		guiItemStacks.setFromRecipe(0, recipeWrapper.getInputs());
-	}
-
-	@Override
 	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull UseInRecipeWrapper recipeWrapper, @Nonnull IIngredients ingredients) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 

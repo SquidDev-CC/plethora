@@ -21,7 +21,7 @@ public class MethodsDaylightSensor {
 	)
 	public static Object[] hasSky(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
 		World world = location.getWorld();
-		return new Object[]{!world.provider.getHasNoSky()};
+		return new Object[]{!world.provider.hasNoSky()};
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
@@ -30,7 +30,7 @@ public class MethodsDaylightSensor {
 	)
 	public static Object[] getSkyLight(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) throws LuaException {
 		World world = location.getWorld();
-		if (world.provider.getHasNoSky()) {
+		if (world.provider.hasNoSky()) {
 			throw new LuaException("The world has no sky");
 		} else {
 			BlockPos pos = location.getPos();

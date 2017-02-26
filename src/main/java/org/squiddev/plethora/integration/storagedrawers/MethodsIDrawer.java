@@ -30,7 +30,7 @@ public class MethodsIDrawer {
 	public static Object[] getItemMeta(IContext<IDrawer> context, Object[] arguments) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();
 		return new Object[]{
-			stack == null
+			stack.isEmpty()
 				? null
 				: context.makePartialChild(stack).getMeta()
 		};

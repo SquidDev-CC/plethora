@@ -118,16 +118,17 @@ public class MethodsInventoryTransfer {
 	private static int moveItem(IItemHandler from, int fromSlot, IItemHandler to, int toSlot, final int limit) {
 		// See how much we can get out of this slot
 		ItemStack extracted = from.extractItem(fromSlot, limit, true);
-		if (extracted == null || extracted.stackSize <= 0) return 0;
+		if (extracted.isEmpty()) return 0;
 
 		// Limit the amount to extract
-		int extractCount = extracted.stackSize = Math.min(extracted.stackSize, limit);
+		int extractCount = Math.min(extracted.getCount(), limit);
+		extracted.setCount(extractCount);
 
 		// Insert into the new handler
 		ItemStack remainder = toSlot < 0 ? ItemHandlerHelper.insertItem(to, extracted, false) : to.insertItem(toSlot, extracted, false);
 
 		// Calculate the amount which was inserted.
-		int insertCount = remainder == null ? extractCount : extractCount - remainder.stackSize;
+		int insertCount = remainder.isEmpty() ? extractCount : extractCount - remainder.getCount();
 
 		// Technically this could fail. If it does then I'm going to cry.
 		from.extractItem(fromSlot, insertCount, false);

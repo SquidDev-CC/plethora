@@ -10,7 +10,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IComputerTile.class, modId = "ComputerCraft", namespace = "computer")
+@IMetaProvider.Inject(value = IComputerTile.class, modId = "computercraft", namespace = "computer")
 public class MetaTileComputer extends BasicMetaProvider<IComputerTile> {
 	@Nonnull
 	@Override

@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  */
 public class IntegrationComputerCraft {
 	public static void setup() {
-		if (Helpers.modLoaded("ComputerCraft")) {
+		if (Helpers.modLoaded("computercraft")) {
 			IntegrationComputerCraft instance = new IntegrationComputerCraft();
 			MinecraftForge.EVENT_BUS.register(instance);
 		}
@@ -52,13 +52,13 @@ public class IntegrationComputerCraft {
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 			return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY && getHandler() != null;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 			return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY ? (T) getHandler() : null;
 		}
 

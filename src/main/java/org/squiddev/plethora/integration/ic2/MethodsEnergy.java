@@ -111,9 +111,7 @@ public class MethodsEnergy {
 
 	public static IElectricItemManager getManager(ItemStack stack) {
 		Item item = stack.getItem();
-		if (item == null) {
-			return null;
-		} else if (item instanceof ISpecialElectricItem) {
+		if (item instanceof ISpecialElectricItem) {
 			return ((ISpecialElectricItem) item).getManager(stack);
 		} else if (item instanceof IElectricItem) {
 			return ElectricItem.rawManager;

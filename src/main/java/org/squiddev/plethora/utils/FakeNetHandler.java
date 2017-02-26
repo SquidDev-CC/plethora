@@ -96,10 +96,6 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void kickPlayerFromServer(@Nonnull String player) {
-	}
-
-	@Override
 	public void processInput(CPacketInput packet) {
 	}
 
@@ -113,10 +109,6 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 
 	@Override
 	public void processPlayerDigging(CPacketPlayerDigging packet) {
-	}
-
-	@Override
-	public void processPlayerBlockPlacement(CPacketPlayerTryUseItem packetIn) {
 	}
 
 	@Override

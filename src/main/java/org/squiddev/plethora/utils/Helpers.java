@@ -11,7 +11,6 @@ import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -22,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -29,6 +29,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -161,7 +162,7 @@ public class Helpers {
 	public static void setupModel(Item item, int damage, String name) {
 		name = Plethora.RESOURCE_DOMAIN + ":" + snakeCase(name);
 
-		net.minecraft.client.renderer.block.model.ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
+		ModelResourceLocation res = new ModelResourceLocation(name, "inventory");
 		ModelLoader.setCustomModelResourceLocation(item, damage, res);
 	}
 
@@ -178,7 +179,7 @@ public class Helpers {
 		entity.motionX = RANDOM.nextGaussian() * (double) motion;
 		entity.motionY = RANDOM.nextGaussian() * (double) motion + 0.20000000298023224D;
 		entity.motionZ = RANDOM.nextGaussian() * (double) motion;
-		world.spawnEntityInWorld(entity);
+		world.spawnEntity(entity);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -297,8 +298,9 @@ public class Helpers {
 		} else if (owner instanceof TileEntity) {
 			TileEntity te = (TileEntity) owner;
 
-			String name = TileEntity.classToNameMap.get(te.getClass());
-			if (name != null) return name;
+			@SuppressWarnings("deprecation")
+			ResourceLocation name = GameData.getTileEntityRegistry().getNameForObject(te.getClass());
+			if (name != null) return name.toString();
 
 			Block block = te.getBlockType();
 			int meta = te.getBlockMetadata();
@@ -327,12 +329,12 @@ public class Helpers {
 		if (!(target instanceof EntityLivingBase)) return false;
 
 		ItemStack current = player.getHeldItem(hand);
-		if (current == null || current.getItem() != item) return false;
+		if (current.isEmpty() || current.getItem() != item) return false;
 
 		boolean result = item.itemInteractionForEntity(current, player, (EntityLivingBase) target, hand);
 
-		if (current.stackSize <= 0) {
-			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+		if (current.getCount() <= 0) {
+			player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
 			ForgeEventFactory.onPlayerDestroyItem(player, current, hand);
 		}
 
@@ -427,20 +429,20 @@ public class Helpers {
 
 	public static boolean isHolding(EntityLivingBase entity, Item item) {
 		ItemStack left = entity.getHeldItem(EnumHand.MAIN_HAND);
-		if (left != null && left.getItem() == item) return true;
+		if (!left.isEmpty() && left.getItem() == item) return true;
 
 		ItemStack right = entity.getHeldItem(EnumHand.OFF_HAND);
-		if (right != null && right.getItem() == item) return true;
+		if (!right.isEmpty() && right.getItem() == item) return true;
 
 		return false;
 	}
 
 	public static boolean isHolding(EntityLivingBase entity, Item item, int damage) {
 		ItemStack left = entity.getHeldItem(EnumHand.MAIN_HAND);
-		if (left != null && left.getItem() == item && left.getItemDamage() == damage) return true;
+		if (!left.isEmpty() && left.getItem() == item && left.getItemDamage() == damage) return true;
 
 		ItemStack right = entity.getHeldItem(EnumHand.OFF_HAND);
-		if (right != null && right.getItem() == item && right.getItemDamage() == damage) return true;
+		if (!right.isEmpty() && right.getItem() == item && right.getItemDamage() == damage) return true;
 
 		return false;
 	}

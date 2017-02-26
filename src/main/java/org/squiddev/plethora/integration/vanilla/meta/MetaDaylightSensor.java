@@ -30,7 +30,7 @@ public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 		BlockPos pos = location.getPos();
 
 		Map<Object, Object> out = Maps.newHashMap();
-		if (!world.provider.getHasNoSky()) {
+		if (!world.provider.hasNoSky()) {
 			out.put("sky", world.getLightFor(EnumSkyBlock.SKY, pos) - world.getSkylightSubtracted());
 		}
 

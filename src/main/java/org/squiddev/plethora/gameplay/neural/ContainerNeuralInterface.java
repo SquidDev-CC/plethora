@@ -16,6 +16,7 @@ import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.IContainerComputer;
 import org.squiddev.plethora.utils.Vec2i;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
@@ -83,23 +84,24 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 		return stack;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIdx) {
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot slot = inventorySlots.get(slotIdx);
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
 			if (slotIdx < NeuralHelpers.INV_SIZE) {
 				if (!mergeItemStack(slotStack, NeuralHelpers.INV_SIZE, inventorySlots.size(), true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			} else if (!mergeItemStack(slotStack, 0, NeuralHelpers.INV_SIZE, false)) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			if (slotStack.stackSize == 0) {
-				slot.putStack(null);
+			if (slotStack.getCount() == 0) {
+				slot.putStack(ItemStack.EMPTY);
 			} else {
 				slot.onSlotChanged();
 			}
@@ -118,7 +120,7 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 		boolean flag = false;
 		int i = reverseDirection ? endIndex - 1 : startIndex;
 
-		while (stack.stackSize > 0 && (reverseDirection ? i >= startIndex : i < endIndex)) {
+		while (stack.getCount() > 0 && (reverseDirection ? i >= startIndex : i < endIndex)) {
 			Slot slot = inventorySlots.get(i);
 			ItemStack existing = slot.getStack();
 
@@ -127,23 +129,23 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 			if (!slot.isItemValid(stack)) continue;
 
 			int limit = slot.getItemStackLimit(stack);
-			if (existing != null) {
+			if (!existing.isEmpty()) {
 				if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) continue;
-				limit -= existing.stackSize;
+				limit -= existing.getCount();
 			}
 
 			if (limit <= 0) continue;
 
-			boolean reachedLimit = stack.stackSize > limit;
+			boolean reachedLimit = stack.getCount() > limit;
 
-			if (existing == null) {
+			if (existing.isEmpty()) {
 				slot.putStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack.copy());
 			} else {
-				existing.stackSize += reachedLimit ? limit : stack.stackSize;
+				existing.grow(reachedLimit ? limit : stack.getCount());
 			}
 			slot.onSlotChanged();
 
-			stack.stackSize = reachedLimit ? stack.stackSize - limit : 0;
+			stack.setCount(reachedLimit ? stack.getCount() - limit : 0);
 			flag = true;
 		}
 

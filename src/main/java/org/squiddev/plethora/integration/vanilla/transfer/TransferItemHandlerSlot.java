@@ -35,7 +35,7 @@ public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> 
 		if (size == 0) return Collections.emptySet();
 		Set<String> slots = Sets.newHashSet();
 		for (int i = 0; i < size; i++) {
-			if (object.getStackInSlot(i) != null) slots.add(Integer.toString(i));
+			if (!object.getStackInSlot(i).isEmpty()) slots.add(Integer.toString(i));
 		}
 		return slots;
 	}

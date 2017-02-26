@@ -29,8 +29,8 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 		return isValid(stack);
 	}
 
-	private static boolean isValid(ItemStack stack) {
-		if (stack == null || stack.stackSize == 0 || stack.getItem() == null) return false;
+	private static boolean isValid(@Nonnull ItemStack stack) {
+		if (stack.isEmpty()) return false;
 
 		return stack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 	}

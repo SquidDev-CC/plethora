@@ -56,13 +56,13 @@ public class BasicModuleHandler extends AbstractModuleHandler implements ICapabi
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 		return capability == Constants.MODULE_HANDLER_CAPABILITY;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 		return capability == Constants.MODULE_HANDLER_CAPABILITY ? (T) this : null;
 	}
 }

@@ -74,7 +74,7 @@ public final class MethodsPlayerActions {
 				} else if (entity instanceof EntityPlayer) {
 					throw new LuaException("An unexpected player was used");
 				} else {
-					player = fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity);
+					player = fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.getEntityWorld(), entity);
 				}
 
 				if (fakePlayer != null) fakePlayer.load(entity);
@@ -93,7 +93,7 @@ public final class MethodsPlayerActions {
 		doc = "function():boolean, string|nil -- Left click with this item. Returns the action taken."
 	)
 	public static Object[] swing(EntityLiving entity, IContext<IModuleContainer> context, Object[] args) {
-		PlethoraFakePlayer fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity);
+		PlethoraFakePlayer fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.getEntityWorld(), entity);
 
 		fakePlayer.load(entity);
 		try {
@@ -123,13 +123,13 @@ public final class MethodsPlayerActions {
 	private static MethodResult use(EntityPlayerMP player, EntityLivingBase original, EnumHand hand, int duration) {
 		RayTraceResult hit = PlayerHelpers.findHit(player, original);
 		ItemStack stack = player.getHeldItem(hand);
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 
 		if (hit != null) {
 			switch (hit.typeOfHit) {
 				case ENTITY:
-					if (stack != null) {
-						EnumActionResult result = player.interact(hit.entityHit, stack, hand);
+					if (!stack.isEmpty()) {
+						EnumActionResult result = player.interactOn(hit.entityHit, hand);
 						if (result != EnumActionResult.PASS) {
 							return MethodResult.result(result == EnumActionResult.SUCCESS, "entity", "interact");
 						}
@@ -146,18 +146,18 @@ public final class MethodsPlayerActions {
 			}
 		}
 
-		if (stack != null) {
+		if (!stack.isEmpty()) {
 			if (MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickEmpty(player, hand))) {
 				return MethodResult.result(true, "item", "use");
 			}
 
 			duration = Math.min(duration, stack.getMaxItemUseDuration());
-			ActionResult<ItemStack> result = stack.useItemRightClick(player.worldObj, player, hand);
+			ActionResult<ItemStack> result = stack.useItemRightClick(player.getEntityWorld(), player, hand);
 
 			ItemStack resultStack = result.getResult();
 			player.setHeldItem(hand, resultStack);
-			if (resultStack == null || resultStack.stackSize <= 0) {
-				player.setHeldItem(hand, null);
+			if (resultStack.isEmpty()) {
+				player.setHeldItem(hand, ItemStack.EMPTY);
 				MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack, hand));
 			}
 
@@ -166,8 +166,8 @@ public final class MethodsPlayerActions {
 					return MethodResult.delayedResult(duration, false, "item", "use");
 				case SUCCESS:
 					ItemStack active = player.getActiveItemStack();
-					if (active != null && !ForgeEventFactory.onUseItemStop(player, active, duration)) {
-						active.onPlayerStoppedUsing(player.worldObj, player, active.getMaxItemUseDuration() - duration);
+					if (!active.isEmpty() && !ForgeEventFactory.onUseItemStop(player, active, duration)) {
+						active.onPlayerStoppedUsing(player.getEntityWorld(), player, active.getMaxItemUseDuration() - duration);
 						player.resetActiveHand();
 						return MethodResult.delayedResult(duration, true, "item", "use");
 					}
@@ -181,7 +181,7 @@ public final class MethodsPlayerActions {
 	private static Object[] tryUseOnBlock(EntityPlayer player, World world, RayTraceResult hit, ItemStack stack, EnumHand hand, EnumFacing side) {
 		IBlockState state = world.getBlockState(hit.getBlockPos());
 		if (!state.getBlock().isAir(state, world, hit.getBlockPos())) {
-			if (MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, hand, stack, hit.getBlockPos(), side, hit.hitVec))) {
+			if (MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, hand, hit.getBlockPos(), side, hit.hitVec))) {
 				return new Object[]{true, "block", "interact"};
 			}
 
@@ -196,15 +196,15 @@ public final class MethodsPlayerActions {
 		float xCoord = (float) look.xCoord - (float) pos.getX();
 		float yCoord = (float) look.yCoord - (float) pos.getY();
 		float zCoord = (float) look.zCoord - (float) pos.getZ();
-		World world = player.worldObj;
+		World world = player.getEntityWorld();
 
-		if (stack != null && stack.getItem().onItemUseFirst(stack, player, world, pos, side, xCoord, yCoord, zCoord, hand) == EnumActionResult.SUCCESS) {
+		if (stack != null && stack.getItem().onItemUseFirst(player, world, pos, side, xCoord, yCoord, zCoord, hand) == EnumActionResult.SUCCESS) {
 			return new Object[]{true, "item", "use"};
 		}
 
 		if (!player.isSneaking() || stack == null || stack.getItem().doesSneakBypassUse(stack, world, pos, player)) {
 			IBlockState state = world.getBlockState(pos);
-			if (state.getBlock().onBlockActivated(world, pos, state, player, hand, stack, side, xCoord, yCoord, zCoord)) {
+			if (state.getBlock().onBlockActivated(world, pos, state, player, hand, side, xCoord, yCoord, zCoord)) {
 				return new Object[]{true, "block", "interact"};
 			}
 		}
@@ -223,21 +223,21 @@ public final class MethodsPlayerActions {
 				shiftPos = pos.offset(side);
 			}
 
-			if (!world.canBlockBePlaced(itemBlock.block, shiftPos, false, shiftSide, null, stack)) {
+			if (!world.mayPlace(itemBlock.block, shiftPos, false, shiftSide, null)) {
 				return null;
 			}
 		}
 
 		int stackMetadata = stack.getMetadata();
-		int stackSize = stack.stackSize;
+		int stackSize = stack.getCount();
 
 		boolean flag = stack.onItemUse(player, world, pos, hand, side, xCoord, yCoord, zCoord) == EnumActionResult.SUCCESS;
 
 		if (player.capabilities.isCreativeMode) {
 			stack.setItemDamage(stackMetadata);
-			stack.stackSize = stackSize;
-		} else if (stack.stackSize <= 0) {
-			player.setHeldItem(hand, null);
+			stack.setCount(stackSize);
+		} else if (stack.getCount() <= 0) {
+			player.setHeldItem(hand, ItemStack.EMPTY);
 			MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack, hand));
 		}
 

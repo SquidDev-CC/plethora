@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import org.squiddev.plethora.gameplay.Plethora;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class DisableAI {
@@ -64,13 +65,13 @@ public class DisableAI {
 		private boolean disabled;
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 			return capability == DISABLE_AI_CAPABILITY;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 			return capability == DISABLE_AI_CAPABILITY ? (T) this : null;
 		}
 

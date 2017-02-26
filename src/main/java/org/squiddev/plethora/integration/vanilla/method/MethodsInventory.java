@@ -26,7 +26,7 @@ public final class MethodsInventory {
 		int size = inventory.getSlots();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				items.put(i + 1, MetaItemBasic.getBasicProperties(stack));
 			}
 		}
@@ -49,7 +49,7 @@ public final class MethodsInventory {
 				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
 				ItemStack stack = inventory.getStackInSlot(slot - 1);
-				if (stack == null) {
+				if (stack.isEmpty()) {
 					return MethodResult.empty();
 				} else {
 					ItemSlot item = new ItemSlot(inventory, slot - 1);
@@ -83,7 +83,7 @@ public final class MethodsInventory {
 				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
 				ItemStack stack = inventory.getStackInSlot(slot - 1);
-				if (stack == null) {
+				if (stack.isEmpty()) {
 					return MethodResult.empty();
 				} else {
 					return MethodResult.result(baked.makePartialChild(stack).getMeta());

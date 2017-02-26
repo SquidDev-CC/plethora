@@ -27,8 +27,8 @@ public class PeripheralsWrapper extends UseInRecipeWrapper {
 		return isValid(stack);
 	}
 
-	private static boolean isValid(ItemStack stack) {
-		if (stack == null || stack.stackSize == 0 || stack.getItem() == null) return false;
+	private static boolean isValid(@Nonnull ItemStack stack) {
+		if (stack.isEmpty()) return false;
 
 		return stack.hasCapability(Constants.PERIPHERAL_CAPABILITY, null)
 			|| stack.hasCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);

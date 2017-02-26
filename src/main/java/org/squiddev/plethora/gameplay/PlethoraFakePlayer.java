@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -40,6 +41,11 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	private int currentDamage = -1;
 	private int currentDamageState = -1;
+
+	@Deprecated
+	public PlethoraFakePlayer(World world) {
+		this((WorldServer) world);
+	}
 
 	public PlethoraFakePlayer(WorldServer world, Entity owner) {
 		super(world, profile);
@@ -115,7 +121,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	public Pair<Boolean, String> dig(BlockPos pos, EnumFacing direction) {
-		World world = worldObj;
+		World world = getEntityWorld();
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 
@@ -157,7 +163,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 	}
 
 	public void load(EntityLivingBase from) {
-		worldObj = from.worldObj;
+		setWorld(from.getEntityWorld());
 		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 		rotationYawHead = rotationYaw;
 		setSize(from.width, from.height);
@@ -170,11 +176,11 @@ public class PlethoraFakePlayer extends FakePlayer {
 		for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
 			ItemStack stack = from.getItemStackFromSlot(slot);
 
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				setItemStackToSlot(slot, stack.copy());
 				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
 			} else {
-				setItemStackToSlot(slot, null);
+				setItemStackToSlot(slot, ItemStack.EMPTY);
 			}
 		}
 
@@ -193,25 +199,25 @@ public class PlethoraFakePlayer extends FakePlayer {
 				from.setItemStackToSlot(slot, stack);
 			}
 
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				getAttributeMap().removeAttributeModifiers(stack.getAttributeModifiers(slot));
 			}
 		}
 
-		ItemStack[] main = inventory.mainInventory;
+		NonNullList<ItemStack> main = inventory.mainInventory;
 		IItemHandler handler = new EquipmentInvWrapper(from);
-		for (int i = 1; i < main.length; i++) {
-			ItemStack stack = main[i];
+		for (int i = 1; i < main.size(); i++) {
+			ItemStack stack = main.get(i);
 			for (int j = 0; j < 5; j++) {
-				if (stack == null || stack.stackSize <= 0) break;
+				if (stack.isEmpty()) break;
 				stack = handler.insertItem(j, stack, false);
 			}
 
-			if (stack != null && stack.stackSize > 0) {
+			if (!stack.isEmpty()) {
 				dropItem(stack, true, false);
 			}
 
-			main[i] = null;
+			main.set(i, ItemStack.EMPTY);
 		}
 
 		inventory.markDirty();

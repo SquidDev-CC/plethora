@@ -45,7 +45,7 @@ public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 		ItemStack stack = slot.getStack();
 		EntityPlayer player = context.getContext(EntityPlayer.class);
 
-		slot.replace(stack.onItemUseFinish(player.worldObj, player));
+		slot.replace(stack.onItemUseFinish(player.getEntityWorld(), player));
 		return null;
 	}
 }

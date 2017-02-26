@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = "ComputerCraft", namespace = "turtle")
+@IMetaProvider.Inject(value = ItemStack.class, modId = "computercraft", namespace = "turtle")
 public class MetaItemTurtle extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

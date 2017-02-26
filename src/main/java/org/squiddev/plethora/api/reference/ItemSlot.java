@@ -71,7 +71,7 @@ public class ItemSlot implements IReference<ItemSlot> {
 			// If the stack has changed
 			newStack != stack &&
 				// If the item has changed
-				(newStack == null || newStack.getItem() != stack.getItem() ||
+				(newStack.isEmpty() || newStack.getItem() != stack.getItem() ||
 					// Or the damage level has changed (ignored for swords).
 					(!stack.isItemStackDamageable() && meta != newStack.getItemDamage())
 				)

@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Provider for computer items;
  */
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "computer", modId = "ComputerCraft")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "computer", modId = "computercraft")
 public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

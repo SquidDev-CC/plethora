@@ -6,7 +6,7 @@ import net.minecraft.item.ItemBanner;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -25,7 +25,7 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 		int idx = 0;
 		Map<Object, Object> out = Maps.newHashMap();
 
-		NBTTagCompound tag = stack.getSubCompound("BlockEntityTag", false);
+		NBTTagCompound tag = stack.getSubCompound("BlockEntityTag");
 		if (tag != null && tag.hasKey("Patterns")) {
 			NBTTagList nbttaglist = tag.getTagList("Patterns", 10);
 
@@ -33,14 +33,14 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 				NBTTagCompound patternTag = nbttaglist.getCompoundTagAt(i);
 
 				EnumDyeColor color = EnumDyeColor.byDyeDamage(patternTag.getInteger("Color"));
-				TileEntityBanner.EnumBannerPattern pattern = getPatternByID(patternTag.getString("Pattern"));
+				BannerPattern pattern = getPatternByID(patternTag.getString("Pattern"));
 
 				if (pattern != null) {
 					Map<String, String> entry = Maps.newHashMap();
-					entry.put("id", pattern.getPatternID());
+					entry.put("id", pattern.getHashname());
 
 					// patternName
-					String name = ObfuscationReflectionHelper.getPrivateValue(TileEntityBanner.EnumBannerPattern.class, pattern, "field_177284_N");
+					String name = ObfuscationReflectionHelper.getPrivateValue(BannerPattern.class, pattern, "field_191014_N");
 					entry.put("name", name);
 
 					entry.put("colour", color.toString());
@@ -54,9 +54,9 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 		return out;
 	}
 
-	private static TileEntityBanner.EnumBannerPattern getPatternByID(String id) {
-		for (TileEntityBanner.EnumBannerPattern pattern : TileEntityBanner.EnumBannerPattern.values()) {
-			if (pattern.getPatternID().equals(id)) return pattern;
+	private static BannerPattern getPatternByID(String id) {
+		for (BannerPattern pattern : BannerPattern.values()) {
+			if (pattern.getHashname().equals(id)) return pattern;
 		}
 
 		return null;

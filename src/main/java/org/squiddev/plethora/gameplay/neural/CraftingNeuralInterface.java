@@ -30,6 +30,7 @@ public class CraftingNeuralInterface extends ShapedOreRecipe {
 		);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
 		ItemStack output = getRecipeOutput().copy();

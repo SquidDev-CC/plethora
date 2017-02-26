@@ -126,7 +126,7 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs tab, List<ItemStack> out) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> out) {
 		for (int i = 0; i < MODULES; i++) {
 			out.add(new ItemStack(this, 1, i));
 		}
@@ -134,7 +134,8 @@ public final class ItemModule extends ItemBase {
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
 			case CHAT_ID:
@@ -179,7 +180,7 @@ public final class ItemModule extends ItemBase {
 				double potency = (ticks / USE_TICKS) * (maximumPotency - minimumPotency) + minimumPotency;
 				double inaccuracy = (USE_TICKS - ticks) / USE_TICKS * LASER_MAX_SPREAD;
 
-				world.spawnEntityInWorld(new EntityLaser(world, player, (float) inaccuracy, (float) potency));
+				world.spawnEntity(new EntityLaser(world, player, (float) inaccuracy, (float) potency));
 				break;
 			}
 			case KINETIC_ID: {
@@ -239,7 +240,7 @@ public final class ItemModule extends ItemBase {
 	@Override
 	public void preInit() {
 		super.preInit();
-		EntityRegistry.registerModEntity(EntityLaser.class, ID + ":laser", 0, Plethora.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Plethora.ID, "laser"), EntityLaser.class, Plethora.ID + ":laser", 0, Plethora.instance, 64, 10, true);
 
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
@@ -336,13 +337,13 @@ public final class ItemModule extends ItemBase {
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES ? (T) this : null;
 		}
 
@@ -419,7 +420,7 @@ public final class ItemModule extends ItemBase {
 		float motionZ = MathHelper.cos(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
 
-		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
+		power /= MathHelper.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 		if (entity.isElytraFlying()) power *= ConfigGameplay.Kinetic.launchElytraScale;
 
 		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);

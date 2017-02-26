@@ -11,8 +11,6 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.Collections;
-import java.util.List;
 
 public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
 	protected final ItemStack stack;
@@ -25,13 +23,6 @@ public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
 		this.slotDrawable = helper.getSlotDrawable();
 		this.usable = useIn;
 		this.id = id;
-	}
-
-	@Nonnull
-	@Override
-	@SuppressWarnings("deprecation")
-	public List getInputs() {
-		return Collections.singletonList(stack);
 	}
 
 	@Override

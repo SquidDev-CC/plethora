@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
+import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingManager;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import com.raoulvdberge.refinedstorage.api.network.INetworkMaster;
@@ -36,16 +37,17 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 
 				ItemStack stack = baked.getTarget();
 				INetworkMaster network = baked.getContext(INetworkMaster.class);
+				ICraftingManager manager = network.getCraftingManager();
 
-				ICraftingPattern pattern = network.getPattern(stack);
+				ICraftingPattern pattern = manager.getPattern(stack);
 				if (pattern == null) throw new LuaException("No matching patterns");
 
-				ICraftingTask task = network.createCraftingTask(stack, pattern, quantity);
+				ICraftingTask task = manager.create(stack, pattern, quantity, true);
 				task.calculate();
 
 				boolean success = task.isValid() && task.getMissing().getStacks().isEmpty();
 				if (success) {
-					network.addCraftingTask(task);
+					manager.add(task);
 				}
 
 				return MethodResult.result(success, context.makeChild(Reference.id(task)).getObject());

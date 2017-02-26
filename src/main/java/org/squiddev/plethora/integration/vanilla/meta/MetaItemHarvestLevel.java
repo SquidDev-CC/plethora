@@ -25,7 +25,7 @@ public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 			HashMap<Object, Object> types = Maps.newHashMap();
 
 			for (String tool : item.getToolClasses(stack)) {
-				types.put(tool, item.getHarvestLevel(stack, tool));
+				types.put(tool, item.getHarvestLevel(stack, tool, null, null));
 			}
 
 			return types;

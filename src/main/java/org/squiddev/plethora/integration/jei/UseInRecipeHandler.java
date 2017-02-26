@@ -23,13 +23,6 @@ public class UseInRecipeHandler<T extends UseInRecipeWrapper> implements IRecipe
 
 	@Nonnull
 	@Override
-	@SuppressWarnings("deprecation")
-	public String getRecipeCategoryUid() {
-		return id;
-	}
-
-	@Nonnull
-	@Override
 	public String getRecipeCategoryUid(@Nonnull T recipe) {
 		return id;
 	}

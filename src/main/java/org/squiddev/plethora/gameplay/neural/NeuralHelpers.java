@@ -62,7 +62,7 @@ public final class NeuralHelpers {
 	public static TinySlot getSlot(EntityLivingBase entity) {
 		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
-		if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
+		if (!stack.isEmpty() && stack.getItem() == Registry.itemNeuralInterface) {
 			if (entity instanceof EntityPlayer) {
 				return new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
 			} else {
@@ -90,7 +90,7 @@ public final class NeuralHelpers {
 		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
 		for (int slot : getBaubleType().getValidSlots()) {
 			ItemStack stack = handler.getStackInSlot(slot);
-			if (stack != null && stack.getItem() == Registry.itemNeuralInterface) {
+			if (stack.getItem() == Registry.itemNeuralInterface) {
 				return new TinySlot.BaublesSlot(stack, handler, slot);
 			}
 		}
@@ -98,14 +98,14 @@ public final class NeuralHelpers {
 		return null;
 	}
 
-	@Nullable
+	@Nonnull
 	public static ItemStack getStack(EntityLivingBase entity) {
 		TinySlot slot = getSlot(entity);
-		return slot == null ? null : slot.getStack();
+		return slot == null ? ItemStack.EMPTY : slot.getStack();
 	}
 
 	public static IPeripheral buildPeripheral(@Nullable ItemStack stack) {
-		if (stack == null) return null;
+		if (stack == null || stack.isEmpty()) return null;
 
 		IPeripheral peripheral = stack.getCapability(Constants.PERIPHERAL_CAPABILITY, null);
 		if (peripheral != null) return peripheral;
@@ -124,7 +124,7 @@ public final class NeuralHelpers {
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
 			ItemStack stack = inventory[PERIPHERAL_SIZE + i];
-			if (stack == null) continue;
+			if (stack == null || stack.isEmpty()) continue;
 
 			stack = stacks[i] = stack.copy();
 

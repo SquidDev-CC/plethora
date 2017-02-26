@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.squiddev.plethora.integration.computercraft.MetaItemTurtle.getUpgrade;
 
-@IMetaProvider.Inject(value = ITurtleTile.class, modId = "ComputerCraft", namespace = "turtle")
+@IMetaProvider.Inject(value = ITurtleTile.class, modId = "computercraft", namespace = "turtle")
 public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 	@Nonnull
 	@Override

@@ -66,13 +66,13 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 		return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY && stack.getItemDamage() == 0;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 		return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY && stack.getItemDamage() == 0 ? (T) this : null;
 	}
 
@@ -197,7 +197,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 							int size = inventory.getSizeInventory(), held = inventory.currentItem;
 							for (int i = 0; i < size; i++) {
 								ItemStack stack = inventory.getStackInSlot((i + held) % size);
-								if (stack != null && stack.getItem() instanceof IDataCard) {
+								if (!stack.isEmpty() && stack.getItem() instanceof IDataCard) {
 									IDataCard card = (IDataCard) stack.getItem();
 									PocketBinding.this.save(stack, card);
 									return new Object[]{true};
@@ -205,7 +205,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 							}
 						} else {
 							ItemStack stack = entity.getHeldItem(EnumHand.MAIN_HAND);
-							if (stack != null && stack.getItem() instanceof IDataCard) {
+							if (!stack.isEmpty() && stack.getItem() instanceof IDataCard) {
 								IDataCard card = (IDataCard) stack.getItem();
 								PocketBinding.this.save(stack, card);
 								return new Object[]{true};

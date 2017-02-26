@@ -30,13 +30,15 @@ public class ItemNeuralConnector extends ItemBase {
 
 	@Override
 	@Nonnull
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+
 		// Check if the entity we've just hit has a stack in the first slot. If so, use that instead.
 		RayTraceResult hit = PlayerHelpers.findHitGuess(player);
 		Entity entity = hit.entityHit;
 		if (hit.typeOfHit == RayTraceResult.Type.ENTITY && !(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase) {
 			ItemStack armor = NeuralHelpers.getStack((EntityLivingBase) entity);
-			if (armor != null) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+			if (!armor.isEmpty()) return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
 
 		if (!world.isRemote) {
@@ -54,13 +56,13 @@ public class ItemNeuralConnector extends ItemBase {
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
+	public boolean itemInteractionForEntity(@Nonnull ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
 		if (entity instanceof EntityPlayer) return false;
 
 		ItemStack armor = NeuralHelpers.getStack(entity);
-		if (armor != null) {
-			if (!player.worldObj.isRemote) {
-				GuiHandler.openNeuralEntity(player, player.worldObj, entity);
+		if (!armor.isEmpty()) {
+			if (!player.getEntityWorld().isRemote) {
+				GuiHandler.openNeuralEntity(player, player.getEntityWorld(), entity);
 			}
 			return true;
 		} else {

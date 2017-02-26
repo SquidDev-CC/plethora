@@ -29,6 +29,8 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		 * Anything small looks stupid. We don't allow attaching to baby animals.
 		 *
 		 * See {@link RenderManager} for entity to model mappings
+		 *
+		 * @see net.minecraft.client.model.
 		 */
 
 		/**
@@ -37,6 +39,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		inject(EntityBlaze.class, 0, 3, 0);
 		inject(EntityCaveSpider.class, 0, 2, -3); // Same as normal spider
 		inject(EntityCreeper.class, 0, -1, 0);
+		injectMonocle(EntityElderGuardian.class, -1, 20.5f, 4.2f, 0, 0, 0);
 		inject(EntityEnderman.class, 0, 0, 0);
 		injectMonocle(EntityEndermite.class, -1.5f, 5, 3.1f, 0, 0, 0);
 		inject(EntityGhast.class, 1, 12, -4);
@@ -161,7 +164,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		} else if (model instanceof ModelEnderMite) {
 			ModelRenderer[] renderers = ObfuscationReflectionHelper.getPrivateValue(ModelEnderMite.class, (ModelEnderMite) model, "field_178713_d");
 			return renderers[0];
-		} else if(model instanceof ModelShulker) {
+		} else if (model instanceof ModelShulker) {
 			return ((ModelShulker) model).head;
 		} else {
 			return null;

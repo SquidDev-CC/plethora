@@ -33,7 +33,7 @@ public class GuiKeyboard extends GuiScreen {
 	public void initGui() {
 		super.initGui();
 
-		mc.thePlayer.openContainer = container;
+		mc.player.openContainer = container;
 
 		Terminal terminal = computer.getTerminal();
 		terminalGui = new WidgetTerminal(0, 0, terminal.getWidth(), terminal.getHeight(), new IComputerContainer() {

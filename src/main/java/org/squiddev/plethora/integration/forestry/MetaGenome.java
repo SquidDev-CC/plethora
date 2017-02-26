@@ -4,14 +4,12 @@ import com.google.common.collect.Maps;
 import forestry.api.genetics.*;
 import forestry.core.config.Constants;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.common.EnumPlantType;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 @IMetaProvider.Inject(value = IGenome.class, modId = Constants.MOD_ID)
 public class MetaGenome extends BasicMetaProvider<IGenome> {
@@ -53,16 +51,6 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 			return ((IAlleleFlowers) allele).getProvider().getFlowerType();
 		} else if (allele instanceof IAlleleInteger) {
 			return ((IAlleleInteger) allele).getValue();
-		} else if (allele instanceof IAllelePlantType) {
-			Set<EnumPlantType> types = ((IAllelePlantType) allele).getPlantTypes();
-
-
-			int i = 0;
-			Map<Integer, String> out = Maps.newHashMapWithExpectedSize(types.size());
-			for (EnumPlantType type : types) {
-				out.put(++i, type.toString().toLowerCase(Locale.ENGLISH));
-			}
-			return out;
 		} else if (allele instanceof IAlleleSpecies) {
 			IAlleleSpecies species = (IAlleleSpecies) allele;
 

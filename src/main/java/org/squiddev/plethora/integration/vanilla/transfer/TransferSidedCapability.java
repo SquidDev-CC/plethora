@@ -36,12 +36,12 @@ public class TransferSidedCapability implements ITransferProvider<ICapabilityPro
 		if (facing != null) {
 			return new ICapabilityProvider() {
 				@Override
-				public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 					return (enumFacing == facing || enumFacing == null) && object.hasCapability(capability, facing);
 				}
 
 				@Override
-				public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 					return (enumFacing == facing || enumFacing == null) ? object.getCapability(capability, facing) : null;
 				}
 			};

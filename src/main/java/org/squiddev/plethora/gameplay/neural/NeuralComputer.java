@@ -100,12 +100,12 @@ public class NeuralComputer extends ServerComputer {
 		// Update peripherals
 		for (int slot = 0; slot < PERIPHERAL_SIZE; slot++) {
 			ItemStack peripheral = stacks[slot];
-			if (peripheral == null) continue;
+			if (peripheral == null || peripheral.isEmpty()) continue;
 
 			IPeripheralHandler peripheralHandler = peripheral.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);
 			if (peripheralHandler != null) {
 				peripheralHandler.update(
-					owner.worldObj,
+					owner.getEntityWorld(),
 					new Vec3d(owner.posX, owner.posY + owner.getEyeHeight(), owner.posZ),
 					owner
 				);

@@ -72,8 +72,8 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
 		if (!NeuralRegistry.instance.canEquip(entity)) return false;
 
-		if (entity.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
-			if (!player.worldObj.isRemote) {
+		if (entity.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT).isEmpty() && stack.getCount() == 1) {
+			if (!player.getEntityWorld().isRemote) {
 				entity.setItemStackToSlot(NeuralHelpers.ARMOR_SLOT, stack.copy());
 
 				// Force dropping when killed
@@ -84,7 +84,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				}
 
 				if (!player.capabilities.isCreativeMode) {
-					stack.stackSize = 0;
+					stack.setCount(0);
 				}
 			}
 			return true;
@@ -95,12 +95,13 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	@Nonnull
-	public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		// Check if the entity we've just hit has a stack in the first slot. If so, use that instead.
+		ItemStack stack = player.getHeldItem(hand);
 		RayTraceResult hit = PlayerHelpers.findHitGuess(player);
 		Entity entity = hit.entityHit;
 		if (hit.typeOfHit == RayTraceResult.Type.ENTITY && !(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase) {
-			if (((EntityLivingBase) entity).getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) == null && stack.stackSize == 1) {
+			if (((EntityLivingBase) entity).getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT).isEmpty() && stack.getCount() == 1) {
 				return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 			}
 		}
@@ -108,10 +109,10 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		if (Loader.isModLoaded(Baubles.MODID)) {
 			IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
 			for (int slot : NeuralHelpers.getBaubleType().getValidSlots()) {
-				if (handler.getStackInSlot(slot) == null) {
+				if (handler.getStackInSlot(slot).isEmpty()) {
 					if (!world.isRemote) {
 						handler.setStackInSlot(slot, stack.copy());
-						if (!player.capabilities.isCreativeMode) stack.stackSize--;
+						if (!player.capabilities.isCreativeMode) stack.grow(-1);
 					}
 
 					return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -119,11 +120,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			}
 		}
 
-		return super.onItemRightClick(stack, world, player, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	private void onUpdate(ItemStack stack, TinySlot inventory, EntityLivingBase player, boolean forceActive) {
-		if (player.worldObj.isRemote) {
+		if (player.getEntityWorld().isRemote) {
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
 			NBTTagCompound tag = ItemBase.getTag(stack);
@@ -293,13 +294,13 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 			return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 			if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 				return (T) inv;
 			} else {
@@ -310,17 +311,17 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	//region Armor stuff
 	@Override
-	public ArmorProperties getProperties(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, double v, int i) {
+	public ArmorProperties getProperties(EntityLivingBase entityLivingBase, @Nonnull ItemStack itemStack, DamageSource damageSource, double v, int i) {
 		return FAKE_PROPERTIES;
 	}
 
 	@Override
-	public int getArmorDisplay(EntityPlayer entityPlayer, ItemStack itemStack, int i) {
+	public int getArmorDisplay(EntityPlayer entityPlayer, @Nonnull ItemStack itemStack, int i) {
 		return 0;
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entityLivingBase, ItemStack itemStack, DamageSource damageSource, int damage, int slot) {
+	public void damageArmor(EntityLivingBase entityLivingBase, @Nonnull ItemStack itemStack, DamageSource damageSource, int damage, int slot) {
 	}
 
 	@Override

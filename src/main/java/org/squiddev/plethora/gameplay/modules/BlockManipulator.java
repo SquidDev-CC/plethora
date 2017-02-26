@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -79,7 +80,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, List<ItemStack> itemStacks) {
+	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> itemStacks) {
 		for (ManipulatorType type : VALUES) {
 			itemStacks.add(new ItemStack(this, 1, type.ordinal()));
 		}
@@ -276,7 +277,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		BlockPos blockPos = event.getTarget().getBlockPos();
 
-		IBlockState state = event.getPlayer().worldObj.getBlockState(blockPos);
+		IBlockState state = event.getPlayer().getEntityWorld().getBlockState(blockPos);
 		if (state.getBlock() != this) return;
 
 		Vec3d hit = event.getTarget().hitVec.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());

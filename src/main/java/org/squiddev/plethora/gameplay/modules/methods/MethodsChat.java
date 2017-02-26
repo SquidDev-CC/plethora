@@ -51,7 +51,7 @@ public final class MethodsChat {
 					name = entity.getDisplayName();
 					player = (EntityPlayerMP) entity;
 
-				} else if (entity.worldObj instanceof WorldServer) {
+				} else if (entity.getEntityWorld() instanceof WorldServer) {
 					if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
 
 					BlockPos pos = entity.getPosition();
@@ -59,7 +59,7 @@ public final class MethodsChat {
 					// We include the position of the entity
 					name = entity.getDisplayName().createCopy();
 					name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, entity, name.getUnformattedText());
+					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, name.getUnformattedText());
 					fakePlayer.load(entity);
 					player = fakePlayer;
 				} else {
@@ -71,7 +71,7 @@ public final class MethodsChat {
 				ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
 				if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
 
-				player.mcServer.getPlayerList().sendChatMsgImpl(event.getComponent(), false);
+				player.mcServer.getPlayerList().sendMessage(event.getComponent(), false);
 				return MethodResult.empty();
 			}
 		});
@@ -92,7 +92,7 @@ public final class MethodsChat {
 				IContext<IModuleContainer> context = unbaked.bake();
 				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
 
-				entity.addChatMessage(ForgeHooks.newChatWithLinks(message));
+				entity.sendMessage(ForgeHooks.newChatWithLinks(message));
 				return MethodResult.empty();
 			}
 		});

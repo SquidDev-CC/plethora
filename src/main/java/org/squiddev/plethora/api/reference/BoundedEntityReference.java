@@ -26,7 +26,7 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 	public T get() throws LuaException {
 		T entity = super.get();
 
-		if (entity.worldObj != location.getWorld()) throw new LuaException("The entity has gone");
+		if (entity.getEntityWorld() != location.getWorld()) throw new LuaException("The entity has gone");
 
 		Vec3d pos = entity.getLookVec().subtract(location.getLoc());
 		if (

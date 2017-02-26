@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Provider for all media items (disks and records)
  */
-@IMetaProvider.Inject(value = ItemStack.class, modId = "ComputerCraft", namespace = "media")
+@IMetaProvider.Inject(value = ItemStack.class, modId = "computercraft", namespace = "media")
 public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

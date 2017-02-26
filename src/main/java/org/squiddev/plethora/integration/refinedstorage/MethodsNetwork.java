@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import com.raoulvdberge.refinedstorage.api.network.INetworkMaster;
-import com.raoulvdberge.refinedstorage.api.network.INetworkNode;
+import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
+import com.raoulvdberge.refinedstorage.tile.TileController;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
@@ -37,10 +38,10 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID, worldThread = true,
+		value = TileController.class, modId = RS.ID, worldThread = true,
 		doc = "function():int -- Get the energy stored usage in this RefinedStorage network"
 	)
-	public static Object[] getNetworkEnergyStored(IContext<INetworkMaster> context, Object[] args) {
+	public static Object[] getNetworkEnergyStored(IContext<TileController> context, Object[] args) {
 		return new Object[]{context.getTarget().getEnergy().getEnergyStored()};
 	}
 
@@ -115,7 +116,7 @@ public class MethodsNetwork {
 		doc = "function():table -- List all crafting tasks in the network"
 	)
 	public static Object[] getCraftingTasks(IContext<INetworkMaster> context, Object[] args) {
-		List<ICraftingTask> tasks = context.getTarget().getCraftingTasks();
+		List<ICraftingTask> tasks = context.getTarget().getCraftingManager().getTasks();
 
 		int i = 0;
 		Map<Integer, Object> output = Maps.newHashMapWithExpectedSize(tasks.size());

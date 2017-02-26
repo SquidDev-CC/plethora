@@ -103,7 +103,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	@Override
 	public void setThrowableHeading(double vx, double vy, double vz, float velocity, float inaccuracy) {
 		// Normalise magnitude
-		float magnitude = MathHelper.sqrt_double(vx * vx + vy * vy + vz * vz);
+		float magnitude = MathHelper.sqrt(vx * vx + vy * vy + vz * vz);
 		vx /= magnitude;
 		vy /= magnitude;
 		vz /= magnitude;
@@ -122,7 +122,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		motionY = vy;
 		motionZ = vz;
 
-		float newMagnitude = MathHelper.sqrt_double(vx * vx + vz * vz);
+		float newMagnitude = MathHelper.sqrt(vx * vx + vz * vz);
 		prevRotationYaw = rotationYaw = (float) (MathHelper.atan2(vx, vz) * 180 / Math.PI);
 		prevRotationPitch = rotationPitch = (float) (MathHelper.atan2(vy, newMagnitude) * 180 / Math.PI);
 	}
@@ -134,7 +134,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		motionY = y;
 		motionZ = z;
 		if (prevRotationPitch == 0.0f && prevRotationYaw == 0.0f) {
-			float magnitude = MathHelper.sqrt_double(x * x + z * z);
+			float magnitude = MathHelper.sqrt(x * x + z * z);
 			prevRotationYaw = rotationYaw = (float) (MathHelper.atan2(x, z) * 180 / Math.PI);
 			prevRotationPitch = rotationPitch = (float) (MathHelper.atan2(y, magnitude) * 180 / Math.PI);
 		}
@@ -181,6 +181,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		super.onUpdate();
 
+		World worldObj = getEntityWorld();
 		if (!worldObj.isRemote) {
 			double remaining = 1;
 			int ticks = 5; // Maximum of 5 steps. This limit should never be reached but you never know.
@@ -268,12 +269,12 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	private void onImpact(RayTraceResult collision) {
-		if (worldObj.isRemote) return;
+		World world = getEntityWorld();
+		if (world.isRemote) return;
 
 		switch (collision.typeOfHit) {
 			case BLOCK: {
 				BlockPos position = collision.getBlockPos();
-				World world = this.worldObj;
 
 				IBlockState blockState = world.getBlockState(position);
 				Block block = blockState.getBlock();
@@ -372,6 +373,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	private EntityLivingBase getShooter() {
 		if (shooter != null) return shooter;
 
+		World worldObj = getEntityWorld();
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
@@ -399,6 +401,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		EntityLivingBase shooter = getShooter();
 		if (shooter instanceof EntityPlayer) return shooterPlayer = (EntityPlayer) shooter;
 
+		World worldObj = getEntityWorld();
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
@@ -413,7 +416,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		if (shooter != null && shooter != fakePlayer) {
 			syncFromEntity(fakePlayer, shooter);
 		} else if (shooterPos != null) {
-			World current = fakePlayer.worldObj;
+			World current = fakePlayer.getEntityWorld();
 
 			if (current == null || current.provider.getDimension() != shooterPos.getDimension()) {
 				// Don't load another dimension unless we have to
@@ -433,7 +436,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	private static void syncFromEntity(EntityPlayer player, Entity from) {
-		player.worldObj = from.worldObj;
+		player.setWorld(from.getEntityWorld());
 		player.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 	}
 

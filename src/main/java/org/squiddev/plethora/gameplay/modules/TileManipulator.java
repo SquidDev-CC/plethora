@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
@@ -75,8 +76,9 @@ public final class TileManipulator extends TileBase implements ITickable {
 	public void markModuleDataDirty() {
 		markDirty();
 		BlockPos pos = getPos();
-		IBlockState state = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(getPos(), state, state, 3);
+		World world = getWorld();
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(getPos(), state, state, 3);
 	}
 
 	@Override
@@ -126,7 +128,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 		for (int i = 0; i < stacks.length; i++) {
 			if (tag.hasKey("stack" + i)) {
-				stacks[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("stack" + i));
+				stacks[i] = new ItemStack(tag.getCompoundTag("stack" + i));
 			} else {
 				stacks[i] = null;
 			}
@@ -141,15 +143,16 @@ public final class TileManipulator extends TileBase implements ITickable {
 	}
 
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumHand hand, @Nullable ItemStack heldStack, EnumFacing side, Vec3d hit) {
+	public boolean onActivated(EntityPlayer player, EnumHand hand, EnumFacing side, Vec3d hit) {
 		if (side != EnumFacing.UP) return false;
-		if (player.worldObj.isRemote) return true;
+		if (player.getEntityWorld().isRemote) return true;
 
 		if (type == null) {
 			int meta = getBlockMetadata();
 			setType(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
 		}
 
+		ItemStack heldStack = player.getHeldItem(hand);
 		for (int i = 0; i < type.size(); i++) {
 			AxisAlignedBB box = type.boxes[i];
 			if (hit.yCoord > OFFSET - PIX &&
@@ -157,23 +160,26 @@ public final class TileManipulator extends TileBase implements ITickable {
 				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
 
 				final ItemStack stack = stacks[i];
-				if (heldStack == null && stack != null) {
+				if (heldStack.isEmpty() && !stack.isEmpty()) {
 					if (!player.capabilities.isCreativeMode) {
-						Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+						Helpers.spawnItemStack(getWorld(), pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
 					}
 
-					stacks[i] = null;
+					stacks[i] = ItemStack.EMPTY;
 					stackHash = Helpers.hashStacks(stacks);
 					markForUpdate();
 
 					break;
-				} else if (stack == null && heldStack != null && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
+				} else if ((stack == null || stack.isEmpty()) && !heldStack.isEmpty() && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
 					stacks[i] = heldStack.copy();
-					stacks[i].stackSize = 1;
+					stacks[i].setCount(1);
 					stackHash = Helpers.hashStacks(stacks);
 
-					if (!player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					if (!player.capabilities.isCreativeMode) {
+						heldStack.grow(-1);
+						if (heldStack.getCount() <= 0) {
+							player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+						}
 					}
 
 					markForUpdate();
@@ -192,7 +198,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 		for (ItemStack stack : stacks) {
 			if (stack != null) {
-				Helpers.spawnItemStack(worldObj, pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+				Helpers.spawnItemStack(getWorld(), pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
 			}
 		}
 

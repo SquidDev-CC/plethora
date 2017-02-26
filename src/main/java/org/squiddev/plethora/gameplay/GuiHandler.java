@@ -92,7 +92,7 @@ public class GuiHandler implements IGuiHandler {
 		if (entity == null) return null;
 
 		ItemStack stack = NeuralHelpers.getStack(entity);
-		if (stack == null) return null;
+		if (stack.isEmpty()) return null;
 
 		return new ContainerNeuralInterface(player.inventory, entity, stack);
 	}
