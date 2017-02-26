@@ -44,8 +44,6 @@ public class GuiHandler implements IGuiHandler {
 					EntityMinecartComputer minecart = (EntityMinecartComputer) entity;
 					ClientComputer computer = minecart.getClientComputer();
 
-					DebugLogger.debug("Got " + computer);
-
 					if (computer != null) return new GuiMinecartComputer(minecart, computer);
 				}
 
