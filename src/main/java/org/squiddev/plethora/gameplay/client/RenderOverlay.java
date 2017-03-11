@@ -206,7 +206,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		Boolean cached = oreBlockCache.get(type);
 		if (cached != null) return cached;
 
-		ItemStack stack = new ItemStack(block, meta);
+		ItemStack stack = new ItemStack(block, 1, meta);
 		for (int id : OreDictionary.getOreIDs(stack)) {
 			String oreName = OreDictionary.getOreName(id);
 			if (oreName.contains("ore")) {
