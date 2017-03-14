@@ -35,7 +35,7 @@ public class GuiHandler implements IGuiHandler {
 				return container == null ? null : new GuiNeuralInterface(container);
 			}
 			case GUI_KEYBOARD: {
-				ServerComputer computer = ComputerCraft.serverComputerRegistry.get(x);
+				ClientComputer computer = ComputerCraft.clientComputerRegistry.get(x);
 				return computer == null ? null : new GuiKeyboard(computer);
 			}
 			case GUI_MINECART: {
