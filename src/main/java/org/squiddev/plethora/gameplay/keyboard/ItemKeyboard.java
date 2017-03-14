@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -89,9 +89,9 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 
-				player.sendMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.bound")));
+				player.sendMessage(new TextComponentTranslation("item.plethora.keyboard.bound"));
 			} else if (tag != null && tag.hasKey("x")) {
-				player.sendMessage(new TextComponentString(Helpers.translateToLocal("item.plethora.keyboard.cleared")));
+				player.sendMessage(new TextComponentTranslation("item.plethora.keyboard.cleared"));
 
 				tag.removeTag("x");
 				tag.removeTag("y");
