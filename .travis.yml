@@ -6,3 +6,5 @@ cache:
   directories:
   - $HOME/.gradle
   - $HOME/.m2
+jdk:
+  - oraclejdk8
