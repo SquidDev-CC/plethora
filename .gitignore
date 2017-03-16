@@ -48,3 +48,10 @@ $RECYCLE.BIN/
 # =========================
 /_site
 /images/original/
+
+## Plethora files
+/build-*
+/run-*
+/.idea
+/classes
+/.gradle

@@ -9,7 +9,7 @@ end
 --- We require an introspection module and entity sensor to get the direction the player is facing in. Obviously a laser
 --- is required too.
 if not modules.hasModule("plethora:sensor") then
-	error("Must have a laser", 0)
+	error("Must have an entity sensor", 0)
 end
 if not modules.hasModule("plethora:introspection") then
 	error("Must have an introspection module", 0)

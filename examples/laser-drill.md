@@ -20,7 +20,7 @@ is required too.
 
 ```lua
 if not modules.hasModule("plethora:sensor") then
-	error("Must have a laser", 0)
+	error("Must have an entity sensor", 0)
 end
 if not modules.hasModule("plethora:introspection") then
 	error("Must have an introspection module", 0)
