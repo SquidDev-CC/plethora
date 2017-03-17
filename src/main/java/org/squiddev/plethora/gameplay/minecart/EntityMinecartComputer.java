@@ -23,11 +23,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.cctweaks.CCTweaks;
+import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
 import org.squiddev.plethora.gameplay.GuiHandler;
+import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.Module;
 
@@ -47,6 +51,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 	private boolean on;
 	private boolean startOn;
 
+	private int romId = -1;
+
 	@SideOnly(Side.CLIENT)
 	private Integer lastClientId;
 
@@ -54,7 +60,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		super(worldIn);
 	}
 
-	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family) {
+	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId) {
 		super(minecart.worldObj, minecart.posX, minecart.posY, minecart.posZ);
 
 		rotationPitch = minecart.rotationPitch;
@@ -73,7 +79,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		this.id = id;
 		setFamily(family);
-		if (label != null) setCustomNameTag(label);
+		if (label != null) setCustomNameTag(label + " foo");
+		this.romId = romId;
 	}
 
 	protected void entityInit() {
@@ -143,6 +150,11 @@ public class EntityMinecartComputer extends EntityMinecart {
 		tag.setInteger("computerId", id);
 		tag.setByte("family", (byte) getFamily().ordinal());
 		tag.setBoolean("on", startOn || on);
+		if (romId >= 0) {
+			tag.setInteger("rom_id", romId);
+		} else {
+			tag.removeTag("rom_id");
+		}
 	}
 
 	@Override
@@ -152,6 +164,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		id = tag.getInteger("computerId");
 		setFamily(FAMILIES[tag.getByte("family")]);
 		startOn |= tag.getBoolean("on");
+		romId = tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
 	}
 
 	@Nonnull
@@ -165,9 +178,13 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (computer == null) {
 			instanceId = manager.getUnusedInstanceID();
-			computer = new ServerComputer(worldObj, id, getName(), instanceId, getFamily(), 51, 19);
+			computer = new ServerComputer(worldObj, id, getCustomNameTag(), instanceId, getFamily(), 51, 19);
 			computer.setWorld(getEntityWorld());
 			computer.setPosition(getPosition());
+
+			if (romId >= 0 && Loader.isModLoaded(CCTweaks.ID)) {
+				((IExtendedServerComputer) computer).setCustomRom(romId);
+			}
 
 			// TODO: Inject command API where required
 
@@ -252,7 +269,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (worldObj.getGameRules().getBoolean("doEntityDrops")) {
 			entityDropItem(new ItemStack(Items.minecart, 1), 0);
-			entityDropItem(ComputerItemFactory.create(id, getCustomNameTag(), getFamily()), 0);
+
+			ItemStack stack = ComputerItemFactory.create(id, getCustomNameTag(), getFamily());
+			if (romId >= 0) ItemBase.getTag(stack).setInteger("rom_id", romId);
+			entityDropItem(stack, 0);
 		}
 	}
 
@@ -310,12 +330,16 @@ public class EntityMinecartComputer extends EntityMinecart {
 			String label = computerItem.getLabel(stack);
 			ComputerFamily family = computerItem.getFamily(stack);
 
+			// Copy ROM id (CCTweaks compat)
+			NBTTagCompound tag = stack.getTagCompound();
+			int romId = tag != null && tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
+
 			player.swingItem();
 			if (minecart.worldObj.isRemote) return;
 
 			event.setCanceled(true);
 			minecart.setDead();
-			minecart.worldObj.spawnEntityInWorld(new EntityMinecartComputer(minecart, id, label, family));
+			minecart.worldObj.spawnEntityInWorld(new EntityMinecartComputer(minecart, id, label, family, romId));
 
 			if (!player.capabilities.isCreativeMode) {
 				stack.stackSize--;
