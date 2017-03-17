@@ -1,5 +1,7 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -42,6 +44,7 @@ import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
+import org.squiddev.plethora.gameplay.modules.glasses.GlassesInstance;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -63,6 +66,7 @@ public final class ItemModule extends ItemBase {
 	public static final String SENSOR = "sensor";
 	public static final String KINETIC = "kinetic";
 	public static final String CHAT = "chat";
+	public static final String GLASSES = "glasses";
 
 	public static final int INTROSPECTION_ID = 0;
 	public static final int LASER_ID = 1;
@@ -70,8 +74,9 @@ public final class ItemModule extends ItemBase {
 	public static final int SENSOR_ID = 3;
 	public static final int KINETIC_ID = 4;
 	public static final int CHAT_ID = 5;
+	public static final int GLASSES_ID = 6;
 
-	private static final int MODULES = 6;
+	private static final int MODULES = 7;
 
 	private static final int[] TURTLE_MODULES = new int[]{
 		LASER_ID,
@@ -126,6 +131,8 @@ public final class ItemModule extends ItemBase {
 				return KINETIC;
 			case CHAT_ID:
 				return CHAT;
+			case GLASSES_ID:
+				return GLASSES;
 			default:
 				return "unknown";
 		}
@@ -328,6 +335,16 @@ public final class ItemModule extends ItemBase {
 			'N', Blocks.noteblock,
 			'W', Blocks.wool
 		);
+
+		GameRegistry.addRecipe(new ItemStack(this, 1, GLASSES_ID),
+			"MIM",
+			"GGG",
+			"IAI",
+			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
+			'I', Items.iron_ingot,
+			'G', Blocks.glass,
+			'A', Items.iron_helmet
+		);
 	}
 
 	//endregion
@@ -397,15 +414,28 @@ public final class ItemModule extends ItemBase {
 				builder.addContext(entity, new EntityReference<Entity>(entity));
 			}
 
-			if (stack.getItemDamage() == CHAT_ID) {
-				// Add a chat listener if we've got an entity (and are a chat module).
-				Object owner = access.getOwner();
-				Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
+			switch (stack.getItemDamage()) {
+				case CHAT_ID: {
+					// Add a chat listener if we've got an entity (and are a chat module).
+					Object owner = access.getOwner();
+					Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
 
-				if (ownerEntity != null) {
-					ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
-					builder.addContext(listener);
-					builder.addAttachable(listener);
+					if (ownerEntity != null) {
+						ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
+						builder.addContext(listener);
+						builder.addAttachable(listener);
+					}
+				}
+				case GLASSES_ID: {
+					// Add a chat listener if we've got an entity (and are a chat module).
+					Object owner = access.getOwner();
+					EntityPlayerMP ownerEntity = owner instanceof EntityPlayerMP ? (EntityPlayerMP) owner : null;
+
+					if (ownerEntity != null && !(ownerEntity instanceof FakePlayer)) {
+						GlassesInstance listener = new GlassesInstance(access, ownerEntity);
+						builder.addContext(listener);
+						builder.addAttachable(listener);
+					}
 				}
 			}
 		}
