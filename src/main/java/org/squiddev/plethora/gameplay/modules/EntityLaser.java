@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
@@ -328,7 +327,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
 						if (drops != null) {
 							for (ItemStack stack : drops) {
-								WorldUtil.dropItemStack(stack, world, position);
+								Block.spawnAsEntity(world, position, stack);
 							}
 						}
 					} else {
