@@ -59,14 +59,14 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
 
-		posX -= (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * 0.16f);
+		posX -= MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
 		posY -= 0.1;
-		posZ -= (MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * 0.16f);
+		posZ -= MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
 		setPosition(posX, posY, posZ);
 
-		motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-		motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-		motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
+		motionX = -MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+		motionZ = MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+		motionY = -MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI);
 		setThrowableHeading(motionX, motionY, motionZ, 1.5f, inaccuracy);
 	}
 
