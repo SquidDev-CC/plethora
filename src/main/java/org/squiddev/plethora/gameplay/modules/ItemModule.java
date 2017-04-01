@@ -93,7 +93,6 @@ public final class ItemModule extends ItemBase {
 		SENSOR_ID,
 		INTROSPECTION_ID,
 		KINETIC_ID,
-		CHAT_ID,
 	};
 
 	private static final int MAX_TICKS = 72000;
@@ -411,7 +410,14 @@ public final class ItemModule extends ItemBase {
 		@Nonnull
 		@Override
 		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-			Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+			Matrix4f matrix = new Matrix4f();
+			matrix.setIdentity();
+
+			// We flip the laser so it points forwards on turtles.
+			if (stack.getItemDamage() == LASER_ID) {
+				delta = (float) ((delta + Math.PI) % (2 * Math.PI));
+			}
+
 			matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
 
 			return Pair.of(

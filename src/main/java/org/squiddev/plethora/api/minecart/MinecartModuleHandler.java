@@ -8,12 +8,20 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 
+/**
+ * A {@link BasicModuleHandler} which also provides a {@link IMinecartUpgradeHandler}.
+ */
 public class MinecartModuleHandler extends BasicModuleHandler {
 	private IMinecartUpgradeHandler handler;
 
 	public MinecartModuleHandler(ResourceLocation id, Item item) {
 		super(id, item);
 	}
+
+	protected IMinecartUpgradeHandler createMinecart() {
+		return PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this);
+	}
+
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
@@ -26,7 +34,7 @@ public class MinecartModuleHandler extends BasicModuleHandler {
 		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
 			IMinecartUpgradeHandler upgrade = handler;
 			if (upgrade == null) {
-				upgrade = this.handler = PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this);
+				upgrade = this.handler = createMinecart();
 			}
 			return (T) upgrade;
 		}

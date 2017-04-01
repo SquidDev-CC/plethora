@@ -92,8 +92,8 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 				GlStateManager.pushMatrix();
 				switch (slot) {
 					case 0: // Top
-						GlStateManager.translate(0f, 1f, 0f);
-						GlStateManager.rotate(270, 1, 0, 0);
+						GlStateManager.translate(-0.5f, 1.5f, -0.5f);
+						GlStateManager.rotate(-90, 1, 0, 0);
 
 						// And orient the right way
 						GlStateManager.translate(0.5f, 0.5f, 0.5f);
@@ -101,13 +101,14 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 						GlStateManager.translate(-0.5f, -0.5f, -0.5f);
 						break;
 					case 1: // Left
-						GlStateManager.translate(1f, 0f, -1f);
+						GlStateManager.translate(0.5f, 0.5f, -1.5f);
 						GlStateManager.rotate(180, 0, 1, 0);
 						break;
 					case 2: // Right
+						GlStateManager.translate(0.5f, 0.5f, 0.5f);
 						break;
 					case 3: // Back
-						GlStateManager.translate(1f, 0f, 0f);
+						GlStateManager.translate(1.5f, 0.5f, -0.5f);
 						GlStateManager.rotate(90, 0, 1, 0);
 						break;
 				}
@@ -122,6 +123,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 					model = pair.getLeft();
 				}
 
+				GlStateManager.translate(-0.5f, -0.5f, -0.5f);
 				RenderHelpers.renderModel(model);
 
 				GlStateManager.popMatrix();

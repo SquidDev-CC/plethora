@@ -25,6 +25,7 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import java.util.List;
 
 public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
@@ -37,7 +38,16 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 	@Nonnull
 	@Override
 	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access) {
-		return handler.getModel(0);
+		Pair<IBakedModel, Matrix4f> model = handler.getModel(0);
+
+		Matrix4f transform = new Matrix4f();
+		transform.setIdentity();
+
+		// Center the view (-0.5) and then move half a pixel back out.
+		transform.setTranslation(new Vector3f(0, 0, -0.5f + (1 / 32.0f)));
+
+		transform.mul(transform, model.getRight());
+		return Pair.of(model.getLeft(), transform);
 	}
 
 	@Override
