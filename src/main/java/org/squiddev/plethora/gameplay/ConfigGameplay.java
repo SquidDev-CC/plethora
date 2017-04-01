@@ -77,6 +77,16 @@ public final class ConfigGameplay {
 		public static double launchYScale;
 
 		/**
+		 * Whether to scale the fall distance after launching.
+		 *
+		 * This means the player will not die from fall damage if they launch themselves
+		 * upwards in order to cancel out their negative velocity. This may not work correctly
+		 * with mods which provide custom gravity, such as Galacticraft.
+		 */
+		@DefaultBoolean(true)
+		public static boolean launchFallReset;
+
+		/**
 		 * The maximum range that the entity can path find to.
 		 */
 		@DefaultInt(32)

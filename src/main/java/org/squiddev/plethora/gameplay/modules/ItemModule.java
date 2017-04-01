@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
@@ -249,6 +250,8 @@ public final class ItemModule extends ItemBase {
 			ItemStack stack = new ItemStack(this, 1, id);
 			registry.registerPocketUpgrade(stack);
 		}
+
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -407,14 +410,24 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
+	private static final double TERMINAL_VELOCITY = -2;
+
 	public static void launch(EntityLivingBase entity, float yaw, float pitch, float power) {
 		float motionX = -MathHelper.sin(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionZ = MathHelper.cos(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
 
 		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
+
 		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);
 		entity.velocityChanged = true;
-	}
 
+		if (ConfigGameplay.Kinetic.launchFallReset && motionY > 0) {
+			if (entity.motionY > 0) {
+				entity.fallDistance = 0;
+			} else if (entity.motionY > TERMINAL_VELOCITY) {
+				entity.fallDistance *= entity.motionY / TERMINAL_VELOCITY;
+			}
+		}
+	}
 }
