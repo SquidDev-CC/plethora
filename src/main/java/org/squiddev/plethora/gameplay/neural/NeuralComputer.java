@@ -19,14 +19,14 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
+import java.lang.ref.WeakReference;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
 import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.*;
 
 public class NeuralComputer extends ServerComputer {
-	private UUID entityId;
+	private WeakReference<EntityLivingBase> entity;
 
 	private final ItemStack[] stacks = new ItemStack[INV_SIZE];
 	private int stackHash;
@@ -72,14 +72,14 @@ public class NeuralComputer extends ServerComputer {
 	public boolean update(@Nonnull EntityLivingBase owner, @Nonnull ItemStack stack, int dirtyStatus) {
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		UUID newId = owner.getPersistentID();
-		if (!Objects.equal(newId, entityId)) {
+		EntityLivingBase existing = entity == null ? null : entity.get();
+		if (!Objects.equal(existing, owner)) {
 			dirtyStatus = -1;
 
 			if (!owner.isEntityAlive()) {
-				entityId = null;
+				entity = null;
 			} else {
-				entityId = newId;
+				entity = new WeakReference<EntityLivingBase>(existing);
 			}
 		}
 
