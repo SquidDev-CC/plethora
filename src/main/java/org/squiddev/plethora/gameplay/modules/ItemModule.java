@@ -31,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
+import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
@@ -45,6 +46,7 @@ import org.squiddev.plethora.utils.Helpers;
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,6 +79,15 @@ public final class ItemModule extends ItemBase {
 	};
 
 	private static final int[] POCKET_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+		INTROSPECTION_ID,
+		KINETIC_ID,
+		CHAT_ID,
+	};
+
+	public static final int[] MINECART_MODULES = new int[]{
 		LASER_ID,
 		SCANNER_ID,
 		SENSOR_ID,
@@ -327,6 +338,7 @@ public final class ItemModule extends ItemBase {
 	private static final class ItemModuleHandler extends AbstractModuleHandler implements ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
+		private IMinecartUpgradeHandler minecart;
 
 		private ItemModuleHandler(ItemStack stack) {
 			this.stack = stack;
@@ -334,13 +346,34 @@ public final class ItemModule extends ItemBase {
 
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
-			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES;
+			if (stack.getItemDamage() >= MODULES) return false;
+
+			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return true;
+			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+				return minecart != null || Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1;
+			}
+
+			return false;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
-			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES ? (T) this : null;
+			if (stack.getItemDamage() >= MODULES) return null;
+
+			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return (T) this;
+
+			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+				if (minecart != null) {
+					return (T) minecart;
+				} else if (Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1) {
+					return (T) (minecart = PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this));
+				} else {
+					return null;
+				}
+			}
+
+			return null;
 		}
 
 		@Nonnull

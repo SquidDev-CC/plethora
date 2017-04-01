@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.minecart.MinecartModuleHandler;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
@@ -38,9 +39,9 @@ public class IntegrationVanilla {
 	public static final ResourceLocation clockMod = new ResourceLocation(clock);
 	public static final ResourceLocation noteblockMod = new ResourceLocation(noteblock);
 
-	private static final BasicModuleHandler daylightSensorCap = new BasicModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.daylight_detector));
-	private static final BasicModuleHandler clockCap = new BasicModuleHandler(clockMod, Items.clock);
-	private static final BasicModuleHandler noteblockCap = new BasicModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.noteblock));
+	private static final MinecartModuleHandler daylightSensorCap = new MinecartModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.daylight_detector));
+	private static final MinecartModuleHandler clockCap = new MinecartModuleHandler(clockMod, Items.clock);
+	private static final MinecartModuleHandler noteblockCap = new MinecartModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.noteblock));
 
 	public static void setup() {
 		IntegrationVanilla instance = new IntegrationVanilla();
