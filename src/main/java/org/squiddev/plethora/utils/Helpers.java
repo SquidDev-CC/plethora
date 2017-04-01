@@ -9,8 +9,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -165,18 +163,6 @@ public class Helpers {
 		entity.motionY = RANDOM.nextGaussian() * (double) motion + 0.20000000298023224D;
 		entity.motionZ = RANDOM.nextGaussian() * (double) motion;
 		world.spawnEntityInWorld(entity);
-	}
-
-	@SideOnly(Side.CLIENT)
-	private static ItemModelMesher mesher;
-
-	@SideOnly(Side.CLIENT)
-	public static ItemModelMesher getMesher() {
-		ItemModelMesher mesher = Helpers.mesher;
-		if (mesher == null) {
-			mesher = Helpers.mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		}
-		return mesher;
 	}
 
 	public static Set<String> getContainingMods(File file) {

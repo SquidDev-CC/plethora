@@ -38,6 +38,7 @@ import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -381,7 +382,7 @@ public final class ItemModule extends ItemBase {
 			matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
 
 			return Pair.of(
-				Helpers.getMesher().getItemModel(stack),
+				RenderHelpers.getMesher().getItemModel(stack),
 				matrix
 			);
 		}
