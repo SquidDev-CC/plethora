@@ -79,6 +79,7 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 
 		builder.<IWorldLocation>addContext(new EntityWorldLocation(entity));
 		builder.addContext(minecart, Reference.id(minecart));
+		builder.addContext(minecart.getMinecart(), Reference.entity(minecart.getMinecart()));
 
 		final IModuleContainer container = access.getContainer();
 		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
@@ -98,7 +99,8 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 		};
 
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray());
+			containerRef, cost, containerRef, builder.getReferenceArray()
+		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
 			container, cost, builder.getObjectsArray(), container

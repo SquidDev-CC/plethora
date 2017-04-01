@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -447,7 +446,7 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
-	public static void launch(EntityLivingBase entity, float yaw, float pitch, float power) {
+	public static void launch(Entity entity, float yaw, float pitch, float power) {
 		float motionX = -MathHelper.sin(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionZ = MathHelper.cos(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);

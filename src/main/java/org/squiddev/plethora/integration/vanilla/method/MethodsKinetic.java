@@ -1,8 +1,8 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import org.squiddev.plethora.api.method.CostHelpers;
@@ -27,7 +27,7 @@ public final class MethodsKinetic {
 	@Nonnull
 	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S,
-		target = EntityLivingBase.class,
+		target = Entity.class,
 		doc = "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction"
 	)
 	public static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -45,7 +45,7 @@ public final class MethodsKinetic {
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				EntityLivingBase entity = context.bake().getContext(EntityLivingBase.class);
+				Entity entity = context.bake().getContext(Entity.class);
 				ItemModule.launch(entity, yaw, pitch, power);
 				return MethodResult.empty();
 			}
