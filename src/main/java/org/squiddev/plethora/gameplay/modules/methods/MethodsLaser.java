@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -79,8 +79,8 @@ public final class MethodsLaser {
 						pos.yCoord + yOffset,
 						pos.zCoord + zOffset
 					);
-				} else if (context.hasContext(EntityLivingBase.class)) {
-					EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+				} else if (context.hasContext(Entity.class)) {
+					Entity entity = context.getContext(Entity.class);
 					Vec3 vector = entity.getPositionVector();
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);

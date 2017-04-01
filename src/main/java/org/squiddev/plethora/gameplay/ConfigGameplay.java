@@ -128,6 +128,20 @@ public final class ConfigGameplay {
 		@DefaultInt(20)
 		@Range(min = 0)
 		public static int shootCost;
+
+		/**
+		 * The maximum velocity a minecart can be propelled at.
+		 */
+		@DefaultDouble(2)
+		@Range(min = 0)
+		public static double propelMax;
+
+		/**
+		 * The cost per velocity unit.
+		 */
+		@DefaultDouble(0)
+		@Range(min = 0)
+		public static double propelCost;
 	}
 
 	public static class Scanner {

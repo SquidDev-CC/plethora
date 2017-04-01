@@ -34,7 +34,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	private static final Random random = new Random();
 
 	@Nullable
-	private EntityLivingBase shooter;
+	private Entity shooter;
 	@Nullable
 	private EntityPlayer shooterPlayer;
 	@Nullable
@@ -51,7 +51,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	@Nullable
-	public EntityLaser(World world, EntityLivingBase shooter, float inaccuracy, float potency) {
+	public EntityLaser(World world, Entity shooter, float inaccuracy, float potency) {
 		this(world);
 
 		this.potency = potency;
@@ -80,7 +80,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		this.shooterPos = new WorldPosition(world, shooter);
 	}
 
-	public void setShooter(@Nonnull EntityLivingBase shooter) {
+	public void setShooter(@Nonnull Entity shooter) {
 		this.shooter = shooter;
 		this.shooterId = shooter.getPersistentID();
 	}
@@ -200,7 +200,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 							.addCoord(motionX * remaining, motionY * remaining, motionZ * remaining)
 							.expand(1, 1, 1)
 					);
-				EntityLivingBase shooter = getShooter();
+				Entity shooter = getShooter();
 
 				double closestDistance = nextPosition.squareDistanceTo(position);
 				EntityLivingBase closestEntity = null;
@@ -295,10 +295,11 @@ public final class EntityLaser extends Entity implements IProjectile {
 						potency -= hardness;
 
 						// Ignite TNT blocks
+						Entity shooter = getShooter();
 						((BlockTNT) block).explode(
 							world, position,
 							blockState.withProperty(BlockTNT.EXPLODE, Boolean.TRUE),
-							getShooter()
+							shooter instanceof EntityLivingBase ? (EntityLivingBase) shooter : getShooterPlayer()
 						);
 
 						world.setBlockToAir(position);
@@ -342,7 +343,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					// Ensure the player is setup correctly
 					syncPositions(true);
 
-					EntityLivingBase shooter = getShooter();
+					Entity shooter = getShooter();
 					DamageSource source = shooter == null || shooter instanceof PlethoraFakePlayer ?
 						new EntityDamageSource("laser", this) :
 						new EntityDamageSourceIndirect("laser", this, shooter);
@@ -364,7 +365,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	 * @return The entity who shot it, a fake player if needed or {@code null}
 	 */
 	@Nullable
-	private EntityLivingBase getShooter() {
+	private Entity getShooter() {
 		if (shooter != null) return shooter;
 
 		if (!(worldObj instanceof WorldServer)) return null;
@@ -391,7 +392,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	private EntityPlayer getShooterPlayer() {
 		if (shooterPlayer != null) return shooterPlayer;
 
-		EntityLivingBase shooter = getShooter();
+		Entity shooter = getShooter();
 		if (shooter instanceof EntityPlayer) return shooterPlayer = (EntityPlayer) shooter;
 
 		if (!(worldObj instanceof WorldServer)) return null;
@@ -402,7 +403,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 	private void syncPositions(boolean force) {
 		EntityPlayer fakePlayer = this.shooterPlayer;
-		EntityLivingBase shooter = this.shooter;
+		Entity shooter = this.shooter;
 		if (!(fakePlayer instanceof PlethoraFakePlayer)) return;
 
 		if (shooter != null && shooter != fakePlayer) {

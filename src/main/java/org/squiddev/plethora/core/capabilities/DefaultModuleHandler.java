@@ -11,7 +11,8 @@ import org.squiddev.plethora.gameplay.Plethora;
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
-import static org.squiddev.plethora.utils.Helpers.getMesher;
+import static org.squiddev.plethora.gameplay.client.RenderHelpers.getIdentity;
+import static org.squiddev.plethora.gameplay.client.RenderHelpers.getMesher;
 
 /**
  * The default module handler: named "plethora:default_module". Uses a missing model.
@@ -19,12 +20,7 @@ import static org.squiddev.plethora.utils.Helpers.getMesher;
  * This is just a stub for the capability.
  */
 public final class DefaultModuleHandler extends AbstractModuleHandler {
-	private static final Matrix4f identity = new Matrix4f();
 	private static final ResourceLocation name = new ResourceLocation(Plethora.ID, "default_module");
-
-	static {
-		identity.setIdentity();
-	}
 
 	@Nonnull
 	@Override
@@ -36,6 +32,6 @@ public final class DefaultModuleHandler extends AbstractModuleHandler {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-		return Pair.of(getMesher().getModelManager().getMissingModel(), identity);
+		return Pair.of(getMesher().getModelManager().getMissingModel(), getIdentity());
 	}
 }
