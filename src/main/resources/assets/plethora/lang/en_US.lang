@@ -102,6 +102,7 @@ gui.config.plethora.kinetic.launchMax=Maximum launch factor
 gui.config.plethora.kinetic.launchCost=Launch cost
 gui.config.plethora.kinetic.launchYScale=Launch Y scale
 gui.config.plethora.kinetic.launchElytraScale=Launch Elytra scale
+gui.config.plethora.kinetic.launchFallReset=Launch fall-distance reset
 gui.config.plethora.kinetic.walkRange=Maximum walk range
 gui.config.plethora.kinetic.walkSpeed=Maximum walk speed
 gui.config.plethora.kinetic.walkCost=Walk cost
