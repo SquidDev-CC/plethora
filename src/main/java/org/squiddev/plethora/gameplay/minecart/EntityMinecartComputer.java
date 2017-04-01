@@ -333,7 +333,9 @@ public class EntityMinecartComputer extends EntityMinecart {
 				computer.setPeripheral(PERIPHERAL_MAPPINGS[slot], peripheral);
 			}
 
-			// TODO: Inject command API where required
+			if (getFamily() == ComputerFamily.Command) {
+				computer.addAPI(new CommandAPI(this));
+			}
 
 			manager.add(instanceId, computer);
 
