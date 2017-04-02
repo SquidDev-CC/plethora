@@ -1,15 +1,9 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -19,10 +13,8 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.utils.Helpers;
-
-import java.io.IOException;
 
 import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.MinecartUpgradeHandler;
 import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.PeripheralHandler;
@@ -49,21 +41,10 @@ public class IntegrationComputerCraft {
 
 	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event) {
-		loadModel(event, "wireless_modem_off");
-		loadModel(event, "wireless_modem_on");
-		loadModel(event, "advanced_modem_off");
-		loadModel(event, "advanced_modem_on");
-	}
-
-	private void loadModel(ModelBakeEvent event, String name) {
-		try {
-			IModel model = event.modelLoader.getModel(new ResourceLocation("computercraft", "block/" + name));
-			IBakedModel bakedModel = model.bake(model.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
-			event.modelRegistry.putObject(new ModelResourceLocation("computercraft:" + name, "inventory"), bakedModel);
-		} catch (IOException e) {
-			DebugLogger.error("Cannot load " + name, e);
-		}
-
+		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_off");
+		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_on");
+		RenderHelpers.loadModel(event, "computercraft", "advanced_modem_off");
+		RenderHelpers.loadModel(event, "computercraft", "advanced_modem_on");
 	}
 
 	private static final class PeripheralCapabilityProvider implements ICapabilityProvider {

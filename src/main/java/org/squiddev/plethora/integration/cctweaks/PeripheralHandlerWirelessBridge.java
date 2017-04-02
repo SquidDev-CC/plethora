@@ -4,6 +4,10 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,22 +20,32 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.api.IDataCard;
 import org.squiddev.cctweaks.api.IWorldPosition;
 import org.squiddev.cctweaks.core.network.bridge.NetworkBindingWithModem;
 import org.squiddev.cctweaks.core.network.modem.BasicModemPeripheral;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
+import org.squiddev.plethora.api.minecart.IMinecartAccess;
+import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 
-public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWorldPosition, ICapabilityProvider {
+public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMinecartUpgradeHandler, IWorldPosition, ICapabilityProvider {
 	private final ItemStack stack;
 	private World world;
 	private BlockPos pos;
-	private EntityLivingBase entity;
+	private Entity entity;
 	private PocketBinding binding;
+
+	@SideOnly(Side.CLIENT)
+	private ModelResourceLocation model;
 
 	public PeripheralHandlerWirelessBridge(ItemStack stack) {
 		this.stack = stack;
@@ -46,6 +60,10 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 
 	@Override
 	public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
+		update(world, position, (Entity) entity);
+	}
+
+	private void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable Entity entity) {
 		this.world = world;
 		this.pos = new BlockPos(position);
 		this.entity = entity;
@@ -66,13 +84,41 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
-		return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY && stack.getItemDamage() == 0;
+		if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return stack.getItemDamage() == 0;
+		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) return stack.getItemDamage() == 0;
+		return false;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
-		return capability == Constants.PERIPHERAL_HANDLER_CAPABILITY && stack.getItemDamage() == 0 ? (T) this : null;
+		if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) {
+			return stack.getItemDamage() == 0 ? (T) this : null;
+		}
+		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+			return stack.getItemDamage() == 0 ? (T) this : null;
+		}
+		return null;
+	}
+
+	@Nonnull
+	@Override
+	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access) {
+		if (model == null) model = new ModelResourceLocation("cctweaks:wireless_bridge_small", "inventory");
+
+		ModelManager modelManager = RenderHelpers.getMesher().getModelManager();
+		return Pair.of(modelManager.getModel(model), RenderHelpers.getIdentity());
+	}
+
+	@Override
+	public void update(@Nonnull IMinecartAccess minecart, @Nonnull IPeripheral peripheral) {
+		update(minecart.getMinecart().getEntityWorld(), minecart.getMinecart().getPositionVector(), minecart.getMinecart());
+	}
+
+	@Nullable
+	@Override
+	public IPeripheral create(@Nonnull IMinecartAccess minecart) {
+		return getPeripheral();
 	}
 
 	private class PocketBinding extends NetworkBindingWithModem {
@@ -180,8 +226,8 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 								ItemStack stack = inventory.getStackInSlot((i + held) % size);
 								if (loadFromCard(stack)) return new Object[]{true};
 							}
-						} else {
-							ItemStack stack = entity.getHeldItem();
+						} else if (entity instanceof EntityLivingBase) {
+							ItemStack stack = ((EntityLivingBase) entity).getHeldItem();
 							if (loadFromCard(stack)) return new Object[]{true};
 						}
 
@@ -202,8 +248,8 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IWor
 									return new Object[]{true};
 								}
 							}
-						} else {
-							ItemStack stack = entity.getHeldItem();
+						} else if (entity instanceof EntityLivingBase) {
+							ItemStack stack = ((EntityLivingBase) entity).getHeldItem();
 							if (stack != null && stack.getItem() instanceof IDataCard) {
 								IDataCard card = (IDataCard) stack.getItem();
 								PocketBinding.this.save(stack, card);

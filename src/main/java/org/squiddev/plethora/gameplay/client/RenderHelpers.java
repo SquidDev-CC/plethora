@@ -8,14 +8,21 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.vecmath.Matrix4f;
+import java.io.IOException;
 import java.util.List;
 
 public class RenderHelpers {
@@ -69,5 +76,16 @@ public class RenderHelpers {
 			mesher = RenderHelpers.mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
 		}
 		return mesher;
+	}
+
+	public static void loadModel(ModelBakeEvent event, String mod, String name) {
+		try {
+			IModel model = event.modelLoader.getModel(new ResourceLocation(mod, "block/" + name));
+			IBakedModel bakedModel = model.bake(model.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+			event.modelRegistry.putObject(new ModelResourceLocation(mod + ":" + name, "inventory"), bakedModel);
+		} catch (IOException e) {
+			DebugLogger.error("Cannot load " + name, e);
+		}
+
 	}
 }
