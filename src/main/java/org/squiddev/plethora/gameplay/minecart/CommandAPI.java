@@ -78,7 +78,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		table.put("metadata", metadata);
 
 		Map<Object, Object> stateTable = Maps.newHashMap();
-		for (Map.Entry<IProperty<?>, ?> entry : block.getActualState(state, world, pos).getProperties().entrySet()) {
+		for (Map.Entry<IProperty<?>, ?> entry : state.getActualState(world, pos).getProperties().entrySet()) {
 			String propertyName = entry.getKey().getName();
 			Object value = entry.getValue();
 			if (value instanceof String || value instanceof Number || value instanceof Boolean) {
@@ -220,12 +220,12 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	}
 
 	@Override
-	public void addChatMessage(@Nonnull ITextComponent component) {
+	public void sendMessage(@Nonnull ITextComponent component) {
 		output.put(output.size() + 1, component.getUnformattedText());
 	}
 
 	@Override
-	public boolean canCommandSenderUseCommand(int permLevel, String commandName) {
+	public boolean canUseCommand(int permLevel, String commandName) {
 		return permLevel <= 2;
 	}
 

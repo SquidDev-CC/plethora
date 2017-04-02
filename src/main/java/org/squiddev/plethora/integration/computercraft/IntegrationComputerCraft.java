@@ -22,6 +22,8 @@ import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.MinecartUpgradeHandler;
 import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.PeripheralHandler;
 

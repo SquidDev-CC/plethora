@@ -8,6 +8,8 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link BasicModuleHandler} which also provides a {@link IMinecartUpgradeHandler}.
  */
@@ -24,13 +26,13 @@ public class MinecartModuleHandler extends BasicModuleHandler {
 
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 		return super.hasCapability(capability, enumFacing) || capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
 			IMinecartUpgradeHandler upgrade = handler;
 			if (upgrade == null) {

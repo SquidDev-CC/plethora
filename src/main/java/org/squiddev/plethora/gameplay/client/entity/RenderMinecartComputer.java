@@ -100,7 +100,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		IItemHandler handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		for (int slot = 0; slot < handler.getSlots(); slot++) {
 			ItemStack stack = handler.getStackInSlot(slot);
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				GlStateManager.pushMatrix();
 				switch (slot) {
 					case 0: // Top

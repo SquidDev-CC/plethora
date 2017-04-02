@@ -29,11 +29,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -77,7 +77,6 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
-import java.util.Arrays;
 
 import static org.squiddev.plethora.api.Constants.MINECART_UPGRADE_HANDLER_CAPABILITY;
 import static org.squiddev.plethora.gameplay.Plethora.ID;
@@ -135,8 +134,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 		for (int i = 0; i < SLOTS; i++) accesses[i] = new MinecartAccess(this);
 	}
 
-	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family) {
-		super(minecart.getEntityWorld(), minecart.posX, minecart.posY, minecart.posZ);
+	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId) {
+		this(minecart.getEntityWorld());
 
 		setPositionAndRotation(minecart.posX, minecart.posY, minecart.posZ, minecart.rotationYaw, minecart.rotationPitch);
 		motionX = minecart.motionX;
@@ -263,18 +262,19 @@ public class EntityMinecartComputer extends EntityMinecart {
 			if (slot >= 0) {
 				ItemStack heldStack = player.getHeldItem(hand);
 				ItemStack currentStack = itemHandler.getStackInSlot(slot);
-				if (heldStack == null && currentStack != null) {
+				if (heldStack.isEmpty() && !currentStack.isEmpty()) {
 					currentStack = itemHandler.extractItem(slot, 1, false);
 
 					if (!player.capabilities.isCreativeMode) {
-						Helpers.spawnItemStack(worldObj, posX, posY, posZ, currentStack);
+						Helpers.spawnItemStack(getEntityWorld(), posX, posY, posZ, currentStack);
 					}
-				} else if (heldStack != null && currentStack == null) {
+				} else if (!heldStack.isEmpty() && currentStack.isEmpty()) {
 					ItemStack copy = heldStack.copy();
-					copy.stackSize = 1;
+					copy.setCount(1);
 
-					if (itemHandler.insertItem(slot, copy, false) == null && !player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
-						player.setHeldItem(hand, null);
+					if (itemHandler.insertItem(slot, copy, false).isEmpty() && !player.capabilities.isCreativeMode) {
+						heldStack.grow(-1);
+						if (heldStack.isEmpty()) player.setHeldItem(hand, ItemStack.EMPTY);
 					}
 				}
 
@@ -439,7 +439,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 			for (int i = 0; i < SLOTS; i++) {
 				ItemStack child = itemHandler.getStackInSlot(i);
-				if (child != null) entityDropItem(child, 0);
+				if (!child.isEmpty()) entityDropItem(child, 0);
 			}
 		}
 	}
@@ -472,7 +472,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
@@ -664,7 +664,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 				for (int slot = 0; slot < SLOTS; slot++) {
 					ItemStack stack = handler.getStackInSlot(slot);
 					NBTTagCompound tag = minecart.accesses[slot].compound;
-					if (stack != null || tag != null) {
+					if (!stack.isEmpty() || tag != null) {
 						MessageMinecartSlot message = new MessageMinecartSlot(minecart, slot);
 						message.setStack(stack);
 						message.setTag(tag);
@@ -735,7 +735,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 				});
 			}
 
-			World world = Minecraft.getMinecraft().theWorld;
+			World world = Minecraft.getMinecraft().world;
 			if (world == null) return null;
 
 			Entity entity = world.getEntityByID(message.entityId);
@@ -763,14 +763,14 @@ public class EntityMinecartComputer extends EntityMinecart {
 		protected void onContentsChanged(int slot) {
 			dirty |= 1 << slot;
 			ItemStack stack = getStackInSlot(slot);
-			handlers[slot] = stack == null ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+			handlers[slot] = stack.isEmpty() ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
 		}
 
 		@Override
 		protected void onLoad() {
 			for (int i = 0; i < getSlots(); i++) {
 				ItemStack stack = getStackInSlot(i);
-				handlers[i] = stack == null ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+				handlers[i] = stack.isEmpty() ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
 			}
 		}
 
@@ -787,8 +787,9 @@ public class EntityMinecartComputer extends EntityMinecart {
 			dirty = 0;
 		}
 
+		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 			if (!stack.hasCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null)) {
 				return stack;
 			}
@@ -798,7 +799,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		@Override
 		public String toString() {
-			return Arrays.toString(stacks);
+			return stacks.toString();
 		}
 	}
 
