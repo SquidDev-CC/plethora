@@ -19,6 +19,7 @@ import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
 import static org.squiddev.plethora.gameplay.client.RenderHelpers.getMesher;
@@ -28,7 +29,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		super(renderManagerIn);
 	}
 
-	public void doRender(EntityMinecartComputer entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void doRender(@Nonnull EntityMinecartComputer entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		bindEntityTexture(entity);
 

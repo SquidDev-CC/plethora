@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.ArrayList;
 import java.util.List;
