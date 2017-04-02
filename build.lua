@@ -5,6 +5,7 @@ local files = {
 	"laser-drill.lua",
 	"laser-sentry.lua",
 	"auto-feeder.lua",
+	"fly.lua",
 }
 
 local pre = "examples/"
@@ -46,7 +47,7 @@ for i = 1, #files do
 		local newCode, newEmpty = code, false
 		if line:find("^%s*%-%-%-") then
 			newCode = false
-			line = line:gsub("^%s*%-%-%-%s*", "")
+			line = line:gsub("^%s*%-%-%-%s?", "")
 		elseif line == "" then
 			newEmpty = true
 		else
