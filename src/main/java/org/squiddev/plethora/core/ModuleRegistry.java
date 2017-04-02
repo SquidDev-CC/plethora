@@ -10,6 +10,7 @@ import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.CCTweaksAPI;
 import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 
@@ -79,5 +80,12 @@ final class ModuleRegistry implements IModuleRegistry {
 	private void doRegisterPocket(ItemStack stack, IModuleHandler handler, String adjective) {
 		IPocketUpgrade upgrade = new PocketUpgradeModule(stack, handler, adjective);
 		CCTweaksAPI.instance().pocketRegistry().addUpgrade(upgrade);
+	}
+
+	@Override
+	public IMinecartUpgradeHandler toMinecartUpgrade(@Nonnull IModuleHandler handler) {
+		Preconditions.checkNotNull(handler, "handler cannot be null");
+
+		return new MinecartUpgradeModule(handler);
 	}
 }

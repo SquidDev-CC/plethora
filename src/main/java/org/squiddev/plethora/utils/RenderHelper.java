@@ -10,9 +10,24 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 public class RenderHelper {
-	private static final float EXPAND = 0.002f;
+	public static final float EXPAND = 0.002f;
 
 	public static void renderBoundingBox(EntityPlayer player, AxisAlignedBB box, BlockPos pos, double partialTicks) {
+		renderBoundingBox(player, box.offset(pos.getX(), pos.getY(), pos.getZ()), partialTicks);
+	}
+
+	public static void renderBoundingBox(EntityPlayer player, AxisAlignedBB box, double partialTicks) {
+		double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
+		double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
+		double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+		doRenderBoundingBox(box.offset(-x, -y, -z));
+	}
+
+	public static void renderBoundingBox(AxisAlignedBB box) {
+		doRenderBoundingBox(box.expand(EXPAND, EXPAND, EXPAND));
+	}
+
+	private static void doRenderBoundingBox(AxisAlignedBB axis) {
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		GlStateManager.color(0.0f, 0.0f, 0.0f, 0.4f);
@@ -20,17 +35,7 @@ public class RenderHelper {
 		GlStateManager.disableTexture2D();
 		GlStateManager.depthMask(false);
 
-		double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
-		double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
-		double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-		drawSelectionBoundingBox(box.expand(EXPAND, EXPAND, EXPAND).offset(-x + pos.getX(), -y + pos.getY(), -z + pos.getZ()));
 
-		GlStateManager.depthMask(true);
-		GlStateManager.enableTexture2D();
-		GlStateManager.disableBlend();
-	}
-
-	private static void drawSelectionBoundingBox(AxisAlignedBB axis) {
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldrenderer = tessellator.getBuffer();
 
@@ -60,5 +65,9 @@ public class RenderHelper {
 		worldrenderer.pos(axis.minX, axis.minY, axis.maxZ).endVertex();
 		worldrenderer.pos(axis.minX, axis.maxY, axis.maxZ).endVertex();
 		tessellator.draw();
+
+		GlStateManager.depthMask(true);
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 }

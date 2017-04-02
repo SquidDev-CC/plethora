@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
@@ -49,7 +49,7 @@ public class BasicModuleHandler extends AbstractModuleHandler implements ICapabi
 
 		IBakedModel model = this.model;
 		if (model == null) {
-			model = this.model = Helpers.getMesher().getItemModel(new ItemStack(item));
+			model = this.model = RenderHelpers.getMesher().getItemModel(new ItemStack(item));
 		}
 
 		return Pair.of(model, matrix);

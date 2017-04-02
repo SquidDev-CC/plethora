@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import dan200.computercraft.shared.util.WorldUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
@@ -37,7 +36,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	private static final Random random = new Random();
 
 	@Nullable
-	private EntityLivingBase shooter;
+	private Entity shooter;
 	@Nullable
 	private EntityPlayer shooterPlayer;
 	@Nullable
@@ -54,7 +53,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	@Nullable
-	public EntityLaser(World world, EntityLivingBase shooter, float inaccuracy, float potency) {
+	public EntityLaser(World world, Entity shooter, float inaccuracy, float potency) {
 		this(world);
 
 		this.potency = potency;
@@ -62,14 +61,14 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
 
-		posX -= (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * 0.16f);
+		posX -= MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
 		posY -= 0.1;
-		posZ -= (MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * 0.16f);
+		posZ -= MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
 		setPosition(posX, posY, posZ);
 
-		motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-		motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-		motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
+		motionX = -MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+		motionZ = MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+		motionY = -MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI);
 		setThrowableHeading(motionX, motionY, motionZ, 1.5f, inaccuracy);
 	}
 
@@ -83,7 +82,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		this.shooterPos = new WorldPosition(world, shooter);
 	}
 
-	public void setShooter(@Nonnull EntityLivingBase shooter) {
+	public void setShooter(@Nonnull Entity shooter) {
 		this.shooter = shooter;
 		this.shooterId = shooter.getPersistentID();
 	}
@@ -204,7 +203,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 							.addCoord(motionX * remaining, motionY * remaining, motionZ * remaining)
 							.expand(1, 1, 1)
 					);
-				EntityLivingBase shooter = getShooter();
+				Entity shooter = getShooter();
 
 				double closestDistance = nextPosition.squareDistanceTo(position);
 				EntityLivingBase closestEntity = null;
@@ -301,10 +300,11 @@ public final class EntityLaser extends Entity implements IProjectile {
 						potency -= hardness;
 
 						// Ignite TNT blocks
+						Entity shooter = getShooter();
 						((BlockTNT) block).explode(
 							world, position,
 							blockState.withProperty(BlockTNT.EXPLODE, Boolean.TRUE),
-							getShooter()
+							shooter instanceof EntityLivingBase ? (EntityLivingBase) shooter : getShooterPlayer()
 						);
 
 						world.setBlockToAir(position);
@@ -333,7 +333,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
 						if (drops != null) {
 							for (ItemStack stack : drops) {
-								WorldUtil.dropItemStack(stack, world, position);
+								Block.spawnAsEntity(world, position, stack);
 							}
 						}
 					} else {
@@ -348,7 +348,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					// Ensure the player is setup correctly
 					syncPositions(true);
 
-					EntityLivingBase shooter = getShooter();
+					Entity shooter = getShooter();
 					DamageSource source = shooter == null || shooter instanceof PlethoraFakePlayer ?
 						new EntityDamageSource("laser", this) :
 						new EntityDamageSourceIndirect("laser", this, shooter);
@@ -370,7 +370,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	 * @return The entity who shot it, a fake player if needed or {@code null}
 	 */
 	@Nullable
-	private EntityLivingBase getShooter() {
+	private Entity getShooter() {
 		if (shooter != null) return shooter;
 
 		World worldObj = getEntityWorld();
@@ -398,7 +398,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	private EntityPlayer getShooterPlayer() {
 		if (shooterPlayer != null) return shooterPlayer;
 
-		EntityLivingBase shooter = getShooter();
+		Entity shooter = getShooter();
 		if (shooter instanceof EntityPlayer) return shooterPlayer = (EntityPlayer) shooter;
 
 		World worldObj = getEntityWorld();
@@ -410,7 +410,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 	private void syncPositions(boolean force) {
 		EntityPlayer fakePlayer = this.shooterPlayer;
-		EntityLivingBase shooter = this.shooter;
+		Entity shooter = this.shooter;
 		if (!(fakePlayer instanceof PlethoraFakePlayer)) return;
 
 		if (shooter != null && shooter != fakePlayer) {

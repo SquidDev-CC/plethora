@@ -162,7 +162,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 		return Pair.of(false, "Nothing to dig here");
 	}
 
-	public void load(EntityLivingBase from) {
+	public void load(Entity from) {
 		setWorld(from.getEntityWorld());
 		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 		rotationYawHead = rotationYaw;
@@ -173,14 +173,16 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 		inventory.currentItem = 0;
 
-		for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
-			ItemStack stack = from.getItemStackFromSlot(slot);
+		if (from instanceof EntityLivingBase) {
+			EntityLivingBase living = (EntityLivingBase) from;
+			for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+				ItemStack stack = living.getItemStackFromSlot(slot);
 
 			if (!stack.isEmpty()) {
 				setItemStackToSlot(slot, stack.copy());
 				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
 			} else {
-				setItemStackToSlot(slot, ItemStack.EMPTY);
+				setItemStackToSlot(slot, ItemStack.EMPTY);}
 			}
 		}
 

@@ -44,6 +44,12 @@ public class CraftingNeuralInterface extends ShapedOreRecipe {
 		if (label != null) output.setStackDisplayName(label);
 		if (id >= 0) tag.setInteger(COMPUTER_ID, id);
 
+		// Copy across custom ROM if required
+		NBTTagCompound fromTag = old.getTagCompound();
+		if (fromTag != null && fromTag.hasKey("rom_id")) {
+			tag.setTag("rom_id", fromTag.getTag("rom_id"));
+		}
+
 		return output;
 	}
 }

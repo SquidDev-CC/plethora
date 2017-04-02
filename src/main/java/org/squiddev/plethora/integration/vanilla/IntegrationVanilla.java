@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,15 +17,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.minecart.MinecartModuleHandler;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
+import org.squiddev.plethora.core.modules.BasicModuleHandlerTransform;
+import org.squiddev.plethora.core.modules.MinecartModuleHandlerTransform;
 
-import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 
 public class IntegrationVanilla {
@@ -37,10 +35,6 @@ public class IntegrationVanilla {
 	public static final ResourceLocation daylightSensorMod = new ResourceLocation(daylightSensor);
 	public static final ResourceLocation clockMod = new ResourceLocation(clock);
 	public static final ResourceLocation noteblockMod = new ResourceLocation(noteblock);
-
-	private static final BasicModuleHandler daylightSensorCap = new BasicModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR));
-	private static final BasicModuleHandler clockCap = new BasicModuleHandler(clockMod, Items.CLOCK);
-	private static final BasicModuleHandler noteblockCap = new BasicModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK));
 
 	public static void setup() {
 		IntegrationVanilla instance = new IntegrationVanilla();
@@ -104,45 +98,51 @@ public class IntegrationVanilla {
 		}
 	}
 
-	private static final BasicModuleHandler daylightSensorHandlerModel = new BasicModuleHandler(daylightSensorMod, Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR)) {
-		@Nonnull
-		@Override
-		@SideOnly(Side.CLIENT)
-		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-			IBakedModel model = super.getModel(delta).getLeft();
+	private static final BasicModuleHandler daylightSensorHandlerModel = new BasicModuleHandlerTransform(
+		daylightSensorMod, Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR),
+		new Matrix4f(
+			0.0f, 0.6f, 0.0f, 0.2f,
+			0.0f, 0.0f, 0.6f, -0.1f,
+			0.6f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		)
+		// Scale 0.6
+		// Rotate X -PI/2
+		// Rotate Y -PI/2
+		// Translate 0.2 -0.1 0
+	);
 
-			Matrix4f transform = new Matrix4f(
-				0.6f, 0.0f, 0.0f, 0.2f,
-				0.0f, 0.0f, 0.6f, 0.2f,
-				0.0f, -0.6f, 0.0f, 0.6f,
-				0.0f, 0.0f, 0.0f, 1.0f
-			);
-			// Rotate X -PI/2
-			// Translate 0.2 0.2 0.6
-			// Scale 0.6
+	private static final BasicModuleHandler noteblockHandlerModel = new BasicModuleHandlerTransform(
+		noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK),
+		new Matrix4f(
+			0.6f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.6f, 0.0f, -0.1f,
+			0.0f, 0.0f, 0.6f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		)
+		// Scale 0.6
+		// Translate 0 -0.1 0
+	);
 
-			return Pair.of(model, transform);
-		}
-	};
+	private static final MinecartModuleHandler daylightSensorCap = new MinecartModuleHandlerTransform(
+		daylightSensorMod,
+		Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR),
+		new Matrix4f(
+			0.6f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, -0.6f, 0.0f,
+			0.0f, 0.6f, 0.0f, 0.2f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		)
+	);
 
-	private static final BasicModuleHandler noteblockHandlerModel = new BasicModuleHandler(noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK)) {
-		@Nonnull
-		@Override
-		@SideOnly(Side.CLIENT)
-		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-			IBakedModel model = super.getModel(delta).getLeft();
-
-			Matrix4f transform = new Matrix4f(
-				0.6f, 0.0f, 0.0f, 0.2f,
-				0.0f, 0.6f, 0.0f, 0.2f,
-				0.0f, 0.0f, 0.6f, 0.3f,
-				0.0f, 0.0f, 0.0f, 1.0f
-			);
-
-			// Translate 0.2 0.2 0.3
-			// Scale 0.6
-
-			return Pair.of(model, transform);
-		}
-	};
+	private static final MinecartModuleHandler clockCap = new MinecartModuleHandler(clockMod, Items.CLOCK);
+	private static final MinecartModuleHandler noteblockCap = new MinecartModuleHandlerTransform(
+		noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK),
+		new Matrix4f(
+			0.6f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.6f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.6f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		)
+	);
 }

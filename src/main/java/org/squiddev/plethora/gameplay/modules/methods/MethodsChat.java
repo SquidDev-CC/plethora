@@ -1,7 +1,7 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -29,7 +29,7 @@ import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 
 public final class MethodsChat {
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = EntityLivingBase.class,
+		module = PlethoraModules.CHAT_S, target = Entity.class,
 		doc = "function(message:string) -- Send a message to everyone"
 	)
 	@Nonnull
@@ -41,7 +41,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+				Entity entity = context.getContext(Entity.class);
 
 				EntityPlayerMP player;
 				ITextComponent name;
@@ -78,7 +78,7 @@ public final class MethodsChat {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = EntityLivingBase.class,
+		module = PlethoraModules.CHAT_S, target = Entity.class,
 		doc = "function(message:string) -- Send a message to yourself"
 	)
 	@Nonnull
@@ -90,7 +90,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				EntityLivingBase entity = context.getContext(EntityLivingBase.class);
+				Entity entity = context.getContext(Entity.class);
 
 				entity.sendMessage(ForgeHooks.newChatWithLinks(message));
 				return MethodResult.empty();

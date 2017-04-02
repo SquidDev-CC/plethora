@@ -5,9 +5,11 @@ import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.Loader;
+import org.squiddev.cctweaks.CCTweaks;
+import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.TinySlot;
 
@@ -59,6 +61,10 @@ public final class ItemComputerHandler {
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
 			neural = new NeuralComputer(owner.getEntityWorld(), computerId, label, instanceId);
 			neural.readModuleData(tag.getCompoundTag(MODULE_DATA));
+
+			if (Loader.isModLoaded(CCTweaks.ID) && tag.hasKey("rom_id", 99)) {
+				((IExtendedServerComputer) neural).setCustomRom(tag.getInteger("rom_id"));
+			}
 
 			manager.add(instanceId, neural);
 

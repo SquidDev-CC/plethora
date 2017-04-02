@@ -3,7 +3,7 @@ package org.squiddev.plethora.integration.vanilla.method;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -143,6 +143,48 @@ public final class MethodsKineticEntity {
 				skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
 
 				location.getWorld().spawnEntity(arrow);
+				return MethodResult.empty();
+			}
+		});
+	}
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityMinecart.class,
+		doc = "function(velocity:number) -- Propel this minecart in along the track."
+	)
+	public static MethodResult propel(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		double given = getNumber(args, 0);
+
+		assertBetween(given, -Kinetic.propelMax, Kinetic.propelMax, "Velocity coordinate out of bounds (%s)");
+
+		CostHelpers.checkCost(
+			context.getCostHandler(),
+			Math.abs(given) * Kinetic.propelCost
+		);
+
+		// We provide a number * 10 as it seems more "friendly".
+		final double velocity = given * 0.1;
+
+		return MethodResult.nextTick(new Callable<MethodResult>() {
+			@Override
+			public MethodResult call() throws Exception {
+				IContext<IModuleContainer> baked = context.bake();
+
+				EntityMinecart target = baked.getContext(EntityMinecart.class);
+				double vx = target.motionX;
+				double vz = target.motionZ;
+				double len = Math.sqrt(vx * vx + vz * vz);
+
+				// It isn't perfect, but it's better than nothing.
+				if (len == 0) {
+					float yaw = target.rotationYaw;
+					vx = -MathHelper.sin(yaw / 180.0f * (float) Math.PI);
+					vz = MathHelper.cos(yaw / 180.0f * (float) Math.PI);
+					len = 1;
+				}
+
+				target.addVelocity(velocity * vx / len, 0, velocity * vz / len);
+				target.velocityChanged = true;
 				return MethodResult.empty();
 			}
 		});

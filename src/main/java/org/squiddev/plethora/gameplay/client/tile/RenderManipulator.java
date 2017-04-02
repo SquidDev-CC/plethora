@@ -1,9 +1,7 @@
 package org.squiddev.plethora.gameplay.client.tile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -12,13 +10,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.modules.ManipulatorType;
 import org.squiddev.plethora.gameplay.modules.TileManipulator;
 
 import javax.vecmath.Matrix4f;
 
+import static org.squiddev.plethora.gameplay.client.RenderHelpers.getMesher;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
-import static org.squiddev.plethora.utils.Helpers.getMesher;
 
 public final class RenderManipulator extends TileEntitySpecialRenderer<TileManipulator> {
 	@Override
@@ -65,9 +64,7 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 				GlStateManager.scale(type.scale, type.scale, type.scale);
 				GlStateManager.translate(0, -0.2, 0);
 
-				Minecraft mc = Minecraft.getMinecraft();
-				mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-				mc.getRenderItem().renderItem(stack, model);
+				RenderHelpers.renderModel(model);
 
 				GlStateManager.popMatrix();
 			}

@@ -126,6 +126,13 @@ public final class ConfigCore {
 		public static HashSet<String> blacklistModulesPocket;
 
 		/**
+		 * List of modules to blacklist from being mounted on a minecart.
+		 *
+		 * This includes all blacklisted modules.
+		 */
+		public static HashSet<String> blacklistModulesMinecart;
+
+		/**
 		 * List of modules to blacklist from being mounted from a tile.
 		 *
 		 * For instance, the note block tile exposes the minecraft:noteblock module, allowing
