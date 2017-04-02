@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
@@ -31,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
+import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
@@ -38,12 +39,14 @@ import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,6 +85,14 @@ public final class ItemModule extends ItemBase {
 		INTROSPECTION_ID,
 		KINETIC_ID,
 		CHAT_ID,
+	};
+
+	public static final int[] MINECART_MODULES = new int[]{
+		LASER_ID,
+		SCANNER_ID,
+		SENSOR_ID,
+		INTROSPECTION_ID,
+		KINETIC_ID,
 	};
 
 	private static final int MAX_TICKS = 72000;
@@ -252,6 +263,8 @@ public final class ItemModule extends ItemBase {
 			ItemStack stack = new ItemStack(this, 1, id);
 			registry.registerPocketUpgrade(stack);
 		}
+
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -330,6 +343,7 @@ public final class ItemModule extends ItemBase {
 	private static final class ItemModuleHandler extends AbstractModuleHandler implements ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
+		private IMinecartUpgradeHandler minecart;
 
 		private ItemModuleHandler(ItemStack stack) {
 			this.stack = stack;
@@ -337,13 +351,34 @@ public final class ItemModule extends ItemBase {
 
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
-			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES;
+			if (stack.getItemDamage() >= MODULES) return false;
+
+			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return true;
+			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+				return minecart != null || Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1;
+			}
+
+			return false;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
-			return capability == Constants.MODULE_HANDLER_CAPABILITY && stack.getItemDamage() < MODULES ? (T) this : null;
+			if (stack.getItemDamage() >= MODULES) return null;
+
+			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return (T) this;
+
+			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+				if (minecart != null) {
+					return (T) minecart;
+				} else if (Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1) {
+					return (T) (minecart = PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this));
+				} else {
+					return null;
+				}
+			}
+
+			return null;
 		}
 
 		@Nonnull
@@ -381,11 +416,18 @@ public final class ItemModule extends ItemBase {
 		@Nonnull
 		@Override
 		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
-			Matrix4f matrix = new Matrix4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+			Matrix4f matrix = new Matrix4f();
+			matrix.setIdentity();
+
+			// We flip the laser so it points forwards on turtles.
+			if (stack.getItemDamage() == LASER_ID) {
+				delta = (float) ((delta + Math.PI) % (2 * Math.PI));
+			}
+
 			matrix.setRotation(new AxisAngle4f(0f, 1f, 0f, delta));
 
 			return Pair.of(
-				Helpers.getMesher().getItemModel(stack),
+				RenderHelpers.getMesher().getItemModel(stack),
 				matrix
 			);
 		}
@@ -414,7 +456,9 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
-	public static void launch(EntityLivingBase entity, float yaw, float pitch, float power) {
+	private static final double TERMINAL_VELOCITY = -2;
+
+	public static void launch(Entity entity, float yaw, float pitch, float power) {
 		float motionX = -MathHelper.sin(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionZ = MathHelper.cos(yaw / 180.0f * (float) Math.PI) * MathHelper.cos(pitch / 180.0f * (float) Math.PI);
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
@@ -424,6 +468,13 @@ public final class ItemModule extends ItemBase {
 
 		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);
 		entity.velocityChanged = true;
-	}
 
+		if (ConfigGameplay.Kinetic.launchFallReset && motionY > 0) {
+			if (entity.motionY > 0) {
+				entity.fallDistance = 0;
+			} else if (entity.motionY > TERMINAL_VELOCITY) {
+				entity.fallDistance *= entity.motionY / TERMINAL_VELOCITY;
+			}
+		}
+	}
 }

@@ -77,6 +77,16 @@ public final class ConfigGameplay {
 		public static double launchYScale;
 
 		/**
+		 * Whether to scale the fall distance after launching.
+		 *
+		 * This means the player will not die from fall damage if they launch themselves
+		 * upwards in order to cancel out their negative velocity. This may not work correctly
+		 * with mods which provide custom gravity, such as Galacticraft.
+		 */
+		@DefaultBoolean(true)
+		public static boolean launchFallReset;
+
+		/**
 		 * The value to scale the velocity by when flying, helps limit how fast the player can go.
 		 */
 		@DefaultDouble(0.4)
@@ -125,6 +135,20 @@ public final class ConfigGameplay {
 		@DefaultInt(20)
 		@Range(min = 0)
 		public static int shootCost;
+
+		/**
+		 * The maximum velocity a minecart can be propelled at.
+		 */
+		@DefaultDouble(2)
+		@Range(min = 0)
+		public static double propelMax;
+
+		/**
+		 * The cost per velocity unit.
+		 */
+		@DefaultDouble(0)
+		@Range(min = 0)
+		public static double propelCost;
 	}
 
 	public static class Scanner {

@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay.minecart;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
 import dan200.computercraft.shared.computer.blocks.ComputerState;
@@ -8,6 +9,10 @@ import dan200.computercraft.shared.computer.core.*;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
@@ -21,49 +26,111 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import org.squiddev.cctweaks.CCTweaks;
+import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
+import org.squiddev.plethora.api.minecart.IMinecartAccess;
+import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
+import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.gameplay.client.entity.RenderMinecartComputer;
+import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.gameplay.registry.Module;
+import org.squiddev.plethora.gameplay.registry.Packets;
+import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
+import java.util.Arrays;
 
+import static org.squiddev.plethora.api.Constants.MINECART_UPGRADE_HANDLER_CAPABILITY;
 import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public class EntityMinecartComputer extends EntityMinecart {
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
 
+	private static final int[] PERIPHERAL_MAPPINGS = new int[]{1, 5, 4, 2};
+
+	private static final AxisAlignedBB[] BOUNDS = new AxisAlignedBB[]{
+		// The main block: simply there to avoid reaching "through" the block.
+		new AxisAlignedBB(0, 0, -1, 1, 1, 0),
+
+		new AxisAlignedBB(0.125, 1, -0.875, 0.875, 1.125, -0.125),
+		new AxisAlignedBB(0.125, 0.125, -1.125, 0.875, 0.875, -1),
+		new AxisAlignedBB(0.125, 0.125, 0, 0.875, 0.875, 0.125),
+		new AxisAlignedBB(1, 0.125, -0.875, 1.125, 0.875, -0.125),
+	};
+
 	private static final DataParameter<Integer> INSTANCE_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> SESSION_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
 	private static final DataParameter<Byte> FAMILY_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.BYTE);
 
+	private static final int SLOTS = 4;
+
 	private int id;
 	private boolean on;
 	private boolean startOn;
+
+	/**
+	 * The item handler, representing all upgrades in the minecart
+	 */
+	private final UpgradeItemHandler itemHandler = new UpgradeItemHandler(SLOTS);
+
+	/**
+	 * All peripherals provided by the items in {@link #itemHandler}.
+	 */
+	private final IPeripheral[] peripherals = new IPeripheral[SLOTS];
+
+	/**
+	 * The minecart access object for each peripheral slot.
+	 */
+	private final MinecartAccess[] accesses = new MinecartAccess[SLOTS];
+
+	private int romId = -1;
 
 	@SideOnly(Side.CLIENT)
 	private Integer lastClientId;
 
 	public EntityMinecartComputer(World worldIn) {
 		super(worldIn);
+		setSize(0.98F, 0.98F);
+
+		// Initialise the upgrades
+		for (int i = 0; i < SLOTS; i++) accesses[i] = new MinecartAccess(this);
 	}
 
-	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family) {
-		super(minecart.worldObj, minecart.posX, minecart.posY, minecart.posZ);
+	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId) {
+		this(minecart.worldObj);
 
-		rotationPitch = minecart.rotationPitch;
-		rotationYaw = minecart.rotationYaw;
+		setPositionAndRotation(minecart.posX, minecart.posY, minecart.posZ, minecart.rotationYaw, minecart.rotationPitch);
 		motionX = minecart.motionX;
 		motionY = minecart.motionY;
 		motionZ = minecart.motionZ;
@@ -78,7 +145,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		this.id = id;
 		setFamily(family);
-		if (label != null) setCustomNameTag(label);
+		if (label != null) setCustomNameTag(label + " foo");
+		this.romId = romId;
 	}
 
 	protected void entityInit() {
@@ -104,6 +172,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 		dataManager.set(FAMILY_SLOT, (byte) family.ordinal());
 	}
 
+	public IMinecartAccess getAccess(int slot) {
+		return accesses[slot];
+	}
+
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
@@ -122,14 +194,85 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		setCustomNameTag(computer.getLabel());
 		on = computer.isOn();
-	}
 
+		WorldServer server = (WorldServer) getEntityWorld();
+
+		int stackDirty = itemHandler.getDirty();
+		itemHandler.clearDirty();
+		for (int slot = 0; slot < SLOTS; slot++) {
+			MinecartAccess access = accesses[slot];
+
+			boolean stackChanged = (stackDirty & (1 << slot)) != 0;
+			boolean accessChanged = access.dirty;
+
+			if (stackChanged) {
+				accesses[slot].reset();
+
+				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				IPeripheral peripheral = peripherals[slot] = upgrade == null ? null : upgrade.create(accesses[slot]);
+				computer.setPeripheral(PERIPHERAL_MAPPINGS[slot], peripheral);
+			}
+
+			{
+				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				if (upgrade != null) {
+					upgrade.update(access, peripherals[slot]);
+					accessChanged |= access.dirty;
+				}
+			}
+
+			access.dirty = false;
+
+			if (stackChanged || accessChanged) {
+				// Gather the appropriate data for this packet
+				MessageMinecartSlot message = new MessageMinecartSlot(this, slot);
+				message.setTag(access.compound);
+				if (stackChanged) message.setStack(itemHandler.getStackInSlot(slot));
+
+				// And send it to all players.
+				for (EntityPlayer player : server.getEntityTracker().getTrackingPlayers(this)) {
+					Plethora.network.sendTo(message, (EntityPlayerMP) player);
+				}
+			}
+		}
+	}
 
 	@Override
 	public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand) {
 		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, stack, hand))) return true;
 
-		if (!this.worldObj.isRemote) {
+		if (!worldObj.isRemote) {
+			Matrix4f trans = getTranslationMatrix(1);
+			Vec3 from = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+			Vec3 look = player.getLook(1.0f);
+			double reach = 5;
+			if (player instanceof EntityPlayerMP) {
+				reach = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+			}
+			Vec3 to = new Vec3(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+
+			int slot = getIntersectSlot(from, to, trans);
+			if (slot >= 0) {
+				ItemStack heldStack = player.getHeldItem();
+				ItemStack currentStack = itemHandler.getStackInSlot(slot);
+				if (heldStack == null && currentStack != null) {
+					currentStack = itemHandler.extractItem(slot, 1, false);
+
+					if (!player.capabilities.isCreativeMode) {
+						Helpers.spawnItemStack(worldObj, posX, posY, posZ, currentStack);
+					}
+				} else if (heldStack != null && currentStack == null) {
+					ItemStack copy = heldStack.copy();
+					copy.stackSize = 1;
+
+					if (itemHandler.insertItem(slot, copy, false) == null && !player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					}
+				}
+
+				return true;
+			}
+
 			if (isUsable(player)) {
 				ServerComputer computer = getServerComputer();
 				computer.turnOn();
@@ -148,6 +291,12 @@ public class EntityMinecartComputer extends EntityMinecart {
 		tag.setInteger("computerId", id);
 		tag.setByte("family", (byte) getFamily().ordinal());
 		tag.setBoolean("on", startOn || on);
+		if (romId >= 0) {
+			tag.setInteger("rom_id", romId);
+		} else {
+			tag.removeTag("rom_id");
+		}
+		tag.setTag("items", itemHandler.serializeNBT());
 	}
 
 	@Override
@@ -157,6 +306,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 		id = tag.getInteger("computerId");
 		setFamily(FAMILIES[tag.getByte("family")]);
 		startOn |= tag.getBoolean("on");
+		romId = tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
+		if (tag.hasKey("items", Constants.NBT.TAG_COMPOUND)) {
+			itemHandler.deserializeNBT(tag.getCompoundTag("items"));
+		}
 	}
 
 	@Nonnull
@@ -170,11 +323,23 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (computer == null) {
 			instanceId = manager.getUnusedInstanceID();
-			computer = new ServerComputer(worldObj, id, getName(), instanceId, getFamily(), 51, 19);
+			computer = new ServerComputer(worldObj, id, getCustomNameTag(), instanceId, getFamily(), 51, 19);
 			computer.setWorld(getEntityWorld());
 			computer.setPosition(getPosition());
 
-			// TODO: Inject command API where required
+			if (romId >= 0 && Loader.isModLoaded(CCTweaks.ID)) {
+				((IExtendedServerComputer) computer).setCustomRom(romId);
+			}
+
+			for (int slot = 0; slot < SLOTS; slot++) {
+				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				IPeripheral peripheral = peripherals[slot] = upgrade == null ? null : upgrade.create(accesses[slot]);
+				computer.setPeripheral(PERIPHERAL_MAPPINGS[slot], peripheral);
+			}
+
+			if (getFamily() == ComputerFamily.Command) {
+				computer.addAPI(new CommandAPI(this));
+			}
 
 			manager.add(instanceId, computer);
 
@@ -259,8 +424,21 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (worldObj.getGameRules().getBoolean("doEntityDrops")) {
 			entityDropItem(new ItemStack(Items.MINECART, 1), 0);
-			entityDropItem(ComputerItemFactory.create(id, getCustomNameTag(), getFamily()), 0);
+
+			ItemStack stack = ComputerItemFactory.create(id, getCustomNameTag(), getFamily());
+			if (romId >= 0) ItemBase.getTag(stack).setInteger("rom_id", romId);
+			entityDropItem(stack, 0);
+
+			for (int i = 0; i < SLOTS; i++) {
+				ItemStack child = itemHandler.getStackInSlot(i);
+				if (child != null) entityDropItem(child, 0);
+			}
 		}
+	}
+
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox() {
+		return super.getCollisionBoundingBox();
 	}
 
 	public boolean isUsable(EntityPlayer player) {
@@ -286,11 +464,145 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 	}
 
-	public static class MinecartModule extends Module {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T) itemHandler : super.getCapability(capability, facing);
+	}
+
+	@Override
+	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	private Matrix4f getTranslationMatrix(float partialTicks) {
+		// Tiny bit of random offset
+		long id = (long) getEntityId() * 493286711L;
+		id = id * id * 4392167121L + id * 98761L;
+		float ox = (((float) (id >> 16 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+		float oy = (((float) (id >> 20 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+		float oz = (((float) (id >> 24 & 7L) + 0.5F) / 8.0F - 0.5F) * 0.004F;
+
+		double x = lastTickPosX + (posX - lastTickPosX) * partialTicks;
+		double y = lastTickPosY + (posY - lastTickPosY) * partialTicks;
+		double z = lastTickPosZ + (posZ - lastTickPosZ) * partialTicks;
+		float pitch = prevRotationPitch + (rotationPitch - prevRotationPitch) * partialTicks;
+		float yaw = prevRotationYaw + (rotationYaw - prevRotationYaw) * partialTicks;
+
+		Vec3 offsetPos = func_70489_a(x, y, z);
+
+		if (offsetPos != null) {
+			final double offset = 0.3;
+			Vec3 posOff = func_70495_a(x, y, z, offset);
+			Vec3 negOff = func_70495_a(x, y, z, -offset);
+
+			if (posOff == null) posOff = offsetPos;
+			if (negOff == null) negOff = offsetPos;
+
+			x = offsetPos.xCoord;
+			y = (posOff.yCoord + negOff.yCoord) / 2.0D;
+			z = offsetPos.zCoord;
+			Vec3 invoff = negOff.addVector(-posOff.xCoord, -posOff.yCoord, -posOff.zCoord);
+
+			if (invoff.lengthVector() != 0.0D) {
+				invoff = invoff.normalize();
+				yaw = (float) (Math.atan2(invoff.zCoord, invoff.xCoord) * 180.0D / Math.PI);
+				pitch = (float) (Math.atan(invoff.yCoord) * 73.0D);
+			}
+		}
+
+		// Set up the translation matrix.
+		// This could probably be "inlined" but it'll do.
+		Matrix4f temp = new Matrix4f();
+		Matrix4f trans = new Matrix4f();
+		trans.setIdentity();
+
+		temp.setIdentity();
+		temp.setTranslation(new Vector3f((float) x + ox, (float) y + 0.375f + oy, (float) z + oz));
+		trans.mul(temp);
+
+		temp.setIdentity();
+		temp.rotY((float) Math.toRadians(180 - yaw));
+		trans.mul(temp);
+
+		temp.setIdentity();
+		temp.rotZ((float) Math.toRadians(-pitch));
+		trans.mul(temp);
+
+		float amplitude = (float) getRollingAmplitude() - partialTicks;
+		float roll = getDamage() - partialTicks;
+
+		if (roll < 0.0F) roll = 0.0F;
+
+		if (amplitude > 0.0F) {
+			temp.setIdentity();
+			temp.rotX((float) Math.toRadians(MathHelper.sin(amplitude) * amplitude * roll / 10.0F * (float) getRollingDirection()));
+			trans.mul(temp);
+		}
+
+		trans.setScale(0.75F);
+
+		int offset = getDisplayTileOffset();
+		temp.setIdentity();
+		temp.setTranslation(new Vector3f(-0.5F, (float) (offset - 8) / 16.0F, 0.5F));
+		trans.mul(temp);
+
+		return trans;
+	}
+
+	private static int getIntersectSlot(Vec3 fromVec, Vec3 toVec, Matrix4f transform) {
+		Matrix4f inv = new Matrix4f();
+		inv.invert(transform);
+
+		// Convert the vectors into "minecart" space
+		Vector4f to = new Vector4f((float) toVec.xCoord, (float) toVec.yCoord, (float) toVec.zCoord, 1);
+		inv.transform(to);
+
+		Vector4f from = new Vector4f((float) fromVec.xCoord, (float) fromVec.yCoord, (float) fromVec.zCoord, 1);
+		inv.transform(from);
+
+		Vector4f step = new Vector4f();
+		step.sub(to, from);
+		step.scale(1 / 100.0f);
+
+		// Now ray-trace to find where they intersect with the bounding box.
+		for (int offset = 0; offset <= 100; offset++) {
+			for (int i = 0; i < BOUNDS.length; i++) {
+				AxisAlignedBB bb = BOUNDS[i];
+				if (bb.isVecInside(new Vec3(from.getX(), from.getY(), from.getZ()))) {
+					// If we got the actual block itself then pretend nothing happened.
+					return i - 1;
+				}
+			}
+
+			from.add(step);
+		}
+
+		return -1;
+	}
+
+	public static class MinecartModule extends Module implements IClientModule, IMessageHandler<MessageMinecartSlot, IMessage> {
 		@Override
 		public void preInit() {
 			EntityRegistry.registerModEntity(EntityMinecartComputer.class, ID + ":minecartComputer", 2, Plethora.instance, 80, 3, true);
 			MinecraftForge.EVENT_BUS.register(this);
+			Plethora.network.registerMessage(this, MessageMinecartSlot.class, Packets.MINECART_MESSAGE, Side.CLIENT);
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void clientInit() {
+		}
+
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void clientPreInit() {
+			RenderingRegistry.registerEntityRenderingHandler(EntityMinecartComputer.class, new IRenderFactory<EntityMinecartComputer>() {
+				@Override
+				public Render<EntityMinecartComputer> createRenderFor(RenderManager renderManager) {
+					return new RenderMinecartComputer(renderManager);
+				}
+			});
 		}
 
 		@SubscribeEvent
@@ -317,17 +629,201 @@ public class EntityMinecartComputer extends EntityMinecart {
 			String label = computerItem.getLabel(stack);
 			ComputerFamily family = computerItem.getFamily(stack);
 
+			// Copy ROM id (CCTweaks compat)
+			NBTTagCompound tag = stack.getTagCompound();
+			int romId = tag != null && tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
+
 			player.swingArm(event.getHand());
 			if (minecart.worldObj.isRemote) return;
 
 			event.setCanceled(true);
 			minecart.setDead();
-			minecart.worldObj.spawnEntityInWorld(new EntityMinecartComputer(minecart, id, label, family));
+			minecart.worldObj.spawnEntityInWorld(new EntityMinecartComputer(minecart, id, label, family, romId));
 
 			if (!player.capabilities.isCreativeMode) {
 				stack.stackSize--;
 				if (stack.stackSize <= 0) player.setHeldItem(event.getHand(), null);
 			}
+		}
+
+		@SubscribeEvent
+		public void startTracking(PlayerEvent.StartTracking event) {
+			Entity entity = event.target;
+			if (entity instanceof EntityMinecartComputer) {
+				EntityMinecartComputer minecart = (EntityMinecartComputer) entity;
+				IItemHandler handler = minecart.itemHandler;
+				for (int slot = 0; slot < SLOTS; slot++) {
+					ItemStack stack = handler.getStackInSlot(slot);
+					NBTTagCompound tag = minecart.accesses[slot].compound;
+					if (stack != null || tag != null) {
+						MessageMinecartSlot message = new MessageMinecartSlot(minecart, slot);
+						message.setStack(stack);
+						message.setTag(tag);
+						Plethora.network.sendTo(message, (EntityPlayerMP) event.entityPlayer);
+					}
+				}
+			}
+		}
+
+		@SubscribeEvent
+		@SideOnly(Side.CLIENT)
+		public void drawHighlight(DrawBlockHighlightEvent event) {
+			if (event.target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) return;
+			if (!(event.target.entityHit instanceof EntityMinecartComputer)) return;
+
+			EntityMinecartComputer minecart = (EntityMinecartComputer) event.target.entityHit;
+
+			float partialTicks = event.partialTicks;
+			GlStateManager.pushMatrix();
+
+			Matrix4f trans = minecart.getTranslationMatrix(partialTicks);
+
+			Matrix4f inv = new Matrix4f();
+			inv.invert(trans);
+
+			Entity player = Minecraft.getMinecraft().getRenderViewEntity();
+
+			Vec3 from = player.getPositionEyes(partialTicks);
+			Vec3 look = player.getLook(partialTicks);
+			double reach = 5;
+			if (player instanceof EntityPlayerMP) {
+				reach = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+			}
+			Vec3 to = new Vec3(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+
+			int slot = getIntersectSlot(from, to, trans);
+
+			// Shift everything back to be relative to the player
+			GlStateManager.translate(
+				-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks)
+			);
+
+			ForgeHooksClient.multiplyCurrentGlMatrix(trans);
+
+			if (slot >= 0) {
+				RenderHelper.renderBoundingBox(BOUNDS[slot + 1]);
+			}
+
+			GlStateManager.popMatrix();
+
+			event.setCanceled(true);
+		}
+
+		@Override
+		public IMessage onMessage(final MessageMinecartSlot message, final MessageContext ctx) {
+			// We schedule this to run on the main thread so the entity is actually
+			// loaded by this point.
+			// After all, this is what the S0EPacketSpawnObject packet does.
+			Minecraft mc = Minecraft.getMinecraft();
+			if (!mc.isCallingFromMinecraftThread()) {
+				mc.addScheduledTask(new Runnable() {
+					@Override
+					public void run() {
+						onMessage(message, ctx);
+					}
+				});
+			}
+
+			World world = Minecraft.getMinecraft().theWorld;
+			if (world == null) return null;
+
+			Entity entity = world.getEntityByID(message.entityId);
+			if (entity instanceof EntityMinecartComputer) {
+				EntityMinecartComputer computer = ((EntityMinecartComputer) entity);
+
+				if (message.hasStack()) computer.itemHandler.setStackInSlot(message.slot, message.stack);
+				if (message.hasTag()) computer.accesses[message.slot].compound = message.tag;
+			}
+
+			return null;
+		}
+	}
+
+	private static final class UpgradeItemHandler extends ItemStackHandler {
+		private int dirty = 0;
+		private final IMinecartUpgradeHandler[] handlers;
+
+		public UpgradeItemHandler(int slots) {
+			super(slots);
+			this.handlers = new IMinecartUpgradeHandler[6];
+		}
+
+		@Override
+		protected void onContentsChanged(int slot) {
+			dirty |= 1 << slot;
+			ItemStack stack = getStackInSlot(slot);
+			handlers[slot] = stack == null ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+		}
+
+		@Override
+		protected void onLoad() {
+			for (int i = 0; i < getSlots(); i++) {
+				ItemStack stack = getStackInSlot(i);
+				handlers[i] = stack == null ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+			}
+		}
+
+		public IMinecartUpgradeHandler getUpgrade(int slot) {
+			validateSlotIndex(slot);
+			return handlers[slot];
+		}
+
+		public int getDirty() {
+			return dirty;
+		}
+
+		public void clearDirty() {
+			dirty = 0;
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+			if (!stack.hasCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null)) {
+				return stack;
+			}
+
+			return super.insertItem(slot, stack, simulate);
+		}
+
+		@Override
+		public String toString() {
+			return Arrays.toString(stacks);
+		}
+	}
+
+	private static final class MinecartAccess implements IMinecartAccess {
+		private final EntityMinecart minecart;
+		protected NBTTagCompound compound;
+		protected boolean dirty = false;
+
+		private MinecartAccess(EntityMinecart minecart) {
+			this.minecart = minecart;
+		}
+
+		@Nonnull
+		@Override
+		public EntityMinecart getMinecart() {
+			return minecart;
+		}
+
+		@Nonnull
+		@Override
+		public NBTTagCompound getData() {
+			NBTTagCompound tag = compound;
+			if (tag == null) tag = compound = new NBTTagCompound();
+			return tag;
+		}
+
+		@Override
+		public void markDataDirty() {
+			dirty = true;
+		}
+
+		public void reset() {
+			compound = null;
+			dirty = false;
 		}
 	}
 }
