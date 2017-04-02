@@ -56,6 +56,10 @@ public final class ArgumentHelper {
 		return (int) getNumber(args, index);
 	}
 
+	public static float getFloat(@Nonnull Object[] args, int index) throws LuaException {
+		return (float) getNumber(args, index);
+	}
+
 	public static boolean getBoolean(@Nonnull Object[] args, int index) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value instanceof Boolean) {

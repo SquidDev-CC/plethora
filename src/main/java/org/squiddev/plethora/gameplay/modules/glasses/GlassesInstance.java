@@ -5,32 +5,31 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.gameplay.modules.GlassesHandler;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A proxy object for canvases, which allows using a separate getCanvas() method.
+ */
 public class GlassesInstance implements IAttachable, IReference<GlassesInstance> {
-	private final IModuleAccess access;
-	private final EntityPlayerMP player;
+	private final CanvasServer canvas;
 
 	public GlassesInstance(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
-		this.access = access;
-		this.player = player;
+		this.canvas = new CanvasServer(CanvasHandler.nextId(), access, player);
 	}
 
-	@Nonnull
-	public EntityPlayerMP getPlayer() {
-		return player;
+	public CanvasServer getCanvas() {
+		return canvas;
 	}
 
 	@Override
 	public void attach() {
-		GlassesHandler.add(this);
+		CanvasHandler.addServer(canvas);
 	}
 
 	@Override
 	public void detach() {
-		GlassesHandler.remove(this);
+		CanvasHandler.removeServer(canvas);
 	}
 
 	@Nonnull

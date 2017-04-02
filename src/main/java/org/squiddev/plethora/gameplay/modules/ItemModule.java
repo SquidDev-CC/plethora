@@ -44,7 +44,7 @@ import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
-import org.squiddev.plethora.gameplay.modules.glasses.GlassesInstance;
+import org.squiddev.plethora.gameplay.modules.glasses.*;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -58,6 +58,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
 import static org.squiddev.plethora.gameplay.Plethora.ID;
+import static org.squiddev.plethora.gameplay.registry.Packets.*;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -270,6 +271,11 @@ public final class ItemModule extends ItemBase {
 		}
 
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new CanvasHandler());
+
+		Plethora.network.registerMessage(new MessageCanvasAdd.Handler(), MessageCanvasAdd.class, CANVAS_ADD_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new MessageCanvasRemove.Handler(), MessageCanvasRemove.class, CANVAS_REMOVE_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new MessageCanvasUpdate.Handler(), MessageCanvasUpdate.class, CANVAS_UPDATE_MESSAGE, Side.CLIENT);
 	}
 
 	@Override
@@ -425,6 +431,7 @@ public final class ItemModule extends ItemBase {
 						builder.addContext(listener);
 						builder.addAttachable(listener);
 					}
+					break;
 				}
 				case GLASSES_ID: {
 					// Add a chat listener if we've got an entity (and are a chat module).
@@ -432,10 +439,11 @@ public final class ItemModule extends ItemBase {
 					EntityPlayerMP ownerEntity = owner instanceof EntityPlayerMP ? (EntityPlayerMP) owner : null;
 
 					if (ownerEntity != null && !(ownerEntity instanceof FakePlayer)) {
-						GlassesInstance listener = new GlassesInstance(access, ownerEntity);
-						builder.addContext(listener);
-						builder.addAttachable(listener);
+						GlassesInstance glasses = new GlassesInstance(access, ownerEntity);
+						builder.addContext(glasses);
+						builder.addAttachable(glasses);
 					}
+					break;
 				}
 			}
 		}
