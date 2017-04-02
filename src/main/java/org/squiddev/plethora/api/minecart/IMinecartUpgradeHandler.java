@@ -1,7 +1,7 @@
 package org.squiddev.plethora.api.minecart;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

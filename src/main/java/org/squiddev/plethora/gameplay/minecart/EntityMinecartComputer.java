@@ -26,8 +26,13 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -35,8 +40,8 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -243,17 +248,17 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (!worldObj.isRemote) {
 			Matrix4f trans = getTranslationMatrix(1);
-			Vec3 from = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-			Vec3 look = player.getLook(1.0f);
+			Vec3d from = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+			Vec3d look = player.getLook(1.0f);
 			double reach = 5;
 			if (player instanceof EntityPlayerMP) {
-				reach = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
 			}
-			Vec3 to = new Vec3(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+			Vec3d to = new Vec3d(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
 
 			int slot = getIntersectSlot(from, to, trans);
 			if (slot >= 0) {
-				ItemStack heldStack = player.getHeldItem();
+				ItemStack heldStack = player.getHeldItem(hand);
 				ItemStack currentStack = itemHandler.getStackInSlot(slot);
 				if (heldStack == null && currentStack != null) {
 					currentStack = itemHandler.extractItem(slot, 1, false);
@@ -266,7 +271,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 					copy.stackSize = 1;
 
 					if (itemHandler.insertItem(slot, copy, false) == null && !player.capabilities.isCreativeMode && --heldStack.stackSize <= 0) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+						player.setHeldItem(hand, null);
 					}
 				}
 
@@ -489,12 +494,12 @@ public class EntityMinecartComputer extends EntityMinecart {
 		float pitch = prevRotationPitch + (rotationPitch - prevRotationPitch) * partialTicks;
 		float yaw = prevRotationYaw + (rotationYaw - prevRotationYaw) * partialTicks;
 
-		Vec3 offsetPos = func_70489_a(x, y, z);
+		Vec3d offsetPos = getPos(x, y, z);
 
 		if (offsetPos != null) {
 			final double offset = 0.3;
-			Vec3 posOff = func_70495_a(x, y, z, offset);
-			Vec3 negOff = func_70495_a(x, y, z, -offset);
+			Vec3d posOff = getPosOffset(x, y, z, offset);
+			Vec3d negOff = getPosOffset(x, y, z, -offset);
 
 			if (posOff == null) posOff = offsetPos;
 			if (negOff == null) negOff = offsetPos;
@@ -502,7 +507,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			x = offsetPos.xCoord;
 			y = (posOff.yCoord + negOff.yCoord) / 2.0D;
 			z = offsetPos.zCoord;
-			Vec3 invoff = negOff.addVector(-posOff.xCoord, -posOff.yCoord, -posOff.zCoord);
+			Vec3d invoff = negOff.addVector(-posOff.xCoord, -posOff.yCoord, -posOff.zCoord);
 
 			if (invoff.lengthVector() != 0.0D) {
 				invoff = invoff.normalize();
@@ -550,7 +555,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		return trans;
 	}
 
-	private static int getIntersectSlot(Vec3 fromVec, Vec3 toVec, Matrix4f transform) {
+	private static int getIntersectSlot(Vec3d fromVec, Vec3d toVec, Matrix4f transform) {
 		Matrix4f inv = new Matrix4f();
 		inv.invert(transform);
 
@@ -569,7 +574,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		for (int offset = 0; offset <= 100; offset++) {
 			for (int i = 0; i < BOUNDS.length; i++) {
 				AxisAlignedBB bb = BOUNDS[i];
-				if (bb.isVecInside(new Vec3(from.getX(), from.getY(), from.getZ()))) {
+				if (bb.isVecInside(new Vec3d(from.getX(), from.getY(), from.getZ()))) {
 					// If we got the actual block itself then pretend nothing happened.
 					return i - 1;
 				}
@@ -648,7 +653,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		@SubscribeEvent
 		public void startTracking(PlayerEvent.StartTracking event) {
-			Entity entity = event.target;
+			Entity entity = event.getTarget();
 			if (entity instanceof EntityMinecartComputer) {
 				EntityMinecartComputer minecart = (EntityMinecartComputer) entity;
 				IItemHandler handler = minecart.itemHandler;
@@ -659,7 +664,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 						MessageMinecartSlot message = new MessageMinecartSlot(minecart, slot);
 						message.setStack(stack);
 						message.setTag(tag);
-						Plethora.network.sendTo(message, (EntityPlayerMP) event.entityPlayer);
+						Plethora.network.sendTo(message, (EntityPlayerMP) event.getEntityPlayer());
 					}
 				}
 			}
@@ -668,12 +673,12 @@ public class EntityMinecartComputer extends EntityMinecart {
 		@SubscribeEvent
 		@SideOnly(Side.CLIENT)
 		public void drawHighlight(DrawBlockHighlightEvent event) {
-			if (event.target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) return;
-			if (!(event.target.entityHit instanceof EntityMinecartComputer)) return;
+			if (event.getTarget().typeOfHit != RayTraceResult.Type.ENTITY) return;
+			if (!(event.getTarget().entityHit instanceof EntityMinecartComputer)) return;
 
-			EntityMinecartComputer minecart = (EntityMinecartComputer) event.target.entityHit;
+			EntityMinecartComputer minecart = (EntityMinecartComputer) event.getTarget().entityHit;
 
-			float partialTicks = event.partialTicks;
+			float partialTicks = event.getPartialTicks();
 			GlStateManager.pushMatrix();
 
 			Matrix4f trans = minecart.getTranslationMatrix(partialTicks);
@@ -683,13 +688,13 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 			Entity player = Minecraft.getMinecraft().getRenderViewEntity();
 
-			Vec3 from = player.getPositionEyes(partialTicks);
-			Vec3 look = player.getLook(partialTicks);
+			Vec3d from = player.getPositionEyes(partialTicks);
+			Vec3d look = player.getLook(partialTicks);
 			double reach = 5;
 			if (player instanceof EntityPlayerMP) {
-				reach = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
+				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
 			}
-			Vec3 to = new Vec3(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+			Vec3d to = new Vec3d(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
 
 			int slot = getIntersectSlot(from, to, trans);
 

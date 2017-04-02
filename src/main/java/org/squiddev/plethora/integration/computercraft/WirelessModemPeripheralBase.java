@@ -3,13 +3,13 @@ package org.squiddev.plethora.integration.computercraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.modem.ModemPeripheral;
 import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelManager;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,7 +25,7 @@ import javax.vecmath.Matrix4f;
 
 public abstract class WirelessModemPeripheralBase extends WirelessModemPeripheral {
 	private World world;
-	private Vec3 position;
+	private Vec3d position;
 
 	public WirelessModemPeripheralBase(boolean advanced) {
 		super(advanced);
@@ -37,11 +37,11 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 	}
 
 	@Override
-	protected Vec3 getPosition() {
+	protected Vec3d getPosition() {
 		return position;
 	}
 
-	public void update(@Nonnull World world, @Nonnull Vec3 position) {
+	public void update(@Nonnull World world, @Nonnull Vec3d position) {
 		this.position = position;
 
 		if (this.world != world) {
@@ -70,7 +70,7 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 		}
 
 		@Override
-		public void update(@Nonnull World world, @Nonnull Vec3 position, @Nullable EntityLivingBase entity) {
+		public void update(@Nonnull World world, @Nonnull Vec3d position, @Nullable EntityLivingBase entity) {
 			update(world, position);
 		}
 	}

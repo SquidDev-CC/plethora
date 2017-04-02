@@ -3,13 +3,12 @@ package org.squiddev.plethora.gameplay.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,29 +26,21 @@ public class RenderHelpers {
 	}
 
 	public static void renderModel(IBakedModel model) {
-		if (model instanceof IFlexibleBakedModel) {
-			renderModel((IFlexibleBakedModel) model);
-		} else {
-			renderModel(new IFlexibleBakedModel.Wrapper(model, DefaultVertexFormats.ITEM));
-		}
-	}
-
-	private static void renderModel(IFlexibleBakedModel model) {
 		Minecraft mc = Minecraft.getMinecraft();
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+		VertexBuffer renderer = tessellator.getBuffer();
+		mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-		renderer.begin(GL11.GL_QUADS, model.getFormat());
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 		for (EnumFacing facing : EnumFacing.VALUES) {
-			renderQuads(renderer, model.getFaceQuads(facing));
+			renderQuads(renderer, model.getQuads(null, facing, 0));
 		}
 
-		renderQuads(renderer, model.getGeneralQuads());
+		renderQuads(renderer, model.getQuads(null, null, 0));
 		tessellator.draw();
 	}
 
-	private static void renderQuads(WorldRenderer renderer, List<BakedQuad> quads) {
+	private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads) {
 		for (BakedQuad quad : quads) {
 			LightUtil.renderQuadColor(renderer, quad, -1);
 		}

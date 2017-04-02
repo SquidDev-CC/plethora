@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -114,7 +113,7 @@ public class IntegrationVanilla {
 	);
 
 	private static final BasicModuleHandler noteblockHandlerModel = new BasicModuleHandlerTransform(
-		noteblockMod, Item.getItemFromBlock(Blocks.noteblock),
+		noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK),
 		new Matrix4f(
 			0.6f, 0.0f, 0.0f, 0.0f,
 			0.0f, 0.6f, 0.0f, -0.1f,
@@ -136,7 +135,7 @@ public class IntegrationVanilla {
 		)
 	);
 
-	private static final MinecartModuleHandler clockCap = new MinecartModuleHandler(clockMod, Items.clock);
+	private static final MinecartModuleHandler clockCap = new MinecartModuleHandler(clockMod, Items.CLOCK);
 	private static final MinecartModuleHandler noteblockCap = new MinecartModuleHandlerTransform(
 		noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK),
 		new Matrix4f(

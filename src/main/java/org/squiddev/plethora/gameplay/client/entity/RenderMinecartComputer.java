@@ -2,13 +2,13 @@ package org.squiddev.plethora.gameplay.client.entity;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderMinecart;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -47,12 +47,12 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		double ox = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) partialTicks;
 		double oy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) partialTicks;
 		double oz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) partialTicks;
-		Vec3 pos = entity.func_70489_a(ox, oy, oz);
+		Vec3d pos = entity.getPos(ox, oy, oz);
 		float f3 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
 
 		if (pos != null) {
-			Vec3 posOffA = entity.func_70495_a(ox, oy, oz, 0.3);
-			Vec3 posOffB = entity.func_70495_a(ox, oy, oz, -0.3);
+			Vec3d posOffA = entity.getPosOffset(ox, oy, oz, 0.3);
+			Vec3d posOffB = entity.getPosOffset(ox, oy, oz, -0.3);
 
 			if (posOffA == null) posOffA = pos;
 			if (posOffB == null) posOffB = pos;
@@ -60,7 +60,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 			x += pos.xCoord - ox;
 			y += (posOffA.yCoord + posOffB.yCoord) / 2.0D - oy;
 			z += pos.zCoord - oz;
-			Vec3 posOff = posOffB.addVector(-posOffA.xCoord, -posOffA.yCoord, -posOffA.zCoord);
+			Vec3d posOff = posOffB.addVector(-posOffA.xCoord, -posOffA.yCoord, -posOffA.zCoord);
 
 			if (posOff.lengthVector() != 0.0D) {
 				posOff = posOff.normalize();
@@ -81,15 +81,20 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 			GlStateManager.rotate(MathHelper.sin(roll) * roll * damage / 10.0f * (float) entity.getRollingDirection(), 1.0f, 0.0f, 0.0f);
 		}
 
+		if (this.renderOutlines) {
+			GlStateManager.enableColorMaterial();
+			GlStateManager.enableOutlineMode(this.getTeamColor(entity));
+		}
+
 		// Render block
 		GlStateManager.pushMatrix();
 		int tileOffset = entity.getDisplayTileOffset();
 		IBlockState blockState = entity.getDisplayTile();
-		bindTexture(TextureMap.locationBlocksTexture);
+		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		final float scale = 0.75f;
 		GlStateManager.scale(scale, scale, scale);
 		GlStateManager.translate(-0.5f, (float) (tileOffset - 8) / 16.0f, 0.5f);
-		func_180560_a(entity, partialTicks, blockState);
+		renderCartContents(entity, partialTicks, blockState);
 
 		IItemHandler handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		for (int slot = 0; slot < handler.getSlots(); slot++) {
@@ -147,6 +152,11 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		modelMinecart.render(entity, 0.0f, 0.0f, -0.1f, 0.0f, 0.0f, 0.0625f);
 
 		GlStateManager.popMatrix();
+
+		if (this.renderOutlines) {
+			GlStateManager.disableOutlineMode();
+			GlStateManager.disableColorMaterial();
+		}
 
 		this.renderName(entity, x, y, z);
 	}

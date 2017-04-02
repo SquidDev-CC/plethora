@@ -13,23 +13,25 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
-import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.Vec3;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
 /**
  * Copy of {@link CommandAPI} but with the Minecart Computer instead.
  */
-public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
+public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	private final Entity entity;
 	private final MinecraftServer server;
 
@@ -68,7 +70,7 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 	private Object getBlockInfo(World world, BlockPos pos) {
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		String name = Block.blockRegistry.getNameForObject(block).toString();
+		String name = Block.REGISTRY.getNameForObject(block).toString();
 		int metadata = block.getMetaFromState(state);
 
 		Map<Object, Object> table = Maps.newHashMap();
@@ -76,7 +78,7 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 		table.put("metadata", metadata);
 
 		Map<Object, Object> stateTable = Maps.newHashMap();
-		for (Map.Entry<IProperty, ?> entry : block.getActualState(state, world, pos).getProperties().entrySet()) {
+		for (Map.Entry<IProperty<?>, ?> entry : block.getActualState(state, world, pos).getProperties().entrySet()) {
 			String propertyName = entry.getKey().getName();
 			Object value = entry.getValue();
 			if (value instanceof String || value instanceof Number || value instanceof Boolean) {
@@ -132,7 +134,7 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 								String name = (String) entry.getKey();
 								ICommand command = (ICommand) entry.getValue();
 								try {
-									if (command.canCommandSenderUseCommand(CommandAPI.this)) {
+									if (command.checkPermission(server, CommandAPI.this)) {
 										result.put(i++, name);
 									}
 								} catch (RuntimeException e) {
@@ -205,18 +207,20 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 		return null;
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return entity.getName();
 	}
 
+	@Nonnull
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		return entity.getDisplayName();
 	}
 
 	@Override
-	public void addChatMessage(IChatComponent component) {
+	public void addChatMessage(@Nonnull ITextComponent component) {
 		output.put(output.size() + 1, component.getUnformattedText());
 	}
 
@@ -225,16 +229,19 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 		return permLevel <= 2;
 	}
 
+	@Nonnull
 	@Override
 	public BlockPos getPosition() {
 		return entity.getPosition();
 	}
 
+	@Nonnull
 	@Override
-	public Vec3 getPositionVector() {
+	public Vec3d getPositionVector() {
 		return entity.getPositionVector();
 	}
 
+	@Nonnull
 	@Override
 	public World getEntityWorld() {
 		return entity.getEntityWorld();
@@ -246,7 +253,7 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 	}
 
 	@Override
-	public void setCommandStat(CommandResultStats.Type type, int amount) {
+	public void setCommandStat(@Nonnull CommandResultStats.Type type, int amount) {
 	}
 
 	@Override
@@ -254,12 +261,18 @@ public class CommandAPI extends CommandBlockLogic implements ILuaAPI {
 	}
 
 	@Override
-	public int func_145751_f() {
+	public int getCommandBlockType() {
 		return 0;
 	}
 
 	@Override
-	public void func_145757_a(ByteBuf p_145757_1_) {
+	public void fillInInfo(@Nonnull ByteBuf byteBuf) {
+	}
+
+	@Nullable
+	@Override
+	public MinecraftServer getServer() {
+		return server;
 	}
 
 	@Override

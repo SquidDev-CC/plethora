@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -464,7 +465,9 @@ public final class ItemModule extends ItemBase {
 		float motionY = -MathHelper.sin(pitch / 180.0f * (float) Math.PI);
 
 		power /= MathHelper.sqrt_float(motionX * motionX + motionY * motionY + motionZ * motionZ);
-		if (entity.isElytraFlying()) power *= ConfigGameplay.Kinetic.launchElytraScale;
+		if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
+			power *= ConfigGameplay.Kinetic.launchElytraScale;
+		}
 
 		entity.addVelocity(motionX * power, motionY * power * ConfigGameplay.Kinetic.launchYScale, motionZ * power);
 		entity.velocityChanged = true;
