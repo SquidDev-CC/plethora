@@ -64,7 +64,7 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 		final ResourceLocation thisModule = handler.getModule();
 
 		String moduleName = thisModule.toString();
-		if (ConfigCore.Blacklist.blacklistModulesTurtle.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName)) {
+		if (ConfigCore.Blacklist.blacklistModulesMinecart.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName)) {
 			return null;
 		}
 

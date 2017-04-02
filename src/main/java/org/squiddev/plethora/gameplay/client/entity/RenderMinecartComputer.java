@@ -13,6 +13,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
@@ -30,6 +31,11 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 	public void doRender(EntityMinecartComputer entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		bindEntityTexture(entity);
+
+		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
+		GlStateManager.enableAlpha();
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
 		long id = (long) entity.getEntityId() * 493286711L;
 		id = id * id * 4392167121L + id * 98761L;
@@ -131,6 +137,8 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		}
 
 		GlStateManager.popMatrix();
+
+		GlStateManager.disableBlend();
 
 		// Render main minecart
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
