@@ -53,7 +53,7 @@ public final class ArgumentHelper {
 	}
 
 	public static int getInt(@Nonnull Object[] args, int index) throws LuaException {
-		return (int) getNumber(args, index);
+		return (int) (long) getNumber(args, index);
 	}
 
 	public static float getFloat(@Nonnull Object[] args, int index) throws LuaException {
@@ -134,7 +134,7 @@ public final class ArgumentHelper {
 	}
 
 	public static int optInt(@Nonnull Object[] args, int index, int def) throws LuaException {
-		return (int) optNumber(args, index, def);
+		return (int) (long) optNumber(args, index, def);
 	}
 
 	public static float optFloat(@Nonnull Object[] args, int index, int def) throws LuaException {

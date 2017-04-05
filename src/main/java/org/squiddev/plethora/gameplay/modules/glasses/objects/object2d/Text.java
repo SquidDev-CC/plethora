@@ -1,10 +1,11 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
+import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -18,8 +19,7 @@ import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegis
 
 public class Text extends BaseObject implements Colourable, Positionable2D, Scalable, Textable {
 	private int colour = DEFAULT_COLOUR;
-	private float x;
-	private float y;
+	private Point2D position = new Point2D();
 	private float size = 1;
 	private String text = "";
 
@@ -46,20 +46,14 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public Point2D getPosition() {
+		return position;
 	}
 
 	@Override
-	public float getY() {
-		return y;
-	}
-
-	@Override
-	public void setPosition(float x, float y) {
-		if (this.x != x || this.y != y) {
-			this.x = x;
-			this.y = y;
+	public void setPosition(Point2D position) {
+		if (!Objects.equal(this.position, position)) {
+			this.position = position;
 			setDirty();
 		}
 	}
@@ -94,8 +88,7 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 	@Override
 	public void writeInital(ByteBuf buf) {
 		buf.writeInt(colour);
-		buf.writeFloat(x);
-		buf.writeFloat(y);
+		position.write(buf);
 		buf.writeFloat(size);
 		ByteBufUtils.writeUTF8String(buf, text);
 	}
@@ -103,14 +96,13 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 	@Override
 	public void readInitial(ByteBuf buf) {
 		colour = buf.readInt();
-		x = buf.readFloat();
-		y = buf.readFloat();
+		position.read(buf);
 		size = buf.readFloat();
 		text = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
-	public void draw3D(Tessellator tessellator) {
+	public void draw3D(Entity viewEntity) {
 	}
 
 	@Override
@@ -128,7 +120,7 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 		FontRenderer fontrenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, 0);
+		GlStateManager.translate(position.x, position.y, 0);
 		GlStateManager.scale(size, size, 1);
 		// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
 		fontrenderer.drawString(text, 0, 0, Integer.rotateRight(colour, 8));

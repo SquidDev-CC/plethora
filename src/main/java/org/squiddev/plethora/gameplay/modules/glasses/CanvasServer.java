@@ -80,6 +80,7 @@ public class CanvasServer implements IReference<CanvasServer> {
 			throw new IllegalStateException("An object already exists with that key");
 		}
 
+		object.resetDirty();
 		added.add(object);
 	}
 

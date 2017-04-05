@@ -1,7 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
+import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
@@ -10,9 +11,7 @@ import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegis
 
 public class Rectangle extends BaseObject implements Positionable2D, Colourable {
 	private int colour = DEFAULT_COLOUR;
-	private float x;
-	private float y;
-
+	private Point2D position = new Point2D();
 	private float width;
 	private float height;
 
@@ -39,20 +38,14 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public Point2D getPosition() {
+		return position;
 	}
 
 	@Override
-	public float getY() {
-		return y;
-	}
-
-	@Override
-	public void setPosition(float x, float y) {
-		if (this.x != x || this.y != y) {
-			this.x = x;
-			this.y = y;
+	public void setPosition(Point2D position) {
+		if (!Objects.equal(this.position, position)) {
+			this.position = position;
 			setDirty();
 		}
 	}
@@ -76,8 +69,7 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 	@Override
 	public void writeInital(ByteBuf buf) {
 		buf.writeInt(colour);
-		buf.writeFloat(x);
-		buf.writeFloat(y);
+		position.write(buf);
 		buf.writeFloat(width);
 		buf.writeFloat(height);
 	}
@@ -85,18 +77,18 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		colour = buf.readInt();
-		x = buf.readFloat();
-		y = buf.readFloat();
+		position.read(buf);
 		width = buf.readFloat();
 		height = buf.readFloat();
 	}
 
 	@Override
-	public void draw3D(Tessellator tessellator) {
+	public void draw3D(Entity viewEntity) {
 	}
 
 	@Override
 	public void draw2D() {
+		float x = position.x, y = position.y;
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		GL11.glVertex3f(x, y, 0);

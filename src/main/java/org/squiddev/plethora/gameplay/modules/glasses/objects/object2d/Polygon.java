@@ -1,7 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
+import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
@@ -32,25 +33,20 @@ public class Polygon extends BaseObject implements MultiPoint2D, MultiPointResiz
 	}
 
 	@Override
-	public float getX(int idx) {
-		return points.get(idx).x;
+	public Point2D getPoint(int idx) {
+		return points.get(idx);
 	}
 
 	@Override
-	public float getY(int idx) {
-		return points.get(idx).y;
-	}
-
-	@Override
-	public void setVertex(int idx, float x, float y) {
-		Point2D point = points.get(idx);
-		if (point.x != x || point.y != y) {
-			points.set(idx, new Point2D(x, y));
+	public void setVertex(int idx, Point2D point) {
+		if (!Objects.equal(points.get(idx), point)) {
+			points.set(idx, point);
+			setDirty();
 		}
 	}
 
 	@Override
-	public int getVerticies() {
+	public int getVertices() {
 		return points.size();
 	}
 
@@ -61,11 +57,11 @@ public class Polygon extends BaseObject implements MultiPoint2D, MultiPointResiz
 	}
 
 	@Override
-	public void addPoint(int idx, float x, float y) {
+	public void addPoint(int idx, Point2D point) {
 		if (idx == points.size()) {
-			points.add(new Point2D(x, y));
+			points.add(point);
 		} else {
-			points.add(idx, new Point2D(x, y));
+			points.add(idx, point);
 		}
 
 		setDirty();
@@ -106,7 +102,7 @@ public class Polygon extends BaseObject implements MultiPoint2D, MultiPointResiz
 	}
 
 	@Override
-	public void draw3D(Tessellator tessellator) {
+	public void draw3D(Entity viewEntity) {
 	}
 
 	@Override

@@ -1,7 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
+import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
@@ -9,12 +10,10 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.LINE_2D;
 
-public class Line extends BaseObject implements Colourable, Scalable {
+public class Line extends BaseObject implements Colourable, Scalable, MultiPoint2D {
 	private int colour = DEFAULT_COLOUR;
-	private float startX;
-	private float startY;
-	private float endX;
-	private float endY;
+	private Point2D start = new Point2D();
+	private Point2D end = new Point2D();
 	private float thickness = 1;
 
 	public Line(int id) {
@@ -52,60 +51,49 @@ public class Line extends BaseObject implements Colourable, Scalable {
 		}
 	}
 
-	public float getStartX() {
-		return startX;
+	@Override
+	public Point2D getPoint(int idx) {
+		return idx == 0 ? start : end;
 	}
 
-	public float getStartY() {
-		return startY;
-	}
-
-	public float getEndX() {
-		return endX;
-	}
-
-	public float getEndY() {
-		return endY;
-	}
-
-	public void setStart(float x, float y) {
-		if (this.startX != x || this.startY != y) {
-			this.startX = x;
-			this.startY = y;
-			setDirty();
+	@Override
+	public void setVertex(int idx, Point2D point) {
+		if (idx == 0) {
+			if (!Objects.equal(start, point)) {
+				start = point;
+				setDirty();
+			}
+		} else {
+			if (!Objects.equal(end, point)) {
+				end = point;
+				setDirty();
+			}
 		}
 	}
 
-	public void setEnd(float x, float y) {
-		if (this.endX != x || this.endY != y) {
-			this.endX = x;
-			this.endY = y;
-			setDirty();
-		}
+	@Override
+	public int getVertices() {
+		return 2;
 	}
 
 	@Override
 	public void writeInital(ByteBuf buf) {
 		buf.writeInt(colour);
-		buf.writeFloat(startX);
-		buf.writeFloat(startY);
-		buf.writeFloat(endX);
-		buf.writeFloat(endY);
+		start.write(buf);
+		end.write(buf);
 		buf.writeFloat(thickness);
 	}
 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		colour = buf.readInt();
-		startX = buf.readFloat();
-		startY = buf.readFloat();
-		endX = buf.readFloat();
-		endY = buf.readFloat();
+		start.read(buf);
+		end.read(buf);
 		thickness = buf.readFloat();
 	}
 
 	@Override
-	public void draw3D(Tessellator tessellator) {
+	public void draw3D(Entity viewEntity) {
 	}
 
 	@Override
@@ -113,8 +101,8 @@ public class Line extends BaseObject implements Colourable, Scalable {
 		GL11.glLineWidth(thickness);
 		GL11.glBegin(GL11.GL_LINES);
 		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
-		GL11.glVertex3f(startX, startY, 0);
-		GL11.glVertex3f(endX, endY, 0);
+		GL11.glVertex3f(start.x, start.y, 0);
+		GL11.glVertex3f(end.x, end.y, 0);
 		GL11.glEnd();
 		GL11.glLineWidth(1);
 	}

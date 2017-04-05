@@ -12,13 +12,14 @@ public class Methods2D {
 	@BasicMethod.Inject(value = Positionable2D.class, doc = "function():number, number -- Get the position for this object.")
 	public static MethodResult getPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
 		Positionable2D object = context.safeBake().getTarget();
-		return MethodResult.result(object.getX(), object.getY());
+		Point2D pos = object.getPosition();
+		return MethodResult.result(pos.x, pos.y);
 	}
 
 	@BasicMethod.Inject(value = Positionable2D.class, doc = "function(x:number, y:number) -- Set the position for this object.")
 	public static MethodResult setPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
 		Positionable2D object = context.safeBake().getTarget();
-		object.setPosition(getFloat(args, 0), getFloat(args, 1));
+		object.setPosition(new Point2D(getFloat(args, 0), getFloat(args, 1)));
 		return MethodResult.empty();
 	}
 
@@ -35,40 +36,15 @@ public class Methods2D {
 		return MethodResult.empty();
 	}
 
-	@BasicMethod.Inject(value = Line.class, doc = "function():number, number -- Get the start position of this line.")
-	public static MethodResult getStartPosition(IUnbakedContext<Line> context, Object[] arguments) throws LuaException {
-		Line line = context.safeBake().getTarget();
-		return MethodResult.result(line.getStartX(), line.getStartY());
-	}
-
-	@BasicMethod.Inject(value = Line.class, doc = "function(x:number, y:number) -- Set the start position of this line.")
-	public static MethodResult setStartPosition(IUnbakedContext<Line> context, Object[] arguments) throws LuaException {
-		Line line = context.safeBake().getTarget();
-		line.setStart(getFloat(arguments, 0), getFloat(arguments, 1));
-		return MethodResult.empty();
-	}
-
-	@BasicMethod.Inject(value = Line.class, doc = "function():number, number -- Get the end position of this line.")
-	public static MethodResult getEndPosition(IUnbakedContext<Line> context, Object[] arguments) throws LuaException {
-		Line line = context.safeBake().getTarget();
-		return MethodResult.result(line.getEndX(), line.getEndY());
-	}
-
-	@BasicMethod.Inject(value = Line.class, doc = "function(x:number, y:number) -- Set the end position of this line.")
-	public static MethodResult setEndPosition(IUnbakedContext<Line> context, Object[] arguments) throws LuaException {
-		Line line = context.safeBake().getTarget();
-		line.setEnd(getFloat(arguments, 0), getFloat(arguments, 1));
-		return MethodResult.empty();
-	}
-
 	@BasicMethod.Inject(value = MultiPoint2D.class, doc = "function(idx:int):number, number -- Get the specified vertex of this object.")
 	public static MethodResult getPoint(IUnbakedContext<MultiPoint2D> context, Object[] args) throws LuaException {
 		MultiPoint2D object = context.safeBake().getTarget();
 
 		int idx = getInt(args, 0);
-		assertBetween(idx, 1, object.getVerticies(), "Index out of range (%s)");
+		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
-		return MethodResult.result(object.getX(idx - 1), object.getY(idx - 1));
+		Point2D point = object.getPoint(idx - 1);
+		return MethodResult.result(point.x, point.y);
 	}
 
 	@BasicMethod.Inject(value = MultiPoint2D.class, doc = "function(idx:int, x:number, y:number) -- Set the specified vertex of this object.")
@@ -76,9 +52,9 @@ public class Methods2D {
 		MultiPoint2D object = context.safeBake().getTarget();
 
 		int idx = getInt(args, 0);
-		assertBetween(idx, 1, object.getVerticies(), "Index out of range (%s)");
+		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
-		object.setVertex(idx - 1, getFloat(args, 1), getFloat(args, 2));
+		object.setVertex(idx - 1, new Point2D(getFloat(args, 1), getFloat(args, 2)));
 		return MethodResult.empty();
 	}
 
@@ -86,16 +62,15 @@ public class Methods2D {
 	public static MethodResult getPointCount(IUnbakedContext<MultiPointResizable2D> context, Object[] args) throws LuaException {
 		MultiPointResizable2D object = context.safeBake().getTarget();
 
-		return MethodResult.result(object.getVerticies());
+		return MethodResult.result(object.getVertices());
 	}
-
 
 	@BasicMethod.Inject(value = MultiPointResizable2D.class, doc = "function(idx:int) -- Remove the specified vertex of this object.")
 	public static MethodResult removePoint(IUnbakedContext<MultiPointResizable2D> context, Object[] args) throws LuaException {
 		MultiPointResizable2D object = context.safeBake().getTarget();
 
 		int idx = getInt(args, 0);
-		assertBetween(idx, 1, object.getVerticies(), "Index out of range (%s)");
+		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
 		object.removePoint(idx - 1);
 		return MethodResult.empty();
@@ -108,7 +83,7 @@ public class Methods2D {
 		float x, y;
 		int idx;
 
-		if (object.getVerticies() > MultiPointResizable2D.MAX_SIZE) {
+		if (object.getVertices() > MultiPointResizable2D.MAX_SIZE) {
 			throw new LuaException("To many vertices");
 		}
 
@@ -117,14 +92,14 @@ public class Methods2D {
 			x = getFloat(args, 1);
 			y = getFloat(args, 2);
 
-			assertBetween(idx, 1, object.getVerticies() + 1, "Index out of range (%s)");
+			assertBetween(idx, 1, object.getVertices() + 1, "Index out of range (%s)");
 		} else {
-			idx = object.getVerticies();
+			idx = object.getVertices();
 			x = getFloat(args, 0);
 			y = getFloat(args, 1);
 		}
 
-		object.addPoint(idx - 1, x, y);
+		object.addPoint(idx - 1, new Point2D(x, y));
 		return MethodResult.empty();
 	}
 }

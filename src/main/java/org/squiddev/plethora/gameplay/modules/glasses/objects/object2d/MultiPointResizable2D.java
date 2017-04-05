@@ -5,5 +5,5 @@ public interface MultiPointResizable2D extends MultiPoint2D {
 
 	void removePoint(int idx);
 
-	void addPoint(int idx, float x, float y);
+	void addPoint(int idx, Point2D point);
 }
