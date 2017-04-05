@@ -17,7 +17,7 @@ public class CanvasServer implements IReference<CanvasServer> {
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;
 
-	private TIntObjectHashMap<BaseObject> objects = new TIntObjectHashMap<BaseObject>();
+	private final TIntObjectHashMap<BaseObject> objects = new TIntObjectHashMap<BaseObject>();
 	private int lastId = 0;
 
 	private final Set<BaseObject> added = Sets.newHashSet();

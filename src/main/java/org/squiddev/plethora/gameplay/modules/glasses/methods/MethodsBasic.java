@@ -8,10 +8,10 @@ import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.Positionable2D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
+import static org.squiddev.plethora.api.method.ArgumentHelper.*;
 
 public class MethodsBasic {
 	@BasicMethod.Inject(value = BaseObject.class, doc = "function():int -- Get the id for this object.")
@@ -82,16 +82,32 @@ public class MethodsBasic {
 		return MethodResult.empty();
 	}
 
-	@BasicMethod.Inject(value = Positionable2D.class, doc = "function():number, number -- Get the position for this object.")
-	public static MethodResult getPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
-		Positionable2D object = context.safeBake().getTarget();
-		return MethodResult.result(object.getX(), object.getY());
+	@BasicMethod.Inject(value = Scalable.class, doc = "function():number -- Get the scale for this object.")
+	public static MethodResult getScale(IUnbakedContext<Scalable> context, Object[] args) throws LuaException {
+		Scalable object = context.safeBake().getTarget();
+		return MethodResult.result(object.getScale());
 	}
 
-	@BasicMethod.Inject(value = Positionable2D.class, doc = "function(x:number, y:number) -- Set the position for this object.")
-	public static MethodResult setPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
-		Positionable2D object = context.safeBake().getTarget();
-		object.setPosition(getFloat(args, 0), getFloat(args, 1));
+	@BasicMethod.Inject(value = Scalable.class, doc = "function(scale:number) -- Set the scale for this object.")
+	public static MethodResult setScale(IUnbakedContext<Scalable> context, Object[] args) throws LuaException {
+		Scalable object = context.safeBake().getTarget();
+
+		float thickness = getFloat(args, 0);
+		if (thickness <= 0) throw new LuaException("Scale must be > 0");
+		object.setScale(thickness);
+		return MethodResult.empty();
+	}
+
+	@BasicMethod.Inject(value = Textable.class, doc = "function():string -- Get the text for this object.")
+	public static MethodResult getText(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+		return MethodResult.result(object.getText());
+	}
+
+	@BasicMethod.Inject(value = Textable.class, doc = "function(text:string) -- Set the text for this object.")
+	public static MethodResult setText(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+		object.setText(getString(args, 0));
 		return MethodResult.empty();
 	}
 }

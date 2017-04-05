@@ -118,13 +118,16 @@ public class CanvasHandler {
 
 		if (canvas == null) return;
 
-		GlStateManager.pushAttrib();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LINE_BIT | GL11.GL_POINT_BIT | GL11.GL_LIGHTING_BIT);
 		GlStateManager.pushMatrix();
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_LIGHTING);
+
+		// The hotbar renders at -90 (See GuiIngame#renderTooltip)
+		GL11.glTranslatef(0, 0, -100);
 
 		ScaledResolution resolution = event.resolution;
 		GL11.glScaled(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 0);
@@ -138,6 +141,6 @@ public class CanvasHandler {
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 
 		GlStateManager.popMatrix();
-		GlStateManager.popAttrib();
+		GL11.glPopAttrib();
 	}
 }

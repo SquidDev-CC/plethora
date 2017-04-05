@@ -5,24 +5,23 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.RECTANGLE_2D;
+import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.DOT_2D;
 
-public class Rectangle extends BaseObject implements Positionable2D, Colourable {
+public class Dot extends BaseObject implements Positionable2D, Colourable, Scalable {
 	private int colour = DEFAULT_COLOUR;
 	private float x;
 	private float y;
+	private float scale = 1;
 
-	private float width;
-	private float height;
-
-	public Rectangle(int id) {
+	public Dot(int id) {
 		super(id);
 	}
 
 	@Override
 	public byte getType() {
-		return RECTANGLE_2D;
+		return DOT_2D;
 	}
 
 	@Override
@@ -57,18 +56,15 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 		}
 	}
 
-	public float getWidth() {
-		return width;
+	@Override
+	public float getScale() {
+		return scale;
 	}
 
-	public float getHeight() {
-		return height;
-	}
-
-	public void setSize(float width, float height) {
-		if (this.width != width || this.height != height) {
-			this.width = width;
-			this.height = height;
+	@Override
+	public void setScale(float scale) {
+		if (this.scale != scale) {
+			this.scale = scale;
 			setDirty();
 		}
 	}
@@ -78,8 +74,7 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 		buf.writeInt(colour);
 		buf.writeFloat(x);
 		buf.writeFloat(y);
-		buf.writeFloat(width);
-		buf.writeFloat(height);
+		buf.writeFloat(scale);
 	}
 
 	@Override
@@ -87,8 +82,7 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 		colour = buf.readInt();
 		x = buf.readFloat();
 		y = buf.readFloat();
-		width = buf.readFloat();
-		height = buf.readFloat();
+		scale = buf.readFloat();
 	}
 
 	@Override
@@ -97,12 +91,11 @@ public class Rectangle extends BaseObject implements Positionable2D, Colourable 
 
 	@Override
 	public void draw2D() {
-		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glPointSize(scale);
+		GL11.glBegin(GL11.GL_LINES);
 		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		GL11.glVertex3f(x, y, 0);
-		GL11.glVertex3f(x, y + height, 0);
-		GL11.glVertex3f(x + width, y + height, 0);
-		GL11.glVertex3f(x + width, y + 0, 0);
 		GL11.glEnd();
+		GL11.glPointSize(1);
 	}
 }

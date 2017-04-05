@@ -137,6 +137,10 @@ public final class ArgumentHelper {
 		return (int) optNumber(args, index, def);
 	}
 
+	public static float optFloat(@Nonnull Object[] args, int index, int def) throws LuaException {
+		return (float) optNumber(args, index, def);
+	}
+
 	public static boolean optBoolean(@Nonnull Object[] args, int index, boolean def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {

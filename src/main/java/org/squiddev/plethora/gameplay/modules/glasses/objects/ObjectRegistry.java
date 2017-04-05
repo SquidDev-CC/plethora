@@ -2,10 +2,16 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects;
 
 import io.netty.buffer.ByteBuf;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.Rectangle;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 
 public final class ObjectRegistry {
-	public static final int RECTANGLE_2D = 0;
+	public static final byte RECTANGLE_2D = 0;
+	public static final byte LINE_2D = 1;
+	public static final byte DOT_2D = 2;
+	public static final byte TEXT_2D = 3;
+	public static final byte TRIANGLE_2D = 4;
+	public static final byte POLYGON_2D = 5;
+	public static final byte LINE_LOOP_2D = 6;
 
 	private ObjectRegistry() {
 	}
@@ -14,6 +20,18 @@ public final class ObjectRegistry {
 		switch (type) {
 			case RECTANGLE_2D:
 				return new Rectangle(id);
+			case LINE_2D:
+				return new Line(id);
+			case DOT_2D:
+				return new Dot(id);
+			case TEXT_2D:
+				return new Text(id);
+			case TRIANGLE_2D:
+				return new Triangle(id);
+			case POLYGON_2D:
+				return new Polygon(id);
+			case LINE_LOOP_2D:
+				return new LineLoop(id);
 			default:
 				throw new IllegalStateException("Unknown type " + type);
 		}
