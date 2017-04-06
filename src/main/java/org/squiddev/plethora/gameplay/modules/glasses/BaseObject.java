@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 
 import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.reference.IReference;
@@ -71,9 +71,11 @@ public abstract class BaseObject {
 
 	/**
 	 * Draw this object in the 3D context.
+	 *
+	 * @param viewEntity The entity on which the view is centered.
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract void draw3D(Tessellator tessellator);
+	public abstract void draw3D(Entity viewEntity);
 
 	/**
 	 * Draw this object in the 2D context.
