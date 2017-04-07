@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
@@ -39,7 +38,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 
 	public CommandAPI(Entity entity) {
 		this.entity = entity;
-		this.server = ((WorldServer) entity.getEntityWorld()).getMinecraftServer();
+		this.server = entity.getEntityWorld().getMinecraftServer();
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				return context.executeMainThreadTask(new ILuaTask() {
 					public Object[] execute()
 						throws LuaException {
-						return CommandAPI.this.doCommand(command);
+						return doCommand(command);
 					}
 				});
 			}
@@ -115,7 +114,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				long taskID = context.issueMainThreadTask(new ILuaTask() {
 					public Object[] execute()
 						throws LuaException {
-						return CommandAPI.this.doCommand(command);
+						return doCommand(command);
 					}
 				});
 				return new Object[]{taskID};
@@ -178,7 +177,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 							for (int z = min.getZ(); z <= max.getZ(); z++) {
 								for (int x = min.getX(); x <= max.getX(); x++) {
 									BlockPos pos = new BlockPos(x, y, z);
-									results.put(i++, CommandAPI.this.getBlockInfo(world, pos));
+									results.put(i++, getBlockInfo(world, pos));
 								}
 							}
 						}
@@ -198,7 +197,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 						World world = entity.getEntityWorld();
 						BlockPos position = new BlockPos(x, y, z);
 						if (WorldUtil.isBlockInWorld(world, position)) {
-							return new Object[]{CommandAPI.this.getBlockInfo(world, position)};
+							return new Object[]{getBlockInfo(world, position)};
 						}
 						throw new LuaException("Co-ordinates out or range");
 					}
