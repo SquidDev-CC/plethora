@@ -501,8 +501,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		if (offsetPos != null) {
 			final double offset = 0.3;
-			Vec3d posOff = getPosOffset(x, y, z, offset);
-			Vec3d negOff = getPosOffset(x, y, z, -offset);
+			Vec3d posOff = MinecartHelpers.getPosOffset(this, x, y, z, offset);
+			Vec3d negOff = MinecartHelpers.getPosOffset(this, x, y, z, -offset);
 
 			if (posOff == null) posOff = offsetPos;
 			if (negOff == null) negOff = offsetPos;
@@ -720,6 +720,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 
 		@Override
+		@SideOnly(Side.CLIENT)
 		public IMessage onMessage(final MessageMinecartSlot message, final MessageContext ctx) {
 			// We schedule this to run on the main thread so the entity is actually
 			// loaded by this point.

@@ -87,6 +87,14 @@ public final class ConfigGameplay {
 		public static boolean launchFallReset;
 
 		/**
+		 * Whether to reset the floating timer after launching.
+		 *
+		 * This means the player will not be kicked for flying after using the kinetic augment a lot.
+		 */
+		@DefaultBoolean(true)
+		public static boolean launchFloatReset;
+
+		/**
 		 * The value to scale the velocity by when flying, helps limit how fast the player can go.
 		 */
 		@DefaultDouble(0.4)

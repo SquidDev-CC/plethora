@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -478,6 +479,10 @@ public final class ItemModule extends ItemBase {
 			} else if (entity.motionY > TERMINAL_VELOCITY) {
 				entity.fallDistance *= entity.motionY / TERMINAL_VELOCITY;
 			}
+		}
+
+		if (ConfigGameplay.Kinetic.launchFloatReset && entity instanceof EntityPlayerMP) {
+			((EntityPlayerMP) entity).connection.floatingTickCount = 0;
 		}
 	}
 }
