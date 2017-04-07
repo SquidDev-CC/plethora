@@ -9,6 +9,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
@@ -40,6 +42,7 @@ public class IntegrationComputerCraft {
 	}
 
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void onModelBakeEvent(ModelBakeEvent event) {
 		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_off");
 		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_on");
