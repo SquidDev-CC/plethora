@@ -14,11 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Delaying version of {@link dan200.computercraft.core.computer.MainThread}.
- *
- * The implementation of this is a bit odd. It involves a linked list rather than
- * a normal ArrayList as we need to remove any item, whilst still allowing new tasks
- * to be added.
+ * An executor which uses {@link IComputerAccess} to queue events.
  */
 public final class ContextDelayedExecutor extends AbstractDelayedExecutor implements IExecutorFactory {
 	@Nonnull

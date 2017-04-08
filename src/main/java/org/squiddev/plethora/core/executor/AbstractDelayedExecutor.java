@@ -12,6 +12,13 @@ import org.squiddev.plethora.utils.DebugLogger;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
+/**
+ * Delaying version of {@link dan200.computercraft.core.computer.MainThread}.
+ *
+ * The implementation of this is a bit odd. It involves a linked list rather than
+ * a normal ArrayList as we need to remove any item, whilst still allowing new tasks
+ * to be added.
+ */
 public class AbstractDelayedExecutor implements ITickable {
 	private static final String EVENT_NAME = "plethora_task";
 
@@ -164,6 +171,7 @@ public class AbstractDelayedExecutor implements ITickable {
 		private final IComputerAccess access;
 		private Object[] result;
 		private final long id;
+		private Exception error = null;
 
 		public SyncLuaTask(IComputerAccess access, MethodResult task, long id) {
 			super(task);
@@ -174,7 +182,7 @@ public class AbstractDelayedExecutor implements ITickable {
 		@Override
 		protected void onSuccess(Object[] result) {
 			this.result = result;
-			access.queueEvent(EVENT_NAME, new Object[]{id, true});
+			queueEvent(id, true);
 		}
 
 		@Override
@@ -183,12 +191,21 @@ public class AbstractDelayedExecutor implements ITickable {
 				? e.getMessage()
 				: "Java Exception Thrown: " + e.toString();
 
-			access.queueEvent(EVENT_NAME, new Object[]{id, false, message});
+			queueEvent(id, false, message);
+		}
+
+		private void queueEvent(Object... args) {
+			try {
+				access.queueEvent(EVENT_NAME, args);
+			} catch (RuntimeException e) {
+				error = e;
+				DebugLogger.error("Cannot queue task result", e);
+			}
 		}
 
 		@Override
 		protected void onCancel() {
-			access.queueEvent(EVENT_NAME, new Object[]{id, false, "Task cancelled"});
+			queueEvent(id, false, "Task cancelled");
 		}
 
 		public Object[] await(ILuaContext context) throws LuaException, InterruptedException {
@@ -197,13 +214,19 @@ public class AbstractDelayedExecutor implements ITickable {
 				do {
 					response = context.pullEvent(EVENT_NAME);
 				}
-				while (response.length < 3 || !(response[1] instanceof Number) || !(response[2] instanceof Boolean) || (long) ((Number) response[1]).intValue() != id);
+				while (error == null && (response.length < 3 || !(response[1] instanceof Number) || !(response[2] instanceof Boolean) || (long) ((Number) response[1]).intValue() != id));
 			} catch (InterruptedException e) {
 				cancel(this);
 				throw e;
 			} catch (LuaException e) {
 				cancel(this);
 				throw e;
+			}
+
+			if (error != null) {
+				throw new LuaException(error.getMessage() == null
+					? "Java Exception Thrown: " + error.toString()
+					: error.getMessage());
 			}
 
 			if (!(Boolean) response[2]) {
