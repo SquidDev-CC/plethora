@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
@@ -51,7 +52,7 @@ public class LineLoop extends Polygon implements Scalable {
 		GL11.glLineWidth(scale);
 
 		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
+		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		for (Point2D point : points) GL11.glVertex3f(point.x, point.y, 0);
 		GL11.glEnd();
 

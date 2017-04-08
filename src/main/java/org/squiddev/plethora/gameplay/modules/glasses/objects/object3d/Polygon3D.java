@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -105,14 +106,14 @@ public class Polygon3D extends BaseObject implements MultiPoint3D, MultiPointRes
 	public void draw3D(Entity viewEntity) {
 		if (points.size() < 3) return;
 
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.disableCull();
 
 		GL11.glBegin(GL11.GL_POLYGON);
-		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
+		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		for (Point3D point : points) GL11.glVertex3f(point.x, point.y, point.z);
 		GL11.glEnd();
 
-		GL11.glEnable(GL11.GL_CULL_FACE);
+		GlStateManager.enableCull();
 	}
 
 	@Override

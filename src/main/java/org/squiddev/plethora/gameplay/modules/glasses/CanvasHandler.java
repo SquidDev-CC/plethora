@@ -125,19 +125,18 @@ public class CanvasHandler {
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
 
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LINE_BIT | GL11.GL_POINT_BIT | GL11.GL_LIGHTING_BIT);
 		GlStateManager.pushMatrix();
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_LIGHTING);
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableLighting();
 
 		// The hotbar renders at -90 (See GuiIngame#renderTooltip)
-		GL11.glTranslatef(0, 0, -100);
+		GlStateManager.translate(0, 0, -100);
 
 		ScaledResolution resolution = event.resolution;
-		GL11.glScaled(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 0);
+		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 0);
 
 		synchronized (canvas.objects) {
 			for (BaseObject object : canvas.objects.valueCollection()) {
@@ -145,10 +144,10 @@ public class CanvasHandler {
 			}
 		}
 
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f);
+		GlStateManager.enableTexture2D();
 
 		GlStateManager.popMatrix();
-		GL11.glPopAttrib();
 	}
 
 	@SubscribeEvent
@@ -157,15 +156,13 @@ public class CanvasHandler {
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
 
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LINE_BIT | GL11.GL_POINT_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_COLOR_BUFFER_BIT);
 		GlStateManager.pushMatrix();
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.disableAlpha();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableLighting();
 
 		Minecraft minecraft = Minecraft.getMinecraft();
 		Entity renderEntity = minecraft.getRenderViewEntity();
@@ -178,10 +175,9 @@ public class CanvasHandler {
 			}
 		}
 
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		GL11.glDepthMask(true);
+		GlStateManager.color(1.0f, 1.0f, 1.0f);
+		GlStateManager.enableTexture2D();
 
 		GlStateManager.popMatrix();
-		GL11.glPopAttrib();
 	}
 }

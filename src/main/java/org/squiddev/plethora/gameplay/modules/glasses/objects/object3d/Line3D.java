@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -96,7 +97,7 @@ public class Line3D extends BaseObject implements Colourable, Scalable, MultiPoi
 	public void draw3D(Entity viewEntity) {
 		GL11.glLineWidth(thickness);
 		GL11.glBegin(GL11.GL_LINES);
-		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
+		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		GL11.glVertex3f(start.x, start.y, start.z);
 		GL11.glVertex3f(end.x, end.y, end.z);
 		GL11.glEnd();

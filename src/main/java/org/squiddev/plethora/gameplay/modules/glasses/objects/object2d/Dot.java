@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -86,7 +87,7 @@ public class Dot extends BaseObject implements Positionable2D, Colourable, Scala
 	public void draw2D() {
 		GL11.glPointSize(scale);
 		GL11.glBegin(GL11.GL_POINTS);
-		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
+		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		GL11.glVertex3f(position.x, position.y, 0);
 		GL11.glEnd();
 		GL11.glPointSize(1);

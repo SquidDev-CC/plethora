@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -73,16 +74,16 @@ public class Triangle3D extends BaseObject implements MultiPoint3D, Colourable {
 
 	@Override
 	public void draw3D(Entity viewEntity) {
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.disableCull();
 
 		GL11.glBegin(GL11.GL_TRIANGLES);
-		GL11.glColor4f(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
+		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
 		GL11.glVertex3f(points[0].x, points[0].y, points[0].z);
 		GL11.glVertex3f(points[1].x, points[1].y, points[1].z);
 		GL11.glVertex3f(points[2].x, points[2].y, points[2].z);
 		GL11.glEnd();
 
-		GL11.glEnable(GL11.GL_CULL_FACE);
+		GlStateManager.enableCull();
 	}
 
 	@Override

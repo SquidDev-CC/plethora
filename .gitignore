@@ -85,5 +85,5 @@ $RECYCLE.BIN/
 /debug/
 *.lock
 /.metadata/
-out
-logs/
+/out/
+/logs/

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
@@ -115,7 +114,7 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 		if (alpha == 0) return;
 		if ((alpha & 0xFC) == 0) colour |= 0x4;
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.enableTexture2D();
 
 		FontRenderer fontrenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 
@@ -126,6 +125,6 @@ public class Text extends BaseObject implements Colourable, Positionable2D, Scal
 		fontrenderer.drawString(text, 0, 0, Integer.rotateRight(colour, 8));
 		GlStateManager.popMatrix();
 
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GlStateManager.disableTexture2D();
 	}
 }
