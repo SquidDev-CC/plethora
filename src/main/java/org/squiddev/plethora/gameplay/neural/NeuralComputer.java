@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.neural;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
@@ -73,7 +72,7 @@ public class NeuralComputer extends ServerComputer {
 		IItemHandler handler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		EntityLivingBase existing = entity == null ? null : entity.get();
-		if (!Objects.equal(existing, owner)) {
+		if (existing != owner) {
 			dirtyStatus = -1;
 
 			if (!owner.isEntityAlive()) {
