@@ -9,7 +9,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
 import org.squiddev.cctweaks.CCTweaks;
@@ -51,7 +50,7 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 		this.stack = stack;
 		this.parent = parent;
 
-		IItemHandlerModifiable stackInv = (IItemHandlerModifiable) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		NeuralItemHandler stackInv = (NeuralItemHandler) stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		peripheralSlots = addSlots(stackInv, 0, NeuralHelpers.PERIPHERAL_SIZE);
 		moduleSlots = addSlots(stackInv, NeuralHelpers.PERIPHERAL_SIZE, NeuralHelpers.MODULE_SIZE);
@@ -67,10 +66,10 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 		}
 	}
 
-	private Slot[] addSlots(IItemHandlerModifiable stackInv, int offset, int length) {
+	private Slot[] addSlots(NeuralItemHandler stackInv, int offset, int length) {
 		Slot[] slots = new Slot[length];
 		for (int i = 0; i < length; i++) {
-			addSlotToContainer(slots[i] = new SlotItemHandler(stackInv, offset + i, 0, 0));
+			addSlotToContainer(slots[i] = new NeuralSlot(stackInv, offset + i, 0, 0));
 		}
 		return slots;
 	}
@@ -156,5 +155,22 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 	@Override
 	public IComputer getComputer() {
 		return ItemComputerHandler.tryGetServer(stack);
+	}
+
+	private final class NeuralSlot extends SlotItemHandler {
+		private final int index;
+		private final NeuralItemHandler handler;
+
+		public NeuralSlot(NeuralItemHandler itemHandler, int index, int xPosition, int yPosition) {
+			super(itemHandler, index, xPosition, yPosition);
+			this.index = index;
+			this.handler = itemHandler;
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack stack) {
+			return stack != null && handler.isItemValid(index, stack);
+		}
+
 	}
 }
