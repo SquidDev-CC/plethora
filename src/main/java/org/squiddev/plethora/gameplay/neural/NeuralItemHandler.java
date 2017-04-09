@@ -37,6 +37,17 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		return 1;
 	}
 
+	public boolean isItemValid(int slot, ItemStack stack) {
+		if (stack == null) return false;
+
+		if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
+			return stack.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
+				stack.hasCapability(PERIPHERAL_CAPABILITY, null);
+		} else {
+			return stack.hasCapability(MODULE_HANDLER_CAPABILITY, null);
+		}
+	}
+
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack) {
 		validateSlotIndex(slot);
@@ -69,14 +80,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (stack == null || getStackInSlot(slot) != null) return stack;
 
-		if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
-			if (stack.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||
-				stack.hasCapability(PERIPHERAL_CAPABILITY, null)) {
-				return doInsert(slot, stack, simulate);
-			} else {
-				return stack;
-			}
-		} else if (stack.hasCapability(MODULE_HANDLER_CAPABILITY, null)) {
+		if (isItemValid(slot, stack)) {
 			return doInsert(slot, stack, simulate);
 		} else {
 			return stack;
@@ -141,7 +145,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		}
 	}
 
-	public static NBTTagCompound getItems(NBTTagCompound tag) {
+	private static NBTTagCompound getItems(NBTTagCompound tag) {
 		NBTTagCompound items;
 		if (tag.hasKey(ITEMS, 10)) {
 			items = tag.getCompoundTag(ITEMS);

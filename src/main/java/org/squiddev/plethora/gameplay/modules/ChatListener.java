@@ -14,6 +14,7 @@ import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.utils.LuaPattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +37,7 @@ public class ChatListener extends Module {
 
 		// Handle captures
 		for (Listener listener : listeners) {
-			if (listener.owner == sender) {
+			if (listener.owner != null && listener.owner == sender) {
 				if (listener.handleCapture(event.getMessage())) {
 					event.setCanceled(true);
 					return;
@@ -55,7 +56,7 @@ public class ChatListener extends Module {
 		private final Entity owner;
 		private final Set<String> patterns = Sets.newHashSet();
 
-		public Listener(IModuleAccess access, Entity owner) {
+		public Listener(@Nonnull IModuleAccess access, @Nullable Entity owner) {
 			this.access = access;
 			this.owner = owner;
 		}
