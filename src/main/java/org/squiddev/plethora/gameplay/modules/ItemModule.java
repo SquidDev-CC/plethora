@@ -402,11 +402,9 @@ public final class ItemModule extends ItemBase {
 				Object owner = access.getOwner();
 				Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
 
-				if (ownerEntity != null) {
-					ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
-					builder.addContext(listener);
-					builder.addAttachable(listener);
-				}
+				ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
+				if (ownerEntity != null) builder.addContext(listener);
+				builder.addAttachable(listener);
 			}
 		}
 
