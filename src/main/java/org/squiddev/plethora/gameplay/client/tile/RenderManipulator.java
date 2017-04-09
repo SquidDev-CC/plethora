@@ -62,7 +62,7 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 				}
 
 				GlStateManager.scale(type.scale, type.scale, type.scale);
-				GlStateManager.translate(0, -0.2, 0);
+				GlStateManager.translate(-0.5f, -0.7f, -0.5f);
 
 				RenderHelpers.renderModel(model);
 
