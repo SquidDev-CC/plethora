@@ -430,6 +430,8 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 		if (!event.isCanceled() && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote) {
 			MovingObjectPosition hit = Minecraft.getMinecraft().objectMouseOver;
+			if (hit == null) return;
+
 			Entity entity = hit.entityHit;
 			if (hit.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY &&
 				!(entity instanceof EntityPlayer) && entity instanceof EntityLivingBase

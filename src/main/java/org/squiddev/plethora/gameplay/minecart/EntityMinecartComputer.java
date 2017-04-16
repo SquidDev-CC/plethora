@@ -141,7 +141,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		this.id = id;
 		setFamily(family);
-		if (label != null) setCustomNameTag(label + " foo");
+		if (label != null) setCustomNameTag(label);
 		this.romId = romId;
 	}
 
