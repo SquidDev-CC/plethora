@@ -26,7 +26,7 @@ You can also add a kinetic augment to the neural interface. This allows controll
 There is pretty comprehensive documentation on [the Plethora website](https://squiddev-cc.github.io/plethora/). This
 contains tutorials, explanations of several fundamental concepts and thoroughly explained examples. 
 
-You can also create a HTML dump of all methods by running the command `\plethora dump out.html`. When run in a single
+You can also create a HTML dump of all methods by running the command `/plethora dump out.html`. When run in a single
 player world this will save a file in the active directory (normally `.minecraft` or your modpack's folder). This
 documentation is also [available online](http://squiddev-cc.github.io/plethora/methods.html).
 
