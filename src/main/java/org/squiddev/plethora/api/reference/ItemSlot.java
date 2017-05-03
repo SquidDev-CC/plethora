@@ -30,9 +30,10 @@ public class ItemSlot implements IReference<ItemSlot> {
 	/**
 	 * Replace this item with another. Call {@link #canReplace()} before hand.
 	 *
-	 * @param newStack The new item
+	 * @param newStack The new item. If this is empty or {@code null} the slot will be cleared.
 	 */
 	public void replace(ItemStack newStack) {
+		if (newStack.stackSize <= 0) newStack = null;
 		((IItemHandlerModifiable) inventory).setStackInSlot(slot, newStack);
 	}
 
