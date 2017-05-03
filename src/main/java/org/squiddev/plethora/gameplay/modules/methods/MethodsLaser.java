@@ -15,7 +15,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
 public final class MethodsLaser {
@@ -26,9 +26,9 @@ public final class MethodsLaser {
 	)
 	@Nonnull
 	public static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final double yaw = getNumber(args, 0);
-		double pitchArg = getNumber(args, 1) % 360;
-		final float potency = (float) getNumber(args, 2);
+		final double yaw = getReal(args, 0) % 360;
+		double pitchArg = getReal(args, 1) % 360;
+		final float potency = (float) getReal(args, 2);
 
 		// Normalise the pitch to be between -180 and 180.
 		if (pitchArg > 180) pitchArg -= 360;

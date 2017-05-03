@@ -31,9 +31,9 @@ public final class MethodsKinetic {
 		doc = "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction"
 	)
 	public static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final float yaw = (float) getNumber(args, 0);
-		final float pitch = (float) getNumber(args, 1);
-		final float power = (float) getNumber(args, 2);
+		final float yaw = (float) getReal(args, 0) % 360;
+		final float pitch = (float) getReal(args, 1) % 360;
+		final float power = (float) getReal(args, 2);
 
 		assertBetween(power, 0, Kinetic.launchMax, "Power out of range (%s).");
 
@@ -74,9 +74,9 @@ public final class MethodsKinetic {
 	)
 	@Nonnull
 	public static MethodResult walk(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double x = getNumber(args, 0);
-		final double y = getNumber(args, 1);
-		final double z = getNumber(args, 2);
+		final double x = getReal(args, 0);
+		final double y = getReal(args, 1);
+		final double z = getReal(args, 2);
 
 		final double speed = optNumber(args, 3, 1);
 
