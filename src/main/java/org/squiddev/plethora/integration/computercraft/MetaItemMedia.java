@@ -5,6 +5,7 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.media.IMedia;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
@@ -28,7 +29,9 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 		out.put("recordTitle", media.getAudioTitle(object));
 
 		SoundEvent soundEvent = media.getAudio(object);
-		if (soundEvent != null) out.put("recordName", soundEvent.getSoundName().toString());
+		if (soundEvent != null) {
+			out.put("recordName", ObfuscationReflectionHelper.getPrivateValue(SoundEvent.class, soundEvent, "field_187506_b").toString());
+		}
 
 		return out;
 	}
