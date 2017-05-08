@@ -19,7 +19,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -70,7 +69,9 @@ public class Helpers {
 	@SuppressWarnings("deprecation")
 	public static String translateOrDefault(String def, String... strings) {
 		for (String string : strings) {
-			if (I18n.canTranslate(string)) return I18n.translateToLocal(string);
+			if (net.minecraft.util.text.translation.I18n.canTranslate(string)) {
+				return net.minecraft.util.text.translation.I18n.translateToLocal(string);
+			}
 		}
 
 		return def;
@@ -78,12 +79,12 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	public static String translateToLocal(String key) {
-		return I18n.translateToLocal(key);
+		return net.minecraft.util.text.translation.I18n.translateToLocal(key);
 	}
 
 	@SuppressWarnings("deprecation")
 	public static String translateToLocalFormatted(String format, Object... args) {
-		return I18n.translateToLocalFormatted(format, args);
+		return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(format, args);
 	}
 
 	public static void twoWayCrafting(ItemStack a, ItemStack b) {

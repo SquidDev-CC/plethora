@@ -1,23 +1,20 @@
 package org.squiddev.plethora.gameplay.neural;
 
 import dan200.computercraft.shared.computer.core.IComputer;
+import dan200.computercraft.shared.computer.core.IContainerComputer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
-import org.squiddev.cctweaks.CCTweaks;
-import org.squiddev.cctweaks.api.IContainerComputer;
 import org.squiddev.plethora.utils.Vec2i;
 
 import javax.annotation.Nullable;
 
-@Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
 public class ContainerNeuralInterface extends Container implements IContainerComputer {
 	public static final int START_Y = 134;
 

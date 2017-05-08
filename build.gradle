@@ -55,7 +55,7 @@ repositories {
 	maven { url = "http://mvn.rx14.co.uk/local/" }
 
 	// ComputerCraft
-	ivy { artifactPattern "http://addons-origin.cursecdn.com/files/2311/39/[module][revision](.[ext])" }
+	maven { url "https://crzd.me/files/maven/" }
 
 	// Chameleon + Storage Drawers
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2349/653/[module]-[revision](.[ext])" }
@@ -89,7 +89,7 @@ repositories {
 }
 
 dependencies {
-	compile "ComputerCraft:ComputerCraft:${project.cc_version}"
+	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-2017050821"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:3.13.6.392"
 
 	provided "org.squiddev:CCTweaks:${project.mc_version}-1.3.3:dev"
@@ -112,8 +112,6 @@ dependencies {
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
-
-	compile "org.squiddev:unborked:${mc_version}-${cc_version}-1.0.2:dev"
 }
 
 processResources {
