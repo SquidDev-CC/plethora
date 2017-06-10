@@ -92,7 +92,7 @@ dependencies {
 	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-1.11.2:${project.cc_version}-build0"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:4.2.5.233"
 
-	provided "org.squiddev:CCTweaks:${project.mc_version}-1.4.1:dev"
+	provided "org.squiddev:CCTweaks:${project.mc_version}-1.5.0-pr0:dev"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
 	provided "buildcraft:buildcraft:7.2.7:dev" // Won't run on 1.11.2 but just here for the future
 	provided "com.azanor.baubles:Baubles:1.11-1.4.3.57:deobf"
@@ -112,14 +112,6 @@ dependencies {
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
-}
-
-sourceSets {
-	main {
-		java {
-			exclude 'org/squiddev/plethora/integration/cctweaks/**'
-		}
-	}
 }
 
 processResources {
