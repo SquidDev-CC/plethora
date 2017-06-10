@@ -2,6 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.network.Packet;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.fml.common.Optional;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.network.INetworkAccess;
 import org.squiddev.cctweaks.api.network.INetworkedPeripheral;
-import org.squiddev.cctweaks.api.network.Packet;
 import org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted;
 import org.squiddev.cctweaks.core.network.NetworkAccessDelegate;
 import org.squiddev.plethora.api.method.IMethod;
