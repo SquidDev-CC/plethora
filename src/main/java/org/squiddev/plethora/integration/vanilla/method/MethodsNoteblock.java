@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -85,11 +86,12 @@ public class MethodsNoteblock {
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos();
+				Vec3d vec = location.getLoc();
 
 				World world = location.getWorld();
 				world.playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
 				if (world instanceof WorldServer) {
-					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, pos.getX(), pos.getY(), pos.getZ(), 0, pitch / 24.0, 0, 0, 1.0);
+					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.xCoord, vec.yCoord, vec.zCoord, 0, pitch / 24.0, 0, 0, 1.0);
 				}
 				return MethodResult.empty();
 			}
