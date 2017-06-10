@@ -50,13 +50,14 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		this(name, owner, methods.getLeft(), methods.getRight(), factory);
 	}
 
+	@Nonnull
 	@Override
 	public String getType() {
 		return type;
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess access, ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
 		IResultExecutor executor = factory.createExecutor(access);
 
 		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
@@ -67,11 +68,11 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	}
 
 	@Override
-	public void attach(IComputerAccess access) {
+	public void attach(@Nonnull IComputerAccess access) {
 	}
 
 	@Override
-	public void detach(IComputerAccess access) {
+	public void detach(@Nonnull IComputerAccess access) {
 	}
 
 	protected IExecutorFactory getExecutorFactory() {

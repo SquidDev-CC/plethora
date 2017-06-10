@@ -147,7 +147,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	}
 
 	@Override
-	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
+	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		return te instanceof TileRedstoneIntegrator ? (IPeripheral) te : null;
 	}

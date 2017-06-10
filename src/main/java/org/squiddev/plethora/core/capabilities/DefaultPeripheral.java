@@ -30,16 +30,16 @@ public final class DefaultPeripheral implements IPeripheral, IPeripheralHandler 
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess access, ILuaContext context, int method, Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException, InterruptedException {
 		return null;
 	}
 
 	@Override
-	public void attach(IComputerAccess access) {
+	public void attach(@Nonnull IComputerAccess access) {
 	}
 
 	@Override
-	public void detach(IComputerAccess access) {
+	public void detach(@Nonnull IComputerAccess access) {
 	}
 
 	@Override

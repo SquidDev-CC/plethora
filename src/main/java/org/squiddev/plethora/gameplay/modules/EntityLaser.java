@@ -376,11 +376,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 		if (shooterId != null) {
 			Entity newShooter = world.getEntityFromUuid(shooterId);
-			if (newShooter instanceof EntityLivingBase) {
-				return shooter = (EntityLivingBase) newShooter;
-			} else {
-				return null;
-			}
+			return shooter = newShooter;
 		}
 
 		return shooter = shooterPlayer = new PlethoraFakePlayer(world);

@@ -169,7 +169,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
+	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
 		final TileEntity te = world.getTileEntity(blockPos);
 		if (!(te instanceof TileManipulator)) return null;
 		final TileManipulator manipulator = (TileManipulator) te;

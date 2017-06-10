@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -124,22 +125,24 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	@Override
-	public boolean getBundledRedstoneConnectivity(EnumFacing side) {
+	public boolean getBundledRedstoneConnectivity(@Nonnull EnumFacing side) {
 		return true;
 	}
 
 	@Override
-	public int getBundledRedstoneOutput(EnumFacing side) {
+	public int getBundledRedstoneOutput(@Nonnull EnumFacing side) {
 		return bundledOutputs[side.ordinal()];
 	}
 	//endregion
 
 	//region IPeripheral implementation
+	@Nonnull
 	@Override
 	public String getType() {
 		return "redstone_integrator";
 	}
 
+	@Nonnull
 	@Override
 	public String[] getMethodNames() {
 		return new String[]{
@@ -151,7 +154,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException, InterruptedException {
 		switch (method) {
 			case 0: { // getSides
 				Map<Integer, String> result = Maps.newHashMap();
@@ -227,12 +230,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
+	public void attach(@Nonnull IComputerAccess computer) {
 		computers.add(computer);
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
+	public void detach(@Nonnull IComputerAccess computer) {
 		computers.remove(computer);
 	}
 

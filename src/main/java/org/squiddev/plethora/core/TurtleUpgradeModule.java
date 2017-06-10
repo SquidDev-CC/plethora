@@ -44,6 +44,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		this.adjective = adjective;
 	}
 
+	@Nonnull
 	@Override
 	public ResourceLocation getUpgradeID() {
 		return handler.getModule();
@@ -54,11 +55,13 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		return -1;
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalisedAdjective() {
 		return adjective;
 	}
 
+	@Nonnull
 	@Override
 	public TurtleUpgradeType getType() {
 		return TurtleUpgradeType.Peripheral;
@@ -70,7 +73,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	}
 
 	@Override
-	public IPeripheral createPeripheral(final ITurtleAccess turtle, final TurtleSide side) {
+	public IPeripheral createPeripheral(@Nonnull final ITurtleAccess turtle, @Nonnull final TurtleSide side) {
 		final ResourceLocation thisModule = handler.getModule();
 
 		String moduleName = thisModule.toString();
@@ -129,13 +132,15 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction) {
+	public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
 		return null;
 	}
 
+	@Nonnull
 	@Override
-	public Pair<IBakedModel, Matrix4f> getModel(ITurtleAccess turtle, TurtleSide side) {
+	public Pair<IBakedModel, Matrix4f> getModel(ITurtleAccess turtle, @Nonnull TurtleSide side) {
 		float xOffset = side == TurtleSide.Left ? -0.40625f : 0.40625f;
 		Matrix4f transform = new Matrix4f(
 			0.0f, 0.0f, 1.0f, -0.5f,
@@ -167,7 +172,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	}
 
 	@Override
-	public void update(ITurtleAccess turtle, TurtleSide side) {
+	public void update(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side) {
 		IPeripheral peripheral = turtle.getPeripheral(side);
 		if (peripheral instanceof MethodWrapperPeripheral) {
 			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();

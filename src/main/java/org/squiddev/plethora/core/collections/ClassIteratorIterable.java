@@ -3,6 +3,7 @@ package org.squiddev.plethora.core.collections;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
@@ -20,6 +21,7 @@ public class ClassIteratorIterable implements Iterable<Class<?>>, Iterator<Class
 	}
 
 
+	@Nonnull
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return this;

@@ -7,6 +7,7 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject 
 	}
 
 	@Override
-	public Object[] callMethod(ILuaContext luaContext, int method, final Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
 		IUnbakedContext context = getContext(method);
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
