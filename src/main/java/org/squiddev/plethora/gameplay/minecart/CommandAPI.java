@@ -46,6 +46,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return new String[]{"commands"};
 	}
 
+	@Nonnull
 	@Override
 	public String[] getMethodNames() {
 		return new String[]{"exec", "execAsync", "list", "getBlockPosition", "getBlockInfos", "getBlockInfo"};
@@ -91,7 +92,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return table;
 	}
 
-	public Object[] callMethod(ILuaContext context, int method, Object[] arguments)
+	public Object[] callMethod(@Nonnull ILuaContext context, int method, @Nonnull Object[] arguments)
 		throws LuaException, InterruptedException {
 		switch (method) {
 			case 0: { // exec

@@ -191,7 +191,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public boolean setLabel(ItemStack stack, String name) {
+	public boolean setLabel(@Nonnull ItemStack stack, String name) {
 		if (name == null) {
 			stack.clearCustomName();
 		} else {
@@ -201,17 +201,17 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public String getAudioTitle(ItemStack stack) {
+	public String getAudioTitle(@Nonnull ItemStack stack) {
 		return null;
 	}
 
 	@Override
-	public SoundEvent getAudio(ItemStack stack) {
+	public SoundEvent getAudio(@Nonnull ItemStack stack) {
 		return null;
 	}
 
 	@Override
-	public IMount createDataMount(ItemStack stack, World world) {
+	public IMount createDataMount(@Nonnull ItemStack stack, @Nonnull World world) {
 		int id = getComputerID(stack);
 		if (id >= 0) {
 			return ComputerCraft.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit);
@@ -221,7 +221,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public int getComputerID(ItemStack stack) {
+	public int getComputerID(@Nonnull ItemStack stack) {
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(COMPUTER_ID)) {
 			return stack.getTagCompound().getInteger(COMPUTER_ID);
 		} else {
@@ -230,7 +230,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public String getLabel(ItemStack stack) {
+	public String getLabel(@Nonnull ItemStack stack) {
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("display", 10)) {
 			NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
 			if (nbttagcompound.hasKey("Name", 8)) return nbttagcompound.getString("Name");
@@ -239,7 +239,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public ComputerFamily getFamily(ItemStack stack) {
+	public ComputerFamily getFamily(@Nonnull ItemStack stack) {
 		return ComputerFamily.Advanced;
 	}
 

@@ -34,7 +34,7 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 		model.bipedHeadwear.postRender(PIXEL);
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-		if (player.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) != null) {
+		if (!player.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT).isEmpty()) {
 			GlStateManager.translate(0.05f, 0, -0.05f);
 		}
 

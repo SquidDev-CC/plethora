@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay;
 
 import net.minecraftforge.common.config.Configuration;
 import org.squiddev.configgen.*;
-import org.squiddev.plethora.gameplay.ConfigGameplayForgeLoader;
 
 import java.io.File;
 

@@ -1,15 +1,9 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -25,9 +19,6 @@ import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-
-import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.MinecartUpgradeHandler;
-import static org.squiddev.plethora.integration.computercraft.WirelessModemPeripheralBase.PeripheralHandler;
 
 /**
  * Provides various peripherals for ComputerCraft items
@@ -94,9 +85,11 @@ public class IntegrationComputerCraft {
 					ItemPeripheralBase item = (ItemPeripheralBase) stack.getItem();
 					switch (item.getPeripheralType(stack)) {
 						case WirelessModem:
-							return peripheral = new PeripheralHandler(false, stack);
+							return peripheral = new WirelessModemPeripheralBase.PeripheralHandler(false, stack);
 						case AdvancedModem:
-							return peripheral = new PeripheralHandler(true, stack);
+							return peripheral = new WirelessModemPeripheralBase.PeripheralHandler(true, stack);
+						case Speaker:
+							return peripheral = new SpeakerPeripheralBase.PeripheralHandler(stack);
 						default:
 							return null;
 					}
@@ -116,9 +109,11 @@ public class IntegrationComputerCraft {
 					ItemPeripheralBase item = (ItemPeripheralBase) stack.getItem();
 					switch (item.getPeripheralType(stack)) {
 						case WirelessModem:
-							return minecart = new MinecartUpgradeHandler(false, stack);
+							return minecart = new WirelessModemPeripheralBase.MinecartUpgradeHandler(false, stack);
 						case AdvancedModem:
-							return minecart = new MinecartUpgradeHandler(true, stack);
+							return minecart = new WirelessModemPeripheralBase.MinecartUpgradeHandler(true, stack);
+						case Speaker:
+							return minecart = new SpeakerPeripheralBase.MinecartUpgradeHandler(stack);
 						default:
 							return null;
 					}

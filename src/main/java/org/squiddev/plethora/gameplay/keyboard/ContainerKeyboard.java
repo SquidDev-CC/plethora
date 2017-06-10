@@ -3,21 +3,18 @@ package org.squiddev.plethora.gameplay.keyboard;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.TileComputerBase;
 import dan200.computercraft.shared.computer.core.IComputer;
+import dan200.computercraft.shared.computer.core.IContainerComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
-import org.squiddev.cctweaks.CCTweaks;
-import org.squiddev.cctweaks.api.IContainerComputer;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 
-@Optional.Interface(modid = CCTweaks.ID, iface = "org.squiddev.cctweaks.api.IContainerComputer")
 public class ContainerKeyboard extends Container implements IContainerComputer {
 	private final IComputer computer;
 

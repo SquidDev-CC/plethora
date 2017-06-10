@@ -30,9 +30,10 @@ public class ItemSlot implements IReference<ItemSlot> {
 	/**
 	 * Replace this item with another. Call {@link #canReplace()} before hand.
 	 *
-	 * @param newStack The new item
+	 * @param newStack The new item. If this is empty the slot will be cleared.
 	 */
-	public void replace(ItemStack newStack) {
+	public void replace(@Nonnull ItemStack newStack) {
+		if (newStack.isEmpty()) newStack = ItemStack.EMPTY;
 		((IItemHandlerModifiable) inventory).setStackInSlot(slot, newStack);
 	}
 
@@ -50,6 +51,7 @@ public class ItemSlot implements IReference<ItemSlot> {
 	 *
 	 * @param count Number of items to extract
 	 */
+	@Nonnull
 	public ItemStack extract(int count) {
 		return inventory.extractItem(slot, count, false);
 	}
@@ -59,6 +61,7 @@ public class ItemSlot implements IReference<ItemSlot> {
 	 *
 	 * @return The item's stack
 	 */
+	@Nonnull
 	public ItemStack getStack() {
 		return inventory.getStackInSlot(slot);
 	}

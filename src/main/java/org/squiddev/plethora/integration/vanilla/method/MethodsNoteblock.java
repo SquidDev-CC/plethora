@@ -2,10 +2,14 @@ package org.squiddev.plethora.integration.vanilla.method;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.BlockNote;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -68,7 +72,7 @@ public class MethodsNoteblock {
 			throw badArgument(arguments[0], 0, "string|number");
 		}
 
-		int pitch = getInt(arguments, 1);
+		final int pitch = getInt(arguments, 1);
 		final float volume = (float) optNumber(arguments, 2, 3);
 
 		assertBetween(pitch, 0, 24, "Pitch out of bounds (%s)");
@@ -82,8 +86,13 @@ public class MethodsNoteblock {
 			public MethodResult call() throws Exception {
 				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
 				BlockPos pos = location.getPos();
+				Vec3d vec = location.getLoc();
 
-				location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
+				World world = location.getWorld();
+				world.playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
+				if (world instanceof WorldServer) {
+					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.xCoord, vec.yCoord, vec.zCoord, 0, pitch / 24.0, 0, 0, 1.0);
+				}
 				return MethodResult.empty();
 			}
 		}));

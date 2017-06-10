@@ -31,13 +31,15 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 		super(advanced);
 	}
 
+	@Nonnull
 	@Override
-	protected World getWorld() {
+	public World getWorld() {
 		return world;
 	}
 
+	@Nonnull
 	@Override
-	protected Vec3d getPosition() {
+	public Vec3d getPosition() {
 		return position;
 	}
 

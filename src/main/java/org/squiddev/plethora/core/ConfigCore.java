@@ -3,7 +3,6 @@ package org.squiddev.plethora.core;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import org.squiddev.configgen.*;
-import org.squiddev.plethora.core.ConfigCoreForgeLoader;
 
 import java.io.File;
 import java.util.ArrayList;

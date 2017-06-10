@@ -55,7 +55,6 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
-import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";

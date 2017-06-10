@@ -2,6 +2,8 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.pocket.IPocketAccess;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,8 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.cctweaks.api.pocket.IPocketAccess;
-import org.squiddev.cctweaks.api.pocket.IPocketUpgrade;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -57,6 +57,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		return adjective;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getCraftingItem() {
 		return stack;

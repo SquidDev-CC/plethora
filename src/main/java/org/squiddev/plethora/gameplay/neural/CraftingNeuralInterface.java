@@ -26,7 +26,7 @@ public class CraftingNeuralInterface extends ShapedOreRecipe {
 			'I', "ingotIron",
 			'R', "dustRedstone",
 			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
-			'P', PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, false)
+			'P', PocketComputerItemFactory.create(-1, null, -1, ComputerFamily.Advanced, null)
 		);
 	}
 

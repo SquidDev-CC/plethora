@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getNumber;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
 /**
@@ -42,8 +42,8 @@ public final class MethodsKineticEntity {
 	)
 	@Nonnull
 	public static MethodResult look(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double yaw = ArgumentHelper.getNumber(args, 0);
-		final double pitch = ArgumentHelper.getNumber(args, 1);
+		final double yaw = ArgumentHelper.getReal(args, 0) % 360;
+		final double pitch = ArgumentHelper.getReal(args, 1) % 360;
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -75,9 +75,9 @@ public final class MethodsKineticEntity {
 		doc = "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one"
 	)
 	public static MethodResult teleport(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double x = getNumber(args, 0);
-		final double y = getNumber(args, 1);
-		final double z = getNumber(args, 2);
+		final double x = getReal(args, 0);
+		final double y = getReal(args, 1);
+		final double z = getReal(args, 2);
 
 		assertBetween(x, -Kinetic.teleportRange, Kinetic.teleportRange, "X coordinate out of bounds (%s)");
 		assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
@@ -105,7 +105,7 @@ public final class MethodsKineticEntity {
 	)
 	@Nonnull
 	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double potency = getNumber(args, 0);
+		final double potency = getReal(args, 0);
 
 		ArgumentHelper.assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
@@ -154,7 +154,7 @@ public final class MethodsKineticEntity {
 		doc = "function(velocity:number) -- Propel this minecart in along the track."
 	)
 	public static MethodResult propel(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		double given = getNumber(args, 0);
+		double given = getReal(args, 0);
 
 		assertBetween(given, -Kinetic.propelMax, Kinetic.propelMax, "Velocity coordinate out of bounds (%s)");
 

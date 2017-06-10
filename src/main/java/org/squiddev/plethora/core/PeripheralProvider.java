@@ -20,6 +20,7 @@ import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ import java.util.Set;
  */
 public class PeripheralProvider implements IPeripheralProvider {
 	@Override
-	public IPeripheral getPeripheral(World world, BlockPos blockPos, EnumFacing enumFacing) {
+	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
 		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null) {
 			try {
