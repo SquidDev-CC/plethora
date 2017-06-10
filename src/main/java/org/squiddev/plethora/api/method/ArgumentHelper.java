@@ -40,7 +40,12 @@ public final class ArgumentHelper {
 
 	@Nonnull
 	public static LuaException badArgument(@Nullable Object object, int index, @Nonnull String expected) {
-		return new LuaException("Expected " + expected + " for argument " + (index + 1) + ", got " + getType(object));
+		return badArgument(index, expected, getType(object));
+	}
+
+	@Nonnull
+	public static LuaException badArgument(int index, @Nonnull String expected, @Nonnull String got) {
+		return new LuaException("Expected " + expected + " for argument " + (index + 1) + ", got " + got);
 	}
 
 	@Nonnull
@@ -59,6 +64,10 @@ public final class ArgumentHelper {
 
 	public static int getInt(@Nonnull Object[] args, int index) throws LuaException {
 		return (int) getNumber(args, index);
+	}
+
+	public static double getReal(@Nonnull Object[] args, int index) throws LuaException {
+		return checkReal(index, getNumber(args, index));
 	}
 
 	public static boolean getBoolean(@Nonnull Object[] args, int index) throws LuaException {
@@ -138,6 +147,10 @@ public final class ArgumentHelper {
 		return (int) optNumber(args, index, def);
 	}
 
+	public static double optReal(@Nonnull Object[] args, int index, double def) throws LuaException {
+		return checkReal(index, optNumber(args, index, def));
+	}
+
 	public static boolean optBoolean(@Nonnull Object[] args, int index, boolean def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
@@ -183,7 +196,7 @@ public final class ArgumentHelper {
 	}
 
 	public static void assertBetween(double value, double min, double max, String message) throws LuaException {
-		if (value < min || value > max) {
+		if (value < min || value > max || Double.isNaN(value)) {
 			throw new LuaException(String.format(message, "between " + min + " and " + max));
 		}
 	}
@@ -191,6 +204,18 @@ public final class ArgumentHelper {
 	public static void assertBetween(int value, int min, int max, String message) throws LuaException {
 		if (value < min || value > max) {
 			throw new LuaException(String.format(message, "between " + min + " and " + max));
+		}
+	}
+
+	private static double checkReal(int index, double value) throws LuaException {
+		if (Double.isNaN(value)) {
+			throw badArgument(index, "number", "nan");
+		} else if (value == Double.POSITIVE_INFINITY) {
+			throw badArgument(index, "number", "infinity");
+		} else if (value == Double.NEGATIVE_INFINITY) {
+			throw badArgument(index, "number", "-infinity");
+		} else {
+			return value;
 		}
 	}
 }
