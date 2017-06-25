@@ -39,26 +39,33 @@ public final class ArgumentHelper {
 	}
 
 	@Nonnull
-	public static LuaException badArgument(@Nullable Object object, int index, @Nonnull String expected) {
-		return badArgument(index, expected, getType(object));
+	public static LuaException badArgument(int index, @Nonnull String expected, @Nullable Object actual) {
+		return badArgument(index, expected, getType(actual));
 	}
 
 	@Nonnull
-	public static LuaException badArgument(int index, @Nonnull String expected, @Nonnull String got) {
-		return new LuaException("Expected " + expected + " for argument " + (index + 1) + ", got " + got);
+	public static LuaException badArgument(int index, @Nonnull String expected, @Nonnull String actual) {
+		return new LuaException("bad argument #" + (index + 1) + " (" + expected + " expected, got " + actual + ")");
 	}
 
 	public static double getNumber(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof Number) {
 			return ((Number) value).doubleValue();
 		} else {
-			throw badArgument(value, index, "number");
+			throw badArgument(index, "number", value);
 		}
 	}
 
 	public static int getInt(@Nonnull Object[] args, int index) throws LuaException {
-		return (int) getNumber(args, index);
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
+		if (value instanceof Number) {
+			return (int) ((Number) value).longValue();
+		} else {
+			throw badArgument(index, "number", value);
+		}
 	}
 
 	public static double getReal(@Nonnull Object[] args, int index) throws LuaException {
@@ -66,39 +73,43 @@ public final class ArgumentHelper {
 	}
 
 	public static boolean getBoolean(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof Boolean) {
 			return (Boolean) value;
 		} else {
-			throw badArgument(value, index, "boolean");
+			throw badArgument(index, "boolean", value);
 		}
 	}
 
 	@Nonnull
 	public static String getString(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof String) {
 			return (String) value;
 		} else {
-			throw badArgument(value, index, "string");
+			throw badArgument(index, "string", value);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static Map<Object, Object> getTable(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof Map) {
 			return (Map<Object, Object>) value;
 		} else {
-			throw badArgument(value, index, "table");
+			throw badArgument(index, "table", value);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof String) {
 			String name = (String) value;
 			try {
@@ -107,14 +118,15 @@ public final class ArgumentHelper {
 				throw new LuaException("Bad name '" + name.toLowerCase(Locale.ENGLISH) + "' for argument " + (index + 1));
 			}
 		} else {
-			throw badArgument(value, index, "string");
+			throw badArgument(index, "string", value);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof String) {
 			String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
 			try {
@@ -123,7 +135,7 @@ public final class ArgumentHelper {
 				throw new LuaException("Bad uuid '" + uuid + "' for argument " + (index + 1));
 			}
 		} else {
-			throw badArgument(value, index, "string");
+			throw badArgument(index, "string", value);
 		}
 	}
 
@@ -134,12 +146,19 @@ public final class ArgumentHelper {
 		} else if (value instanceof Number) {
 			return ((Number) value).doubleValue();
 		} else {
-			throw badArgument(value, index, "number");
+			throw badArgument(index, "number", value);
 		}
 	}
 
 	public static int optInt(@Nonnull Object[] args, int index, int def) throws LuaException {
-		return (int) optNumber(args, index, def);
+		Object value = index < args.length ? args[index] : null;
+		if (value == null) {
+			return def;
+		} else if (value instanceof Number) {
+			return (int) ((Number) value).longValue();
+		} else {
+			throw badArgument(index, "number", value);
+		}
 	}
 
 	public static double optReal(@Nonnull Object[] args, int index, double def) throws LuaException {
@@ -153,7 +172,7 @@ public final class ArgumentHelper {
 		} else if (value instanceof Boolean) {
 			return (Boolean) value;
 		} else {
-			throw badArgument(value, index, "boolean");
+			throw badArgument(index, "boolean", value);
 		}
 	}
 
@@ -164,7 +183,7 @@ public final class ArgumentHelper {
 		} else if (value instanceof String) {
 			return (String) value;
 		} else {
-			throw badArgument(value, index, "string");
+			throw badArgument(index, "string", value);
 		}
 	}
 
@@ -186,7 +205,7 @@ public final class ArgumentHelper {
 		} else if (value instanceof Map) {
 			return (Map<Object, Object>) value;
 		} else {
-			throw badArgument(value, index, "table");
+			throw badArgument(index, "table", value);
 		}
 	}
 

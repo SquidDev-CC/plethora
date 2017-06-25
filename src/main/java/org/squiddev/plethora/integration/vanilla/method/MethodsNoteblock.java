@@ -42,7 +42,7 @@ public class MethodsNoteblock {
 
 		final String name;
 		if (arguments.length == 0) {
-			throw badArgument(null, 0, "string|number");
+			throw badArgument(0, "string|number", "no value");
 		} else if (arguments[0] instanceof Number) {
 			int instrument = ((Number) arguments[0]).intValue();
 			assertBetween(instrument, 0, instruments.size() - 1, "Instrument out of bounds (%s)");
@@ -54,7 +54,7 @@ public class MethodsNoteblock {
 				throw new LuaException("Unknown instrument '" + name + "'");
 			}
 		} else {
-			throw badArgument(arguments[0], 0, "string|number");
+			throw badArgument(0, "string|number", arguments[0]);
 		}
 
 		final int pitch = getInt(arguments, 1);
