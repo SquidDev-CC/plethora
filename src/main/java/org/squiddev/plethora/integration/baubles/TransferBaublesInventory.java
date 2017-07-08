@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.baubles;
 
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.EntityPlayer;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 

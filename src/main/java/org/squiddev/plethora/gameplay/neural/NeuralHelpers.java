@@ -1,5 +1,9 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
+import baubles.common.Baubles;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;

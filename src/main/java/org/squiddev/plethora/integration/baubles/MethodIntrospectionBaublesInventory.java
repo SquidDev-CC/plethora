@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.baubles;
 
+import baubles.api.BaublesApi;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.IItemHandler;

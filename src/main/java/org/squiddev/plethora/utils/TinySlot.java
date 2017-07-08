@@ -1,5 +1,6 @@
 package org.squiddev.plethora.utils;
 
+import baubles.api.cap.IBaublesItemHandler;
 import com.google.common.base.Preconditions;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

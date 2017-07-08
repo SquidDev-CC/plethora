@@ -1,5 +1,10 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.IBauble;
+import baubles.api.cap.IBaublesItemHandler;
+import baubles.common.Baubles;
 import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
