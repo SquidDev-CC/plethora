@@ -78,42 +78,47 @@ repositories {
 	// Tesla
 	maven { url 'http://maven.epoxide.xyz' }
 
+	// RF
+	maven { url = "http://maven.covers1624.net" }
+
 	// Forestry
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2379/506/[module]_[revision](.[ext])" }
 
 	// Applied Energistics 2
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
 
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2424/565/[module]-[revision](.[ext])" }
+	// Baubles
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2424/450/[module]-[revision](.[ext])"}
 
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
 }
 
 dependencies {
-	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-1.11.2:${project.cc_version}-build0"
+	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-${project.mc_version}:${project.cc_version}-build10"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:4.2.5.233"
 
 	provided "org.squiddev:CCTweaks:${project.mc_version}-1.5.0-pr0:dev"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
-	provided "buildcraft:buildcraft:7.2.7:dev" // Won't run on 1.11.2 but just here for the future
-	provided "com.azanor.baubles:Baubles:1.11-1.4.3.57:deobf"
+	deobfProvided "buildcraft:buildcraft:7.99.6"
 	provided "net.darkhax.tesla:Tesla:1.11-1.3.0.51:deobf"
+	provided "cofh:CoFHCore:1.11.2-4.2.6.13:deobf"
 
 	// Tinker's + Dependencies
-	deobfProvided "slimeknights:TConstruct:1.10.2-2.6.1.464" // Won't run on 1.11 yet
-	deobfProvided "slimeknights.mantle:Mantle:1.10.2-1.1.3.199" // Won't run on 1.11 yet
+	deobfProvided "slimeknights:TConstruct:${project.mc_version}-2.7.0.26"
+	deobfProvided "slimeknights.mantle:Mantle:${project.mc_version}-1.2.0.26"
 
 	// Storage drawers + Dependencies
 	deobfProvided "curseMods:Chameleon:1.11-3.0.2"
 	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-4.1.0"
 
-	deobfProvided "MCMultiPart:MCMultiPart:1.3.0:universal"
+	provided "MCMultiPart2:MCMultiPart:2.0.2:deobf"
 	deobfProvided "refinedstorage:refinedstorage:1.4-953"
 	deobfProvided "curseMods:forestry:${project.mc_version}-5.3.1.34"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
-	deobfProvided "curseMods:Baubles:${project.mc_version}-1.3.11"
-	provided "codechicken:ForgeMultipart:1.10.2-2.0.0.31:deobf"
+	deobfProvided "curseMods:Baubles:1.11-1.4.5"
+	provided("codechicken:ForgeMultipart:${project.mc_version}-2.1.0.34:deobf") { exclude group: "codechicken" }
+	provided "codechicken:CodeChickenLib:${project.mc_version}-2.6.0.264:deobf"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 }

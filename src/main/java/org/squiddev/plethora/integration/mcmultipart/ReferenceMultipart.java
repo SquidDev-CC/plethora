@@ -1,30 +1,30 @@
 package org.squiddev.plethora.integration.mcmultipart;
 
 import dan200.computercraft.api.lua.LuaException;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IMultipartContainer;
+import mcmultipart.api.container.IMultipartContainer;
+import mcmultipart.api.container.IPartInfo;
+import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class ReferenceMultipart implements IReference<IMultipart> {
-	private final UUID id;
+public class ReferenceMultipart implements IReference<IPartInfo> {
+	private final IPartSlot slot;
 	private final IMultipartContainer container;
 
-	public ReferenceMultipart(IMultipartContainer container, UUID id) {
-		this.id = id;
+	public ReferenceMultipart(IMultipartContainer container, IPartSlot slot) {
+		this.slot = slot;
 		this.container = container;
 	}
 
-	public ReferenceMultipart(IMultipartContainer container, IMultipart part) {
-		this(container, container.getPartID(part));
+	public ReferenceMultipart(IMultipartContainer container, IPartInfo slot) {
+		this(container, slot.getSlot());
 	}
 
 	@Nonnull
 	@Override
-	public IMultipart get() throws LuaException {
-		IMultipart part = container.getPartFromID(id);
+	public IPartInfo get() throws LuaException {
+		IPartInfo part = container.get(slot).orElse(null);
 		if (part == null) throw new LuaException("Part is no longer there");
 
 		return part;
@@ -32,7 +32,7 @@ public class ReferenceMultipart implements IReference<IMultipart> {
 
 	@Nonnull
 	@Override
-	public IMultipart safeGet() throws LuaException {
+	public IPartInfo safeGet() throws LuaException {
 		return get();
 	}
 }

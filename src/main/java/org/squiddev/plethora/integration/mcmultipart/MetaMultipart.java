@@ -1,31 +1,24 @@
 package org.squiddev.plethora.integration.mcmultipart;
 
-import com.google.common.collect.Maps;
-import mcmultipart.MCMultiPartMod;
-import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.IMultipartContainer;
+import mcmultipart.MCMultiPart;
+import mcmultipart.api.container.IPartInfo;
+import mcmultipart.api.multipart.IMultipart;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.integration.vanilla.meta.MetaBlock;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IMultipart.class, modId = MCMultiPartMod.MODID)
-public class MetaMultipart extends BasicMetaProvider<IMultipart> {
+@IMetaProvider.Inject(value = IMultipart.class, modId = MCMultiPart.MODID)
+public class MetaMultipart extends BasicMetaProvider<IPartInfo> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IMultipart part) {
+	public Map<Object, Object> getMeta(@Nonnull IPartInfo part) {
 		return getBasicMeta(part);
 	}
 
-	public static Map<Object, Object> getBasicMeta(@Nonnull IMultipart part) {
-		Map<Object, Object> out = Maps.newHashMap();
-
-		IMultipartContainer container = part.getContainer();
-		if (container != null) out.put("id", container.getPartID(part).toString());
-
-		out.put("name", part.getType().toString());
-
-		return out;
+	public static Map<Object, Object> getBasicMeta(@Nonnull IPartInfo part) {
+		return MetaBlock.getBasicMeta(part.getPart().getBlock());
 	}
 }
