@@ -8,7 +8,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 	}
 }
 
@@ -28,7 +28,7 @@ archivesBaseName = "plethora"
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}"
 	runDir = "run-${project.mc_version}"
-	mappings = "snapshot_20161220"
+	mappings = "snapshot_20170708"
 
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
@@ -55,8 +55,8 @@ repositories {
 	maven { url "https://cc.crzd.me/maven/" }
 
 	// Chameleon + Storage Drawers
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/893/[module]-[revision](.[ext])" }
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2367/598/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2446/481/[module]-[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2447/448/[module]-[revision](.[ext])" }
 
 	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
@@ -82,7 +82,7 @@ repositories {
 	maven { url = "http://maven.covers1624.net" }
 
 	// Forestry
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2379/506/[module]_[revision](.[ext])" }
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2445/652/[module]_[revision](.[ext])" }
 
 	// Applied Energistics 2
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
@@ -95,32 +95,34 @@ repositories {
 }
 
 dependencies {
-	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-${project.mc_version}:${project.cc_version}-build10"
-	deobfCompile "mezz.jei:jei_${project.mc_version}:4.2.5.233"
+	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-1.12.2:${project.cc_version}-build18"
+	deobfCompile "mezz.jei:jei_${project.mc_version}:4.7.0.68"
 
-	provided "org.squiddev:CCTweaks:${project.mc_version}-1.5.0-pr0:dev"
+	provided "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
+	compile "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
-	deobfProvided "buildcraft:buildcraft:7.99.6"
-	provided "net.darkhax.tesla:Tesla:1.11-1.3.0.51:deobf"
-	provided "cofh:CoFHCore:1.11.2-4.2.6.13:deobf"
+	deobfProvided "buildcraft:buildcraft:7.99.6" // Won't run on 1.12, but just here for the future
+	provided "net.darkhax.tesla:Tesla-1.12:1.0.61:deobf"
 
 	// Tinker's + Dependencies
-	deobfProvided "slimeknights:TConstruct:${project.mc_version}-2.7.0.26"
-	deobfProvided "slimeknights.mantle:Mantle:${project.mc_version}-1.2.0.26"
+	deobfProvided "slimeknights:TConstruct:1.11.2-2.7.0.26" // Won't run on 1.12, but here for the future
+	deobfProvided "slimeknights.mantle:Mantle:1.11.2-1.2.0.26" // Won't run on 1.12, but here for the future
 
 	// Storage drawers + Dependencies
-	deobfProvided "curseMods:Chameleon:1.11-3.0.2"
-	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-4.1.0"
+	deobfProvided "curseMods:Chameleon:${project.mc_version}-4.1.0"
+	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-5.2.2"
 
-	provided "MCMultiPart2:MCMultiPart:2.0.2:deobf"
-	deobfProvided "refinedstorage:refinedstorage:1.4-953"
-	deobfProvided "curseMods:forestry:${project.mc_version}-5.3.1.34"
-	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
-	deobfProvided "curseMods:Baubles:1.11-1.4.5"
-	provided("codechicken:ForgeMultipart:${project.mc_version}-2.1.0.34:deobf") { exclude group: "codechicken" }
-	provided "codechicken:CodeChickenLib:${project.mc_version}-2.6.0.264:deobf"
+	provided "MCMultiPart2:MCMultiPart:2.2.2:deobf"
+	deobfProvided "refinedstorage:refinedstorage:1.5.8-1240"
+	deobfProvided "curseMods:forestry:${project.mc_version}-5.4.3.128"
+	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9" // Won't run on 1.12, but here for the future
+	deobfProvided "curseMods:Baubles:1.11-1.4.5" // Won't run on 1.12, but here for the future
+	provided("codechicken:ForgeMultipart:1.11.2-2.1.0.34:deobf") { exclude group: "codechicken" } // Won't run on 1.12, but here for the future
+	provided "codechicken:CodeChickenLib:1.11.2-2.6.0.264:deobf" // Won't run on 1.12, but here for the future
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
+
+	provided "com.google.errorprone:error_prone_annotations:2.0.21"
 }
 
 processResources {
