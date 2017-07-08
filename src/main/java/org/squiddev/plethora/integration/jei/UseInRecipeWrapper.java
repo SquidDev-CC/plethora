@@ -4,7 +4,7 @@ package org.squiddev.plethora.integration.jei;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
+public abstract class UseInRecipeWrapper implements IRecipeWrapper {
 	protected final ItemStack stack;
 	private final IDrawable slotDrawable;
 	private final ItemStack[] usable;

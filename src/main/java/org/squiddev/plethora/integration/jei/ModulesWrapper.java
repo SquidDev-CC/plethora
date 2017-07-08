@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.jei;
 import com.google.common.collect.Lists;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.PlethoraCore;
@@ -38,18 +39,19 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 	public static void setup(IModRegistry registry) {
 		IGuiHelper helper = registry.getJeiHelpers().getGuiHelper();
 
-		registry.addRecipeCategories(new UseInRecipeCategory(ID, helper));
-		registry.addRecipeHandlers(new UseInRecipeHandler<>(ID, ModulesWrapper.class));
-
 		List<ModulesWrapper> wrappers = Lists.newArrayList();
 		for (ItemStack stack : registry.getIngredientRegistry().getIngredients(ItemStack.class)) {
 			if (isValid(stack)) wrappers.add(new ModulesWrapper(stack, helper));
 		}
 
-		registry.addRecipes(wrappers);
+		registry.addRecipes(wrappers, PlethoraCore.ID + ":" + ID);
 
 		for (ItemStack stack : STACKS) {
-			registry.addRecipeCategoryCraftingItem(stack, PlethoraCore.ID + ":" + ID);
+			registry.addRecipeCatalyst(stack, PlethoraCore.ID + ":" + ID);
 		}
+	}
+
+	public static void setup(IRecipeCategoryRegistration registry) {
+		registry.addRecipeCategories(new UseInRecipeCategory(ID, registry.getJeiHelpers().getGuiHelper()));
 	}
 }
