@@ -74,7 +74,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new PartialContext<U>(newTarget, handler, wholeContext, modules);
+		return new PartialContext<>(newTarget, handler, wholeContext, modules);
 	}
 
 	@Nonnull

@@ -1,18 +1,13 @@
 package org.squiddev.plethora.gameplay.modules;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -23,7 +18,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -56,7 +50,6 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
-import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -240,12 +233,7 @@ public final class ItemModule extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
-			@Override
-			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {
-				return new RenderLaser(renderManager);
-			}
-		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, RenderLaser::new);
 	}
 
 	@SubscribeEvent
@@ -341,7 +329,7 @@ public final class ItemModule extends ItemBase {
 		public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 			Entity entity = getEntity(stack);
 			if (entity != null) {
-				builder.addContext(entity, new EntityReference<Entity>(entity));
+				builder.addContext(entity, new EntityReference<>(entity));
 			}
 
 			if (stack.getItemDamage() == CHAT_ID) {

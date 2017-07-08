@@ -11,7 +11,6 @@ import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -34,25 +33,22 @@ public class MethodsInventoryTransfer {
 
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IItemHandler> baked = context.bake();
-				IItemHandler from = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<IItemHandler> baked = context.bake();
+			IItemHandler from = baked.getTarget();
 
-				// Find location to transfer to
-				Object location = baked.getTransferLocation(toName);
-				if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
+			// Find location to transfer to
+			Object location = baked.getTransferLocation(toName);
+			if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
 
-				IItemHandler to = extractHandler(location);
-				if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
+			IItemHandler to = extractHandler(location);
+			if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
 
-				// Validate slots
-				assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
-				if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
+			// Validate slots
+			assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
+			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 
-				return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
-			}
+			return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
 		});
 	}
 
@@ -70,25 +66,22 @@ public class MethodsInventoryTransfer {
 
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IItemHandler> baked = context.bake();
-				IItemHandler to = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<IItemHandler> baked = context.bake();
+			IItemHandler to = baked.getTarget();
 
-				// Find location to transfer to
-				Object location = baked.getTransferLocation(fromName);
-				if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
+			// Find location to transfer to
+			Object location = baked.getTransferLocation(fromName);
+			if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
 
-				IItemHandler from = extractHandler(location);
-				if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
+			IItemHandler from = extractHandler(location);
+			if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
 
-				// Validate slots
-				assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
-				if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
+			// Validate slots
+			assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
+			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 
-				return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
-			}
+			return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
 		});
 	}
 

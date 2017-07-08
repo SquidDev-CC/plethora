@@ -52,12 +52,17 @@ public final class MethodsPlayerActions {
 
 		String handStr = optString(args, 1, "main").toLowerCase(Locale.ENGLISH);
 		final EnumHand hand;
-		if (handStr.equals("main") || handStr.equals("mainhand")) {
-			hand = EnumHand.MAIN_HAND;
-		} else if (handStr.equals("off") || handStr.equals("offhand")) {
-			hand = EnumHand.OFF_HAND;
-		} else {
-			throw new LuaException("Unknown hand '" + handStr + "', expected 'main' or 'off'");
+		switch (handStr) {
+			case "main":
+			case "mainhand":
+				hand = EnumHand.MAIN_HAND;
+				break;
+			case "off":
+			case "offhand":
+				hand = EnumHand.OFF_HAND;
+				break;
+			default:
+				throw new LuaException("Unknown hand '" + handStr + "', expected 'main' or 'off'");
 		}
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {

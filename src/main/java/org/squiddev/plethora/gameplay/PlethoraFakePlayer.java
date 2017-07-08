@@ -30,7 +30,7 @@ import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 public class PlethoraFakePlayer extends FakePlayer {
-	private static final WeakHashMap<Entity, PlethoraFakePlayer> registeredPlayers = new WeakHashMap<Entity, PlethoraFakePlayer>();
+	private static final WeakHashMap<Entity, PlethoraFakePlayer> registeredPlayers = new WeakHashMap<>();
 
 	private static final GameProfile profile = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
 
@@ -51,14 +51,14 @@ public class PlethoraFakePlayer extends FakePlayer {
 		super(world, profile);
 		connection = new FakeNetHandler(this);
 		setSize(0, 0);
-		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
+		this.owner = owner == null ? null : new WeakReference<>(owner);
 	}
 
 	public PlethoraFakePlayer(WorldServer world, Entity owner, String name) {
 		super(world, new GameProfile(Constants.FAKEPLAYER_UUID, name));
 		connection = new FakeNetHandler(this);
 		setSize(0, 0);
-		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
+		this.owner = owner == null ? null : new WeakReference<>(owner);
 	}
 
 	public PlethoraFakePlayer(WorldServer world) {
@@ -178,11 +178,12 @@ public class PlethoraFakePlayer extends FakePlayer {
 			for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
 				ItemStack stack = living.getItemStackFromSlot(slot);
 
-			if (!stack.isEmpty()) {
-				setItemStackToSlot(slot, stack.copy());
-				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
-			} else {
-				setItemStackToSlot(slot, ItemStack.EMPTY);}
+				if (!stack.isEmpty()) {
+					setItemStackToSlot(slot, stack.copy());
+					getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
+				} else {
+					setItemStackToSlot(slot, ItemStack.EMPTY);
+				}
 			}
 		}
 

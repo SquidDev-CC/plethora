@@ -17,18 +17,18 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
-	private final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(new Comparator<IMetaProvider<?>>() {
-		@Override
-		public int compare(IMetaProvider<?> o1, IMetaProvider<?> o2) {
-			int p1 = o1.getPriority();
-			int p2 = o2.getPriority();
-			return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
-		}
+	private final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create((o1, o2) -> {
+		int p1 = o1.getPriority();
+		int p2 = o2.getPriority();
+		return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
 	});
 
 	@Override
@@ -43,7 +43,7 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@Override
 	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider) {
-		registerMetaProvider(target, new NamespacedMetaProvider<T>(namespace, provider));
+		registerMetaProvider(target, new NamespacedMetaProvider<>(namespace, provider));
 	}
 
 	@Nonnull

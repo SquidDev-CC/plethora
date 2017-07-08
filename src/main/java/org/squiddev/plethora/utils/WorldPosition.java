@@ -22,13 +22,13 @@ public final class WorldPosition {
 		Preconditions.checkNotNull(pos, "pos cannot be null");
 
 		this.dimension = world.provider.getDimension();
-		this.world = new WeakReference<World>(world);
+		this.world = new WeakReference<>(world);
 		this.pos = pos;
 	}
 
 	private WorldPosition(int dimension, @Nonnull Vec3d pos) {
 		this.dimension = dimension;
-		this.world = new WeakReference<World>(null);
+		this.world = new WeakReference<>(null);
 		this.pos = pos;
 	}
 
@@ -37,7 +37,7 @@ public final class WorldPosition {
 		Preconditions.checkNotNull(pos, "pos cannot be null");
 
 		this.dimension = world.provider.getDimension();
-		this.world = new WeakReference<World>(world);
+		this.world = new WeakReference<>(world);
 		this.pos = new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}
 
@@ -54,7 +54,7 @@ public final class WorldPosition {
 	public World getWorld(MinecraftServer server) {
 		World world = this.world.get();
 		if (world == null && DimensionManager.isDimensionRegistered(dimension)) {
-			this.world = new WeakReference<World>(world = server.getWorld(dimension));
+			this.world = new WeakReference<>(world = server.getWorld(dimension));
 		}
 
 		return world;

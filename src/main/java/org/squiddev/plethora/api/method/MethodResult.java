@@ -112,12 +112,7 @@ public final class MethodResult {
 	 * @return The built MethodResult
 	 */
 	public static MethodResult delayedResult(int delay, final Object... args) {
-		return new MethodResult(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				return MethodResult.result(args);
-			}
-		}, delay);
+		return new MethodResult(() -> MethodResult.result(args), delay);
 	}
 
 	/**
@@ -140,12 +135,9 @@ public final class MethodResult {
 	}
 
 	private static Callable<MethodResult> wrap(final Runnable runnable) {
-		return new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				runnable.run();
-				return empty;
-			}
+		return () -> {
+			runnable.run();
+			return empty;
 		};
 	}
 }

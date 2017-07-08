@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.minecart;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
 import dan200.computercraft.shared.util.WorldUtil;
@@ -100,50 +99,37 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 					throw new LuaException("Expected string");
 				}
 				final String command = (String) arguments[0];
-				return context.executeMainThreadTask(new ILuaTask() {
-					public Object[] execute()
-						throws LuaException {
-						return doCommand(command);
-					}
-				});
+				return context.executeMainThreadTask(() -> doCommand(command));
 			}
 			case 1: { // execAsync
 				if (arguments.length < 1 || !(arguments[0] instanceof String)) {
 					throw new LuaException("Expected string");
 				}
 				final String command = (String) arguments[0];
-				long taskID = context.issueMainThreadTask(new ILuaTask() {
-					public Object[] execute()
-						throws LuaException {
-						return doCommand(command);
-					}
-				});
+				long taskID = context.issueMainThreadTask(() -> doCommand(command));
 				return new Object[]{taskID};
 			}
 			case 2: { // list
-				return context.executeMainThreadTask(new ILuaTask() {
-					public Object[] execute()
-						throws LuaException {
-						int i = 1;
-						Map<Object, Object> result = Maps.newHashMap();
-						if (server != null) {
-							ICommandManager commandManager = server.getCommandManager();
-							Map commands = commandManager.getCommands();
-							for (Object entryObject : commands.entrySet()) {
-								Map.Entry entry = (Map.Entry) entryObject;
-								String name = (String) entry.getKey();
-								ICommand command = (ICommand) entry.getValue();
-								try {
-									if (command.checkPermission(server, CommandAPI.this)) {
-										result.put(i++, name);
-									}
-								} catch (RuntimeException e) {
-									DebugLogger.error("Error executing command", e);
+				return context.executeMainThreadTask(() -> {
+					int i = 1;
+					Map<Object, Object> result = Maps.newHashMap();
+					if (server != null) {
+						ICommandManager commandManager = server.getCommandManager();
+						Map commands = commandManager.getCommands();
+						for (Object entryObject : commands.entrySet()) {
+							Map.Entry entry = (Map.Entry) entryObject;
+							String name = (String) entry.getKey();
+							ICommand command = (ICommand) entry.getValue();
+							try {
+								if (command.checkPermission(server, CommandAPI.this)) {
+									result.put(i++, name);
 								}
+							} catch (RuntimeException e) {
+								DebugLogger.error("Error executing command", e);
 							}
 						}
-						return new Object[]{result};
 					}
+					return new Object[]{result};
 				});
 			}
 			case 3: // getBlockPosition
@@ -159,31 +145,28 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				final int maxx = ((Number) arguments[3]).intValue();
 				final int maxy = ((Number) arguments[4]).intValue();
 				final int maxz = ((Number) arguments[5]).intValue();
-				return context.executeMainThreadTask(new ILuaTask() {
-					public Object[] execute()
-						throws LuaException {
-						World world = entity.getEntityWorld();
-						BlockPos min = new BlockPos(Math.min(minx, maxx), Math.min(miny, maxy), Math.min(minz, maxz));
+				return context.executeMainThreadTask(() -> {
+					World world = entity.getEntityWorld();
+					BlockPos min = new BlockPos(Math.min(minx, maxx), Math.min(miny, maxy), Math.min(minz, maxz));
 
-						BlockPos max = new BlockPos(Math.max(minx, maxx), Math.max(miny, maxy), Math.max(minz, maxz));
-						if (!WorldUtil.isBlockInWorld(world, min) || !WorldUtil.isBlockInWorld(world, max)) {
-							throw new LuaException("Co-ordinates out or range");
-						}
-						if ((max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1) > 4096) {
-							throw new LuaException("Too many blocks");
-						}
-						int i = 1;
-						Map<Object, Object> results = Maps.newHashMap();
-						for (int y = min.getY(); y <= max.getY(); y++) {
-							for (int z = min.getZ(); z <= max.getZ(); z++) {
-								for (int x = min.getX(); x <= max.getX(); x++) {
-									BlockPos pos = new BlockPos(x, y, z);
-									results.put(i++, getBlockInfo(world, pos));
-								}
+					BlockPos max = new BlockPos(Math.max(minx, maxx), Math.max(miny, maxy), Math.max(minz, maxz));
+					if (!WorldUtil.isBlockInWorld(world, min) || !WorldUtil.isBlockInWorld(world, max)) {
+						throw new LuaException("Co-ordinates out or range");
+					}
+					if ((max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1) > 4096) {
+						throw new LuaException("Too many blocks");
+					}
+					int i = 1;
+					Map<Object, Object> results = Maps.newHashMap();
+					for (int y = min.getY(); y <= max.getY(); y++) {
+						for (int z = min.getZ(); z <= max.getZ(); z++) {
+							for (int x = min.getX(); x <= max.getX(); x++) {
+								BlockPos pos1 = new BlockPos(x, y, z);
+								results.put(i++, getBlockInfo(world, pos1));
 							}
 						}
-						return new Object[]{results};
 					}
+					return new Object[]{results};
 				});
 			case 5: // getBlockInfo
 				if (arguments.length < 3 || !(arguments[0] instanceof Number) || !(arguments[1] instanceof Number) || !(arguments[2] instanceof Number)) {
@@ -192,16 +175,13 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				final int x = ((Number) arguments[0]).intValue();
 				final int y = ((Number) arguments[1]).intValue();
 				final int z = ((Number) arguments[2]).intValue();
-				context.executeMainThreadTask(new ILuaTask() {
-					public Object[] execute()
-						throws LuaException {
-						World world = entity.getEntityWorld();
-						BlockPos position = new BlockPos(x, y, z);
-						if (WorldUtil.isBlockInWorld(world, position)) {
-							return new Object[]{getBlockInfo(world, position)};
-						}
-						throw new LuaException("Co-ordinates out or range");
+				context.executeMainThreadTask(() -> {
+					World world = entity.getEntityWorld();
+					BlockPos position = new BlockPos(x, y, z);
+					if (WorldUtil.isBlockInWorld(world, position)) {
+						return new Object[]{getBlockInfo(world, position)};
 					}
+					throw new LuaException("Co-ordinates out or range");
 				});
 		}
 		return null;

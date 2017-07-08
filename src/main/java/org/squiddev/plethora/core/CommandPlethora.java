@@ -32,12 +32,13 @@ public class CommandPlethora extends CommandBase {
 	}
 
 	private String getUsage(String type) {
-		if (type.equals("dump")) {
-			return "dump <name>";
-		} else if (type.equals("reload")) {
-			return "reload";
-		} else {
-			return "dump|reload";
+		switch (type) {
+			case "dump":
+				return "dump <name>";
+			case "reload":
+				return "reload";
+			default:
+				return "dump|reload";
 		}
 	}
 
@@ -51,26 +52,27 @@ public class CommandPlethora extends CommandBase {
 
 			String name = args[1];
 			try {
-				OutputStream file = new FileOutputStream(name);
 				String extension = Files.getFileExtension(name);
 
-				try {
+				try (OutputStream file = new FileOutputStream(name)) {
 					PrintStream writer = new PrintStream(file);
 
 					IDocWriter docs;
-					if (extension.equals("json")) {
-						docs = new JSONWriter(writer);
-					} else if (extension.equals("html") || extension.equals("htm")) {
-						docs = new HTMLWriter(writer);
-					} else {
-						throw new CommandException("Unknown extension '" + extension + "'. Please use html or json");
+					switch (extension) {
+						case "json":
+							docs = new JSONWriter(writer);
+							break;
+						case "html":
+						case "htm":
+							docs = new HTMLWriter(writer);
+							break;
+						default:
+							throw new CommandException("Unknown extension '" + extension + "'. Please use html or json");
 					}
 
 					docs.writeHeader();
 					docs.write(PlethoraAPI.instance().methodRegistry().getMethods());
 					docs.writeFooter();
-				} finally {
-					file.close();
 				}
 
 				sender.sendMessage(new TextComponentString("Documentation written to " + name));

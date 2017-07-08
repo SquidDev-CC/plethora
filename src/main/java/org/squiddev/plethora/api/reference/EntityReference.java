@@ -13,7 +13,7 @@ public class EntityReference<T extends Entity> implements IReference<T> {
 	private final WeakReference<T> entity;
 
 	public EntityReference(T entity) {
-		this.entity = new WeakReference<T>(entity);
+		this.entity = new WeakReference<>(entity);
 	}
 
 	@Nonnull

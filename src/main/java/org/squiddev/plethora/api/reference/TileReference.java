@@ -18,7 +18,7 @@ public class TileReference<T extends TileEntity> implements IReference<T> {
 	private boolean valid = true;
 
 	public TileReference(@Nonnull T tile) {
-		this.tile = new WeakReference<T>(tile);
+		this.tile = new WeakReference<>(tile);
 		pos = tile.getPos();
 		world = tile.getWorld();
 	}

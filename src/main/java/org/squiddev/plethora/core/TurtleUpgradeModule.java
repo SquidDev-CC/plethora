@@ -97,7 +97,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		BasicContextBuilder builder = new BasicContextBuilder();
 		handler.getAdditionalContext(access, builder);
 
-		builder.<IWorldLocation>addContext(new TurtleWorldLocation(turtle));
+		builder.addContext(new TurtleWorldLocation(turtle));
 		builder.addContext(turtle, Reference.id(turtle));
 
 		final IModuleContainer container = access.getContainer();
@@ -119,7 +119,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		IUnbakedContext<IModuleContainer> context = registry.makeContext(
 			containerRef, cost, containerRef, builder.getReferenceArray());
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
+		IPartialContext<IModuleContainer> baked = new PartialContext<>(
 			container, cost, builder.getObjectsArray(), container
 		);
 
@@ -136,7 +136,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	@Nonnull
 	@Override
 	public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
-		return null;
+		return TurtleCommandResult.failure();
 	}
 
 	@Nonnull

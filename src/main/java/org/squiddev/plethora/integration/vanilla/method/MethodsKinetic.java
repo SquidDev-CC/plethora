@@ -18,9 +18,9 @@ import org.squiddev.plethora.integration.vanilla.DisableAI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
+import static dan200.computercraft.core.apis.ArgumentHelper.optNumber;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
@@ -43,13 +43,10 @@ public final class MethodsKinetic {
 			power * Kinetic.launchCost
 		);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				Entity entity = context.bake().getContext(Entity.class);
-				ItemModule.launch(entity, yaw, pitch, power);
-				return MethodResult.empty();
-			}
+		return MethodResult.nextTick(() -> {
+			Entity entity = context.bake().getContext(Entity.class);
+			ItemModule.launch(entity, yaw, pitch, power);
+			return MethodResult.empty();
 		});
 	}
 
@@ -94,28 +91,25 @@ public final class MethodsKinetic {
 			Math.sqrt(x * x + y * y + z * z) * Kinetic.walkCost
 		);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				EntityLiving living = context.bake().getContext(EntityLiving.class);
-				PathNavigate navigator = living.getNavigator();
+		return MethodResult.nextTick(() -> {
+			EntityLiving living = context.bake().getContext(EntityLiving.class);
+			PathNavigate navigator = living.getNavigator();
 
-				Path path = navigator.getPathToXYZ(
-					x + living.posX,
-					y + living.posY,
-					z + living.posZ
-				);
+			Path path = navigator.getPathToXYZ(
+				x + living.posX,
+				y + living.posY,
+				z + living.posZ
+			);
 
-				if (path == null || path.getCurrentPathLength() == 0) {
-					return MethodResult.failure("No path exists");
-				}
-
-				if (!context.getCostHandler().consume(path.getCurrentPathLength() * 5 * speed)) {
-					return MethodResult.failure("Insufficient energy");
-				}
-
-				return MethodResult.result(living.getNavigator().setPath(path, speed));
+			if (path == null || path.getCurrentPathLength() == 0) {
+				return MethodResult.failure("No path exists");
 			}
+
+			if (!context.getCostHandler().consume(path.getCurrentPathLength() * 5 * speed)) {
+				return MethodResult.failure("Insufficient energy");
+			}
+
+			return MethodResult.result(living.getNavigator().setPath(path, speed));
 		});
 	}
 

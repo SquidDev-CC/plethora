@@ -13,7 +13,7 @@ import java.util.Set;
  * A basic implementation of a module container.
  */
 public class BasicModuleContainer implements IModuleContainer {
-	public static final IModuleContainer EMPTY = new BasicModuleContainer(Collections.<ResourceLocation>emptySet());
+	public static final IModuleContainer EMPTY = new BasicModuleContainer(Collections.emptySet());
 	public static final IReference<IModuleContainer> EMPTY_REF = Reference.id(EMPTY);
 
 	private final Set<ResourceLocation> modules;

@@ -15,7 +15,7 @@ import java.util.WeakHashMap;
 import static org.squiddev.plethora.gameplay.keyboard.KeyMessage.KeyPress;
 
 public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> {
-	private static final WeakHashMap<EntityPlayerMP, Set<IModuleAccess>> listeners = new WeakHashMap<EntityPlayerMP, Set<IModuleAccess>>();
+	private static final WeakHashMap<EntityPlayerMP, Set<IModuleAccess>> listeners = new WeakHashMap<>();
 
 	public static void add(@Nonnull EntityPlayerMP player, @Nonnull IModuleAccess access) {
 		synchronized (listeners) {

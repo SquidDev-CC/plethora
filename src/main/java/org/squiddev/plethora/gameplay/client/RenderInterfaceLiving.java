@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.client;
 
-import baubles.common.Baubles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.Render;

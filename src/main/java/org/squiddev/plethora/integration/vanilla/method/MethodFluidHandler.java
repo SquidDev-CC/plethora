@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
@@ -47,22 +46,19 @@ public class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
 			facing = null;
 		}
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				Map<Integer, Object> out = Maps.newHashMap();
-				IPartialContext<ICapabilityProvider> baked = context.bake();
-				IFluidTankProperties[] info = baked
-					.getTarget()
-					.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)
-					.getTankProperties();
+		return MethodResult.nextTick(() -> {
+			Map<Integer, Object> out = Maps.newHashMap();
+			IPartialContext<ICapabilityProvider> baked = context.bake();
+			IFluidTankProperties[] info = baked
+				.getTarget()
+				.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)
+				.getTankProperties();
 
-				for (int i = 0; i < info.length; i++) {
-					out.put(i + 1, baked.makePartialChild(info[i]).getMeta());
-				}
-
-				return MethodResult.result(out);
+			for (int i = 0; i < info.length; i++) {
+				out.put(i + 1, baked.makePartialChild(info[i]).getMeta());
 			}
+
+			return MethodResult.result(out);
 		});
 	}
 }

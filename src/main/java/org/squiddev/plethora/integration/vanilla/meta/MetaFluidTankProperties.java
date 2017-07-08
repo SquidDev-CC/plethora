@@ -13,6 +13,6 @@ public class MetaFluidTankProperties extends BasicMetaProvider<IFluidTankPropert
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IFluidTankProperties tank) {
-		return Collections.<Object, Object>singletonMap("capacity", tank.getCapacity());
+		return Collections.singletonMap("capacity", tank.getCapacity());
 	}
 }

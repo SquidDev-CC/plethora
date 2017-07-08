@@ -51,7 +51,7 @@ public class RenderOverlay extends Module implements IClientModule {
 
 	private int ticks;
 
-	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<ChatMessage>();
+	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<>();
 
 	@SideOnly(Side.CLIENT)
 	public static void addMessage(ChatMessage message) {
@@ -88,7 +88,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		}
 	}
 
-	private static final Map<BlockStack, Boolean> oreBlockCache = new HashMap<BlockStack, Boolean>();
+	private static final Map<BlockStack, Boolean> oreBlockCache = new HashMap<>();
 
 	@Override
 	@SideOnly(Side.CLIENT)

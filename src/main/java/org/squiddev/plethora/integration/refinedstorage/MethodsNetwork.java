@@ -16,7 +16,6 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
@@ -70,16 +69,13 @@ public class MethodsNetwork {
 	public static MethodResult findItem(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<INetwork> baked = context.bake();
-				ItemStack stack = findStack(baked.getTarget(), fingerprint);
+		return MethodResult.nextTick(() -> {
+			IContext<INetwork> baked = context.bake();
+			ItemStack stack = findStack(baked.getTarget(), fingerprint);
 
-				return stack == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(id(stack)).getObject());
-			}
+			return stack == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makeChild(id(stack)).getObject());
 		});
 	}
 
@@ -93,21 +89,18 @@ public class MethodsNetwork {
 	public static MethodResult findItems(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<INetwork> baked = context.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<INetwork> baked = context.bake();
 
-				int i = 0;
-				Map<Integer, Object> out = Maps.newHashMap();
-				for (ItemStack stack : baked.getTarget().getItemStorageCache().getList().getStacks()) {
-					if (fingerprint.matches(stack)) {
-						out.put(++i, baked.makeChild(id(stack)).getObject());
-					}
+			int i = 0;
+			Map<Integer, Object> out = Maps.newHashMap();
+			for (ItemStack stack : baked.getTarget().getItemStorageCache().getList().getStacks()) {
+				if (fingerprint.matches(stack)) {
+					out.put(++i, baked.makeChild(id(stack)).getObject());
 				}
-
-				return MethodResult.result(out);
 			}
+
+			return MethodResult.result(out);
 		});
 	}
 

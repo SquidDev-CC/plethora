@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.method.*;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.getEnum;
 
@@ -56,17 +55,14 @@ public class MethodsMultipart {
 	public static MethodResult getSlottedPart(final IUnbakedContext<TileMultipart> context, Object[] args) throws LuaException {
 		final PartMap slot = getEnum(args, 0, PartMap.class);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<TileMultipart> baked = context.bake();
-				TileMultipart container = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<TileMultipart> baked = context.bake();
+			TileMultipart container = baked.getTarget();
 
-				TMultiPart part = container.partMap(slot.i);
-				return part == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
-			}
+			TMultiPart part = container.partMap(slot.i);
+			return part == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
 		});
 	}
 
@@ -77,17 +73,14 @@ public class MethodsMultipart {
 	public static MethodResult getSlottedPartMeta(final IUnbakedContext<TileMultipart> context, Object[] args) throws LuaException {
 		final PartMap slot = getEnum(args, 0, PartMap.class);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<TileMultipart> baked = context.bake();
-				TileMultipart container = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<TileMultipart> baked = context.bake();
+			TileMultipart container = baked.getTarget();
 
-				TMultiPart part = container.partMap(slot.i);
-				return part == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makePartialChild(part).getMeta());
-			}
+			TMultiPart part = container.partMap(slot.i);
+			return part == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makePartialChild(part).getMeta());
 		});
 	}
 }

@@ -10,7 +10,6 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -41,20 +40,17 @@ public final class MethodsInventory {
 	public static MethodResult getItem(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		final int slot = getInt(args, 0);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IItemHandler inventory = context.bake().getTarget();
+		return MethodResult.nextTick(() -> {
+			IItemHandler inventory = context.bake().getTarget();
 
-				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
+			assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
-				ItemStack stack = inventory.getStackInSlot(slot - 1);
-				if (stack.isEmpty()) {
-					return MethodResult.empty();
-				} else {
-					ItemSlot item = new ItemSlot(inventory, slot - 1);
-					return MethodResult.result(context.makeChild(item).getObject());
-				}
+			ItemStack stack = inventory.getStackInSlot(slot - 1);
+			if (stack.isEmpty()) {
+				return MethodResult.empty();
+			} else {
+				ItemSlot item = new ItemSlot(inventory, slot - 1);
+				return MethodResult.result(context.makeChild(item).getObject());
 			}
 		});
 	}
@@ -74,20 +70,17 @@ public final class MethodsInventory {
 	public static MethodResult getItemMeta(final @Nonnull IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
 		final int slot = getInt(args, 0);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IItemHandler> baked = context.bake();
-				IItemHandler inventory = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<IItemHandler> baked = context.bake();
+			IItemHandler inventory = baked.getTarget();
 
-				assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
+			assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
-				ItemStack stack = inventory.getStackInSlot(slot - 1);
-				if (stack.isEmpty()) {
-					return MethodResult.empty();
-				} else {
-					return MethodResult.result(baked.makePartialChild(stack).getMeta());
-				}
+			ItemStack stack = inventory.getStackInSlot(slot - 1);
+			if (stack.isEmpty()) {
+				return MethodResult.empty();
+			} else {
+				return MethodResult.result(baked.makePartialChild(stack).getMeta());
 			}
 		});
 	}

@@ -71,10 +71,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			CompressedStreamTools.write(tag, output);
 			byte[] hash = digest.digest();
 			return new String(Hex.encodeHex(hash));
-		} catch (NoSuchAlgorithmException e) {
-			DebugLogger.error("Cannot hash NBT", e);
-			return null;
-		} catch (IOException e) {
+		} catch (NoSuchAlgorithmException | IOException e) {
 			DebugLogger.error("Cannot hash NBT", e);
 			return null;
 		}

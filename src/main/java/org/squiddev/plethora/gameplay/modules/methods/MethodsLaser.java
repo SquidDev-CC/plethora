@@ -13,7 +13,6 @@ import org.squiddev.plethora.gameplay.modules.EntityLaser;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
@@ -42,67 +41,64 @@ public final class MethodsLaser {
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionY = -Math.sin(pitch / 180.0f * (float) Math.PI);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				IWorldLocation location = context.getContext(IWorldLocation.class);
-				Vec3d pos = location.getLoc();
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			IWorldLocation location = context.getContext(IWorldLocation.class);
+			Vec3d pos = location.getLoc();
 
-				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
-				if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
-					double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
-					double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
-					double vOff = 0.3; // The laser is 0.25 high, so we add a little more.
+			EntityLaser laser = new EntityLaser(location.getWorld(), pos);
+			if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
+				double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
+				double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
+				double vOff = 0.3; // The laser is 0.25 high, so we add a little more.
 
-					// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
-					// the block below/above in most cases.
-					// Also offset to be just above/below the manipulator, depending on the pitch.
+				// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
+				// the block below/above in most cases.
+				// Also offset to be just above/below the manipulator, depending on the pitch.
 
-					double yOffset, xOffset, zOffset;
-					if (pitch < -60) {
-						xOffset = 0;
-						yOffset = 0.5 + vOff;
-						zOffset = 0;
-					} else if (pitch > 60) {
-						xOffset = 0;
-						yOffset = -0.5 - vOff;
-						zOffset = 0;
-					} else {
-						xOffset = motionX / length * hOff;
-						yOffset = 0;
-						zOffset = motionZ / length * hOff;
-					}
-
-					laser.setPosition(
-						pos.x + xOffset,
-						pos.y + yOffset,
-						pos.z + zOffset
-					);
-				} else if (context.hasContext(Entity.class)) {
-					Entity entity = context.getContext(Entity.class);
-					Vec3d vector = entity.getPositionVector();
-					double offset = entity.width + 0.2;
-					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
-					laser.setShooter(entity);
-
-					// Offset positions to be around the edge of the entity. Avoids damaging the entity.
-					laser.setPosition(
-						vector.x + motionX / length * offset,
-						vector.y + entity.getEyeHeight() + motionY / length * offset,
-						vector.z + motionZ / length * offset
-					);
+				double yOffset, xOffset, zOffset;
+				if (pitch < -60) {
+					xOffset = 0;
+					yOffset = 0.5 + vOff;
+					zOffset = 0;
+				} else if (pitch > 60) {
+					xOffset = 0;
+					yOffset = -0.5 - vOff;
+					zOffset = 0;
 				} else {
-					laser.setPosition(pos.x, pos.y, pos.z);
+					xOffset = motionX / length * hOff;
+					yOffset = 0;
+					zOffset = motionZ / length * hOff;
 				}
 
-				laser.setPotency(potency);
-				laser.setThrowableHeading(motionX, motionY, motionZ, 1.5f, 0);
+				laser.setPosition(
+					pos.x + xOffset,
+					pos.y + yOffset,
+					pos.z + zOffset
+				);
+			} else if (context.hasContext(Entity.class)) {
+				Entity entity = context.getContext(Entity.class);
+				Vec3d vector = entity.getPositionVector();
+				double offset = entity.width + 0.2;
+				double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+				laser.setShooter(entity);
 
-				location.getWorld().spawnEntity(laser);
-
-				return MethodResult.empty();
+				// Offset positions to be around the edge of the entity. Avoids damaging the entity.
+				laser.setPosition(
+					vector.x + motionX / length * offset,
+					vector.y + entity.getEyeHeight() + motionY / length * offset,
+					vector.z + motionZ / length * offset
+				);
+			} else {
+				laser.setPosition(pos.x, pos.y, pos.z);
 			}
+
+			laser.setPotency(potency);
+			laser.setThrowableHeading(motionX, motionY, motionZ, 1.5f, 0);
+
+			location.getWorld().spawnEntity(laser);
+
+			return MethodResult.empty();
 		});
 	}
 }

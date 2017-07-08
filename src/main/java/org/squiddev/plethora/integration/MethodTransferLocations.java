@@ -8,7 +8,6 @@ import org.squiddev.plethora.api.method.*;
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
@@ -30,28 +29,25 @@ public class MethodTransferLocations extends BasicMethod<IMethodCollection> {
 	@Override
 	public MethodResult apply(@Nonnull final IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
 		final String location = optString(args, 0, null);
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IMethodCollection> baked = context.bake();
-				Set<String> locations;
-				if (location == null) {
-					locations = baked.getTransferLocations();
-				} else {
-					Object found = baked.getTransferLocation(location);
-					if (found == null) throw new LuaException("Location '" + location + "' does not exist");
+		return MethodResult.nextTick(() -> {
+			IContext<IMethodCollection> baked = context.bake();
+			Set<String> locations;
+			if (location == null) {
+				locations = baked.getTransferLocations();
+			} else {
+				Object found = baked.getTransferLocation(location);
+				if (found == null) throw new LuaException("Location '" + location + "' does not exist");
 
-					locations = PlethoraAPI.instance().transferRegistry().getTransferLocations(found, false);
-				}
-				Map<Integer, String> result = Maps.newHashMap();
-
-				int i = 1;
-				for (String location : locations) {
-					result.put(i++, location);
-				}
-
-				return MethodResult.result(result);
+				locations = PlethoraAPI.instance().transferRegistry().getTransferLocations(found, false);
 			}
+			Map<Integer, String> result = Maps.newHashMap();
+
+			int i = 1;
+			for (String location1 : locations) {
+				result.put(i++, location1);
+			}
+
+			return MethodResult.result(result);
 		});
 	}
 }

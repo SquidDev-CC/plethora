@@ -39,7 +39,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			baked[i] = context[i].get();
 		}
 
-		return new Context<T>(this, value, handler, baked, modules.get());
+		return new Context<>(this, value, handler, baked, modules.get());
 	}
 
 	@Nonnull
@@ -52,7 +52,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			baked[i] = context[i].safeGet();
 		}
 
-		return new Context<T>(this, value, handler, baked, modules.safeGet());
+		return new Context<>(this, value, handler, baked, modules.safeGet());
 	}
 
 	@Nonnull
@@ -66,7 +66,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new UnbakedContext<U>(newTarget, handler, wholeContext, modules, executor);
+		return new UnbakedContext<>(newTarget, handler, wholeContext, modules, executor);
 	}
 
 	@Nonnull
@@ -78,25 +78,25 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		arrayCopy(newContext, wholeContext, 0);
 		arrayCopy(context, wholeContext, newContext.length);
 
-		return new UnbakedContext<T>(target, handler, wholeContext, modules, executor);
+		return new UnbakedContext<>(target, handler, wholeContext, modules, executor);
 	}
 
 	@Override
 	public IUnbakedContext<T> withCostHandler(@Nonnull ICostHandler handler) {
 		Preconditions.checkNotNull(handler, "handler cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, executor);
+		return new UnbakedContext<>(target, handler, context, modules, executor);
 	}
 
 	@Override
 	public IUnbakedContext<T> withModules(@Nonnull IReference<IModuleContainer> modules) {
 		Preconditions.checkNotNull(modules, "modules cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, executor);
+		return new UnbakedContext<>(target, handler, context, modules, executor);
 	}
 
 	@Override
 	public IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor) {
 		Preconditions.checkNotNull(executor, "executor cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, executor);
+		return new UnbakedContext<>(target, handler, context, modules, executor);
 	}
 
 	@Nonnull

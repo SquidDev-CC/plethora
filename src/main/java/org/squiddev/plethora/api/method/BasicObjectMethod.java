@@ -9,7 +9,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.concurrent.Callable;
 
 /**
  * Basic wrapper for methods which deals returns an object array.
@@ -38,12 +37,7 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 	@Override
 	public final MethodResult apply(@Nonnull final IUnbakedContext<T> context, @Nonnull final Object[] args) throws LuaException {
 		if (worldThread) {
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					return MethodResult.result(apply(context.bake(), args));
-				}
-			});
+			return MethodResult.nextTick(() -> MethodResult.result(apply(context.bake(), args)));
 		} else {
 			return MethodResult.result(apply(context.safeBake(), args));
 		}

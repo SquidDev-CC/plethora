@@ -22,7 +22,6 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
@@ -37,43 +36,40 @@ public final class MethodsChat {
 		final String message = getString(args, 0);
 		validateMessage(message);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			Entity entity = context.getContext(Entity.class);
 
-				EntityPlayerMP player;
-				ITextComponent name;
+			EntityPlayerMP player;
+			ITextComponent name;
 
-				// Attempt to guess who is posting it and their position.
-				if (entity instanceof EntityPlayerMP) {
-					name = entity.getDisplayName();
-					player = (EntityPlayerMP) entity;
+			// Attempt to guess who is posting it and their position.
+			if (entity instanceof EntityPlayerMP) {
+				name = entity.getDisplayName();
+				player = (EntityPlayerMP) entity;
 
-				} else if (entity.getEntityWorld() instanceof WorldServer) {
-					if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
+			} else if (entity.getEntityWorld() instanceof WorldServer) {
+				if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
 
-					BlockPos pos = entity.getPosition();
+				BlockPos pos = entity.getPosition();
 
-					// We include the position of the entity
-					name = entity.getDisplayName().createCopy();
-					name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, name.getUnformattedText());
-					fakePlayer.load(entity);
-					player = fakePlayer;
-				} else {
-					throw new LuaException("Cannot post to chat");
-				}
-
-				// Create the chat event and post to chat
-				TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
-				ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
-				if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
-
-				player.mcServer.getPlayerList().sendMessage(event.getComponent(), false);
-				return MethodResult.empty();
+				// We include the position of the entity
+				name = entity.getDisplayName().createCopy();
+				name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
+				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, name.getUnformattedText());
+				fakePlayer.load(entity);
+				player = fakePlayer;
+			} else {
+				throw new LuaException("Cannot post to chat");
 			}
+
+			// Create the chat event and post to chat
+			TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
+			ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
+			if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
+
+			player.mcServer.getPlayerList().sendMessage(event.getComponent(), false);
+			return MethodResult.empty();
 		});
 	}
 
@@ -86,15 +82,12 @@ public final class MethodsChat {
 		final String message = getString(args, 0);
 		validateMessage(message);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			Entity entity = context.getContext(Entity.class);
 
-				entity.sendMessage(ForgeHooks.newChatWithLinks(message));
-				return MethodResult.empty();
-			}
+			entity.sendMessage(ForgeHooks.newChatWithLinks(message));
+			return MethodResult.empty();
 		});
 	}
 

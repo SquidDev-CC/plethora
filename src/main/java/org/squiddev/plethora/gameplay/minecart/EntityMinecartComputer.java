@@ -11,8 +11,6 @@ import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
@@ -45,7 +43,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -608,12 +605,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		@Override
 		@SideOnly(Side.CLIENT)
 		public void clientPreInit() {
-			RenderingRegistry.registerEntityRenderingHandler(EntityMinecartComputer.class, new IRenderFactory<EntityMinecartComputer>() {
-				@Override
-				public Render<EntityMinecartComputer> createRenderFor(RenderManager renderManager) {
-					return new RenderMinecartComputer(renderManager);
-				}
-			});
+			RenderingRegistry.registerEntityRenderingHandler(EntityMinecartComputer.class, RenderMinecartComputer::new);
 		}
 
 		@SubscribeEvent
@@ -730,12 +722,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			// After all, this is what the S0EPacketSpawnObject packet does.
 			Minecraft mc = Minecraft.getMinecraft();
 			if (!mc.isCallingFromMinecraftThread()) {
-				mc.addScheduledTask(new Runnable() {
-					@Override
-					public void run() {
-						onMessage(message, ctx);
-					}
-				});
+				mc.addScheduledTask((Runnable) () -> onMessage(message, ctx));
 			}
 
 			World world = Minecraft.getMinecraft().world;

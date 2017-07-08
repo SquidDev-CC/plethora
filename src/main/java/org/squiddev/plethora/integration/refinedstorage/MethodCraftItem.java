@@ -11,7 +11,6 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
@@ -32,28 +31,25 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 	public MethodResult apply(@Nonnull final IUnbakedContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
 		final int quantity = getInt(args, 0);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<ItemStack> baked = context.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<ItemStack> baked = context.bake();
 
-				ItemStack stack = baked.getTarget();
-				INetwork network = baked.getContext(INetwork.class);
-				ICraftingManager manager = network.getCraftingManager();
+			ItemStack stack = baked.getTarget();
+			INetwork network = baked.getContext(INetwork.class);
+			ICraftingManager manager = network.getCraftingManager();
 
-				ICraftingPattern pattern = manager.getPattern(stack);
-				if (pattern == null) throw new LuaException("No matching patterns");
+			ICraftingPattern pattern = manager.getPattern(stack);
+			if (pattern == null) throw new LuaException("No matching patterns");
 
-				ICraftingTask task = manager.create(stack, pattern, quantity, true);
-				task.calculate();
+			ICraftingTask task = manager.create(stack, pattern, quantity, true);
+			task.calculate();
 
-				boolean success = task.isValid() && task.getMissing().getStacks().isEmpty();
-				if (success) {
-					manager.add(task);
-				}
-
-				return MethodResult.result(success, context.makeChild(Reference.id(task)).getObject());
+			boolean success = task.isValid() && task.getMissing().getStacks().isEmpty();
+			if (success) {
+				manager.add(task);
 			}
+
+			return MethodResult.result(success, context.makeChild(Reference.id(task)).getObject());
 		});
 	}
 }

@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.client.gui;
 
 import dan200.computercraft.client.gui.widgets.WidgetTerminal;
 import dan200.computercraft.shared.computer.core.IComputer;
-import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
@@ -45,12 +44,7 @@ public class GuiNeuralInterface extends GuiContainer {
 		super.initGui();
 
 		Keyboard.enableRepeatEvents(true);
-		terminalGui = new WidgetTerminal((width - xSize) / 2 + 8, (height - ySize) / 2 + 8, WIDTH, HEIGHT, new IComputerContainer() {
-			@Override
-			public IComputer getComputer() {
-				return computer;
-			}
-		}, 2, 2, 2, 2);
+		terminalGui = new WidgetTerminal((width - xSize) / 2 + 8, (height - ySize) / 2 + 8, WIDTH, HEIGHT, () -> computer, 2, 2, 2, 2);
 		terminalGui.setAllowFocusLoss(false);
 		updateVisible();
 	}

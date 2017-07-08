@@ -8,7 +8,7 @@ import java.util.*;
  * This should be more efficient than a {@link TreeSet}
  */
 public class SortedCollection<E> implements Collection<E> {
-	private final ArrayList<E> list = new ArrayList<E>();
+	private final ArrayList<E> list = new ArrayList<>();
 	private boolean sorted = true;
 
 	private final Comparator<? super E> comparator;
@@ -21,7 +21,7 @@ public class SortedCollection<E> implements Collection<E> {
 	@Override
 	public Iterator<E> iterator() {
 		if (!sorted) {
-			Collections.sort(list, comparator);
+			list.sort(comparator);
 			sorted = true;
 		}
 
@@ -101,6 +101,6 @@ public class SortedCollection<E> implements Collection<E> {
 	}
 
 	public static <V> SortedCollection<V> create(Comparator<V> comparator) {
-		return new SortedCollection<V>(comparator);
+		return new SortedCollection<>(comparator);
 	}
 }

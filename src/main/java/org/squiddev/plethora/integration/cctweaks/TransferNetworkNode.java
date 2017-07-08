@@ -28,6 +28,6 @@ public class TransferNetworkNode implements ITransferProvider<BasicModemPeripher
 	@Override
 	public Set<String> getTransferLocations(@Nonnull BasicModemPeripheral object) {
 		INetworkController access = object.modem.getAttachedNetwork();
-		return access == null ? Collections.<String>emptySet() : access.getPeripheralsOnNetwork().keySet();
+		return access == null ? Collections.emptySet() : access.getPeripheralsOnNetwork().keySet();
 	}
 }

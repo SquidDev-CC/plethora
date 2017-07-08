@@ -20,6 +20,6 @@ public class MetaDataCard extends BasicMetaProvider<ItemStack> {
 		if (!(item instanceof IDataCard)) return Collections.emptyMap();
 		IDataCard card = (IDataCard) item;
 
-		return Collections.<Object, Object>singletonMap("type", card.getType(stack));
+		return Collections.singletonMap("type", card.getType(stack));
 	}
 }

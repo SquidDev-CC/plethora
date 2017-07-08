@@ -22,6 +22,6 @@ public class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 		food.put("saturation", stats.getSaturationLevel());
 		food.put("hungry", stats.needFood());
 
-		return Collections.<Object, Object>singletonMap("food", food);
+		return Collections.singletonMap("food", food);
 	}
 }

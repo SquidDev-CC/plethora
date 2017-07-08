@@ -21,7 +21,7 @@ public class BlockReference implements IReference<BlockReference> {
 
 	public BlockReference(@Nonnull IWorldLocation location, @Nonnull IBlockState state, @Nullable TileEntity tile) {
 		this.location = location;
-		this.tile = tile == null ? null : new WeakReference<TileEntity>(tile);
+		this.tile = tile == null ? null : new WeakReference<>(tile);
 		this.tileHash = tile == null ? 0 : tile.hashCode();
 		this.state = state;
 	}

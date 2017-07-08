@@ -94,7 +94,7 @@ public class CraftingResult {
 
 		@Override
 		public ImmutableSet<ICraftingLink> getRequestedJobs() {
-			return link == null ? ImmutableSet.<ICraftingLink>of() : ImmutableSet.of(link);
+			return link == null ? ImmutableSet.of() : ImmutableSet.of(link);
 		}
 
 		@Override

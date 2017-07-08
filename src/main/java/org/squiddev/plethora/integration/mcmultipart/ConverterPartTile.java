@@ -9,8 +9,6 @@ import org.squiddev.plethora.api.converter.IConverter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-;
-
 @IConverter.Inject(value = IPartInfo.class, modId = MCMultiPart.MODID)
 public class ConverterPartTile implements IConverter<IPartInfo, TileEntity> {
 	@Nullable

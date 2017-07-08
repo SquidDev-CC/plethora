@@ -53,7 +53,7 @@ public class TransferSidedCapability implements ITransferProvider<ICapabilityPro
 	@Nonnull
 	@Override
 	public Set<String> getTransferLocations(@Nonnull ICapabilityProvider object) {
-		HashSet<String> items = new HashSet<String>(6);
+		HashSet<String> items = new HashSet<>(6);
 		for (EnumFacing item : EnumFacing.VALUES) {
 			items.add(item.getName() + "_side");
 		}

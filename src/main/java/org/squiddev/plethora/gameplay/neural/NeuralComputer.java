@@ -78,7 +78,7 @@ public class NeuralComputer extends ServerComputer {
 			if (!owner.isEntityAlive()) {
 				entity = null;
 			} else {
-				entity = new WeakReference<EntityLivingBase>(owner);
+				entity = new WeakReference<>(owner);
 			}
 		}
 

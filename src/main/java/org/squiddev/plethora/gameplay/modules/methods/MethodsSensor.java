@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getUUID;
@@ -59,16 +58,13 @@ public final class MethodsSensor {
 	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final UUID uuid = getUUID(args, 0);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
-				Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
-				if (entity == null) {
-					return MethodResult.empty();
-				} else {
-					return MethodResult.result(baked.makePartialChild(entity).getMeta());
-				}
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> baked = context.bake();
+			Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
+			if (entity == null) {
+				return MethodResult.empty();
+			} else {
+				return MethodResult.result(baked.makePartialChild(entity).getMeta());
 			}
 		});
 	}
@@ -82,16 +78,13 @@ public final class MethodsSensor {
 	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final String name = getString(args, 0);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
-				Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
-				if (entity == null) {
-					return MethodResult.empty();
-				} else {
-					return MethodResult.result(baked.makePartialChild(entity).getMeta());
-				}
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> baked = context.bake();
+			Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
+			if (entity == null) {
+				return MethodResult.empty();
+			} else {
+				return MethodResult.result(baked.makePartialChild(entity).getMeta());
 			}
 		});
 	}

@@ -36,6 +36,7 @@ public class UseInRecipeCategory implements IRecipeCategory<UseInRecipeWrapper> 
 		return Helpers.translateToLocal("gui.jei.plethora." + id);
 	}
 
+	@Nonnull
 	@Override
 	public String getModName() {
 		return Plethora.NAME;

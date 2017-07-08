@@ -186,6 +186,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 				super(modem);
 			}
 
+			@Nonnull
 			@Override
 			public String[] getMethodNames() {
 				String[] methods = super.getMethodNames();
@@ -213,7 +214,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 			}
 
 			@Override
-			public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+			public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments) throws LuaException, InterruptedException {
 				String[] methods = super.getMethodNames();
 				switch (method - methods.length) {
 					case 0: { // bindFromCard
@@ -266,13 +267,13 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 			}
 
 			@Override
-			public synchronized void attach(IComputerAccess computer) {
+			public synchronized void attach(@Nonnull IComputerAccess computer) {
 				PocketBinding.this.connect();
 				super.attach(computer);
 			}
 
 			@Override
-			public synchronized void detach(IComputerAccess computer) {
+			public synchronized void detach(@Nonnull IComputerAccess computer) {
 				super.detach(computer);
 				PocketBinding.this.destroy();
 			}

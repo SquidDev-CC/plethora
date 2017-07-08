@@ -12,7 +12,6 @@ import org.squiddev.plethora.api.method.*;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
@@ -57,17 +56,14 @@ public class MethodsMultipart {
 		final IPartSlot slot = MCMultiPart.slotRegistry.getValue(new ResourceLocation(slotName));
 		if (slot == null) throw new LuaException("Bad name '" + slotName + "' for argument 1");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IMultipartContainer> baked = context.bake();
-				IMultipartContainer container = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<IMultipartContainer> baked = context.bake();
+			IMultipartContainer container = baked.getTarget();
 
-				IPartInfo part = container.get(slot).orElse(null);
-				return part == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
-			}
+			IPartInfo part = container.get(slot).orElse(null);
+			return part == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
 		});
 	}
 
@@ -80,17 +76,14 @@ public class MethodsMultipart {
 		final IPartSlot slot = MCMultiPart.slotRegistry.getValue(new ResourceLocation(slotName));
 		if (slot == null) throw new LuaException("Bad name '" + slotName + "' for argument 1");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IMultipartContainer> baked = context.bake();
-				IMultipartContainer container = baked.getTarget();
+		return MethodResult.nextTick(() -> {
+			IContext<IMultipartContainer> baked = context.bake();
+			IMultipartContainer container = baked.getTarget();
 
-				IPartInfo part = container.get(slot).orElse(null);
-				return part == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makePartialChild(part).getMeta());
-			}
+			IPartInfo part = container.get(slot).orElse(null);
+			return part == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makePartialChild(part).getMeta());
 		});
 	}
 }

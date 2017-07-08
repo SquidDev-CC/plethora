@@ -25,6 +25,6 @@ public class MetaSlottedMultipart extends BasicMetaProvider<TSlottedPart> {
 				out.put(++i, slot.name().toLowerCase(Locale.ENGLISH));
 			}
 		}
-		return Collections.<Object, Object>singletonMap("slots", out);
+		return Collections.singletonMap("slots", out);
 	}
 }

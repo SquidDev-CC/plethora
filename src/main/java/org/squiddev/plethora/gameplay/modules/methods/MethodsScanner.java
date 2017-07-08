@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -76,21 +75,18 @@ public final class MethodsScanner {
 		assertBetween(y, -radius, radius, "Y coordinate out of bounds (%s)");
 		assertBetween(z, -radius, radius, "Z coordinate out of bounds (%s)");
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location = baked.getContext(IWorldLocation.class);
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> baked = context.bake();
+			IWorldLocation location = baked.getContext(IWorldLocation.class);
 
-				World world = location.getWorld();
-				BlockPos pos = location.getPos().add(x, y, z);
+			World world = location.getWorld();
+			BlockPos pos = location.getPos().add(x, y, z);
 
-				Map<Object, Object> meta = baked
-					.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
-					.getMeta();
+			Map<Object, Object> meta = baked
+				.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
+				.getMeta();
 
-				return MethodResult.result(meta);
-			}
+			return MethodResult.result(meta);
 		});
 	}
 }

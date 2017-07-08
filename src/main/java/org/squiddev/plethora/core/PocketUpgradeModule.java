@@ -166,7 +166,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			containerRef, cost, containerRef, builder.getReferenceArray()
 		);
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
+		IPartialContext<IModuleContainer> baked = new PartialContext<>(
 			container, cost, builder.getObjectsArray(), container
 		);
 

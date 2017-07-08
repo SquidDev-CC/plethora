@@ -16,9 +16,9 @@ import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Callable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optEnum;
 
@@ -47,17 +47,14 @@ public class MethodsInventoryWorld {
 
 			final EnumFacing direction = optEnum(args, 2, EnumFacing.class, null);
 
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<IItemHandler> baked = context.bake();
-					IItemHandler handler = baked.getTarget();
+			return MethodResult.nextTick(() -> {
+				IContext<IItemHandler> baked = context.bake();
+				IItemHandler handler = baked.getTarget();
 
-					assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
+				assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
-					ItemStack stack = handler.extractItem(slot - 1, limit, false);
-					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
-				}
+				ItemStack stack = handler.extractItem(slot - 1, limit, false);
+				return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
 			});
 		}
 	}
@@ -80,15 +77,12 @@ public class MethodsInventoryWorld {
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
 			final EnumFacing direction = optEnum(args, 1, EnumFacing.class, null);
 
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<ItemSlot> baked = context.bake();
-					ItemSlot slot = baked.getTarget();
+			return MethodResult.nextTick(() -> {
+				IContext<ItemSlot> baked = context.bake();
+				ItemSlot slot = baked.getTarget();
 
-					ItemStack stack = slot.extract(limit);
-					return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
-				}
+				ItemStack stack = slot.extract(limit);
+				return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
 			});
 		}
 	}
@@ -134,48 +128,45 @@ public class MethodsInventoryWorld {
 			final int limit = optInt(args, 1, Integer.MAX_VALUE);
 			if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-			return MethodResult.nextTick(new Callable<MethodResult>() {
-				@Override
-				public MethodResult call() throws Exception {
-					IContext<IItemHandler> baked = context.bake();
-					IItemHandler handler = baked.getTarget();
+			return MethodResult.nextTick(() -> {
+				IContext<IItemHandler> baked = context.bake();
+				IItemHandler handler = baked.getTarget();
 
-					if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
+				if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
-					IWorldLocation location = baked.getContext(IWorldLocation.class);
-					World world = location.getWorld();
-					BlockPos pos = location.getPos();
+				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				World world = location.getWorld();
+				BlockPos pos = location.getPos();
 
-					AxisAlignedBB box = new AxisAlignedBB(
-						pos.getX() + 0.5 - RADIUS, pos.getY() + 0.5 - RADIUS, pos.getZ() + 0.5 - RADIUS,
-						pos.getX() + 0.5 + RADIUS, pos.getY() + 0.5 + RADIUS, pos.getZ() + 0.5 + RADIUS
-					);
+				AxisAlignedBB box = new AxisAlignedBB(
+					pos.getX() + 0.5 - RADIUS, pos.getY() + 0.5 - RADIUS, pos.getZ() + 0.5 - RADIUS,
+					pos.getX() + 0.5 + RADIUS, pos.getY() + 0.5 + RADIUS, pos.getZ() + 0.5 + RADIUS
+				);
 
-					int total = 0;
-					int remaining = limit;
-					for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
-						ItemStack original = item.getItem();
+				int total = 0;
+				int remaining = limit;
+				for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
+					ItemStack original = item.getItem();
 
-						ItemStack toInsert = original.copy();
-						if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
+					ItemStack toInsert = original.copy();
+					if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
 
-						ItemStack rest = slot == -1 ? ItemHandlerHelper.insertItem(handler, toInsert, false) : handler.insertItem(slot - 1, toInsert, false);
-						int inserted = rest.isEmpty() ? toInsert.getCount() : toInsert.getCount() - rest.getCount();
-						remaining -= inserted;
-						total += inserted;
+					ItemStack rest = slot == -1 ? ItemHandlerHelper.insertItem(handler, toInsert, false) : handler.insertItem(slot - 1, toInsert, false);
+					int inserted = rest.isEmpty() ? toInsert.getCount() : toInsert.getCount() - rest.getCount();
+					remaining -= inserted;
+					total += inserted;
 
-						if (inserted >= original.getCount()) {
-							item.setDead();
-						} else {
-							original.grow(-inserted);
-							item.setItem(original);
-						}
-
-						if (remaining <= 0) break;
+					if (inserted >= original.getCount()) {
+						item.setDead();
+					} else {
+						original.grow(-inserted);
+						item.setItem(original);
 					}
 
-					return MethodResult.result(total);
+					if (remaining <= 0) break;
 				}
+
+				return MethodResult.result(total);
 			});
 		}
 	}

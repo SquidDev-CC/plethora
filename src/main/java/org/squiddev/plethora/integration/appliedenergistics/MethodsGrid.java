@@ -16,7 +16,6 @@ import org.squiddev.plethora.integration.ItemFingerprint;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
@@ -73,16 +72,13 @@ public class MethodsGrid {
 	public static MethodResult findItem(final IUnbakedContext<IGrid> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IGrid> baked = context.bake();
-				IAEItemStack stack = findStack(baked.getTarget(), fingerprint);
+		return MethodResult.nextTick(() -> {
+			IContext<IGrid> baked = context.bake();
+			IAEItemStack stack = findStack(baked.getTarget(), fingerprint);
 
-				return stack == null
-					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(id(stack)).getObject());
-			}
+			return stack == null
+				? MethodResult.empty()
+				: MethodResult.result(baked.makeChild(id(stack)).getObject());
 		});
 	}
 
@@ -96,23 +92,20 @@ public class MethodsGrid {
 	public static MethodResult findItems(final IUnbakedContext<IGrid> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IGrid> baked = context.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<IGrid> baked = context.bake();
 
-				int i = 0;
-				Map<Integer, Object> out = Maps.newHashMap();
-				IStorageGrid grid = baked.getTarget().getCache(IStorageGrid.class);
-				for (IAEItemStack aeStack : grid.getItemInventory().getStorageList()) {
-					ItemStack stack = aeStack.getItemStack();
-					if (fingerprint.matches(stack)) {
-						out.put(++i, baked.makeChild(id(aeStack)).getObject());
-					}
+			int i = 0;
+			Map<Integer, Object> out = Maps.newHashMap();
+			IStorageGrid grid = baked.getTarget().getCache(IStorageGrid.class);
+			for (IAEItemStack aeStack : grid.getItemInventory().getStorageList()) {
+				ItemStack stack = aeStack.getItemStack();
+				if (fingerprint.matches(stack)) {
+					out.put(++i, baked.makeChild(id(aeStack)).getObject());
 				}
-
-				return MethodResult.result(out);
 			}
+
+			return MethodResult.result(out);
 		});
 	}
 

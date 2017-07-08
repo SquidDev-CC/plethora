@@ -1,9 +1,9 @@
 package org.squiddev.plethora.api.neural;
 
-import com.google.common.base.Predicate;
 import net.minecraft.entity.EntityLivingBase;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 /**
  * Various methods for controlling interactions with the neural interface.

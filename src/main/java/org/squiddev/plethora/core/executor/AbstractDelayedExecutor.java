@@ -215,10 +215,7 @@ public class AbstractDelayedExecutor implements ITickable {
 					response = context.pullEvent(EVENT_NAME);
 				}
 				while (error == null && (response.length < 3 || !(response[1] instanceof Number) || !(response[2] instanceof Boolean) || (long) ((Number) response[1]).intValue() != id));
-			} catch (InterruptedException e) {
-				cancel(this);
-				throw e;
-			} catch (LuaException e) {
+			} catch (InterruptedException | LuaException e) {
 				cancel(this);
 				throw e;
 			}
@@ -258,7 +255,7 @@ public class AbstractDelayedExecutor implements ITickable {
 
 		public AsyncLuaTask(MethodResult task) {
 			super(task);
-			this.future = new DirectFuture<Object[]>();
+			this.future = new DirectFuture<>();
 		}
 
 		@Override

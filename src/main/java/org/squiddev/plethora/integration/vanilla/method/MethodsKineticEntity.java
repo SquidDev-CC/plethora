@@ -28,7 +28,6 @@ import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -48,19 +47,16 @@ public final class MethodsKineticEntity {
 		final double yaw = getReal(args, 0) % 360;
 		final double pitch = getReal(args, 1) % 360;
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
-				if (target instanceof EntityPlayerMP) {
-					NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
-					handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
-				} else {
-					target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
-					target.rotationPitch = (float) (pitch % 360);
-				}
-				return MethodResult.empty();
+		return MethodResult.nextTick(() -> {
+			EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
+			if (target instanceof EntityPlayerMP) {
+				NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
+				handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
+			} else {
+				target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
+				target.rotationPitch = (float) (pitch % 360);
 			}
+			return MethodResult.empty();
 		});
 	}
 
@@ -91,14 +87,11 @@ public final class MethodsKineticEntity {
 			Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost
 		);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> baked = context.bake();
 
-				EntityEnderman target = baked.getContext(EntityEnderman.class);
-				return MethodResult.result(target.teleportTo(target.posX + x, target.posY + y, target.posZ + z));
-			}
+			EntityEnderman target = baked.getContext(EntityEnderman.class);
+			return MethodResult.result(target.teleportTo(target.posX + x, target.posY + y, target.posZ + z));
 		});
 	}
 
@@ -114,41 +107,38 @@ public final class MethodsKineticEntity {
 
 		CostHelpers.checkCost(unbaked.getCostHandler(), Kinetic.shootCost * potency);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
-				AbstractSkeleton skeleton = context.getContext(AbstractSkeleton.class);
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			AbstractSkeleton skeleton = context.getContext(AbstractSkeleton.class);
 
-				ItemStack stack = skeleton.getHeldItem(EnumHand.MAIN_HAND);
-				if (stack.isEmpty() || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
+			ItemStack stack = skeleton.getHeldItem(EnumHand.MAIN_HAND);
+			if (stack.isEmpty() || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
 
-				IWorldLocation location = context.getContext(IWorldLocation.class);
+			IWorldLocation location = context.getContext(IWorldLocation.class);
 
-				EntityArrow arrow = (EntityArrow) ReflectionHelper
-					.findMethod(AbstractSkeleton.class, "getArrow", "func_190726_a", float.class)
-					.invoke(skeleton, skeleton, potency);
+			EntityArrow arrow = (EntityArrow) ReflectionHelper
+				.findMethod(AbstractSkeleton.class, "getArrow", "func_190726_a", float.class)
+				.invoke(skeleton, skeleton, potency);
 
-				float rotationYaw = skeleton.rotationYaw;
-				float rotationPitch = skeleton.rotationPitch;
-				float motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-				float motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-				float motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
+			float rotationYaw = skeleton.rotationYaw;
+			float rotationPitch = skeleton.rotationPitch;
+			float motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
+			float motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
+			float motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
 
-				arrow.setThrowableHeading(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
+			arrow.setThrowableHeading(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
 
-				double damage = potency * 2;
-				int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
-				if (power > 0) damage += power * 0.5 + 0.5;
-				arrow.setDamage(damage);
+			double damage = potency * 2;
+			int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
+			if (power > 0) damage += power * 0.5 + 0.5;
+			arrow.setDamage(damage);
 
-				if (potency == 1.0) arrow.setIsCritical(true);
+			if (potency == 1.0) arrow.setIsCritical(true);
 
-				skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
+			skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
 
-				location.getWorld().spawnEntity(arrow);
-				return MethodResult.empty();
-			}
+			location.getWorld().spawnEntity(arrow);
+			return MethodResult.empty();
 		});
 	}
 
@@ -169,28 +159,25 @@ public final class MethodsKineticEntity {
 		// We provide a number * 10 as it seems more "friendly".
 		final double velocity = given * 0.1;
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> baked = context.bake();
 
-				EntityMinecart target = baked.getContext(EntityMinecart.class);
-				double vx = target.motionX;
-				double vz = target.motionZ;
-				double len = Math.sqrt(vx * vx + vz * vz);
+			EntityMinecart target = baked.getContext(EntityMinecart.class);
+			double vx = target.motionX;
+			double vz = target.motionZ;
+			double len = Math.sqrt(vx * vx + vz * vz);
 
-				// It isn't perfect, but it's better than nothing.
-				if (len == 0) {
-					float yaw = target.rotationYaw;
-					vx = -MathHelper.sin(yaw / 180.0f * (float) Math.PI);
-					vz = MathHelper.cos(yaw / 180.0f * (float) Math.PI);
-					len = 1;
-				}
-
-				target.addVelocity(velocity * vx / len, 0, velocity * vz / len);
-				target.velocityChanged = true;
-				return MethodResult.empty();
+			// It isn't perfect, but it's better than nothing.
+			if (len == 0) {
+				float yaw = target.rotationYaw;
+				vx = -MathHelper.sin(yaw / 180.0f * (float) Math.PI);
+				vz = MathHelper.cos(yaw / 180.0f * (float) Math.PI);
+				len = 1;
 			}
+
+			target.addVelocity(velocity * vx / len, 0, velocity * vz / len);
+			target.velocityChanged = true;
+			return MethodResult.empty();
 		});
 	}
 }

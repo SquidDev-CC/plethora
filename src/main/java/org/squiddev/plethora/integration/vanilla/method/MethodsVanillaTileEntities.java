@@ -12,8 +12,6 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
 
-import java.util.concurrent.Callable;
-
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
 public class MethodsVanillaTileEntities {
@@ -78,20 +76,17 @@ public class MethodsVanillaTileEntities {
 			lines[i] = new TextComponentString(arg);
 		}
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				TileEntitySign sign = context.bake().getTarget();
-				System.arraycopy(lines, 0, sign.signText, 0, lines.length);
-				sign.markDirty();
+		return MethodResult.nextTick(() -> {
+			TileEntitySign sign = context.bake().getTarget();
+			System.arraycopy(lines, 0, sign.signText, 0, lines.length);
+			sign.markDirty();
 
-				World world = sign.getWorld();
-				BlockPos pos = sign.getPos();
-				IBlockState state = world.getBlockState(pos);
-				world.notifyBlockUpdate(pos, state, state, 3);
+			World world = sign.getWorld();
+			BlockPos pos = sign.getPos();
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state, state, 3);
 
-				return MethodResult.empty();
-			}
+			return MethodResult.empty();
 		});
 	}
 }

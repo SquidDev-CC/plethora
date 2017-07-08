@@ -193,7 +193,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		}
 
 		builder.addContext(te, tile(te));
-		builder.<IWorldLocation>addContext(new WorldLocation(world, blockPos));
+		builder.addContext(new WorldLocation(world, blockPos));
 
 		ICostHandler cost = CostHelpers.getCostHandler(manipulator);
 		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
@@ -231,7 +231,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			containerRef, cost, containerRef, builder.getReferenceArray()
 		);
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
+		IPartialContext<IModuleContainer> baked = new PartialContext<>(
 			container, cost, builder.getObjectsArray(), container
 		);
 

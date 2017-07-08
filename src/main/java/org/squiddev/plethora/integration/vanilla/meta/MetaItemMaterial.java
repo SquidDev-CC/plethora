@@ -19,7 +19,7 @@ public class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 		String name = getName(stack);
 		if (name == null) return Collections.emptyMap();
 
-		return Collections.<Object, Object>singletonMap("material", name);
+		return Collections.singletonMap("material", name);
 	}
 
 	private static String getName(@Nonnull ItemStack stack) {

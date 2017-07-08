@@ -2,9 +2,9 @@ package org.squiddev.plethora.gameplay.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.gameplay.keyboard.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
+import org.squiddev.plethora.gameplay.keyboard.ItemKeyboard;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 import org.squiddev.plethora.gameplay.modules.BlockManipulator;
 import org.squiddev.plethora.gameplay.modules.ChatListener;
@@ -21,7 +21,7 @@ import java.util.Set;
  * The proxy class
  */
 public final class Registry {
-	private static final Set<IModule> modules = new HashSet<IModule>();
+	private static final Set<IModule> modules = new HashSet<>();
 
 	private static boolean setup = false;
 	private static boolean preInit = false;

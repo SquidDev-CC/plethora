@@ -39,7 +39,7 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 		IGuiHelper helper = registry.getJeiHelpers().getGuiHelper();
 
 		registry.addRecipeCategories(new UseInRecipeCategory(ID, helper));
-		registry.addRecipeHandlers(new UseInRecipeHandler<ModulesWrapper>(ID, ModulesWrapper.class));
+		registry.addRecipeHandlers(new UseInRecipeHandler<>(ID, ModulesWrapper.class));
 
 		List<ModulesWrapper> wrappers = Lists.newArrayList();
 		for (ItemStack stack : registry.getIngredientRegistry().getIngredients(ItemStack.class)) {

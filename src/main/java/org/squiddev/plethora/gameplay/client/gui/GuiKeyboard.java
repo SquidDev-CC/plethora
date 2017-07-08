@@ -3,7 +3,6 @@ package org.squiddev.plethora.gameplay.client.gui;
 import dan200.computercraft.client.gui.widgets.WidgetTerminal;
 import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.computer.core.IComputer;
-import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -36,12 +35,7 @@ public class GuiKeyboard extends GuiScreen {
 		mc.player.openContainer = container;
 
 		Terminal terminal = computer.getTerminal();
-		terminalGui = new WidgetTerminal(0, 0, terminal.getWidth(), terminal.getHeight(), new IComputerContainer() {
-			@Override
-			public IComputer getComputer() {
-				return computer;
-			}
-		}, 2, 2, 2, 2);
+		terminalGui = new WidgetTerminal(0, 0, terminal.getWidth(), terminal.getHeight(), () -> computer, 2, 2, 2, 2);
 		terminalGui.setAllowFocusLoss(false);
 		Keyboard.enableRepeatEvents(true);
 	}

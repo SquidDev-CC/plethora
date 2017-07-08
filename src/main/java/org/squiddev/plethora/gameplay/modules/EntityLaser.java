@@ -329,11 +329,10 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 						world.setBlockToAir(position);
 
-						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
-						if (drops != null) {
-							for (ItemStack stack : drops) {
-								Block.spawnAsEntity(world, position, stack);
-							}
+						NonNullList<ItemStack> drops = NonNullList.create();
+						block.getDrops(drops, world, position, blockState, 0);
+						for (ItemStack stack : drops) {
+							Block.spawnAsEntity(world, position, stack);
 						}
 					} else {
 						potency = -1;

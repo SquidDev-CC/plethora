@@ -19,7 +19,6 @@ import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -82,20 +81,17 @@ public class MethodsNoteblock {
 		final float adjPitch = (float) Math.pow(2d, (double) (pitch - 12) / 12d);
 
 		context.safeBake();
-		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
-				BlockPos pos = location.getPos();
-				Vec3d vec = location.getLoc();
+		context.getExecutor().executeAsync(MethodResult.nextTick(() -> {
+			IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+			BlockPos pos = location.getPos();
+			Vec3d vec = location.getLoc();
 
-				World world = location.getWorld();
-				world.playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
-				if (world instanceof WorldServer) {
-					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.x, vec.y, vec.z, 0, pitch / 24.0, 0, 0, 1.0);
-				}
-				return MethodResult.empty();
+			World world = location.getWorld();
+			world.playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
+			if (world instanceof WorldServer) {
+				((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.x, vec.y, vec.z, 0, pitch / 24.0, 0, 0, 1.0);
 			}
+			return MethodResult.empty();
 		}));
 
 		return MethodResult.empty();
@@ -117,15 +113,12 @@ public class MethodsNoteblock {
 		if (sound == null) throw new LuaException("No such sound '" + name + "'");
 
 		context.safeBake();
-		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
-				BlockPos pos = location.getPos();
+		context.getExecutor().executeAsync(MethodResult.nextTick(() -> {
+			IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+			BlockPos pos = location.getPos();
 
-				location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, pitch);
-				return MethodResult.empty();
-			}
+			location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, pitch);
+			return MethodResult.empty();
 		}));
 
 		return MethodResult.empty();

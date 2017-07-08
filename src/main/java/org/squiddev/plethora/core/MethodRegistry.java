@@ -104,7 +104,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 		Preconditions.checkNotNull(context, "context cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, DefaultExecutor.INSTANCE);
+		return new UnbakedContext<>(target, handler, context, modules, DefaultExecutor.INSTANCE);
 	}
 
 	@Nonnull
@@ -137,7 +137,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	public Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
 		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
-		HashMap<String, Integer> methodLookup = new HashMap<String, Integer>();
+		HashMap<String, Integer> methodLookup = new HashMap<>();
 
 		Object initialTarget = initialBaked.getTarget();
 		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
@@ -201,7 +201,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			}
 		}
 
-		return Pair.<List<IMethod<?>>, List<IUnbakedContext<?>>>of(methods, contexts);
+		return Pair.of(methods, contexts);
 	}
 
 	@SuppressWarnings("unchecked")

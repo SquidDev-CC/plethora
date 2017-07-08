@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
@@ -36,12 +35,7 @@ public class MethodsEnergy {
 	public static MethodResult getRFStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
 		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				return MethodResult.result(context.bake().getTarget().getEnergyStored(facing));
-			}
-		});
+		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getEnergyStored(facing)));
 	}
 
 	@BasicMethod.Inject(
@@ -51,12 +45,7 @@ public class MethodsEnergy {
 	public static MethodResult getRFCapacityHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
 		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				return MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing));
-			}
-		});
+		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing)));
 	}
 
 	@IMethod.Inject(value = ItemStack.class, modId = "CoFHAPI|energy")

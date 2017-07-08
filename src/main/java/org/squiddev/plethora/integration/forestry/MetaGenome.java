@@ -56,7 +56,7 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 
 			Map<String, Object> data = Maps.newHashMap();
 			data.put("id", allele.getUID());
-			data.put("displayName", allele.getName());
+			data.put("displayName", allele.getAlleleName());
 			data.put("authority", species.getAuthority());
 			data.put("binomial", species.getBinomial());
 			data.put("complexity", species.getComplexity());

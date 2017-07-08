@@ -1,9 +1,5 @@
 package org.squiddev.plethora.gameplay.neural;
 
-import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.Baubles;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
@@ -154,7 +150,7 @@ public final class NeuralHelpers {
 			handler.getAdditionalContext(access, builder);
 		}
 
-		builder.<IWorldLocation>addContext(new EntityWorldLocation(owner));
+		builder.addContext(new EntityWorldLocation(owner));
 		builder.addContext(owner, entity(owner));
 
 		ICostHandler cost = CostHelpers.getCostHandler(owner);
@@ -188,7 +184,7 @@ public final class NeuralHelpers {
 			containerRef, cost, containerRef, builder.getReferenceArray()
 		);
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
+		IPartialContext<IModuleContainer> baked = new PartialContext<>(
 			container, cost, builder.getObjectsArray(), container
 		);
 

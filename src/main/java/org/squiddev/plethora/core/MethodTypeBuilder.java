@@ -34,7 +34,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 	public static final MethodTypeBuilder instance = new MethodTypeBuilder();
 
-	private final Map<String, Class<?>> loaded = new HashMap<String, Class<?>>();
+	private final Map<String, Class<?>> loaded = new HashMap<>();
 
 	private final Map<Class<? extends Annotation>, IMethodBuilder> annotations = Maps.newHashMap();
 
@@ -78,7 +78,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 		String internalName = INTERNAL_PREFIX + classPart.replace('.', '/');
 
 		MarkerInterfaces markerInterfacesAnnot = method.getAnnotation(MarkerInterfaces.class);
-		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.<Class<?>>emptySet() : Sets.newHashSet(markerInterfacesAnnot.value());
+		Set<Class<?>> markerInterfaces = markerInterfacesAnnot == null ? Collections.emptySet() : Sets.newHashSet(markerInterfacesAnnot.value());
 
 		Class<?> klass = add(dottedName, builder.writeClass(method, meta, markerInterfaces, internalName));
 		if (!IMethod.class.isAssignableFrom(klass)) {

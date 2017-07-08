@@ -23,7 +23,7 @@ public final class Reference {
 	 */
 	@Nonnull
 	public static <T> IReference<T> id(T object) {
-		return new IdentityReference<T>(object);
+		return new IdentityReference<>(object);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public final class Reference {
 	 */
 	@Nonnull
 	public static <T extends TileEntity> IReference<T> tile(T object) {
-		return new TileReference<T>(object);
+		return new TileReference<>(object);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public final class Reference {
 	 */
 	@Nonnull
 	public static <T extends Entity> IReference<T> entity(T object) {
-		return new EntityReference<T>(object);
+		return new EntityReference<>(object);
 	}
 
 	/**
@@ -61,6 +61,6 @@ public final class Reference {
 	 */
 	@Nonnull
 	public static <T extends Entity> IReference<T> bounded(T object, IWorldLocation location, int radius) {
-		return new BoundedEntityReference<T>(object, location, radius);
+		return new BoundedEntityReference<>(object, location, radius);
 	}
 }

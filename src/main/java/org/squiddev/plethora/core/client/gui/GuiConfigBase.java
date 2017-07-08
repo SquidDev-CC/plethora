@@ -16,7 +16,7 @@ public abstract class GuiConfigBase extends GuiConfig {
 
 	@SuppressWarnings("rawtypes")
 	private static List<IConfigElement> getConfigElements(Configuration config) {
-		ArrayList<IConfigElement> elements = new ArrayList<IConfigElement>();
+		ArrayList<IConfigElement> elements = new ArrayList<>();
 		for (String category : config.getCategoryNames()) {
 			if (!category.contains(".")) {
 				elements.add(new ConfigElement(config.getCategory(category)));

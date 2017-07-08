@@ -51,7 +51,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 				ICostHandler handler = registry.getCostHandler(te, enumFacing);
 				BlockReference reference = new BlockReference(new WorldLocation(world, blockPos), world.getBlockState(blockPos), te);
 				IUnbakedContext<BlockReference> context = registry.makeContext(reference, handler, BasicModuleContainer.EMPTY_REF, new WorldLocation(world, blockPos));
-				IPartialContext<BlockReference> baked = new PartialContext<BlockReference>(reference, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
+				IPartialContext<BlockReference> baked = new PartialContext<>(reference, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
 
 				Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
 				if (paired.getLeft().size() > 0) {
@@ -65,7 +65,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 		return null;
 	}
 
-	private static final Set<String> blacklist = new HashSet<String>();
+	private static final Set<String> blacklist = new HashSet<>();
 
 	public static void addToBlacklist(String klass) {
 		blacklist.add(klass);
