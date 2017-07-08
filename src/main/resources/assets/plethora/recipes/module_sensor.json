@@ -1,0 +1,26 @@
+{
+	"result": {
+		"item": "plethora:module",
+		"data": 3
+	},
+	"pattern": [
+		"ERE",
+		"IGI",
+		"III"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"R": {
+			"item": "minecraft:rotten_flesh"
+		},
+		"E": {
+			"item": "minecraft:ender_pearl"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	}
+}

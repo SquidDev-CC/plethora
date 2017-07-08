@@ -42,16 +42,16 @@ public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
 		yPos += slotDrawable.getHeight() + 4;
 
 		int color = Color.gray.getRGB();
-		minecraft.fontRendererObj.drawString(
+		minecraft.fontRenderer.drawString(
 			Translator.translateToLocal("gui.jei.plethora." + id + ".usable"),
 			xPos, yPos, color
 		);
-		yPos += minecraft.fontRendererObj.FONT_HEIGHT;
+		yPos += minecraft.fontRenderer.FONT_HEIGHT;
 
 		for (ItemStack stack : usable) {
 			String name = stack.getDisplayName();
-			minecraft.fontRendererObj.drawString(" - " + name, xPos, yPos, color);
-			yPos += minecraft.fontRendererObj.FONT_HEIGHT;
+			minecraft.fontRenderer.drawString(" - " + name, xPos, yPos, color);
+			yPos += minecraft.fontRenderer.FONT_HEIGHT;
 		}
 	}
 }

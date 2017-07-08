@@ -51,7 +51,7 @@ public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> 
 
 	@Override
 	public IMessage onMessage(KeyMessage message, MessageContext ctx) {
-		EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+		EntityPlayerMP player = ctx.getServerHandler().player;
 
 		synchronized (listeners) {
 			Set<IModuleAccess> accesses = listeners.get(player);

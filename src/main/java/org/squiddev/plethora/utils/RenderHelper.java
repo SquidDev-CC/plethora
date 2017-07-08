@@ -1,8 +1,8 @@
 package org.squiddev.plethora.utils;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -37,7 +37,7 @@ public class RenderHelper {
 
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 
 		worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
 		worldrenderer.pos(axis.minX, axis.minY, axis.minZ).endVertex();

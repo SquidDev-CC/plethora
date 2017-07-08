@@ -54,8 +54,8 @@ public class IntegrationVanilla {
 
 	@SubscribeEvent
 	@SuppressWarnings("deprecation") // Use AttachCapabilities<T> in the future
-	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
-		Item item = event.getItem();
+	public void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
+		Item item = event.getObject().getItem();
 		if (item == Items.CLOCK) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, clockCap);
 		} else if (item instanceof ItemBlock) {
@@ -70,10 +70,10 @@ public class IntegrationVanilla {
 
 	@SubscribeEvent
 	@SuppressWarnings("deprecation")
-	public void attachCapabilities(AttachCapabilitiesEvent.TileEntity event) {
+	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
 		// We're meant to use AttachCapabilitiesEvent<TileEntity>, but leaving this for compat
 
-		TileEntity entity = event.getTileEntity();
+		TileEntity entity = event.getObject();
 		if (entity instanceof TileEntityNote) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);
 		} else if (entity instanceof TileEntityDaylightDetector) {
@@ -83,8 +83,8 @@ public class IntegrationVanilla {
 
 	@SubscribeEvent
 	@SuppressWarnings("deprecation")
-	public void attachCapabilities(AttachCapabilitiesEvent.Entity event) {
-		Entity entity = event.getEntity();
+	public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
+		Entity entity = event.getObject();
 		if (entity instanceof EntityLiving) {
 			event.addCapability(DisableAI.DISABLE_AI, new DisableAI.DefaultDisableAI());
 		}

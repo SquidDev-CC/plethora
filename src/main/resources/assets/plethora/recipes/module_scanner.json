@@ -1,0 +1,27 @@
+{
+	"result": {
+		"item": "plethora:module",
+		"data": 2
+	},
+	"pattern": [
+		"EDE",
+		"IGI",
+		"III"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"D": {
+			"item": "minecraft:dirt",
+			"data": 0
+		},
+		"E": {
+			"item": "minecraft:ender_pearl"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	}
+}

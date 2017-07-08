@@ -8,12 +8,12 @@ import org.squiddev.plethora.gameplay.Plethora;
 
 public class GuiConfigGameplay extends GuiConfigFactory {
 	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass() {
-		return GuiConfigImpl.class;
+	public GuiScreen createConfigGui(GuiScreen parentScreen) {
+		return new GuiConfigImpl(parentScreen);
 	}
 
-	public static class GuiConfigImpl extends GuiConfigBase {
-		public GuiConfigImpl(GuiScreen screen) {
+	private static class GuiConfigImpl extends GuiConfigBase {
+		GuiConfigImpl(GuiScreen screen) {
 			super(screen, ConfigGameplay.configuration, Plethora.ID, Plethora.NAME);
 		}
 	}

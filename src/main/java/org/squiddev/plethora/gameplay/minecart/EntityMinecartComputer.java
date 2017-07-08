@@ -258,7 +258,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			if (player instanceof EntityPlayerMP) {
 				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
 			}
-			Vec3d to = new Vec3d(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+			Vec3d to = new Vec3d(from.x + look.x * reach, from.y + look.y * reach, from.z + look.z * reach);
 
 			int slot = getIntersectSlot(from, to, trans);
 			if (slot >= 0) {
@@ -510,15 +510,15 @@ public class EntityMinecartComputer extends EntityMinecart {
 			if (posOff == null) posOff = offsetPos;
 			if (negOff == null) negOff = offsetPos;
 
-			x = offsetPos.xCoord;
-			y = (posOff.yCoord + negOff.yCoord) / 2.0D;
-			z = offsetPos.zCoord;
-			Vec3d invoff = negOff.addVector(-posOff.xCoord, -posOff.yCoord, -posOff.zCoord);
+			x = offsetPos.x;
+			y = (posOff.y + negOff.y) / 2.0D;
+			z = offsetPos.z;
+			Vec3d invoff = negOff.addVector(-posOff.x, -posOff.y, -posOff.z);
 
 			if (invoff.lengthVector() != 0.0D) {
 				invoff = invoff.normalize();
-				yaw = (float) (Math.atan2(invoff.zCoord, invoff.xCoord) * 180.0D / Math.PI);
-				pitch = (float) (Math.atan(invoff.yCoord) * 73.0D);
+				yaw = (float) (Math.atan2(invoff.z, invoff.x) * 180.0D / Math.PI);
+				pitch = (float) (Math.atan(invoff.y) * 73.0D);
 			}
 		}
 
@@ -566,10 +566,10 @@ public class EntityMinecartComputer extends EntityMinecart {
 		inv.invert(transform);
 
 		// Convert the vectors into "minecart" space
-		Vector4f to = new Vector4f((float) toVec.xCoord, (float) toVec.yCoord, (float) toVec.zCoord, 1);
+		Vector4f to = new Vector4f((float) toVec.x, (float) toVec.y, (float) toVec.z, 1);
 		inv.transform(to);
 
-		Vector4f from = new Vector4f((float) fromVec.xCoord, (float) fromVec.yCoord, (float) fromVec.zCoord, 1);
+		Vector4f from = new Vector4f((float) fromVec.x, (float) fromVec.y, (float) fromVec.z, 1);
 		inv.transform(from);
 
 		Vector4f step = new Vector4f();
@@ -580,7 +580,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		for (int offset = 0; offset <= 100; offset++) {
 			for (int i = 0; i < BOUNDS.length; i++) {
 				AxisAlignedBB bb = BOUNDS[i];
-				if (bb.isVecInside(new Vec3d(from.getX(), from.getY(), from.getZ()))) {
+				if (bb.contains(new Vec3d(from.getX(), from.getY(), from.getZ()))) {
 					// If we got the actual block itself then pretend nothing happened.
 					return i - 1;
 				}
@@ -700,7 +700,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			if (player instanceof EntityPlayerMP) {
 				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
 			}
-			Vec3d to = new Vec3d(from.xCoord + look.xCoord * reach, from.yCoord + look.yCoord * reach, from.zCoord + look.zCoord * reach);
+			Vec3d to = new Vec3d(from.x + look.x * reach, from.y + look.y * reach, from.z + look.z * reach);
 
 			int slot = getIntersectSlot(from, to, trans);
 

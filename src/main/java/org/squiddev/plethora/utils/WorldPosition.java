@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,9 +53,8 @@ public final class WorldPosition {
 	@Nullable
 	public World getWorld(MinecraftServer server) {
 		World world = this.world.get();
-		if (world == null) {
-			world = server.worldServerForDimension(dimension);
-			if (world != null) this.world = new WeakReference<World>(world);
+		if (world == null && DimensionManager.isDimensionRegistered(dimension)) {
+			this.world = new WeakReference<World>(world = server.getWorld(dimension));
 		}
 
 		return world;
@@ -72,9 +72,9 @@ public final class WorldPosition {
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("dim", dimension);
-		tag.setDouble("x", pos.xCoord);
-		tag.setDouble("y", pos.yCoord);
-		tag.setDouble("z", pos.zCoord);
+		tag.setDouble("x", pos.x);
+		tag.setDouble("y", pos.y);
+		tag.setDouble("z", pos.z);
 		return tag;
 	}
 

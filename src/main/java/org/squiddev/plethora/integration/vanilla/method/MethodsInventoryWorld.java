@@ -106,7 +106,7 @@ public class MethodsInventoryWorld {
 			);
 		}
 
-		EntityItem entity = new EntityItem(world, pos.xCoord, pos.yCoord, pos.zCoord, stack.copy());
+		EntityItem entity = new EntityItem(world, pos.x, pos.y, pos.z, stack.copy());
 		entity.setDefaultPickupDelay();
 		world.spawnEntity(entity);
 
@@ -154,7 +154,7 @@ public class MethodsInventoryWorld {
 					int total = 0;
 					int remaining = limit;
 					for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
-						ItemStack original = item.getEntityItem();
+						ItemStack original = item.getItem();
 
 						ItemStack toInsert = original.copy();
 						if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
@@ -168,7 +168,7 @@ public class MethodsInventoryWorld {
 							item.setDead();
 						} else {
 							original.grow(-inserted);
-							item.setEntityItemStack(original);
+							item.setItem(original);
 						}
 
 						if (remaining <= 0) break;

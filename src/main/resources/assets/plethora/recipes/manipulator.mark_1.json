@@ -1,0 +1,30 @@
+{
+	"result": {
+		"item": "plethora:manipulator",
+		"data": 0
+	},
+	"pattern": [
+		"GCG",
+		"RMR",
+		"III"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"C": {
+			"item": "minecraft:gold_ingot"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"M": {
+			"item": "computercraft:cable",
+			"data": 1
+		}
+	}
+}

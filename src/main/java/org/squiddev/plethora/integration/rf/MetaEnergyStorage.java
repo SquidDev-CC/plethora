@@ -1,6 +1,6 @@
 package org.squiddev.plethora.integration.rf;
 
-import cofh.api.energy.IEnergyStorage;
+import cofh.redstoneflux.api.IEnergyStorage;
 import com.google.common.collect.Maps;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;

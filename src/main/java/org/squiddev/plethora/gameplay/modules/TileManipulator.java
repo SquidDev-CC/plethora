@@ -154,9 +154,9 @@ public final class TileManipulator extends TileBase implements ITickable {
 		ItemStack heldStack = player.getHeldItem(hand);
 		for (int i = 0; i < type.size(); i++) {
 			AxisAlignedBB box = type.boxes[i];
-			if (hit.yCoord > OFFSET - PIX &&
-				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
-				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
+			if (hit.y > OFFSET - PIX &&
+				hit.x >= box.minX && hit.x <= box.maxX &&
+				hit.z >= box.minZ && hit.z <= box.maxZ) {
 
 				final ItemStack stack = stacks[i];
 				if (heldStack.isEmpty() && !stack.isEmpty()) {

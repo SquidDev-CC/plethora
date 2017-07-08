@@ -54,7 +54,7 @@ public class MethodsMultipart {
 	)
 	public static MethodResult getSlottedPart(final IUnbakedContext<IMultipartContainer> context, Object[] args) throws LuaException {
 		String slotName = getString(args, 0);
-		final IPartSlot slot = MCMultiPart.slotRegistry.getObject(new ResourceLocation(slotName));
+		final IPartSlot slot = MCMultiPart.slotRegistry.getValue(new ResourceLocation(slotName));
 		if (slot == null) throw new LuaException("Bad name '" + slotName + "' for argument 1");
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
@@ -77,7 +77,7 @@ public class MethodsMultipart {
 	)
 	public static MethodResult getSlottedPartMeta(final IUnbakedContext<IMultipartContainer> context, Object[] args) throws LuaException {
 		String slotName = getString(args, 0);
-		final IPartSlot slot = MCMultiPart.slotRegistry.getObject(new ResourceLocation(slotName));
+		final IPartSlot slot = MCMultiPart.slotRegistry.getValue(new ResourceLocation(slotName));
 		if (slot == null) throw new LuaException("Bad name '" + slotName + "' for argument 1");
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {

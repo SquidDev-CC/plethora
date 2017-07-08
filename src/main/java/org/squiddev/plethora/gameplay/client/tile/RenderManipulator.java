@@ -21,7 +21,7 @@ import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 
 public final class RenderManipulator extends TileEntitySpecialRenderer<TileManipulator> {
 	@Override
-	public void renderTileEntityAt(TileManipulator tileManipulator, double x, double y, double z, float f, int j) {
+	public void render(TileManipulator tileManipulator, double x, double y, double z, float partialTicks, int destroyState, float alpha) {
 		GlStateManager.pushMatrix();
 
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);

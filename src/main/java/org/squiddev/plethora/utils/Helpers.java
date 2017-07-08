@@ -26,8 +26,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
@@ -87,39 +85,6 @@ public class Helpers {
 	@SuppressWarnings("deprecation")
 	public static String translateToLocalFormatted(String format, Object... args) {
 		return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(format, args);
-	}
-
-	public static void twoWayCrafting(ItemStack a, ItemStack b) {
-		GameRegistry.addShapelessRecipe(a, b);
-		GameRegistry.addShapelessRecipe(b, a);
-	}
-
-	/**
-	 * Add a series of crafting recipes with positions swapped.
-	 *
-	 * @param output The output stack
-	 * @param a      The first item to swap
-	 * @param b      The second item to swap
-	 * @param args   Args as passed to {@link GameRegistry#addRecipe(net.minecraft.item.crafting.IRecipe)}
-	 */
-	public static void alternateCrafting(ItemStack output, char a, char b, Object... args) {
-		GameRegistry.addRecipe(output, args);
-
-		if (args[0] instanceof String[]) {
-			String[] inputs = (String[]) args[0];
-
-			for (int i = 0; i < inputs.length; i++) {
-				inputs[i] = swapCharacters(inputs[i], a, b);
-			}
-		} else {
-			int i = 0;
-			while (args[i] instanceof String) {
-				args[i] = swapCharacters((String) args[i], a, b);
-				++i;
-			}
-		}
-
-		GameRegistry.addRecipe(output, args);
 	}
 
 	/**
@@ -286,7 +251,7 @@ public class Helpers {
 			TileEntity te = (TileEntity) owner;
 
 			@SuppressWarnings("deprecation")
-			ResourceLocation name = GameData.getTileEntityRegistry().getNameForObject(te.getClass());
+			ResourceLocation name = TileEntity.REGISTRY.getNameForObject(te.getClass());
 			if (name != null) return name.toString();
 
 			Block block = te.getBlockType();

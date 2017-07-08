@@ -1,0 +1,26 @@
+{
+	"result": {
+		"item": "plethora:module",
+		"data": 1
+	},
+	"pattern": [
+		"III",
+		"GDR",
+		"  I"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"D": {
+			"item": "minecraft:diamond"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	}
+}

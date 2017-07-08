@@ -1,0 +1,5 @@
+{
+	"recipes": {
+		"neural_interface": "org.squiddev.plethora.gameplay.neural.CraftingNeuralInterface$Factory"
+	}
+}

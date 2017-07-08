@@ -5,13 +5,14 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
+import mezz.jei.api.recipe.IRecipeCategory;
 import org.squiddev.plethora.core.PlethoraCore;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 
-public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper> {
+public class UseInRecipeCategory implements IRecipeCategory<UseInRecipeWrapper> {
 	private static final int RECIPE_WIDTH = 160;
 	private static final int RECIPE_HEIGHT = 125;
 
@@ -33,6 +34,11 @@ public class UseInRecipeCategory extends BlankRecipeCategory<UseInRecipeWrapper>
 	@Override
 	public String getTitle() {
 		return Helpers.translateToLocal("gui.jei.plethora." + id);
+	}
+
+	@Override
+	public String getModName() {
+		return Plethora.NAME;
 	}
 
 	@Nonnull

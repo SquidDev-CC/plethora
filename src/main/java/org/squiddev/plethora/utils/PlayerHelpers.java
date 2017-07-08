@@ -58,19 +58,19 @@ public class PlayerHelpers {
 
 		Vec3d look = entity.getLookVec();
 		Vec3d target = new Vec3d(
-			origin.xCoord + look.xCoord * range,
-			origin.yCoord + look.yCoord * range,
-			origin.zCoord + look.zCoord * range
+			origin.x + look.x * range,
+			origin.y + look.y * range,
+			origin.z + look.z * range
 		);
 
 		RayTraceResult hit = entity.getEntityWorld().rayTraceBlocks(origin, target);
 
 		List<Entity> entityList = entity.getEntityWorld().getEntitiesInAABBexcluding(
 			entity,
-			entity.getEntityBoundingBox().addCoord(
-				look.xCoord * range,
-				look.yCoord * range,
-				look.zCoord * range
+			entity.getEntityBoundingBox().offset(
+				look.x * range,
+				look.y * range,
+				look.z * range
 			).expand(1, 1, 1), collidablePredicate);
 
 		Entity closestEntity = null;
@@ -81,7 +81,7 @@ public class PlayerHelpers {
 			AxisAlignedBB box = entityHit.getEntityBoundingBox().expand((double) size, (double) size, (double) size);
 			RayTraceResult intercept = box.calculateIntercept(origin, target);
 
-			if (box.isVecInside(origin)) {
+			if (box.contains(origin)) {
 				if (closestDistance >= 0.0D) {
 					closestEntity = entityHit;
 					closestVec = intercept == null ? origin : intercept.hitVec;

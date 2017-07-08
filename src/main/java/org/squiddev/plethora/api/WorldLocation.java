@@ -33,7 +33,7 @@ public final class WorldLocation implements IWorldLocation {
 		Preconditions.checkNotNull(pos, "pos cannot be null");
 
 		this.world = world;
-		this.pos = new BlockPos(pos.xCoord, pos.yCoord + 0.5, pos.zCoord);
+		this.pos = new BlockPos(pos.x, pos.y + 0.5, pos.z);
 		this.loc = pos;
 	}
 

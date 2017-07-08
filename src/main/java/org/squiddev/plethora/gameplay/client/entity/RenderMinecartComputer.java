@@ -58,15 +58,15 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 			if (posOffA == null) posOffA = pos;
 			if (posOffB == null) posOffB = pos;
 
-			x += pos.xCoord - ox;
-			y += (posOffA.yCoord + posOffB.yCoord) / 2.0D - oy;
-			z += pos.zCoord - oz;
-			Vec3d posOff = posOffB.addVector(-posOffA.xCoord, -posOffA.yCoord, -posOffA.zCoord);
+			x += pos.x - ox;
+			y += (posOffA.y + posOffB.y) / 2.0D - oy;
+			z += pos.z - oz;
+			Vec3d posOff = posOffB.addVector(-posOffA.x, -posOffA.y, -posOffA.z);
 
 			if (posOff.lengthVector() != 0.0D) {
 				posOff = posOff.normalize();
-				entityYaw = (float) (Math.atan2(posOff.zCoord, posOff.xCoord) * 180 / Math.PI);
-				f3 = (float) (Math.atan(posOff.yCoord) * 73);
+				entityYaw = (float) (Math.atan2(posOff.z, posOff.x) * 180 / Math.PI);
+				f3 = (float) (Math.atan(posOff.y) * 73);
 			}
 		}
 

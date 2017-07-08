@@ -4,17 +4,14 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.utils.Helpers;
@@ -80,25 +77,5 @@ public class ItemNeuralConnector extends ItemBase {
 		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.getEntityPlayer(), event.getTarget(), event.getHand())) {
 			event.setCanceled(true);
 		}
-	}
-
-	@Override
-	public void preInit() {
-		super.preInit();
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-
-		GameRegistry.addShapedRecipe(new ItemStack(this),
-			"  R",
-			"IIR",
-			"IEI",
-			'R', Items.REDSTONE,
-			'E', Items.ENDER_PEARL,
-			'I', Items.IRON_INGOT
-		);
 	}
 }

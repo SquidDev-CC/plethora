@@ -1,0 +1,26 @@
+{
+	"result": {
+		"item": "plethora:module",
+		"data": 4
+	},
+	"pattern": [
+		"RGR",
+		"PBP",
+		"RGR"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"P": {
+			"item": "minecraft:piston"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"B": {
+			"item": "minecraft:redstone_block"
+		},
+		"G": {
+			"item": "minecraft:gold_ingot"
+		}
+	}
+}

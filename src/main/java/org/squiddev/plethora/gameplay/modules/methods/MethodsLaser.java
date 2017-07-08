@@ -75,9 +75,9 @@ public final class MethodsLaser {
 					}
 
 					laser.setPosition(
-						pos.xCoord + xOffset,
-						pos.yCoord + yOffset,
-						pos.zCoord + zOffset
+						pos.x + xOffset,
+						pos.y + yOffset,
+						pos.z + zOffset
 					);
 				} else if (context.hasContext(Entity.class)) {
 					Entity entity = context.getContext(Entity.class);
@@ -88,12 +88,12 @@ public final class MethodsLaser {
 
 					// Offset positions to be around the edge of the entity. Avoids damaging the entity.
 					laser.setPosition(
-						vector.xCoord + motionX / length * offset,
-						vector.yCoord + entity.getEyeHeight() + motionY / length * offset,
-						vector.zCoord + motionZ / length * offset
+						vector.x + motionX / length * offset,
+						vector.y + entity.getEyeHeight() + motionY / length * offset,
+						vector.z + motionZ / length * offset
 					);
 				} else {
-					laser.setPosition(pos.xCoord, pos.yCoord, pos.zCoord);
+					laser.setPosition(pos.x, pos.y, pos.z);
 				}
 
 				laser.setPotency(potency);

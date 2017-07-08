@@ -1,0 +1,24 @@
+{
+	"type": "plethora:neural_interface",
+	"result": {
+		"item": "plethora:neuralinterface"
+	},
+	"pattern": [
+		"  G",
+		"IPR",
+		" GM"
+	],
+	"key": {
+		"P": {
+			"item": "computercraft:pocket_computer",
+			"data": 1
+		},
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"M": {
+			"item": "computercraft:cable",
+			"data": 1
+		}
+	}
+}

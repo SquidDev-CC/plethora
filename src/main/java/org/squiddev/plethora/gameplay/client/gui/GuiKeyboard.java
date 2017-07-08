@@ -82,7 +82,7 @@ public class GuiKeyboard extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
-		FontRenderer renderer = Minecraft.getMinecraft().fontRendererObj;
+		FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
 		drawCenteredString(
 			renderer,
 			Helpers.translateToLocal("item.plethora.keyboard.close"),

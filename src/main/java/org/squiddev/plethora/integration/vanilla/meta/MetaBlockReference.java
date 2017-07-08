@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -23,6 +24,13 @@ public class MetaBlockReference extends BasicMetaProvider<BlockReference> {
 		BlockPos pos = reference.getLocation().getPos();
 
 		data.put("hardness", state.getBlockHardness(world, pos));
+
+		MapColor mapCol = state.getMapColor(world, pos);
+		if (mapCol != null) {
+			int colour = mapCol.colorValue;
+			data.put("colour", colour);
+			data.put("color", colour);
+		}
 
 		return data;
 	}

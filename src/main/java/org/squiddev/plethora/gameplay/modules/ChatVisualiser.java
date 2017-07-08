@@ -123,9 +123,9 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 		@Override
 		public void toBytes(ByteBuf buf) {
 			buf.writeInt(world);
-			buf.writeDouble(pos.xCoord);
-			buf.writeDouble(pos.yCoord);
-			buf.writeDouble(pos.zCoord);
+			buf.writeDouble(pos.x);
+			buf.writeDouble(pos.y);
+			buf.writeDouble(pos.z);
 			ByteBufUtils.writeUTF8String(buf, message);
 		}
 	}

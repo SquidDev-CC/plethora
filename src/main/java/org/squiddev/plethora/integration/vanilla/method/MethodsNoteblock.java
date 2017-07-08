@@ -92,7 +92,7 @@ public class MethodsNoteblock {
 				World world = location.getWorld();
 				world.playSound(null, pos, sound, SoundCategory.RECORDS, volume, adjPitch);
 				if (world instanceof WorldServer) {
-					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.xCoord, vec.yCoord, vec.zCoord, 0, pitch / 24.0, 0, 0, 1.0);
+					((WorldServer) world).spawnParticle(EnumParticleTypes.NOTE, false, vec.x, vec.y, vec.z, 0, pitch / 24.0, 0, 0, 1.0);
 				}
 				return MethodResult.empty();
 			}

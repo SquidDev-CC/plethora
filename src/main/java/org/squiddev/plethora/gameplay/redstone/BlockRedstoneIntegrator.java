@@ -6,6 +6,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.common.BlockGeneric;
 import dan200.computercraft.shared.common.TileGeneric;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -15,7 +16,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -87,12 +90,20 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@Override
 	public void preInit() {
-		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
-		GameRegistry.register(new ItemBlockBase(this), new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
 		GameRegistry.registerTileEntity(TileRedstoneIntegrator.class, Plethora.RESOURCE_DOMAIN + ":" + NAME);
 
 		MinecraftForge.EVENT_BUS.register(this);
 		ComputerCraftAPI.registerPeripheralProvider(this);
+	}
+
+	@SubscribeEvent
+	public void registerBlocks(RegistryEvent.Register<Block> event) {
+		event.getRegistry().register(this.setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME)));
+	}
+
+	@SubscribeEvent
+	public void registerItems(RegistryEvent.Register<Item> event) {
+		event.getRegistry().register(new ItemBlockBase(this).setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME)));
 	}
 
 	@Override
@@ -111,6 +122,11 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void registerModels(ModelRegistryEvent event) {
 		Helpers.setupModel(Item.getItemFromBlock(this), 0, NAME);
 	}
 

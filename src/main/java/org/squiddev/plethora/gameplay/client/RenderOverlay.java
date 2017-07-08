@@ -5,9 +5,9 @@ import net.minecraft.block.BlockOre;
 import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
@@ -148,8 +148,8 @@ public class RenderOverlay extends Module implements IClientModule {
 					// Gather all entities and render them
 					Vec3d position = player.getPositionEyes(event.getPartialTicks());
 					List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(
-						position.xCoord - Sensor.radius, position.yCoord - Sensor.radius, position.zCoord - Sensor.radius,
-						position.xCoord + Sensor.radius, position.yCoord + Sensor.radius, position.zCoord + Sensor.radius
+						position.x - Sensor.radius, position.y - Sensor.radius, position.z - Sensor.radius,
+						position.x + Sensor.radius, position.y + Sensor.radius, position.z + Sensor.radius
 					));
 
 					for (EntityLivingBase entity : entities) {
@@ -185,7 +185,7 @@ public class RenderOverlay extends Module implements IClientModule {
 						if (message.getWorld() == world.provider.getDimension()) {
 							Vec3d pos = message.getPosition();
 							renderFlare(
-								pos.xCoord, pos.yCoord, pos.zCoord,
+								pos.x, pos.y, pos.z,
 								message.getId(), message.getCount() * 2.0f / ChatMessage.TIME, renderManager
 							);
 
@@ -272,7 +272,7 @@ public class RenderOverlay extends Module implements IClientModule {
 
 	@SideOnly(Side.CLIENT)
 	private void renderQuad(Tessellator tessellator, float size) {
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
 		buffer.pos(-size, -size, 0).tex(0, 1).endVertex();

@@ -1,9 +1,9 @@
 package org.squiddev.plethora.gameplay.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -34,7 +34,7 @@ public class RenderHelpers {
 	public static void renderModel(IBakedModel model) {
 		Minecraft mc = Minecraft.getMinecraft();
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer renderer = tessellator.getBuffer();
+		BufferBuilder renderer = tessellator.getBuffer();
 		mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
@@ -46,7 +46,7 @@ public class RenderHelpers {
 		tessellator.draw();
 	}
 
-	private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads) {
+	private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads) {
 		for (BakedQuad quad : quads) {
 			LightUtil.renderQuadColor(renderer, quad, -1);
 		}

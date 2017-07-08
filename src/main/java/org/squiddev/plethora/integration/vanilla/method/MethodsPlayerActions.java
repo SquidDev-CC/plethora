@@ -193,9 +193,9 @@ public final class MethodsPlayerActions {
 	}
 
 	private static Object[] onPlayerRightClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing side, Vec3d look) {
-		float xCoord = (float) look.xCoord - (float) pos.getX();
-		float yCoord = (float) look.yCoord - (float) pos.getY();
-		float zCoord = (float) look.zCoord - (float) pos.getZ();
+		float xCoord = (float) look.x - (float) pos.getX();
+		float yCoord = (float) look.y - (float) pos.getY();
+		float zCoord = (float) look.z - (float) pos.getZ();
 		World world = player.getEntityWorld();
 
 		if (stack != null && stack.getItem().onItemUseFirst(player, world, pos, side, xCoord, yCoord, zCoord, hand) == EnumActionResult.SUCCESS) {
@@ -223,7 +223,7 @@ public final class MethodsPlayerActions {
 				shiftPos = pos.offset(side);
 			}
 
-			if (!world.mayPlace(itemBlock.block, shiftPos, false, shiftSide, null)) {
+			if (!world.mayPlace(itemBlock.getBlock(), shiftPos, false, shiftSide, null)) {
 				return null;
 			}
 		}

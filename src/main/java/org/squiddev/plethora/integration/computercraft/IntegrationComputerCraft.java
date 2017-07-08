@@ -33,10 +33,10 @@ public class IntegrationComputerCraft {
 
 	@SubscribeEvent
 	@SuppressWarnings("deprecation") // Latest Forge uses a more generic method
-	public void attachCapabilities(AttachCapabilitiesEvent.Item event) {
-		ItemStack stack = event.getItemStack();
+	public void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+		ItemStack stack = event.getObject();
 
-		if (event.getItem() instanceof ItemPeripheralBase) {
+		if (stack.getItem() instanceof ItemPeripheralBase) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new PeripheralCapabilityProvider(stack));
 		}
 	}

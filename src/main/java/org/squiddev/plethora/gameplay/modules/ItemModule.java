@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.modules;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,15 +19,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -55,6 +56,7 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
+import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class ItemModule extends ItemBase {
 	public static final String INTROSPECTION = "introspection";
@@ -138,7 +140,8 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> out) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> out) {
+		if (!isInCreativeTab(tab)) return;
 		for (int i = 0; i < MODULES; i++) {
 			out.add(new ItemStack(this, 1, i));
 		}
@@ -224,8 +227,8 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean um) {
-		super.addInformation(stack, player, out, um);
+	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag flag) {
+		super.addInformation(stack, world, out, flag);
 
 		String entity = getEntityName(stack);
 		if (entity != null) {
@@ -237,16 +240,21 @@ public final class ItemModule extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
-		for (int i = 0; i < MODULES; i++) {
-			Helpers.setupModel(this, i, "module_" + getName(i));
-		}
-
 		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, new IRenderFactory<EntityLaser>() {
 			@Override
 			public Render<EntityLaser> createRenderFor(RenderManager renderManager) {
 				return new RenderLaser(renderManager);
 			}
 		});
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerModels(ModelRegistryEvent event) {
+		for (int i = 0; i < MODULES; i++) {
+			Helpers.setupModel(this, i, "module_" + getName(i));
+		}
 	}
 
 	@Override
@@ -265,74 +273,8 @@ public final class ItemModule extends ItemBase {
 			ItemStack stack = new ItemStack(this, 1, id);
 			registry.registerPocketUpgrade(stack);
 		}
-
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Override
-	public void init() {
-		super.init();
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, INTROSPECTION_ID),
-			"GCG",
-			"CHC",
-			"GCG",
-			'G', Items.GOLD_INGOT,
-			'H', Items.DIAMOND_HELMET,
-			'C', Blocks.ENDER_CHEST
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, LASER_ID),
-			"III",
-			"GDR",
-			"  I",
-			'D', Items.DIAMOND,
-			'I', Items.IRON_INGOT,
-			'G', Blocks.GLASS,
-			'R', Items.REDSTONE
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SCANNER_ID),
-			"EDE",
-			"IGI",
-			"III",
-			'G', Blocks.GLASS,
-			'I', Items.IRON_INGOT,
-			'E', Items.ENDER_PEARL,
-			'D', Blocks.DIRT
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, SENSOR_ID),
-			"ERE",
-			"IGI",
-			"III",
-			'G', Blocks.GLASS,
-			'I', Items.IRON_INGOT,
-			'E', Items.ENDER_PEARL,
-			'R', Items.ROTTEN_FLESH
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, KINETIC_ID),
-			"RGR",
-			"PBP",
-			"RGR",
-			'G', Items.GOLD_INGOT,
-			'R', Items.REDSTONE,
-			'P', Blocks.PISTON,
-			'B', Blocks.REDSTONE_BLOCK
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, CHAT_ID),
-			" RS",
-			"WRN",
-			"IIS",
-			'R', Items.REDSTONE,
-			'S', Blocks.STONE,
-			'I', Items.IRON_INGOT,
-			'N', Blocks.NOTEBLOCK,
-			'W', Blocks.WOOL
-		);
-	}
 
 	//endregion
 

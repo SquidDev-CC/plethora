@@ -30,9 +30,9 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 
 		Vec3d pos = entity.getLookVec().subtract(location.getLoc());
 		if (
-			pos.xCoord < -radius || pos.xCoord > radius ||
-				pos.yCoord < -radius || pos.yCoord > radius ||
-				pos.zCoord < -radius || pos.zCoord > radius
+			pos.x < -radius || pos.x > radius ||
+				pos.y < -radius || pos.y > radius ||
+				pos.z < -radius || pos.z > radius
 			) {
 			valid = false;
 			throw new LuaException("The entity is out of range");

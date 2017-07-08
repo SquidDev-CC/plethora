@@ -1,0 +1,27 @@
+{
+	"result": {
+		"item": "plethora:manipulator",
+		"data": 1
+	},
+	"pattern": [
+		"CCC",
+		"RMR",
+		"III"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"C": {
+			"item": "minecraft:gold_ingot"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"M": {
+			"item": "plethora:manipulator",
+			"data": 0
+		}
+	}
+}

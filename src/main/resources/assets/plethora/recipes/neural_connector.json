@@ -1,0 +1,22 @@
+{
+	"result": {
+		"item": "plethora:neuralconnector"
+	},
+	"pattern": [
+		"  R",
+		"IIR",
+		"IEI"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"E": {
+			"item": "minecraft:ender_pearl"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	}
+}

@@ -12,34 +12,36 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.RecipeSorter;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.computer.ICustomRomItem;
 import org.squiddev.plethora.gameplay.ItemBase;
@@ -362,12 +364,12 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean additional) {
-		super.addInformation(stack, player, out, additional);
+	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag flag) {
+		super.addInformation(stack, world, out, flag);
 		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));
 
 		NBTTagCompound tag = stack.getTagCompound();
-		if (additional) {
+		if (flag.isAdvanced()) {
 			if (tag != null && tag.hasKey(COMPUTER_ID)) {
 				out.add("Computer ID " + tag.getInteger(COMPUTER_ID));
 			}
@@ -376,7 +378,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		// Include ROM id (CCTweaks compat)
 		if (tag != null && tag.hasKey("rom_id") && Loader.isModLoaded(CCTweaks.ID)) {
 			int id = tag.getInteger("rom_id");
-			if (additional && id >= 0) {
+			if (flag.isAdvanced() && id >= 0) {
 				out.add("Has custom ROM (disk ID: " + id + ")");
 			} else {
 				out.add("Has custom ROM");
@@ -453,20 +455,16 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 
 	@Override
 	public void preInit() {
-		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
 		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SubscribeEvent
+	public void registerItems(RegistryEvent.Register<Item> event) {
+		event.getRegistry().register(this.setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME)));
 	}
 
 	@Override
 	public void init() {
-		RecipeSorter.register(
-			Plethora.RESOURCE_DOMAIN + ":neural_interface_crafting",
-			CraftingNeuralInterface.class,
-			RecipeSorter.Category.SHAPED,
-			"after:minecraft:shaped"
-		);
-
-		GameRegistry.addRecipe(new CraftingNeuralInterface());
 	}
 
 	@Override
@@ -481,6 +479,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void registerModels(ModelRegistryEvent event) {
 		Helpers.setupModel(this, 0, NAME);
 	}
 	//endregion

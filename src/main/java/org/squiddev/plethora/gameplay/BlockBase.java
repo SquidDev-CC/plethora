@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -108,7 +113,8 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> out, boolean advanced) {
+	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag advanced) {
+		super.addInformation(stack, world, out, advanced);
 		out.add(Helpers.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
 	}
 
@@ -119,9 +125,18 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 
 	@Override
 	public void preInit() {
-		GameRegistry.register(this, new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
-		GameRegistry.register(new ItemBlockBase(this), new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
+		MinecraftForge.EVENT_BUS.register(this);
 		GameRegistry.registerTileEntity(klass, Plethora.RESOURCE_DOMAIN + ":" + name);
+	}
+
+	@SubscribeEvent
+	public void registerBlocks(RegistryEvent.Register<Block> event) {
+		event.getRegistry().register(this.setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, name)));
+	}
+
+	@SubscribeEvent
+	public void registerItems(RegistryEvent.Register<Item> event) {
+		event.getRegistry().register(new ItemBlockBase(this).setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, name)));
 	}
 
 	public String getUnlocalizedName(int meta) {
@@ -144,6 +159,11 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void registerModels(ModelRegistryEvent event) {
 		Helpers.setupModel(Item.getItemFromBlock(this), 0, name);
 	}
 }

@@ -199,7 +199,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 				List<Entity> collisions = worldObj
 					.getEntitiesWithinAABBExcludingEntity(this,
 						getEntityBoundingBox()
-							.addCoord(motionX * remaining, motionY * remaining, motionZ * remaining)
+							.offset(motionX * remaining, motionY * remaining, motionZ * remaining)
 							.expand(1, 1, 1)
 					);
 				Entity shooter = getShooter();
@@ -239,7 +239,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 				remaining -= position.distanceTo(nextPosition) / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 
 				// Set position
-				setPosition(nextPosition.xCoord, nextPosition.yCoord, nextPosition.zCoord);
+				setPosition(nextPosition.x, nextPosition.y, nextPosition.z);
 				syncPositions(false);
 
 
@@ -436,6 +436,6 @@ public final class EntityLaser extends Entity implements IProjectile {
 	}
 
 	private static void syncFromPos(EntityPlayer player, Vec3d pos, float yaw, float pitch) {
-		player.setPositionAndRotation(pos.xCoord, pos.yCoord, pos.zCoord, yaw, pitch);
+		player.setPositionAndRotation(pos.x, pos.y, pos.z, yaw, pitch);
 	}
 }

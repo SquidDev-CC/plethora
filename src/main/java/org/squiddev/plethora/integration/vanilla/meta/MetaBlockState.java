@@ -2,7 +2,6 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -24,10 +23,10 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 
 		IBlockState state = context.getTarget();
 		Block block = state.getBlock();
-		if (block != null) data.put("metadata", block.getMetaFromState(state));
+		data.put("metadata", block.getMetaFromState(state));
 
 		HashMap<Object, Object> stateProperties = Maps.newHashMap();
-		data.put("state", state);
+		data.put("state", stateProperties);
 		for (Map.Entry<IProperty<?>, Comparable<?>> item : state.getProperties().entrySet()) {
 			Object value = item.getValue();
 			if (!(value instanceof String) && !(value instanceof Number) && !(value instanceof Boolean)) {
@@ -42,13 +41,6 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 		int level = block.getHarvestLevel(state);
 		if (level >= 0) data.put("harvestLevel", level);
 		data.put("harvestTool", block.getHarvestTool(state));
-
-		MapColor mapCol = state.getMapColor();
-		if (mapCol != null) {
-			int colour = mapCol.colorValue;
-			data.put("colour", colour);
-			data.put("color", colour);
-		}
 
 		return data;
 	}

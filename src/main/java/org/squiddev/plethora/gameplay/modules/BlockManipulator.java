@@ -6,14 +6,10 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import dan200.computercraft.shared.peripheral.PeripheralType;
-import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,11 +24,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -80,7 +75,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> itemStacks) {
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> itemStacks) {
 		for (ManipulatorType type : VALUES) {
 			itemStacks.add(new ItemStack(this, 1, type.ordinal()));
 		}
@@ -122,39 +117,21 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		// Prevent wrapping by accident
 		FMLInterModComms.sendMessage(PlethoraCore.ID, Constants.IMC_BLACKLIST_PERIPHERAL, TileManipulator.class.getName());
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, 0),
-			"GCG",
-			"RMR",
-			"III",
-			'G', Blocks.GLASS,
-			'C', Items.GOLD_INGOT,
-			'R', Items.REDSTONE,
-			'M', PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1),
-			'I', new ItemStack(Items.IRON_INGOT)
-		);
-
-		GameRegistry.addShapedRecipe(new ItemStack(this, 1, 1),
-			"CCC",
-			"RMR",
-			"III",
-			'C', Items.GOLD_INGOT,
-			'R', Items.REDSTONE,
-			'M', new ItemStack(this, 1, 0),
-			'I', Items.IRON_INGOT
-		);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientPreInit() {
+		ClientRegistry.bindTileEntitySpecialRenderer(TileManipulator.class, new RenderManipulator());
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerModels(ModelRegistryEvent event) {
 		for (ManipulatorType type : VALUES) {
 			Helpers.setupModel(Item.getItemFromBlock(this), type.ordinal(), name + "." + type.getName());
 		}
-
-		ClientRegistry.bindTileEntitySpecialRenderer(TileManipulator.class, new RenderManipulator());
-
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -283,9 +260,9 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		Vec3d hit = event.getTarget().hitVec.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 		ManipulatorType type = state.getValue(TYPE);
 		for (AxisAlignedBB box : type.boxes) {
-			if (hit.yCoord > OFFSET - PIX &&
-				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
-				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
+			if (hit.y > OFFSET - PIX &&
+				hit.x >= box.minX && hit.x <= box.maxX &&
+				hit.z >= box.minZ && hit.z <= box.maxZ) {
 
 				RenderHelper.renderBoundingBox(event.getPlayer(), box, event.getTarget().getBlockPos(), event.getPartialTicks());
 				event.setCanceled(true);
