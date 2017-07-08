@@ -42,7 +42,6 @@ public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 		}
 
 		GlStateManager.pushMatrix();
-		GlStateManager.disableCull();
 
 		renderer.postRender(PIXEL);
 		GlStateManager.translate(dx, dy, dz);
@@ -56,7 +55,6 @@ public class LayerInterface implements LayerRenderer<EntityLivingBase> {
 		ModelInterface.setRotateAngle(iface.bipedHeadwear, 0, 0, 0);
 		iface.bipedHeadwear.render(PIXEL);
 
-		GlStateManager.enableCull();
 		GlStateManager.popMatrix();
 	}
 
