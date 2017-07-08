@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
 /**
  * Lists all available transfer locations
  */
@@ -27,7 +29,7 @@ public class MethodTransferLocations extends BasicMethod<IMethodCollection> {
 	@Nonnull
 	@Override
 	public MethodResult apply(@Nonnull final IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
-		final String location = ArgumentHelper.optString(args, 0, null);
+		final String location = optString(args, 0, null);
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {

@@ -15,7 +15,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getReal;
+import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
 public final class MethodsLaser {

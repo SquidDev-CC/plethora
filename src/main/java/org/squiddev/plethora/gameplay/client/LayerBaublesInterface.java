@@ -29,7 +29,6 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 		if (stack == null) return;
 
 		GlStateManager.pushMatrix();
-		GlStateManager.disableCull();
 
 		model.bipedHeadwear.postRender(PIXEL);
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -44,7 +43,6 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 		ModelInterface.setRotateAngle(iface.bipedHeadwear, 0, 0, 0);
 		iface.bipedHeadwear.render(PIXEL);
 
-		GlStateManager.enableCull();
 		GlStateManager.popMatrix();
 	}
 

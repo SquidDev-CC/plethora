@@ -152,7 +152,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		this.id = id;
 		setFamily(family);
-		if (label != null) setCustomNameTag(label);
+		setCustomNameTag(label == null ? "" : label);
 		this.romId = romId;
 	}
 
@@ -199,7 +199,9 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 		computer.keepAlive();
 
-		setCustomNameTag(computer.getLabel());
+		String label = computer.getLabel();
+		setCustomNameTag(label == null ? "" : label);
+
 		on = computer.isOn();
 
 		WorldServer server = (WorldServer) getEntityWorld();

@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 
 public final class MethodsChat {

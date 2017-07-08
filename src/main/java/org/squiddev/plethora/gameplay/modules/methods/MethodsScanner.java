@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getInt;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {

@@ -18,7 +18,9 @@ import org.squiddev.plethora.api.reference.ItemSlot;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
+import static org.squiddev.plethora.api.method.ArgumentHelper.optEnum;
 
 /**
  * Various inventory methods which require interact with the world

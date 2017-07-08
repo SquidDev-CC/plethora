@@ -51,11 +51,8 @@ repositories {
 	// JEI + Tinker's
 	maven { url = "http://dvs1.progwml6.com/files/maven" }
 
-	// Baubles
-	maven { url = "http://mvn.rx14.co.uk/local/" }
-
 	// ComputerCraft
-	maven { url "https://crzd.me/files/maven/" }
+	maven { url "https://cc.crzd.me/maven/" }
 
 	// Chameleon + Storage Drawers
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/893/[module]-[revision](.[ext])" }
@@ -86,6 +83,11 @@ repositories {
 
 	// Applied Energistics 2
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
+
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2424/565/[module]-[revision](.[ext])" }
+
+	// CBMP
+	maven { url "http://chickenbones.net/maven" }
 }
 
 dependencies {
@@ -110,6 +112,8 @@ dependencies {
 	deobfProvided "refinedstorage:refinedstorage:1.4-953"
 	deobfProvided "curseMods:forestry:${project.mc_version}-5.3.1.34"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
+	deobfProvided "curseMods:Baubles:${project.mc_version}-1.3.11"
+	provided "codechicken:ForgeMultipart:1.10.2-2.0.0.31:deobf"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 }

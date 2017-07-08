@@ -14,6 +14,8 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
 
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
 public class MethodsVanillaTileEntities {
 	@BasicObjectMethod.Inject(
 		value = TileEntityFurnace.class, worldThread = false,
@@ -66,7 +68,7 @@ public class MethodsVanillaTileEntities {
 	public static MethodResult setSignText(final IUnbakedContext<TileEntitySign> context, Object[] args) throws LuaException {
 		final ITextComponent[] lines = new ITextComponent[4];
 		for (int i = 0; i < lines.length; i++) {
-			String arg = ArgumentHelper.optString(args, i, "");
+			String arg = optString(args, i, "");
 
 			// This may seem rather large but it is possible to get quite large when using very narrow letters.
 			if (arg.length() > 64) {
