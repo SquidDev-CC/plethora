@@ -29,8 +29,8 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
 /**
@@ -44,8 +44,8 @@ public final class MethodsKineticEntity {
 	)
 	@Nonnull
 	public static MethodResult look(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double yaw = ArgumentHelper.getReal(args, 0) % 360;
-		final double pitch = ArgumentHelper.getReal(args, 1) % 360;
+		final double yaw = getReal(args, 0) % 360;
+		final double pitch = getReal(args, 1) % 360;
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
@@ -109,7 +109,7 @@ public final class MethodsKineticEntity {
 	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
 		final double potency = getReal(args, 0);
 
-		ArgumentHelper.assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
+		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
 		CostHelpers.checkCost(unbaked.getCostHandler(), Kinetic.shootCost * potency);
 

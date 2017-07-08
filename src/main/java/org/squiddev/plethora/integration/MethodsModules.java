@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
 public class MethodsModules {
 	@BasicObjectMethod.Inject(

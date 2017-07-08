@@ -21,7 +21,8 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 /**
  * Various methods for playing sounds in world
@@ -58,7 +59,7 @@ public class MethodsNoteblock {
 
 		final SoundEvent sound;
 		if (arguments.length == 0) {
-			throw badArgument(null, 0, "string|number");
+			throw badArgument(0, "string|number", (Object) null);
 		} else if (arguments[0] instanceof Number) {
 			int instrument = ((Number) arguments[0]).intValue();
 			assertBetween(instrument, 0, instruments.size() - 1, "Instrument out of bounds (%s)");
@@ -69,7 +70,7 @@ public class MethodsNoteblock {
 			sound = getInstrument("block.note." + name);
 			if (sound == null) throw new LuaException("Unknown instrument '" + name + "'");
 		} else {
-			throw badArgument(arguments[0], 0, "string|number");
+			throw badArgument(0, "string|number", arguments[0]);
 		}
 
 		final int pitch = getInt(arguments, 1);

@@ -19,7 +19,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getBoolean;
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
+import static org.squiddev.plethora.api.method.ArgumentHelper.getEnum;
 
 public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private final byte[] inputs = new byte[6];

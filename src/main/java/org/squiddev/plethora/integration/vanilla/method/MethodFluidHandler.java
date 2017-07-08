@@ -12,6 +12,8 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
 @IMethod.Inject(ICapabilityProvider.class)
 public class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
 	public MethodFluidHandler() {
@@ -35,7 +37,7 @@ public class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
 	@Nonnull
 	@Override
 	public MethodResult apply(@Nonnull final IUnbakedContext<ICapabilityProvider> context, @Nonnull Object[] args) throws LuaException {
-		String side = ArgumentHelper.optString(args, 0, null);
+		String side = optString(args, 0, null);
 		final EnumFacing facing;
 		if (side != null) {
 			side = side.toLowerCase();

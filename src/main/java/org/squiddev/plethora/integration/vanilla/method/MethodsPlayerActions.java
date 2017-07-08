@@ -38,8 +38,8 @@ import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.optInt;
-import static org.squiddev.plethora.api.method.ArgumentHelper.optString;
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
 public final class MethodsPlayerActions {
 	@SubtargetedModuleMethod.Inject(

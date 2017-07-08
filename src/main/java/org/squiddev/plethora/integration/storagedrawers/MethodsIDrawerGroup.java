@@ -8,6 +8,7 @@ import org.squiddev.plethora.api.method.*;
 
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.reference.Reference.id;
 
 public class MethodsIDrawerGroup {
@@ -24,7 +25,7 @@ public class MethodsIDrawerGroup {
 		doc = "function(slot:int):table -- Return the drawer at this particular slot"
 	)
 	public static MethodResult getDrawer(final IUnbakedContext<IDrawerGroup> context, Object[] args) throws LuaException {
-		final int slot = ArgumentHelper.getInt(args, 0);
+		final int slot = getInt(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override

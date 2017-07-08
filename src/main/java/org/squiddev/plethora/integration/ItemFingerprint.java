@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.badArgument;
+import static dan200.computercraft.core.apis.ArgumentHelper.badArgument;
 import static org.squiddev.plethora.api.method.ArgumentHelper.badObject;
 
 /**
@@ -84,7 +84,7 @@ public class ItemFingerprint {
 			damage = damageObj == null ? null : ((Number) damageObj).intValue();
 			hash = hashObj == null ? null : (String) hashObj;
 		} else {
-			throw badArgument(arg, 0, "string|table");
+			throw badArgument(0, "string|table", arg);
 		}
 
 		ResourceLocation nameRes = new ResourceLocation(name);

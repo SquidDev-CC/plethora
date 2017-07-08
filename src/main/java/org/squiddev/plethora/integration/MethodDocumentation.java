@@ -8,6 +8,8 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+
 /**
  * Custom method which provides documentation
  */
@@ -20,7 +22,7 @@ public class MethodDocumentation extends BasicMethod<IMethodCollection> {
 	@Nonnull
 	@Override
 	public MethodResult apply(@Nonnull IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
-		String name = ArgumentHelper.optString(args, 0, null);
+		String name = optString(args, 0, null);
 		List<IMethod<?>> methods = context.bake().getTarget().methods();
 		if (name == null) {
 			Map<String, String> out = Maps.newHashMap();

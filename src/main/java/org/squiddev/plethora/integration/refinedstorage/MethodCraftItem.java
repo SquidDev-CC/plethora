@@ -12,6 +12,8 @@ import org.squiddev.plethora.api.reference.Reference;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+
 @IMethod.Inject(value = ItemStack.class, modId = RS.ID)
 public final class MethodCraftItem extends BasicMethod<ItemStack> {
 	public MethodCraftItem() {
@@ -27,7 +29,7 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 	@Nonnull
 	@Override
 	public MethodResult apply(@Nonnull final IUnbakedContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
-		final int quantity = ArgumentHelper.getInt(args, 0);
+		final int quantity = getInt(args, 0);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
