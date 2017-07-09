@@ -1,0 +1,33 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"plethora:manipulator.mark_2"
+		]
+	},
+	"criteria": {
+		"has_mark_1": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "plethora:manipulator",
+						"data": 0
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "plethora:manipulator.mark_2"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_mark_1",
+			"has_the_recipe"
+		]
+	]
+}

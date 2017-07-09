@@ -1,0 +1,32 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"plethora:neural_interface"
+		]
+	},
+	"criteria": {
+		"has_pocket": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "computercraft:pocket_computer"
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "plethora:neural_interface"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_pocket",
+			"has_the_recipe"
+		]
+	]
+}

@@ -1,0 +1,32 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"plethora:keyboard"
+		]
+	},
+	"criteria": {
+		"has_computer": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "computercraft:computer"
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "plethora:keyboard"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_computer",
+			"has_the_recipe"
+		]
+	]
+}

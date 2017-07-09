@@ -1,0 +1,32 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"plethora:module_sensor"
+		]
+	},
+	"criteria": {
+		"has_manipulator": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "plethora:manipulator"
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "plethora:module_sensor"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_manipulator",
+			"has_the_recipe"
+		]
+	]
+}

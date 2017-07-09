@@ -1,0 +1,32 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards": {
+		"recipes": [
+			"plethora:neural_connector"
+		]
+	},
+	"criteria": {
+		"has_connector": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "plethora:neuralinterface"
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "plethora:neural_connector"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_connector",
+			"has_the_recipe"
+		]
+	]
+}
