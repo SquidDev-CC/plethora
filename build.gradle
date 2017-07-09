@@ -158,8 +158,10 @@ curseforge {
 		releaseType = 'release'
 		changelog = ''
 
+		/*
 		relations {
 			requiredLibrary 'computercraft'
 		}
+		*/
 	}
 }
