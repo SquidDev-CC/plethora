@@ -27,7 +27,7 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 		if (block != null) data.put("metadata", block.getMetaFromState(state));
 
 		HashMap<Object, Object> stateProperties = Maps.newHashMap();
-		data.put("state", state);
+		data.put("state", stateProperties);
 		for (Map.Entry<IProperty<?>, Comparable<?>> item : state.getProperties().entrySet()) {
 			Object value = item.getValue();
 			if (!(value instanceof String) && !(value instanceof Number) && !(value instanceof Boolean)) {
