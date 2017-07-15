@@ -6,9 +6,14 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.common.BlockGeneric;
 import dan200.computercraft.shared.common.TileGeneric;
+import dan200.computercraft.shared.peripheral.PeripheralType;
+import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -90,6 +95,14 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@Override
 	public void init() {
+		GameRegistry.addShapedRecipe(new ItemStack(this),
+			"SRS",
+			"RCR",
+			"SRS",
+			'S', Blocks.stone,
+			'C', PeripheralItemFactory.create(PeripheralType.Cable, null, -1),
+			'R', Items.redstone
+		);
 	}
 
 	@Override
