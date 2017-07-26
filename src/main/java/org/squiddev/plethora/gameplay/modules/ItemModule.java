@@ -220,6 +220,7 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag flag) {
 		super.addInformation(stack, world, out, flag);
 

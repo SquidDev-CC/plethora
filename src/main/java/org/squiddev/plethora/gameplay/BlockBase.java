@@ -113,6 +113,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag advanced) {
 		super.addInformation(stack, world, out, advanced);
 		out.add(Helpers.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
