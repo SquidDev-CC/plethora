@@ -106,9 +106,9 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 			"SRS",
 			"RCR",
 			"SRS",
-			'S', Blocks.stone,
+			'S', Blocks.STONE,
 			'C', PeripheralItemFactory.create(PeripheralType.Cable, null, -1),
-			'R', Items.redstone
+			'R', Items.REDSTONE
 		);
 	}
 
