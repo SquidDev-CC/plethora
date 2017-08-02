@@ -58,7 +58,7 @@ public class MethodsNoteblock {
 
 		final SoundEvent sound;
 		if (arguments.length == 0) {
-			throw badArgument(0, "string|number", (Object) null);
+			throw badArgument(0, "string|number", "no value");
 		} else if (arguments[0] instanceof Number) {
 			int instrument = ((Number) arguments[0]).intValue();
 			assertBetween(instrument, 0, instruments.size() - 1, "Instrument out of bounds (%s)");

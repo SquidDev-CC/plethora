@@ -7,9 +7,11 @@ Plethora also adds a series of "modules" to the game. These modules can be used 
 They really come in to their element when put in a manipulator, providing a series of methods which allow
 interacting with your environment. This includes:
  - Introspection: investigating the current player's inventory (and ender chest)
- - Scanner: scans blocks in an area, gathering metadata about them and allowing wrapping peripherals remotely
- - Sensor: scans entities in an area. Like the scanner this allows getting metadata and wrapping them as peripherals.
+ - Scanner: scans blocks in an area, gathering metadata about them.
+ - Sensor: scans entities in an area. Like the scanner this allows getting metadata.
  - Frickin' laser beam. It fires lasers.
+ - Chat recorder: allows listening to chat messages, capturing and sending messages as the owning player.
+ - Kinetic augment: allows remote access to your muscles, making them even stronger than before.
 
 If you've ever wanted to embed a computer in your skull then today is your lucky day. Plethora provides a neural
 interface which can be attached to your head, or some unsuspecting animal or monster. Right clicking the entity with a
