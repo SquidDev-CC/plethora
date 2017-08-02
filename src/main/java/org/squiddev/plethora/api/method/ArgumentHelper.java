@@ -19,13 +19,14 @@ public final class ArgumentHelper {
 
 	@Nonnull
 	public static LuaException badObject(@Nullable Object object, @Nonnull String kind, @Nonnull String expected) {
-		return new LuaException("Expected " + expected + " for " + kind + ", got " + getType(object));
+		return new LuaException("bad key " + kind + " (expected " + expected  + ", got " + getType(object) + ")");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof String) {
 			String name = (String) value;
 			try {
@@ -41,13 +42,14 @@ public final class ArgumentHelper {
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
-		Object value = index < args.length ? args[index] : null;
+		if (index >= args.length) throw badArgument(index, "number", "no value");
+		Object value = args[index];
 		if (value instanceof String) {
 			String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
 			try {
 				return UUID.fromString(uuid);
 			} catch (IllegalArgumentException e) {
-				throw new LuaException("Bad uuid '" + uuid + "' for argument " + (index + 1));
+				throw new LuaException("Bad uuid '" + uuid + "' for argument #" + (index + 1));
 			}
 		} else {
 			throw badArgument(index, "string", value);
