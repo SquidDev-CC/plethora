@@ -95,7 +95,7 @@ repositories {
 }
 
 dependencies {
-	compile "dan200.computercraft:ComputerCraft-SquidDev-CC-ComputerCraft-feature-minecraft-1.12.2:${project.cc_version}-build18"
+	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:4.7.0.68"
 
 	provided "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
@@ -158,10 +158,8 @@ curseforge {
 		releaseType = 'release'
 		changelog = ''
 
-		/*
 		relations {
 			requiredLibrary 'computercraft'
 		}
-		*/
 	}
 }

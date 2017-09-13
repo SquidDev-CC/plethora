@@ -82,7 +82,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 
 		if (outputDirty) {
 			for (EnumFacing dir : EnumFacing.VALUES) {
-				RedstoneUtil.propogateRedstoneOutput(worldObj, pos, dir);
+				RedstoneUtil.propagateRedstoneOutput(worldObj, pos, dir);
 			}
 			outputDirty = false;
 		}
