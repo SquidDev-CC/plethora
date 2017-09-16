@@ -113,7 +113,7 @@ dependencies {
 	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-4.1.0"
 
 	provided "MCMultiPart2:MCMultiPart:2.0.2:deobf"
-	deobfProvided "refinedstorage:refinedstorage:1.4-953"
+	deobfProvided "refinedstorage:refinedstorage:1.4.21-1251"
 	deobfProvided "curseMods:forestry:${project.mc_version}-5.3.1.34"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9"
 	deobfProvided "curseMods:Baubles:1.11-1.4.5"

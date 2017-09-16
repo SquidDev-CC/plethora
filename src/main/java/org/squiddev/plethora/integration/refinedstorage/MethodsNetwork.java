@@ -3,7 +3,8 @@ package org.squiddev.plethora.integration.refinedstorage;
 import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
-import com.raoulvdberge.refinedstorage.api.network.INetworkMaster;
+import com.raoulvdberge.refinedstorage.api.network.INetwork;
+import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import com.raoulvdberge.refinedstorage.tile.TileController;
 import dan200.computercraft.api.lua.LuaException;
@@ -30,10 +31,10 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID, worldThread = true,
+		value = INetwork.class, modId = RS.ID, worldThread = true,
 		doc = "function():int -- Get the energy usage of this RefinedStorage network"
 	)
-	public static Object[] getNetworkEnergyUsage(IContext<INetworkMaster> context, Object[] args) {
+	public static Object[] getNetworkEnergyUsage(IContext<INetwork> context, Object[] args) {
 		return new Object[]{context.getTarget().getEnergyUsage()};
 	}
 
@@ -46,10 +47,10 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID, worldThread = true,
+		value = INetwork.class, modId = RS.ID, worldThread = true,
 		doc = "function():table -- List all items which are stored in the network"
 	)
-	public static Object[] listAvailableItems(IContext<INetworkMaster> context, Object[] args) {
+	public static Object[] listAvailableItems(IContext<INetwork> context, Object[] args) {
 		Collection<ItemStack> items = context.getTarget().getItemStorageCache().getList().getStacks();
 
 		int i = 0;
@@ -61,19 +62,19 @@ public class MethodsNetwork {
 	}
 
 	@BasicMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID,
+		value = INetwork.class, modId = RS.ID,
 		doc = "function(item:string|table):table -- Search for an item in the network. " +
 			"You can specify the item as a string, with or without the damage value ('minecraft:stone' or 'minecraft:stone@0') " +
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static MethodResult findItem(final IUnbakedContext<INetworkMaster> context, Object[] args) throws LuaException {
+	public static MethodResult findItem(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<INetworkMaster> baked = context.bake();
+				IContext<INetwork> baked = context.bake();
 				ItemStack stack = findStack(baked.getTarget(), fingerprint);
 
 				return stack == null
@@ -84,19 +85,19 @@ public class MethodsNetwork {
 	}
 
 	@BasicMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID,
+		value = INetwork.class, modId = RS.ID,
 		doc = "function(item:string|table):table -- Search all items in the network. " +
 			"You can specify the item as a string, with or without the damage value ('minecraft:stone' or 'minecraft:stone@0') " +
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static MethodResult findItems(final IUnbakedContext<INetworkMaster> context, Object[] args) throws LuaException {
+	public static MethodResult findItems(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
 
 		return MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IContext<INetworkMaster> baked = context.bake();
+				IContext<INetwork> baked = context.bake();
 
 				int i = 0;
 				Map<Integer, Object> out = Maps.newHashMap();
@@ -112,10 +113,10 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkMaster.class, modId = RS.ID, worldThread = true,
+		value = INetwork.class, modId = RS.ID, worldThread = true,
 		doc = "function():table -- List all crafting tasks in the network"
 	)
-	public static Object[] getCraftingTasks(IContext<INetworkMaster> context, Object[] args) {
+	public static Object[] getCraftingTasks(IContext<INetwork> context, Object[] args) {
 		List<ICraftingTask> tasks = context.getTarget().getCraftingManager().getTasks();
 
 		int i = 0;
@@ -127,7 +128,7 @@ public class MethodsNetwork {
 		return new Object[]{output};
 	}
 
-	private static ItemStack findStack(INetworkMaster network, ItemFingerprint fingerprint) {
+	private static ItemStack findStack(INetwork network, ItemFingerprint fingerprint) {
 		for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
 			if (fingerprint.matches(stack)) return stack;
 		}

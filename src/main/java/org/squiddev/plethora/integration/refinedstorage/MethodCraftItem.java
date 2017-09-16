@@ -4,7 +4,7 @@ import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingManager;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
-import com.raoulvdberge.refinedstorage.api.network.INetworkMaster;
+import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
@@ -24,7 +24,7 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
-		return super.canApply(context) && context.hasContext(INetworkMaster.class);
+		return super.canApply(context) && context.hasContext(INetwork.class);
 	}
 
 	@Nonnull
@@ -38,7 +38,7 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 				IContext<ItemStack> baked = context.bake();
 
 				ItemStack stack = baked.getTarget();
-				INetworkMaster network = baked.getContext(INetworkMaster.class);
+				INetwork network = baked.getContext(INetwork.class);
 				ICraftingManager manager = network.getCraftingManager();
 
 				ICraftingPattern pattern = manager.getPattern(stack);
