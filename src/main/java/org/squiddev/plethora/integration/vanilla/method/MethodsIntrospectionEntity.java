@@ -21,7 +21,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 /**
  * Various introspection modules which rely on Vanilla classes.
  */
-public class ModuleIntrospectionEntity {
+public class MethodsIntrospectionEntity {
 	@SubtargetedModuleObjectMethod.Inject(
 		module = PlethoraModules.INTROSPECTION_S, target = EntityPlayer.class, worldThread = false,
 		doc = "function():table -- Get this player's inventory"

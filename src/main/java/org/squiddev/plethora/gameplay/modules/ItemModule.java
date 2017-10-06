@@ -75,6 +75,7 @@ public final class ItemModule extends ItemBase {
 	private static final int MODULES = 6;
 
 	private static final int[] TURTLE_MODULES = new int[]{
+		INTROSPECTION_ID,
 		LASER_ID,
 		SCANNER_ID,
 		SENSOR_ID,
