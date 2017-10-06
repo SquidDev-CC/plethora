@@ -65,6 +65,11 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
+	public void init(FMLInitializationEvent event) {
+		ModuleRegistry.instance.addRecipes();
+	}
+
+	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
