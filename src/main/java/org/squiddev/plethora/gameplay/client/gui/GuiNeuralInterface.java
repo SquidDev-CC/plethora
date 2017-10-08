@@ -134,6 +134,7 @@ public class GuiNeuralInterface extends GuiContainer {
 
 	@Override
 	public void drawScreen(int x, int y, float partialTicks) {
+		drawDefaultBackground();
 		super.drawScreen(x, y, partialTicks);
 
 		int ox = x - guiLeft, oy = y - guiTop;
@@ -151,6 +152,8 @@ public class GuiNeuralInterface extends GuiContainer {
 				"gui.plethora.neuralInterface.peripherals"
 			)), x, y);
 		}
+
+		renderHoveredToolTip(x, y);
 	}
 
 	private void updateVisible() {
