@@ -3,9 +3,11 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +26,7 @@ import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
 import org.squiddev.plethora.core.capabilities.DefaultStorage;
 import org.squiddev.plethora.core.executor.SharedDelayedExecutor;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.cctweaks.IntegrationCCTweaks;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -58,7 +61,7 @@ public class PlethoraCore {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Integration modules. Generally just listen to capability events
-		// IntegrationCCTweaks.setup();
+		IntegrationCCTweaks.setup();
 		IntegrationComputerCraft.setup();
 		IntegrationVanilla.setup();
 	}
@@ -131,5 +134,10 @@ public class PlethoraCore {
 		if (eventArgs.getModID().equals(PlethoraCore.ID)) {
 			ConfigCore.sync();
 		}
+	}
+
+	@SubscribeEvent
+	public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+		ModuleRegistry.instance.addRecipes(event.getRegistry());
 	}
 }

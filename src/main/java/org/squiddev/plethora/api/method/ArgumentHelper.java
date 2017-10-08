@@ -19,7 +19,20 @@ public final class ArgumentHelper {
 
 	@Nonnull
 	public static LuaException badObject(@Nullable Object object, @Nonnull String kind, @Nonnull String expected) {
-		return new LuaException("bad key " + kind + " (expected " + expected  + ", got " + getType(object) + ")");
+		return new LuaException("bad key " + kind + " (expected " + expected + ", got " + getType(object) + ")");
+	}
+
+	public static float getFloat(@Nonnull Object[] args, int index) throws LuaException {
+		if (index >= args.length) {
+			throw badArgument(index, "number", "nil");
+		} else {
+			Object value = args[index];
+			if (value instanceof Number) {
+				return ((Number) value).floatValue();
+			} else {
+				throw badArgument(index, "number", value);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -53,6 +66,18 @@ public final class ArgumentHelper {
 			}
 		} else {
 			throw badArgument(index, "string", value);
+		}
+	}
+
+
+	public static float optFloat(@Nonnull Object[] args, int index, float def) throws LuaException {
+		Object value = index < args.length ? args[index] : null;
+		if (value == null) {
+			return def;
+		} else if (value instanceof Number) {
+			return ((Number) value).floatValue();
+		} else {
+			throw badArgument(index, "number", value);
 		}
 	}
 
