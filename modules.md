@@ -114,6 +114,11 @@ there is also data about the food and health levels of the player, the player's 
 such as whether they are sleeping or not. We won't focus on it too much and will move on to more exciting things.
 
 ### Mixing modules
-What distinguishes modules from normal peripherals is their ability to interact with each other. The block sensor allows
-getting metadata about surrounding blocks and the daylight sensor allows you to get the light level of the current
-block. When combined, the block sensor will also include light levels in blocks metadata.
+What distinguishes modules from normal peripherals is their ability to interact with each other. Namely, they can be
+*composed*.
+
+For instace, the block sensor provides methods to fetch metadata about the surrounding blocks. When combined with a
+daylight sensor, which allows you to find the current block's light levels, you can find the light level of any
+surrounding block.
+
+Similarly, combining the introspection module and entity sensor allow you to find the current entity's metadata.
