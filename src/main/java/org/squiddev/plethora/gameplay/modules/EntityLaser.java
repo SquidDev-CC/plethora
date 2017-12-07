@@ -200,7 +200,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					.getEntitiesWithinAABBExcludingEntity(this,
 						getEntityBoundingBox()
 							.offset(motionX * remaining, motionY * remaining, motionZ * remaining)
-							.expand(1, 1, 1)
+								.grow(1, 1, 1)
 					);
 				Entity shooter = getShooter();
 
@@ -217,7 +217,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 						}
 
 						float size = 0.3f;
-						AxisAlignedBB singleCollision = other.getEntityBoundingBox().expand(size, size, size);
+						AxisAlignedBB singleCollision = other.getEntityBoundingBox().grow(size, size, size);
 						RayTraceResult hit = singleCollision.calculateIntercept(position, nextPosition);
 
 						if (hit != null) {

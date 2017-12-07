@@ -24,7 +24,7 @@ public class RenderHelper {
 	}
 
 	public static void renderBoundingBox(AxisAlignedBB box) {
-		doRenderBoundingBox(box.expand(EXPAND, EXPAND, EXPAND));
+		doRenderBoundingBox(box.grow(EXPAND, EXPAND, EXPAND));
 	}
 
 	private static void doRenderBoundingBox(AxisAlignedBB axis) {

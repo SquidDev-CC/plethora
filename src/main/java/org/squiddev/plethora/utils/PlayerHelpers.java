@@ -63,18 +63,18 @@ public class PlayerHelpers {
 
 		List<Entity> entityList = entity.getEntityWorld().getEntitiesInAABBexcluding(
 			entity,
-			entity.getEntityBoundingBox().offset(
+				entity.getEntityBoundingBox().expand(
 				look.x * range,
 				look.y * range,
 				look.z * range
-			).expand(1, 1, 1), collidablePredicate);
+				).grow(1, 1, 1), collidablePredicate);
 
 		Entity closestEntity = null;
 		Vec3d closestVec = null;
 		double closestDistance = range;
 		for (Entity entityHit : entityList) {
 			float size = entityHit.getCollisionBorderSize();
-			AxisAlignedBB box = entityHit.getEntityBoundingBox().expand((double) size, (double) size, (double) size);
+			AxisAlignedBB box = entityHit.getEntityBoundingBox().grow((double) size, (double) size, (double) size);
 			RayTraceResult intercept = box.calculateIntercept(origin, target);
 
 			if (box.contains(origin)) {
