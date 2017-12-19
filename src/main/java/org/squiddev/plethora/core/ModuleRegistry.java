@@ -11,7 +11,7 @@ import dan200.computercraft.shared.util.ImpostorRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 
@@ -85,10 +85,10 @@ final class ModuleRegistry implements IModuleRegistry {
 	}
 
 	@Override
-	public IMinecartUpgradeHandler toMinecartUpgrade(@Nonnull IModuleHandler handler) {
+	public IVehicleUpgradeHandler toVehicleUpgrade(@Nonnull IModuleHandler handler) {
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 
-		return new MinecartUpgradeModule(handler);
+		return new VehicleUpgradeModule(handler);
 	}
 
 	void addRecipes() {

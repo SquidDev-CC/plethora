@@ -11,14 +11,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.minecart.IMinecartAccess;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.api.vehicle.IVehicleAccess;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 
@@ -28,16 +28,16 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.List;
 
-public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
+public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 	private final IModuleHandler handler;
 
-	public MinecartUpgradeModule(IModuleHandler handler) {
+	public VehicleUpgradeModule(IModuleHandler handler) {
 		this.handler = handler;
 	}
 
 	@Nonnull
 	@Override
-	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access) {
+	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IVehicleAccess access) {
 		Pair<IBakedModel, Matrix4f> model = handler.getModel(0);
 
 		Matrix4f transform = new Matrix4f();
@@ -51,7 +51,7 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 	}
 
 	@Override
-	public void update(@Nonnull IMinecartAccess minecart, @Nonnull IPeripheral peripheral) {
+	public void update(@Nonnull IVehicleAccess vehicle, @Nonnull IPeripheral peripheral) {
 		if (peripheral instanceof MethodWrapperPeripheral) {
 			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
 			if (executor instanceof ITickable) ((ITickable) executor).update();
@@ -60,26 +60,26 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 
 	@Nullable
 	@Override
-	public IPeripheral create(@Nonnull IMinecartAccess minecart) {
+	public IPeripheral create(@Nonnull IVehicleAccess vehicle) {
 		final ResourceLocation thisModule = handler.getModule();
 
 		String moduleName = thisModule.toString();
-		if (ConfigCore.Blacklist.blacklistModulesMinecart.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName)) {
+		if (ConfigCore.Blacklist.blacklistModulesVehicle.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName)) {
 			return null;
 		}
 
 		MethodRegistry registry = MethodRegistry.instance;
-		Entity entity = minecart.getMinecart();
+		Entity entity = vehicle.getVehicle();
 
 		ICostHandler cost = registry.getCostHandler(entity, null);
 
-		final MinecartModuleAccess access = new MinecartModuleAccess(minecart, handler);
+		final VehicleModuleAccess access = new VehicleModuleAccess(vehicle, handler);
 		BasicContextBuilder builder = new BasicContextBuilder();
 		handler.getAdditionalContext(access, builder);
 
 		builder.<IWorldLocation>addContext(new EntityWorldLocation(entity));
-		builder.addContext(minecart, Reference.id(minecart));
-		builder.addContext(minecart.getMinecart(), Reference.entity(minecart.getMinecart()));
+		builder.addContext(vehicle, Reference.id(vehicle));
+		builder.addContext(vehicle.getVehicle(), Reference.entity(vehicle.getVehicle()));
 
 		final IModuleContainer container = access.getContainer();
 		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
@@ -116,16 +116,16 @@ public class MinecartUpgradeModule implements IMinecartUpgradeHandler {
 		}
 	}
 
-	private static final class MinecartModuleAccess implements IModuleAccess {
+	private static final class VehicleModuleAccess implements IModuleAccess {
 		private TrackingWrapperPeripheral wrapper;
 
-		private final IMinecartAccess access;
+		private final IVehicleAccess access;
 		private final IWorldLocation location;
 		private final IModuleContainer container;
 
-		private MinecartModuleAccess(IMinecartAccess access, IModuleHandler handler) {
+		private VehicleModuleAccess(IVehicleAccess access, IModuleHandler handler) {
 			this.access = access;
-			this.location = new EntityWorldLocation(access.getMinecart());
+			this.location = new EntityWorldLocation(access.getVehicle());
 			this.container = new SingletonModuleContainer(handler.getModule());
 		}
 

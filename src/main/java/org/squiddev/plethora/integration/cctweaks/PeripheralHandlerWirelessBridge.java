@@ -30,15 +30,15 @@ import org.squiddev.cctweaks.core.network.bridge.NetworkBindingWithModem;
 import org.squiddev.cctweaks.core.network.modem.BasicModemPeripheral;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.api.minecart.IMinecartAccess;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleAccess;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 
-public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMinecartUpgradeHandler, IWorldPosition, ICapabilityProvider {
+public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IVehicleUpgradeHandler, IWorldPosition, ICapabilityProvider {
 	private final ItemStack stack;
 	private World world;
 	private BlockPos pos;
@@ -86,7 +86,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 		if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return stack.getItemDamage() == 0;
-		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) return stack.getItemDamage() == 0;
+		if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return stack.getItemDamage() == 0;
 		return false;
 	}
 
@@ -96,7 +96,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 		if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) {
 			return stack.getItemDamage() == 0 ? (T) this : null;
 		}
-		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
+		if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) {
 			return stack.getItemDamage() == 0 ? (T) this : null;
 		}
 		return null;
@@ -104,7 +104,7 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 
 	@Nonnull
 	@Override
-	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access) {
+	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IVehicleAccess access) {
 		if (model == null) model = new ModelResourceLocation("cctweaks:wireless_bridge_small", "inventory");
 
 		ModelManager modelManager = RenderHelpers.getMesher().getModelManager();
@@ -112,13 +112,13 @@ public class PeripheralHandlerWirelessBridge implements IPeripheralHandler, IMin
 	}
 
 	@Override
-	public void update(@Nonnull IMinecartAccess minecart, @Nonnull IPeripheral peripheral) {
-		update(minecart.getMinecart().getEntityWorld(), minecart.getMinecart().getPositionVector(), minecart.getMinecart());
+	public void update(@Nonnull IVehicleAccess vehicle, @Nonnull IPeripheral peripheral) {
+		update(vehicle.getVehicle().getEntityWorld(), vehicle.getVehicle().getPositionVector(), vehicle.getVehicle());
 	}
 
 	@Nullable
 	@Override
-	public IPeripheral create(@Nonnull IMinecartAccess minecart) {
+	public IPeripheral create(@Nonnull IVehicleAccess vehicle) {
 		return getPeripheral();
 	}
 

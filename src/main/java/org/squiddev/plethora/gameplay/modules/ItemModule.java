@@ -35,7 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
@@ -95,7 +95,7 @@ public final class ItemModule extends ItemBase {
 		CHAT_ID,
 	};
 
-	public static final int[] MINECART_MODULES = new int[]{
+	public static final int[] VEHICLE_MODULES = new int[]{
 		LASER_ID,
 		SCANNER_ID,
 		SENSOR_ID,
@@ -369,7 +369,7 @@ public final class ItemModule extends ItemBase {
 	private static final class ItemModuleHandler extends AbstractModuleHandler implements ICapabilityProvider {
 		private final ItemStack stack;
 		private ResourceLocation moduleId;
-		private IMinecartUpgradeHandler minecart;
+		private IVehicleUpgradeHandler vehicle;
 
 		private ItemModuleHandler(ItemStack stack) {
 			this.stack = stack;
@@ -380,8 +380,8 @@ public final class ItemModule extends ItemBase {
 			if (stack.getItemDamage() >= MODULES) return false;
 
 			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return true;
-			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
-				return minecart != null || Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1;
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) {
+				return vehicle != null || Arrays.binarySearch(VEHICLE_MODULES, stack.getItemDamage()) != -1;
 			}
 
 			return false;
@@ -394,11 +394,11 @@ public final class ItemModule extends ItemBase {
 
 			if (capability == Constants.MODULE_HANDLER_CAPABILITY) return (T) this;
 
-			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
-				if (minecart != null) {
-					return (T) minecart;
-				} else if (Arrays.binarySearch(MINECART_MODULES, stack.getItemDamage()) != -1) {
-					return (T) (minecart = PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this));
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) {
+				if (vehicle != null) {
+					return (T) vehicle;
+				} else if (Arrays.binarySearch(VEHICLE_MODULES, stack.getItemDamage()) != -1) {
+					return (T) (vehicle = PlethoraAPI.instance().moduleRegistry().toVehicleUpgrade(this));
 				} else {
 					return null;
 				}

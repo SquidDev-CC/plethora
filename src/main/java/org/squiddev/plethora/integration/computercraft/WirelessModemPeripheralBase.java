@@ -6,8 +6,8 @@ import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.api.minecart.IMinecartAccess;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleAccess;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 
 import javax.annotation.Nonnull;
@@ -77,7 +77,7 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 		}
 	}
 
-	public static final class MinecartUpgradeHandler extends WirelessModemPeripheralBase implements IMinecartUpgradeHandler {
+	public static final class VehicleUpgradeHandler extends WirelessModemPeripheralBase implements IVehicleUpgradeHandler {
 		@SideOnly(Side.CLIENT)
 		private ModelResourceLocation offModel;
 		@SideOnly(Side.CLIENT)
@@ -85,39 +85,39 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 
 		private final ItemStack stack;
 
-		public MinecartUpgradeHandler(boolean advanced, ItemStack stack) {
+		public VehicleUpgradeHandler(boolean advanced, ItemStack stack) {
 			super(advanced);
 			this.stack = stack;
 		}
 
 		@Override
 		public boolean equals(IPeripheral other) {
-			return this == other || (other instanceof MinecartUpgradeHandler && stack == ((MinecartUpgradeHandler) other).stack);
+			return this == other || (other instanceof VehicleUpgradeHandler && stack == ((VehicleUpgradeHandler) other).stack);
 		}
 
 		@Override
-		public void update(@Nonnull IMinecartAccess access, @Nonnull IPeripheral peripheral) {
-			EntityMinecart minecart = access.getMinecart();
-			update(minecart.getEntityWorld(), minecart.getPositionVector());
+		public void update(@Nonnull IVehicleAccess vehicle, @Nonnull IPeripheral peripheral) {
+			Entity entity = vehicle.getVehicle();
+			update(entity.getEntityWorld(), entity.getPositionVector());
 
 			if (peripheral instanceof ModemPeripheral) {
 				ModemPeripheral modem = (ModemPeripheral) peripheral;
 				if (modem.pollChanged()) {
-					access.getData().setBoolean("active", modem.isActive());
-					access.markDataDirty();
+					vehicle.getData().setBoolean("active", modem.isActive());
+					vehicle.markDataDirty();
 				}
 			}
 		}
 
 		@Override
-		public IPeripheral create(@Nonnull IMinecartAccess minecart) {
+		public IPeripheral create(@Nonnull IVehicleAccess vehicle) {
 			return this;
 		}
 
 		@Nonnull
 		@Override
 		@SideOnly(Side.CLIENT)
-		public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access) {
+		public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IVehicleAccess access) {
 			loadModelLocations();
 			boolean active = access.getData().getBoolean("active");
 

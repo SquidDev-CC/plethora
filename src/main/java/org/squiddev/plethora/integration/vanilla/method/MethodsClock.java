@@ -26,7 +26,7 @@ public class MethodsClock {
 	)
 	public static Object[] getDay(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {
 		World world = location.getWorld();
-		return new Object[]{world.getWorldTime() / 240000};
+		return new Object[]{world.getWorldTime() / 24000};
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(

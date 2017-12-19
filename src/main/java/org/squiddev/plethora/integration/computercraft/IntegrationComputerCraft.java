@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.utils.Helpers;
@@ -53,7 +53,7 @@ public class IntegrationComputerCraft {
 	private static final class PeripheralCapabilityProvider implements ICapabilityProvider {
 		private boolean checked = false;
 		private IPeripheralHandler peripheral;
-		private IMinecartUpgradeHandler minecart;
+		private IVehicleUpgradeHandler minecart;
 		private final ItemStack stack;
 
 		private PeripheralCapabilityProvider(ItemStack stack) {
@@ -63,7 +63,7 @@ public class IntegrationComputerCraft {
 		@Override
 		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
 			if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return getHandler() != null;
-			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) return getMinecart() != null;
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return getMinecart() != null;
 			return false;
 		}
 
@@ -71,7 +71,7 @@ public class IntegrationComputerCraft {
 		@SuppressWarnings("unchecked")
 		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
 			if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return (T) getHandler();
-			if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) return (T) getMinecart();
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return (T) getMinecart();
 			return null;
 		}
 
@@ -99,7 +99,7 @@ public class IntegrationComputerCraft {
 			}
 		}
 
-		private IMinecartUpgradeHandler getMinecart() {
+		private IVehicleUpgradeHandler getMinecart() {
 			if (checked) {
 				return minecart;
 			} else {
@@ -109,11 +109,11 @@ public class IntegrationComputerCraft {
 					ItemPeripheralBase item = (ItemPeripheralBase) stack.getItem();
 					switch (item.getPeripheralType(stack)) {
 						case WirelessModem:
-							return minecart = new WirelessModemPeripheralBase.MinecartUpgradeHandler(false, stack);
+							return minecart = new WirelessModemPeripheralBase.VehicleUpgradeHandler(false, stack);
 						case AdvancedModem:
-							return minecart = new WirelessModemPeripheralBase.MinecartUpgradeHandler(true, stack);
+							return minecart = new WirelessModemPeripheralBase.VehicleUpgradeHandler(true, stack);
 						case Speaker:
-							return minecart = new SpeakerPeripheralBase.MinecartUpgradeHandler(stack);
+							return minecart = new SpeakerPeripheralBase.VehicleUpgradeHandler(stack);
 						default:
 							return null;
 					}

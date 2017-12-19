@@ -60,8 +60,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
-import org.squiddev.plethora.api.minecart.IMinecartAccess;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleAccess;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -78,7 +78,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import static org.squiddev.plethora.api.Constants.MINECART_UPGRADE_HANDLER_CAPABILITY;
+import static org.squiddev.plethora.api.Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY;
 import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public class EntityMinecartComputer extends EntityMinecart {
@@ -119,7 +119,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	/**
 	 * The minecart access object for each peripheral slot.
 	 */
-	private final MinecartAccess[] accesses = new MinecartAccess[SLOTS];
+	private final VehicleAccess[] accesses = new VehicleAccess[SLOTS];
 
 	private int romId = -1;
 
@@ -131,7 +131,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		setSize(0.98F, 0.98F);
 
 		// Initialise the upgrades
-		for (int i = 0; i < SLOTS; i++) accesses[i] = new MinecartAccess(this);
+		for (int i = 0; i < SLOTS; i++) accesses[i] = new VehicleAccess(this);
 	}
 
 	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId) {
@@ -179,7 +179,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		dataManager.set(FAMILY_SLOT, (byte) family.ordinal());
 	}
 
-	public IMinecartAccess getAccess(int slot) {
+	public IVehicleAccess getAccess(int slot) {
 		return accesses[slot];
 	}
 
@@ -209,7 +209,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		int stackDirty = itemHandler.getDirty();
 		itemHandler.clearDirty();
 		for (int slot = 0; slot < SLOTS; slot++) {
-			MinecartAccess access = accesses[slot];
+			VehicleAccess access = accesses[slot];
 
 			boolean stackChanged = (stackDirty & (1 << slot)) != 0;
 			boolean accessChanged = access.dirty;
@@ -217,13 +217,13 @@ public class EntityMinecartComputer extends EntityMinecart {
 			if (stackChanged) {
 				accesses[slot].reset();
 
-				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				IVehicleUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
 				IPeripheral peripheral = peripherals[slot] = upgrade == null ? null : upgrade.create(accesses[slot]);
 				computer.setPeripheral(PERIPHERAL_MAPPINGS[slot], peripheral);
 			}
 
 			{
-				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				IVehicleUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
 				if (upgrade != null) {
 					upgrade.update(access, peripherals[slot]);
 					accessChanged |= access.dirty;
@@ -342,7 +342,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			}
 
 			for (int slot = 0; slot < SLOTS; slot++) {
-				IMinecartUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
+				IVehicleUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
 				IPeripheral peripheral = peripherals[slot] = upgrade == null ? null : upgrade.create(accesses[slot]);
 				computer.setPeripheral(PERIPHERAL_MAPPINGS[slot], peripheral);
 			}
@@ -755,29 +755,29 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 	private static final class UpgradeItemHandler extends ItemStackHandler {
 		private int dirty = 0;
-		private final IMinecartUpgradeHandler[] handlers;
+		private final IVehicleUpgradeHandler[] handlers;
 
 		public UpgradeItemHandler(int slots) {
 			super(slots);
-			this.handlers = new IMinecartUpgradeHandler[6];
+			this.handlers = new IVehicleUpgradeHandler[6];
 		}
 
 		@Override
 		protected void onContentsChanged(int slot) {
 			dirty |= 1 << slot;
 			ItemStack stack = getStackInSlot(slot);
-			handlers[slot] = stack.isEmpty() ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+			handlers[slot] = stack.isEmpty() ? null : stack.getCapability(VEHICLE_UPGRADE_HANDLER_CAPABILITY, null);
 		}
 
 		@Override
 		protected void onLoad() {
 			for (int i = 0; i < getSlots(); i++) {
 				ItemStack stack = getStackInSlot(i);
-				handlers[i] = stack.isEmpty() ? null : stack.getCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+				handlers[i] = stack.isEmpty() ? null : stack.getCapability(VEHICLE_UPGRADE_HANDLER_CAPABILITY, null);
 			}
 		}
 
-		public IMinecartUpgradeHandler getUpgrade(int slot) {
+		public IVehicleUpgradeHandler getUpgrade(int slot) {
 			validateSlotIndex(slot);
 			return handlers[slot];
 		}
@@ -793,7 +793,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-			if (!stack.hasCapability(MINECART_UPGRADE_HANDLER_CAPABILITY, null)) {
+			if (!stack.hasCapability(VEHICLE_UPGRADE_HANDLER_CAPABILITY, null)) {
 				return stack;
 			}
 
@@ -806,18 +806,18 @@ public class EntityMinecartComputer extends EntityMinecart {
 		}
 	}
 
-	private static final class MinecartAccess implements IMinecartAccess {
+	private static final class VehicleAccess implements IVehicleAccess {
 		private final EntityMinecart minecart;
 		protected NBTTagCompound compound;
 		protected boolean dirty = false;
 
-		private MinecartAccess(EntityMinecart minecart) {
+		private VehicleAccess(EntityMinecart minecart) {
 			this.minecart = minecart;
 		}
 
 		@Nonnull
 		@Override
-		public EntityMinecart getMinecart() {
+		public EntityMinecart getVehicle() {
 			return minecart;
 		}
 
