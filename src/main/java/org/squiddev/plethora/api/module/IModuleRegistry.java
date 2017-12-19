@@ -1,7 +1,7 @@
 package org.squiddev.plethora.api.module;
 
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 
 import javax.annotation.Nonnull;
 
@@ -69,10 +69,10 @@ public interface IModuleRegistry {
 	void registerPocketUpgrade(@Nonnull ItemStack stack, @Nonnull IModuleHandler handler, @Nonnull String adjective);
 
 	/**
-	 * Convert a module handler to a minecraft upgrade handler.
+	 * Convert a module handler to a vehicle upgrade handler.
 	 *
 	 * @param handler The module handler to convert.
-	 * @return The resulting minecraft upgrade handler.
+	 * @return The resulting vehicle upgrade handler.
 	 */
-	IMinecartUpgradeHandler toMinecartUpgrade(@Nonnull IModuleHandler handler);
+	IVehicleUpgradeHandler toVehicleUpgrade(@Nonnull IModuleHandler handler);
 }

@@ -5,8 +5,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 
 import java.util.UUID;
 
@@ -82,12 +82,12 @@ public class Constants {
 	public static Capability<IPeripheralHandler> PERIPHERAL_HANDLER_CAPABILITY = null;
 
 	/**
-	 * Capability for minecart upgrades;
+	 * Capability for vehicle upgrades;
 	 *
-	 * Provide this capability for an ItemStack to be an upgrade for a minecart computer.
+	 * Provide this capability for an ItemStack to be an upgrade for a vehicle computer.
 	 *
-	 * @see IMinecartUpgradeHandler
+	 * @see IVehicleUpgradeHandler
 	 */
-	@CapabilityInject(IMinecartUpgradeHandler.class)
-	public static Capability<IMinecartUpgradeHandler> MINECART_UPGRADE_HANDLER_CAPABILITY = null;
+	@CapabilityInject(IVehicleUpgradeHandler.class)
+	public static Capability<IVehicleUpgradeHandler> VEHICLE_UPGRADE_HANDLER_CAPABILITY = null;
 }
