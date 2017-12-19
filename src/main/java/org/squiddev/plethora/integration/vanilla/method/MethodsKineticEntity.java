@@ -118,7 +118,7 @@ public final class MethodsKineticEntity {
 
 			EntityArrow arrow = (EntityArrow) ReflectionHelper
 				.findMethod(AbstractSkeleton.class, "getArrow", "func_190726_a", float.class)
-				.invoke(skeleton, skeleton, potency);
+				.invoke(skeleton, (float) potency);
 
 			float rotationYaw = skeleton.rotationYaw;
 			float rotationPitch = skeleton.rotationPitch;

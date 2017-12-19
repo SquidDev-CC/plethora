@@ -18,12 +18,12 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.minecart.MinecartModuleHandler;
+import org.squiddev.plethora.api.vehicle.VehicleModuleHandler;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.core.modules.BasicModuleHandlerTransform;
-import org.squiddev.plethora.core.modules.MinecartModuleHandlerTransform;
+import org.squiddev.plethora.core.modules.VehicleModuleHandlerTransform;
 
 import javax.vecmath.Matrix4f;
 
@@ -124,7 +124,7 @@ public class IntegrationVanilla {
 		// Translate 0 -0.1 0
 	);
 
-	private static final MinecartModuleHandler daylightSensorCap = new MinecartModuleHandlerTransform(
+	private static final VehicleModuleHandler daylightSensorCap = new VehicleModuleHandlerTransform(
 		daylightSensorMod,
 		Item.getItemFromBlock(Blocks.DAYLIGHT_DETECTOR),
 		new Matrix4f(
@@ -135,8 +135,8 @@ public class IntegrationVanilla {
 		)
 	);
 
-	private static final MinecartModuleHandler clockCap = new MinecartModuleHandler(clockMod, Items.CLOCK);
-	private static final MinecartModuleHandler noteblockCap = new MinecartModuleHandlerTransform(
+	private static final VehicleModuleHandler clockCap = new VehicleModuleHandler(clockMod, Items.CLOCK);
+	private static final VehicleModuleHandler noteblockCap = new VehicleModuleHandlerTransform(
 		noteblockMod, Item.getItemFromBlock(Blocks.NOTEBLOCK),
 		new Matrix4f(
 			0.6f, 0.0f, 0.0f, 0.0f,

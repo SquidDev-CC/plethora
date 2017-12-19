@@ -1,21 +1,21 @@
-package org.squiddev.plethora.api.minecart;
+package org.squiddev.plethora.api.vehicle;
 
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
 /**
- * An access object for a minecart computer, usable by {@link IMinecartUpgradeHandler}.
+ * An access object for a computer mounted on some vehicle, usable by {@link IVehicleUpgradeHandler}.
  */
-public interface IMinecartAccess {
+public interface IVehicleAccess {
 	/**
-	 * Get the minecart this access object represents.
+	 * Get the vehicle this access object represents.
 	 *
-	 * @return The access's minecart.
+	 * @return The access's vehicle.
 	 */
 	@Nonnull
-	EntityMinecart getMinecart();
+	Entity getVehicle();
 
 	/**
 	 * Get data specific to this stack. This can be written

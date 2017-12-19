@@ -129,7 +129,7 @@ public final class ConfigCore {
 		 *
 		 * This includes all blacklisted modules.
 		 */
-		public static HashSet<String> blacklistModulesMinecart;
+		public static HashSet<String> blacklistModulesVehicle;
 
 		/**
 		 * List of modules to blacklist from being mounted from a tile.

@@ -15,7 +15,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -90,10 +90,10 @@ final class ModuleRegistry implements IModuleRegistry {
 	}
 
 	@Override
-	public IMinecartUpgradeHandler toMinecartUpgrade(@Nonnull IModuleHandler handler) {
+	public IVehicleUpgradeHandler toVehicleUpgrade(@Nonnull IModuleHandler handler) {
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 
-		return new MinecartUpgradeModule(handler);
+		return new VehicleUpgradeModule(handler);
 	}
 
 	void addRecipes(IForgeRegistry<IRecipe>  registry) {

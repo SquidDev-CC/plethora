@@ -15,7 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.minecart.IMinecartUpgradeHandler;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 
@@ -125,7 +125,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 						break;
 				}
 
-				IMinecartUpgradeHandler upgrade = stack.getCapability(Constants.MINECART_UPGRADE_HANDLER_CAPABILITY, null);
+				IVehicleUpgradeHandler upgrade = stack.getCapability(Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY, null);
 				IBakedModel model;
 				if (upgrade == null) {
 					model = getMesher().getModelManager().getMissingModel();

@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class CanvasServer implements IReference<CanvasServer> {
@@ -48,26 +49,19 @@ public class CanvasServer implements IReference<CanvasServer> {
 
 	@Nullable
 	public synchronized MessageCanvasUpdate getUpdateMessage() {
-		int dirty = 0;
-		for (BaseObject object : objects.valueCollection()) {
-			if (object.isDirty()) dirty++;
-		}
-
-		if (dirty == 0 && added.size() == 0 && removed.size() == 0) return null;
-
-		BaseObject[] changed = new BaseObject[dirty];
-		int i = 0;
+		ArrayList<BaseObject> changed = null;
 		for (BaseObject object : objects.valueCollection()) {
 			if (object.isDirty()) {
-				changed[i++] = object;
-				object.resetDirty();
+				if (changed == null) changed = new ArrayList<BaseObject>();
+				changed.add(object);
 			}
 		}
 
+		if (changed == null && added.size() == 0 && removed.size() == 0) return null;
+
+		if (changed == null) changed = new ArrayList<BaseObject>(0);
 		MessageCanvasUpdate message = new MessageCanvasUpdate(
-			canvasId, changed,
-			added.toArray(new BaseObject[added.size()]),
-			removed.toArray()
+			canvasId, changed, new ArrayList<BaseObject>(added), removed.toArray()
 		);
 		added.clear();
 		removed.clear();

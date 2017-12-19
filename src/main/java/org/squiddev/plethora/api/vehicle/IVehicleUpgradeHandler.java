@@ -1,4 +1,4 @@
-package org.squiddev.plethora.api.minecart;
+package org.squiddev.plethora.api.vehicle;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -12,30 +12,30 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 
 /**
- * A capability which provides an upgrade to minecarts.
+ * A capability which provides an upgrade to various vehicles.
  */
-public interface IMinecartUpgradeHandler {
+public interface IVehicleUpgradeHandler {
 	/**
 	 * Get a model from this stack
 	 *
-	 * @param access The minecart access
+	 * @param access The vehicle access
 	 * @return A baked model and its transformation
 	 * @see net.minecraft.client.renderer.ItemModelMesher#getItemModel(ItemStack)
 	 */
 	@Nonnull
 	@SideOnly(Side.CLIENT)
-	Pair<IBakedModel, Matrix4f> getModel(@Nonnull IMinecartAccess access);
+	Pair<IBakedModel, Matrix4f> getModel(@Nonnull IVehicleAccess access);
 
 	/**
-	 * Update the minecart handler for the specific
+	 * Update the vehicle handler for the specific
 	 */
-	void update(@Nonnull IMinecartAccess minecart, @Nonnull IPeripheral peripheral);
+	void update(@Nonnull IVehicleAccess vehicle, @Nonnull IPeripheral peripheral);
 
 	/**
-	 * Create a peripheral from the given minecart
+	 * Create a peripheral from the given vehicle
 	 *
 	 * @return The peripheral to create, or {@code null} if none should be created.
 	 */
 	@Nullable
-	IPeripheral create(@Nonnull IMinecartAccess minecart);
+	IPeripheral create(@Nonnull IVehicleAccess vehicle);
 }

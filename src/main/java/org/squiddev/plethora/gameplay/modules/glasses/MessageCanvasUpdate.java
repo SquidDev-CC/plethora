@@ -6,13 +6,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageCanvasUpdate implements IMessage {
 	private int canvasId;
-	private BaseObject[] changed;
-	private BaseObject[] added;
+	private List<BaseObject> changed;
+	private List<BaseObject> added;
 	private int[] removed;
 
-	public MessageCanvasUpdate(int canvasId, BaseObject[] changed, BaseObject[] added, int[] removed) {
+	public MessageCanvasUpdate(int canvasId, List<BaseObject> changed, List<BaseObject> added, int[] removed) {
 		this.canvasId = canvasId;
 		this.changed = changed;
 		this.added = added;
@@ -27,15 +30,15 @@ public class MessageCanvasUpdate implements IMessage {
 		canvasId = buf.readInt();
 
 		int changedLength = buf.readInt();
-		changed = new BaseObject[changedLength];
+		changed = new ArrayList<BaseObject>(changedLength);
 		for (int i = 0; i < changedLength; i++) {
-			changed[i] = ObjectRegistry.read(buf);
+			changed.add(ObjectRegistry.read(buf));
 		}
 
 		int addedLength = buf.readInt();
-		added = new BaseObject[addedLength];
+		added = new ArrayList<BaseObject>(addedLength);
 		for (int i = 0; i < addedLength; i++) {
-			added[i] = ObjectRegistry.read(buf);
+			added.add(ObjectRegistry.read(buf));
 		}
 
 		int removedLength = buf.readInt();
@@ -49,12 +52,12 @@ public class MessageCanvasUpdate implements IMessage {
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(canvasId);
 
-		buf.writeInt(changed.length);
+		buf.writeInt(changed.size());
 		for (BaseObject object : changed) {
 			ObjectRegistry.write(buf, object);
 		}
 
-		buf.writeInt(added.length);
+		buf.writeInt(added.size());
 		for (BaseObject object : added) {
 			ObjectRegistry.write(buf, object);
 		}

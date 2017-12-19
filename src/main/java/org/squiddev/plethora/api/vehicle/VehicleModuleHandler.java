@@ -1,4 +1,4 @@
-package org.squiddev.plethora.api.minecart;
+package org.squiddev.plethora.api.vehicle;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
@@ -11,32 +11,31 @@ import org.squiddev.plethora.api.module.BasicModuleHandler;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link BasicModuleHandler} which also provides a {@link IMinecartUpgradeHandler}.
+ * A {@link BasicModuleHandler} which also provides a {@link IVehicleUpgradeHandler}.
  */
-public class MinecartModuleHandler extends BasicModuleHandler {
-	private IMinecartUpgradeHandler handler;
+public class VehicleModuleHandler extends BasicModuleHandler {
+	private IVehicleUpgradeHandler handler;
 
-	public MinecartModuleHandler(ResourceLocation id, Item item) {
+	public VehicleModuleHandler(ResourceLocation id, Item item) {
 		super(id, item);
 	}
 
-	protected IMinecartUpgradeHandler createMinecart() {
-		return PlethoraAPI.instance().moduleRegistry().toMinecartUpgrade(this);
+	protected IVehicleUpgradeHandler createVehicle() {
+		return PlethoraAPI.instance().moduleRegistry().toVehicleUpgrade(this);
 	}
-
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
-		return super.hasCapability(capability, enumFacing) || capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY;
+		return super.hasCapability(capability, enumFacing) || capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
-		if (capability == Constants.MINECART_UPGRADE_HANDLER_CAPABILITY) {
-			IMinecartUpgradeHandler upgrade = handler;
+		if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) {
+			IVehicleUpgradeHandler upgrade = handler;
 			if (upgrade == null) {
-				upgrade = this.handler = createMinecart();
+				upgrade = this.handler = createVehicle();
 			}
 			return (T) upgrade;
 		}
