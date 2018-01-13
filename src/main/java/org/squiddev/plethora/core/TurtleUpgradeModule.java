@@ -3,11 +3,9 @@ package org.squiddev.plethora.core;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
-import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -21,9 +19,9 @@ import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -83,14 +81,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		MethodRegistry registry = MethodRegistry.instance;
 
-		TileEntity te = turtle.getWorld().getTileEntity(turtle.getPosition());
-		ICostHandler cost;
-		if (te != null && te instanceof ITurtleTile) {
-			cost = registry.getCostHandler(te, null);
-		} else {
-			DebugLogger.warn("Cannot find turtle where access says it should be");
-			return null;
-		}
+		ICostHandler cost = DefaultCostHandler.get(turtle);
 
 		final TurtleModuleAccess access = new TurtleModuleAccess(turtle, side, handler);
 		BasicContextBuilder builder = new BasicContextBuilder();

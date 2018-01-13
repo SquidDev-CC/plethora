@@ -23,9 +23,9 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,13 +74,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		MethodRegistry registry = MethodRegistry.instance;
 
 		final Entity entity = pocket.getEntity();
-		ICostHandler cost;
-		if (entity != null) {
-			cost = registry.getCostHandler(entity, null);
-		} else {
-			DebugLogger.warn("Cannot find entity for pocket computer");
-			return null;
-		}
+		ICostHandler cost = DefaultCostHandler.get(pocket);
 
 		final PocketModuleAccess access = new PocketModuleAccess(pocket, handler);
 		final IModuleContainer container = access.getContainer();
