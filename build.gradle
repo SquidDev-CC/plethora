@@ -88,7 +88,7 @@ repositories {
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
 
 	// Baubles
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2424/450/[module]-[revision](.[ext])"}
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2518/667/[module]-[revision](.[ext])"}
 
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
@@ -101,12 +101,12 @@ dependencies {
 	provided "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
 	compile "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
 	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
-	deobfProvided "buildcraft:buildcraft:7.99.6" // Won't run on 1.12, but just here for the future
+	deobfProvided "buildcraft:buildcraft:7.99.14"
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.61:deobf"
 
 	// Tinker's + Dependencies
-	deobfProvided "slimeknights:TConstruct:1.11.2-2.7.0.26" // Won't run on 1.12, but here for the future
-	deobfProvided "slimeknights.mantle:Mantle:1.11.2-1.2.0.26" // Won't run on 1.12, but here for the future
+	deobfProvided "slimeknights:TConstruct:1.12.2-2.9.0.56"
+	deobfProvided "slimeknights.mantle:Mantle:1.12-1.3.1.22"
 
 	// Storage drawers + Dependencies
 	deobfProvided "curseMods:Chameleon:${project.mc_version}-4.1.0"
@@ -116,9 +116,9 @@ dependencies {
 	deobfProvided "refinedstorage:refinedstorage:1.5.8-1240"
 	deobfProvided "curseMods:forestry:${project.mc_version}-5.4.3.128"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9" // Won't run on 1.12, but here for the future
-	deobfProvided "curseMods:Baubles:1.11-1.4.5" // Won't run on 1.12, but here for the future
-	provided("codechicken:ForgeMultipart:1.11.2-2.1.0.34:deobf") { exclude group: "codechicken" } // Won't run on 1.12, but here for the future
-	provided "codechicken:CodeChickenLib:1.11.2-2.6.0.264:deobf" // Won't run on 1.12, but here for the future
+	deobfProvided "curseMods:Baubles:1.12-1.5.2"
+	provided("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
+	provided "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 
 	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
