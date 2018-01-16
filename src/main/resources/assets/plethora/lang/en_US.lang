@@ -131,6 +131,9 @@ gui.config.plethora.chat.maxLength=Maximum length
 gui.config.plethora.chat.allowFormatting=Allow format codes
 gui.config.plethora.chat.allowMobs=Allow mobs in chat
 
+gui.config.plethora.miscellaneous=Miscellaneous
+gui.config.plethora.miscellaneous.funRender=Fun rendering
+
 # JEI Integration
 gui.jei.plethora.modules=Modules
 gui.jei.plethora.modules.usable=Usable as a module in:
