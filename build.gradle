@@ -90,6 +90,9 @@ repositories {
 	// Baubles
 	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2518/667/[module]-[revision](.[ext])"}
 
+	// Blockcraftery
+	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2485/336/[module]-[revision](.[ext])"}
+
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
 }
@@ -117,6 +120,7 @@ dependencies {
 	deobfProvided "curseMods:forestry:${project.mc_version}-5.4.3.128"
 	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9" // Won't run on 1.12, but here for the future
 	deobfProvided "curseMods:Baubles:1.12-1.5.2"
+	deobfCompile "curseMods:blockcraftery:0.1.3"
 	provided("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
 	provided "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 

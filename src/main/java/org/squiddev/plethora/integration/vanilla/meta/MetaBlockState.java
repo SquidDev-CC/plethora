@@ -19,10 +19,26 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IBlockState> context) {
-		HashMap<Object, Object> data = Maps.newHashMap();
-
 		IBlockState state = context.getTarget();
 		Block block = state.getBlock();
+
+		Map<Object, Object> data = getBasicMeta(state);
+
+		Material material = state.getMaterial();
+		data.put("material", PlethoraAPI.instance().metaRegistry().getMeta(context.makePartialChild(material)));
+
+		int level = block.getHarvestLevel(state);
+		if (level >= 0) data.put("harvestLevel", level);
+		data.put("harvestTool", block.getHarvestTool(state));
+
+		return data;
+	}
+
+	public static Map<Object, Object> getBasicMeta(@Nonnull IBlockState state) {
+		Block block = state.getBlock();
+
+		HashMap<Object, Object> data = Maps.newHashMap();
+
 		data.put("metadata", block.getMetaFromState(state));
 
 		HashMap<Object, Object> stateProperties = Maps.newHashMap();
@@ -34,13 +50,6 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 			}
 			stateProperties.put(item.getKey().getName(), value);
 		}
-
-		Material material = state.getMaterial();
-		data.put("material", PlethoraAPI.instance().metaRegistry().getMeta(context.makePartialChild(material)));
-
-		int level = block.getHarvestLevel(state);
-		if (level >= 0) data.put("harvestLevel", level);
-		data.put("harvestTool", block.getHarvestTool(state));
 
 		return data;
 	}
