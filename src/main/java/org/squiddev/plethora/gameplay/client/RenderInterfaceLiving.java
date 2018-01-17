@@ -161,7 +161,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		} else if (model instanceof ModelEnderMite) {
 			ModelRenderer[] renderers = ObfuscationReflectionHelper.getPrivateValue(ModelEnderMite.class, (ModelEnderMite) model, "field_178713_d");
 			return renderers[0];
-		} else if(model instanceof ModelShulker) {
+		} else if (model instanceof ModelShulker) {
 			return ((ModelShulker) model).head;
 		} else {
 			return null;

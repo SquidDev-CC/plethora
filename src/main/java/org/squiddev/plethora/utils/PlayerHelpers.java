@@ -14,7 +14,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class PlayerHelpers {
@@ -33,7 +32,7 @@ public class PlayerHelpers {
 		if (player instanceof EntityPlayerMP) {
 			return findHit((EntityPlayerMP) player);
 		} else if (player.worldObj.isRemote && player instanceof EntityPlayerSP) {
-			RayTraceResult result =  Minecraft.getMinecraft().objectMouseOver;
+			RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
 			return result == null ? new RayTraceResult(RayTraceResult.Type.MISS, player.getPositionVector(), null, null) : result;
 		} else {
 			return findHit(player, 4.5);

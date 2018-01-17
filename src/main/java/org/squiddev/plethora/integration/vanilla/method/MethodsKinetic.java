@@ -20,7 +20,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
+import static dan200.computercraft.core.apis.ArgumentHelper.optNumber;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 

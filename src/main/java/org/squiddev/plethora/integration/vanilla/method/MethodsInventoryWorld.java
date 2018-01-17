@@ -18,7 +18,8 @@ import org.squiddev.plethora.api.reference.ItemSlot;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optEnum;
 

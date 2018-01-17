@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.items.ITurtleItem;
-import dan200.computercraft.shared.util.Colour;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
