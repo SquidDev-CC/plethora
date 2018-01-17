@@ -200,7 +200,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 					.getEntitiesWithinAABBExcludingEntity(this,
 						getEntityBoundingBox()
 							.offset(motionX * remaining, motionY * remaining, motionZ * remaining)
-								.grow(1, 1, 1)
+							.grow(1, 1, 1)
 					);
 				Entity shooter = getShooter();
 

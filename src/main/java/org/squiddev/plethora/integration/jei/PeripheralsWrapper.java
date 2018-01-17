@@ -7,7 +7,6 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;

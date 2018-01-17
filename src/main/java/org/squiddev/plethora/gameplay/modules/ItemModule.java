@@ -1,7 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import dan200.computercraft.shared.peripheral.PeripheralType;
-import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
