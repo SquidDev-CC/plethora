@@ -153,6 +153,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		this.romId = romId;
 	}
 
+	@Override
 	protected void entityInit() {
 		super.entityInit();
 		dataManager.register(INSTANCE_SLOT, -1);
@@ -426,6 +427,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		return blockState;
 	}
 
+	@Override
 	public void killMinecart(DamageSource source) {
 		setDead();
 

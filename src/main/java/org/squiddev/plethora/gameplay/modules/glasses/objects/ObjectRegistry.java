@@ -12,6 +12,7 @@ public final class ObjectRegistry {
 	public static final byte TRIANGLE_2D = 4;
 	public static final byte POLYGON_2D = 5;
 	public static final byte LINE_LOOP_2D = 6;
+	public static final byte ITEM_2D = 7;
 
 	private ObjectRegistry() {
 	}
@@ -32,6 +33,8 @@ public final class ObjectRegistry {
 				return new Polygon(id);
 			case LINE_LOOP_2D:
 				return new LineLoop(id);
+			case ITEM_2D:
+				return new Item2D(id);
 			default:
 				throw new IllegalStateException("Unknown type " + type);
 		}

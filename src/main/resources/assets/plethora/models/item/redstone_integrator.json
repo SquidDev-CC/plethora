@@ -1,5 +1,5 @@
 {
-	"parent": "plethora:block/${name}",
+	"parent": "plethora:block/redstone_integrator",
 	"display": {
 		"thirdperson": {
 			"rotation": [ 10, -45, 170 ],

@@ -11,14 +11,11 @@ import dan200.computercraft.shared.util.ImpostorRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
-import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -27,8 +24,8 @@ import java.util.List;
 final class ModuleRegistry implements IModuleRegistry {
 	public static final ModuleRegistry instance = new ModuleRegistry();
 
-	private final List<IPocketUpgrade> pocketUpgrades = new ArrayList<IPocketUpgrade>();
-	private final List<ITurtleUpgrade> turtleUpgrades = new ArrayList<ITurtleUpgrade>();
+	private final List<IPocketUpgrade> pocketUpgrades = new ArrayList<>();
+	private final List<ITurtleUpgrade> turtleUpgrades = new ArrayList<>();
 
 	private ModuleRegistry() {
 	}
@@ -96,7 +93,7 @@ final class ModuleRegistry implements IModuleRegistry {
 		return new VehicleUpgradeModule(handler);
 	}
 
-	void addRecipes(IForgeRegistry<IRecipe>  registry) {
+	void addRecipes(IForgeRegistry<IRecipe> registry) {
 		for (ITurtleUpgrade upgrade : turtleUpgrades) {
 			registry.register(new ImpostorRecipe(
 				PlethoraCore.ID + ":turtle_upgrade", 2, 1,

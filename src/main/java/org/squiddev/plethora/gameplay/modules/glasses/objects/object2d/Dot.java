@@ -64,6 +64,8 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 
 	@Override
 	public void draw2D() {
+		setupFlat();
+
 		float x = position.x, y = position.y, delta = scale / 2;
 
 		GL11.glBegin(GL11.GL_TRIANGLES);

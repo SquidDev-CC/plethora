@@ -123,16 +123,11 @@ public class CanvasHandler {
 
 		GlStateManager.pushMatrix();
 
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.disableTexture2D();
-		GlStateManager.disableLighting();
-
 		// The hotbar renders at -90 (See GuiIngame#renderTooltip)
 		GlStateManager.translate(0, 0, -100);
 
 		ScaledResolution resolution = event.getResolution();
-		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 0);
+		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 2);
 
 		synchronized (canvas.objects) {
 			for (BaseObject object : canvas.objects.valueCollection()) {
@@ -142,6 +137,7 @@ public class CanvasHandler {
 
 		GlStateManager.color(1.0f, 1.0f, 1.0f);
 		GlStateManager.enableTexture2D();
+		GlStateManager.enableCull();
 
 		GlStateManager.popMatrix();
 	}

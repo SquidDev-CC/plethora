@@ -29,6 +29,7 @@ public class HTMLWriter implements IDocWriter {
 		this.writer = new PrintStream(stream);
 	}
 
+	@Override
 	public void writeHeader() throws IOException {
 		InputStream header = getClass().getClassLoader().getResourceAsStream("assets/plethora/header.html");
 		if (header == null) {
@@ -42,11 +43,13 @@ public class HTMLWriter implements IDocWriter {
 		}
 	}
 
+	@Override
 	public void writeFooter() {
 		writer.printf("<footer>Generated on %s</footer>\n", format.format(new Date()));
 		writer.println("</body></html>");
 	}
 
+	@Override
 	public void write(Multimap<Class<?>, IMethod<?>> methodLookup) {
 		ListMultimap<String, DocData> classLookup = MultimapBuilder.treeKeys().arrayListValues().build();
 		ListMultimap<String, DocData> moduleLookup = MultimapBuilder.treeKeys().arrayListValues().build();

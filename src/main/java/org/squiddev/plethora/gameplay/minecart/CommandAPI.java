@@ -91,6 +91,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return table;
 	}
 
+	@Override
 	public Object[] callMethod(@Nonnull ILuaContext context, int method, @Nonnull Object[] arguments)
 		throws LuaException, InterruptedException {
 		switch (method) {

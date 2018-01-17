@@ -1,9 +1,12 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
+import org.squiddev.plethora.utils.MatrixHelpers;
 
 import javax.annotation.Nonnull;
+import javax.vecmath.Matrix4f;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
@@ -22,13 +25,15 @@ public enum ManipulatorType implements IStringSerializable {
 
 	private final String name;
 
-	public final AxisAlignedBB[] boxes;
+	private final AxisAlignedBB[] boxes;
+	private final AxisAlignedBB[][] facingBoxes;
 	public final float scale;
 
 	ManipulatorType(float scale, AxisAlignedBB... boxes) {
 		name = name().toLowerCase();
 		this.scale = scale;
 		this.boxes = boxes;
+		this.facingBoxes = new AxisAlignedBB[6][];
 	}
 
 	@Nonnull
@@ -44,5 +49,16 @@ public enum ManipulatorType implements IStringSerializable {
 
 	public int size() {
 		return boxes.length;
+	}
+
+	public AxisAlignedBB[] boxesFor(EnumFacing facing) {
+		AxisAlignedBB[] cached = facingBoxes[facing.ordinal()];
+		if (cached != null) return cached;
+
+		Matrix4f m = MatrixHelpers.matrixFor(facing);
+		cached = new AxisAlignedBB[boxes.length];
+		for (int i = 0; i < boxes.length; i++) cached[i] = MatrixHelpers.transform(boxes[i], m);
+
+		return facingBoxes[facing.ordinal()] = cached;
 	}
 }

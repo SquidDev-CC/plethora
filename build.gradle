@@ -19,7 +19,6 @@ plugins {
 buildDir = "build-${mc_version}"
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply from: 'gradle/scripts/jsonGen.gradle'
 
 version = mc_version + "-" + mod_version
 group = "org.squiddev"
@@ -98,35 +97,35 @@ repositories {
 }
 
 dependencies {
-	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
+	implementation "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:4.7.0.68"
 
-	provided "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
-	compile "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
-	provided "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
-	deobfProvided "buildcraft:buildcraft:7.99.14"
-	provided "net.darkhax.tesla:Tesla-1.12:1.0.61:deobf"
+	compileOnly "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
+	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
+	compileOnly "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
+	compileOnly "buildcraft:buildcraft:7.99.14"
+	compileOnly "net.darkhax.tesla:Tesla-1.12:1.0.61:deobf"
 
 	// Tinker's + Dependencies
-	deobfProvided "slimeknights:TConstruct:1.12.2-2.9.0.56"
-	deobfProvided "slimeknights.mantle:Mantle:1.12-1.3.1.22"
+	compileOnly "slimeknights:TConstruct:1.12.2-2.9.0.56"
+	compileOnly "slimeknights.mantle:Mantle:1.12-1.3.1.22"
 
 	// Storage drawers + Dependencies
-	deobfProvided "curseMods:Chameleon:${project.mc_version}-4.1.0"
-	deobfProvided "curseMods:StorageDrawers:${project.mc_version}-5.2.2"
+	compileOnly "curseMods:Chameleon:${project.mc_version}-4.1.0"
+	compileOnly "curseMods:StorageDrawers:${project.mc_version}-5.2.2"
 
-	provided "MCMultiPart2:MCMultiPart:2.2.2:deobf"
-	deobfProvided "refinedstorage:refinedstorage:1.5.8-1240"
-	deobfProvided "curseMods:forestry:${project.mc_version}-5.4.3.128"
-	deobfProvided "curseMods:appliedenergistics2:rv4-alpha-9" // Won't run on 1.12, but here for the future
-	deobfProvided "curseMods:Baubles:1.12-1.5.2"
-	deobfCompile "curseMods:blockcraftery:0.1.3"
-	provided("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
-	provided "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
+	compileOnly "MCMultiPart2:MCMultiPart:2.2.2:deobf"
+	compileOnly "refinedstorage:refinedstorage:1.5.8-1240"
+	compileOnly "curseMods:forestry:${project.mc_version}-5.4.3.128"
+	compileOnly "curseMods:appliedenergistics2:rv4-alpha-9" // Won't run on 1.12, but here for the future
+	compileOnly "curseMods:Baubles:1.12-1.5.2"
+	compileOnly "curseMods:blockcraftery:0.1.3"
+	compileOnly("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
+	compileOnly "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 
-	provided('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
+	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
-	provided "com.google.errorprone:error_prone_annotations:2.0.21"
+	compileOnly "com.google.errorprone:error_prone_annotations:2.0.21"
 }
 
 processResources {

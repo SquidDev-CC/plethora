@@ -63,11 +63,11 @@ public class PlayerHelpers {
 
 		List<Entity> entityList = entity.getEntityWorld().getEntitiesInAABBexcluding(
 			entity,
-				entity.getEntityBoundingBox().expand(
+			entity.getEntityBoundingBox().expand(
 				look.x * range,
 				look.y * range,
 				look.z * range
-				).grow(1, 1, 1), collidablePredicate);
+			).grow(1, 1, 1), collidablePredicate);
 
 		Entity closestEntity = null;
 		Vec3d closestVec = null;
