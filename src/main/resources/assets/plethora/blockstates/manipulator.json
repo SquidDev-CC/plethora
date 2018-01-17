@@ -1,10 +1,16 @@
 {
 	"variants": {
-		"type=mark_1": {
-			"model": "plethora:manipulator.mark_1"
-		},
-		"type=mark_2": {
-			"model": "plethora:manipulator.mark_2"
-		}
+		"facing=down,type=mark_1": { "model": "plethora:manipulator.mark_1", "x": 180 },
+		"facing=down,type=mark_2": { "model": "plethora:manipulator.mark_2", "x": 180 },
+		"facing=up,type=mark_1": { "model": "plethora:manipulator.mark_1" },
+		"facing=up,type=mark_2": { "model": "plethora:manipulator.mark_2" },
+		"facing=east,type=mark_1": { "model": "plethora:manipulator.mark_1", "x": 90, "y": 90 },
+		"facing=east,type=mark_2": { "model": "plethora:manipulator.mark_2", "x": 90, "y": 90 },
+		"facing=west,type=mark_1": { "model": "plethora:manipulator.mark_1", "x": 90, "y": 270 },
+		"facing=west,type=mark_2": { "model": "plethora:manipulator.mark_2", "x": 90, "y": 270 },
+		"facing=north,type=mark_1": { "model": "plethora:manipulator.mark_1", "x": 90, "y": 0 },
+		"facing=north,type=mark_2": { "model": "plethora:manipulator.mark_2", "x": 90, "y": 0 },
+		"facing=south,type=mark_1": { "model": "plethora:manipulator.mark_1", "x": 90, "y": 180 },
+		"facing=south,type=mark_2": { "model": "plethora:manipulator.mark_2", "x": 90, "y": 180 }
 	}
 }
