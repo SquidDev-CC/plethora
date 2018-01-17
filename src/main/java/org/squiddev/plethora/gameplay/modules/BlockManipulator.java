@@ -8,10 +8,13 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.common.PeripheralItemFactory;
+import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -48,6 +51,7 @@ import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.MatrixHelpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -61,21 +65,61 @@ import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class BlockManipulator extends BlockBase<TileManipulator> implements IPeripheralProvider {
 	private static final PropertyEnum<ManipulatorType> TYPE = PropertyEnum.create("type", ManipulatorType.class);
+	public static final PropertyDirection FACING = BlockDirectional.FACING;
 
 	public static final double OFFSET = 10.0 / 16.0;
 	public static final double PIX = 1 / 16.0;
+	public static final double BOX_EXPAND = 0.002;
 
-	private static final AxisAlignedBB BOX = new AxisAlignedBB(0, 0, 0, 1, (float) OFFSET, 1);
+	private static final AxisAlignedBB[] BOXES = new AxisAlignedBB[6];
+
+	static {
+		AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, 1, (float) OFFSET, 1);
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			BOXES[facing.ordinal()] = MatrixHelpers.transform(box, MatrixHelpers.matrixFor(facing));
+		}
+	}
 
 	public BlockManipulator() {
 		super("manipulator", TileManipulator.class);
 		setDefaultState(getBlockState().getBaseState().withProperty(TYPE, ManipulatorType.MARK_1));
 	}
 
+	@Nonnull
 	@Override
-	@SuppressWarnings({"NullableProblems", "deprecation"})
+	@Deprecated
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return BOX;
+		return BOXES[state.getValue(FACING).ordinal()];
+	}
+
+	@Nullable
+	@Override
+	@Deprecated
+	public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end) {
+		ManipulatorType type = blockState.getValue(TYPE);
+		EnumFacing facing = blockState.getValue(FACING);
+
+		Vec3d startOff = start.subtract(pos.getX(), pos.getY(), pos.getZ());
+		Vec3d endOff = end.subtract(pos.getX(), pos.getY(), pos.getZ());
+
+		// Compute the intersection with the main box
+		AxisAlignedBB primary = getBoundingBox(blockState, world, pos);
+		RayTraceResult result = primary.calculateIntercept(startOff, endOff);
+		double distance = result == null ? Double.POSITIVE_INFINITY : result.hitVec.squareDistanceTo(startOff);
+
+		// Look for one of our inputs if possible.
+		for (AxisAlignedBB child : type.boxesFor(facing)) {
+			RayTraceResult hit = child.calculateIntercept(startOff, endOff);
+			if (hit != null) {
+				double newDistance = hit.hitVec.squareDistanceTo(startOff);
+				if (newDistance <= distance) {
+					result = hit;
+					distance = newDistance;
+				}
+			}
+		}
+
+		return result == null ? null : new RayTraceResult(result.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), result.sideHit, pos);
 	}
 
 	@Override
@@ -88,30 +132,42 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	@Override
 	@SuppressWarnings("deprecation")
 	public IBlockState getStateFromMeta(int meta) {
-		IBlockState state = super.getStateFromMeta(meta);
-		return state.withProperty(TYPE, VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
+		ManipulatorType type = VALUES[meta & 1];
+		EnumFacing facing = (meta >> 1) <= 6 ? EnumFacing.VALUES[meta >> 1] : EnumFacing.DOWN;
+
+		return super.getStateFromMeta(meta).withProperty(TYPE, type).withProperty(FACING, facing);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(TYPE).ordinal();
+		return state.getValue(TYPE).ordinal() | state.getValue(FACING).ordinal() << 1;
+	}
+
+	@Deprecated
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		return this.getStateFromMeta(meta).withProperty(FACING, facing.getOpposite());
 	}
 
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, TYPE);
+		return new BlockStateContainer(this, TYPE, FACING);
 	}
 
 	@Override
 	public String getUnlocalizedName(int meta) {
-		return getUnlocalizedName() + "." + VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta].getName();
+		return getUnlocalizedName() + "." + VALUES[meta & 1].getName();
 	}
 
 	@Nonnull
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-		return new TileManipulator(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
+		return new TileManipulator(VALUES[meta & 1]);
+	}
+
+	@Override
+	public int damageDropped(IBlockState state) {
+		return state.getValue(TYPE).ordinal();
 	}
 
 	@Override
@@ -279,13 +335,12 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		IBlockState state = event.getPlayer().worldObj.getBlockState(blockPos);
 		if (state.getBlock() != this) return;
 
+		EnumFacing facing = state.getValue(FACING);
+
 		Vec3d hit = event.getTarget().hitVec.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 		ManipulatorType type = state.getValue(TYPE);
-		for (AxisAlignedBB box : type.boxes) {
-			if (hit.yCoord > OFFSET - PIX &&
-				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
-				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
-
+		for (AxisAlignedBB box : type.boxesFor(facing)) {
+			if (box.expand(BOX_EXPAND, BOX_EXPAND, BOX_EXPAND).isVecInside(hit)) {
 				RenderHelper.renderBoundingBox(event.getPlayer(), box, event.getTarget().getBlockPos(), event.getPartialTicks());
 				event.setCanceled(true);
 				break;
