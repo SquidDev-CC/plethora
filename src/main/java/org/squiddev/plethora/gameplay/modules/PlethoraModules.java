@@ -36,6 +36,7 @@ public class PlethoraModules {
 		LASER_ID,
 		SCANNER_ID,
 		SENSOR_ID,
+		CHAT_CREATIVE_ID,
 	};
 
 	public static final int[] POCKET_MODULES = new int[]{
@@ -45,6 +46,7 @@ public class PlethoraModules {
 		INTROSPECTION_ID,
 		KINETIC_ID,
 		CHAT_ID,
+		CHAT_CREATIVE_ID,
 	};
 
 	public static final int[] VEHICLE_MODULES = new int[]{
@@ -53,6 +55,7 @@ public class PlethoraModules {
 		SENSOR_ID,
 		INTROSPECTION_ID,
 		KINETIC_ID,
+		CHAT_CREATIVE_ID,
 	};
 
 	public static final String INTROSPECTION_S = Plethora.RESOURCE_DOMAIN + ":" + INTROSPECTION;

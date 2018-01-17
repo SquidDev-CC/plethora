@@ -49,9 +49,10 @@ public class IntegrationComputerCraft {
 	}
 
 	private static final class PeripheralCapabilityProvider implements ICapabilityProvider {
-		private boolean checked = false;
+		private boolean checkedPeripheral = false;
 		private IPeripheralHandler peripheral;
-		private IVehicleUpgradeHandler minecart;
+		private boolean checkedVehicle = false;
+		private IVehicleUpgradeHandler vehicle;
 		private final ItemStack stack;
 
 		private PeripheralCapabilityProvider(ItemStack stack) {
@@ -61,7 +62,7 @@ public class IntegrationComputerCraft {
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing enumFacing) {
 			if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return getHandler() != null;
-			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return getMinecart() != null;
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return getVehicle() != null;
 			return false;
 		}
 
@@ -69,15 +70,15 @@ public class IntegrationComputerCraft {
 		@SuppressWarnings("unchecked")
 		public <T> T getCapability(Capability<T> capability, EnumFacing enumFacing) {
 			if (capability == Constants.PERIPHERAL_HANDLER_CAPABILITY) return (T) getHandler();
-			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return (T) getMinecart();
+			if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) return (T) getVehicle();
 			return null;
 		}
 
 		private IPeripheralHandler getHandler() {
-			if (checked) {
+			if (checkedPeripheral) {
 				return peripheral;
 			} else {
-				checked = true;
+				checkedPeripheral = true;
 
 				if (stack.getItem() instanceof ItemPeripheralBase) {
 					ItemPeripheralBase item = (ItemPeripheralBase) stack.getItem();
@@ -97,21 +98,21 @@ public class IntegrationComputerCraft {
 			}
 		}
 
-		private IVehicleUpgradeHandler getMinecart() {
-			if (checked) {
-				return minecart;
+		private IVehicleUpgradeHandler getVehicle() {
+			if (checkedVehicle) {
+				return vehicle;
 			} else {
-				checked = true;
+				checkedVehicle = true;
 
 				if (stack.getItem() instanceof ItemPeripheralBase) {
 					ItemPeripheralBase item = (ItemPeripheralBase) stack.getItem();
 					switch (item.getPeripheralType(stack)) {
 						case WirelessModem:
-							return minecart = new WirelessModemPeripheralBase.VehicleUpgradeHandler(false, stack);
+							return vehicle = new WirelessModemPeripheralBase.VehicleUpgradeHandler(false, stack);
 						case AdvancedModem:
-							return minecart = new WirelessModemPeripheralBase.VehicleUpgradeHandler(true, stack);
+							return vehicle = new WirelessModemPeripheralBase.VehicleUpgradeHandler(true, stack);
 						case Speaker:
-							return minecart = new SpeakerPeripheralBase.VehicleUpgradeHandler(stack);
+							return vehicle = new SpeakerPeripheralBase.VehicleUpgradeHandler(stack);
 						default:
 							return null;
 					}
