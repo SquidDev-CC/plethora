@@ -7,7 +7,11 @@ summary: >-
            information about said player.
 
 module: plethora:introspection
-usable: Manipulator, neural interface, pocket computers, turtles.
+usable:
+ - Manipulator
+ - Neural interface
+ - Pocket computers
+ - Turtle
 image: module-introspection.png
 ---
 

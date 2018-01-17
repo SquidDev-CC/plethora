@@ -20,7 +20,11 @@ layout: text
 
 			<tr>
 				<th>Usable in:</th>
-				<td>{{ page.usable }}</td>
+				<td>
+					<ul class="module-usable">
+						{% for usable in page.usable %}<li>{{ usable }}</li>{% endfor %}
+					</ul>
+				</td>
 			</tr>
 		</table>
 	</div>

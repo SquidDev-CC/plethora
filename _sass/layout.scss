@@ -47,6 +47,9 @@ html, body {
 	float: right;
 }
 
+img.pull-left { margin-right: 5px; }
+img.pull-right { margin-left: 5px; }
+
 .hide-tiny {
 	@media(max-width: 300px) {
 		display: none;

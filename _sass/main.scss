@@ -248,8 +248,6 @@ code.class {
 	justify-content: space-between;
 
 	.module-data {
-		flex-grow: 1;
-
 		th, td { padding: 10px; }
 		th {
 			width: 100px;
@@ -258,10 +256,20 @@ code.class {
 		}
 	}
 
-	.module-image {
-		max-width: 250px;
-		flex-basis: 250px;
-
-		img { width: 100%; }
+	.module-usable {
+		font-size: 0.9em;
 	}
+
+	.module-image {
+		flex-grow: 1;
+
+	}
+}
+
+.module-image {
+	$width: 200px;
+	max-width: $width;
+	min-width: $width;
+
+	img { width: 100%; }
 }
