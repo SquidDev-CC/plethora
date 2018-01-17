@@ -1,12 +1,14 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
@@ -102,6 +104,29 @@ public class Methods2D {
 		}
 
 		object.addPoint(idx - 1, new Point2D(x, y));
+		return MethodResult.empty();
+	}
+
+	@BasicMethod.Inject(value = Item2D.class, doc = "function(): string, number -- Get the item and damage value for this object.")
+	public static MethodResult getItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
+		Item2D object = context.safeBake().getTarget();
+
+		return MethodResult.result(object.getItem().getRegistryName().toString(), object.getDamage());
+	}
+
+	@BasicMethod.Inject(value = Item2D.class, doc = "function(item:string[, damage:number]) -- Set the item and damage value for this object.")
+	public static MethodResult setItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
+		Item2D object = context.safeBake().getTarget();
+
+		ResourceLocation name = new ResourceLocation(getString(args, 0));
+		int damage = optInt(args, 1, 0);
+
+		Item item = Item.REGISTRY.getObject(name);
+		if (item == null) throw new LuaException("Unknown item '" + name + "'");
+
+		object.setItem(item);
+		object.setDamage(damage);
+
 		return MethodResult.empty();
 	}
 }

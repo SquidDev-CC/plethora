@@ -1,6 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -154,6 +156,29 @@ public class MethodsCanvas2D {
 
 		canvas.add(lines);
 		return MethodResult.result(baked.makeChild(lines.reference(canvas)).getObject());
+	}
+
+	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(position:table, id:string[, damage:number][, scale:number]):table -- Create a item icon.")
+	public static MethodResult addItem(IUnbakedContext<CanvasServer> context, Object[] args) throws LuaException {
+		IContext<CanvasServer> baked = context.safeBake();
+		CanvasServer canvas = baked.getTarget();
+
+		Point2D position = getPoint2D(args, 0);
+		ResourceLocation name = new ResourceLocation(getString(args, 1));
+		int damage = optInt(args, 2, 0);
+		float scale = optFloat(args, 3, 1);
+
+		Item item = Item.REGISTRY.getObject(name);
+		if (item == null) throw new LuaException("Unknown item '" + name + "'");
+
+		Item2D model = new Item2D(canvas.newObjectId());
+		model.setPosition(position);
+		model.setScale(scale);
+		model.setItem(item);
+		model.setDamage(damage);
+
+		canvas.add(model);
+		return MethodResult.result(baked.makeChild(model.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function():number, number -- Get the size of this canvas.")
