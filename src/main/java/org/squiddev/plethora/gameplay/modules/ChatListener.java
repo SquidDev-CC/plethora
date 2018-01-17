@@ -37,11 +37,9 @@ public class ChatListener extends Module {
 
 		// Handle captures
 		for (Listener listener : listeners) {
-			if (listener.owner != null && listener.owner == sender) {
-				if (listener.handleCapture(event.getMessage())) {
-					event.setCanceled(true);
-					return;
-				}
+			if (listener.handles(sender) && listener.handleCapture(sender, event.getMessage())) {
+				event.setCanceled(true);
+				return;
 			}
 		}
 
@@ -61,6 +59,10 @@ public class ChatListener extends Module {
 			this.owner = owner;
 		}
 
+		public boolean handles(Entity sender) {
+			return owner != null && owner == sender;
+		}
+
 		public synchronized void addPattern(String pattern) {
 			patterns.add(pattern);
 		}
@@ -73,10 +75,10 @@ public class ChatListener extends Module {
 			patterns.clear();
 		}
 
-		private synchronized boolean handleCapture(String message) {
+		private synchronized boolean handleCapture(Entity sender, String message) {
 			for (String pattern : patterns) {
 				if (LuaPattern.matches(message, pattern)) {
-					access.queueEvent("chat_capture", message, pattern);
+					access.queueEvent("chat_capture", message, pattern, sender.getDisplayName().getUnformattedText(), sender.getPersistentID().toString());
 					return true;
 				}
 			}
@@ -108,6 +110,17 @@ public class ChatListener extends Module {
 		@Override
 		public Listener safeGet() throws LuaException {
 			return this;
+		}
+	}
+
+	public static class CreativeListener extends Listener {
+		public CreativeListener(@Nonnull IModuleAccess access) {
+			super(access, null);
+		}
+
+		@Override
+		public boolean handles(Entity sender) {
+			return true;
 		}
 	}
 }

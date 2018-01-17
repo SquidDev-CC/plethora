@@ -27,6 +27,10 @@ item.plethora.module.module_chat.name=Chat recorder
 item.plethora.module.module_chat.adjective=Listening
 item.plethora.module.module_chat.desc=Allows listening and intercepting chat events
 
+item.plethora.module.module_chat_creative.name=Creative chat recorder
+item.plethora.module.module_chat_creative.adjective=Snooping
+item.plethora.module.module_chat_creative.desc=Allows listening and intercepting to all chat events
+
 item.plethora.module.module_glasses.name=Overlay Glasses
 item.plethora.module.module_glasses.desc=Renders an overlay over the world.
 

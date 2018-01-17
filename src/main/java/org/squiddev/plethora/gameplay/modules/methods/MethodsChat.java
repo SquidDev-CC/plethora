@@ -98,7 +98,7 @@ public final class MethodsChat {
 		});
 	}
 
-	private static void validateMessage(String message) throws LuaException {
+	public static void validateMessage(String message) throws LuaException {
 		if (ConfigGameplay.Chat.maxLength > 0 && message.length() > ConfigGameplay.Chat.maxLength) {
 			throw new LuaException(String.format("Message is too long (was %d, maximum is %d)", message.length(), ConfigGameplay.Chat.maxLength));
 		}
