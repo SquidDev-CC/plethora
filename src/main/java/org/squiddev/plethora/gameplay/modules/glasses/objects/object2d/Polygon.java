@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 
@@ -90,7 +89,7 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 	public void draw2D() {
 		if (points.size() < 3) return;
 
-		GlStateManager.disableCull();
+		setupFlat();
 
 		int size = points.size();
 		Point2D a = points.get(0);
@@ -104,7 +103,5 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 			GL11.glVertex3f(c.x, c.y, 0);
 		}
 		GL11.glEnd();
-
-		GlStateManager.enableCull();
 	}
 }

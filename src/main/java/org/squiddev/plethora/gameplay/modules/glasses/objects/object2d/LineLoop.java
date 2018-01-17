@@ -48,6 +48,7 @@ public class LineLoop extends Polygon implements Scalable {
 	public void draw2D() {
 		if (points.size() < 2) return;
 
+		setupFlat();
 		GL11.glLineWidth(scale);
 
 		GL11.glBegin(GL11.GL_LINE_LOOP);

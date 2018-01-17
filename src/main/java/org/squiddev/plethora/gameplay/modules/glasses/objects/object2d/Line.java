@@ -78,12 +78,15 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 
 	@Override
 	public void draw2D() {
+		setupFlat();
 		GL11.glLineWidth(thickness);
+
 		GL11.glBegin(GL11.GL_LINES);
 		setupColour();
 		GL11.glVertex3f(start.x, start.y, 0);
 		GL11.glVertex3f(end.x, end.y, 0);
 		GL11.glEnd();
+
 		GL11.glLineWidth(1);
 	}
 }

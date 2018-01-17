@@ -28,8 +28,15 @@ public class CanvasServer implements IReference<CanvasServer> {
 		this.canvasId = canvasId;
 		this.access = access;
 		this.player = player;
+	}
 
+	public void attach() {
 		access.getData().setInteger("id", canvasId);
+		access.markDataDirty();
+	}
+
+	public void detach() {
+		access.getData().removeTag("id");
 		access.markDataDirty();
 	}
 
@@ -49,6 +56,8 @@ public class CanvasServer implements IReference<CanvasServer> {
 
 	@Nullable
 	public synchronized MessageCanvasUpdate getUpdateMessage() {
+		for (BaseObject added : added) added.resetDirty();
+
 		ArrayList<BaseObject> changed = null;
 		for (BaseObject object : objects.valueCollection()) {
 			if (object.isDirty()) {

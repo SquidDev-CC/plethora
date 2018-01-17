@@ -68,6 +68,8 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 
 	@Override
 	public void draw2D() {
+		setupFlat();
+
 		float x = position.x, y = position.y;
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		setupColour();
