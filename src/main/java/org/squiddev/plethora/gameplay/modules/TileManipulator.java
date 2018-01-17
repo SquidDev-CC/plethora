@@ -17,14 +17,15 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
+import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Map;
 
+import static org.squiddev.plethora.gameplay.modules.BlockManipulator.BOX_EXPAND;
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
-import static org.squiddev.plethora.gameplay.modules.BlockManipulator.PIX;
 import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class TileManipulator extends TileBase implements ITickable {
@@ -56,6 +57,13 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 	public ManipulatorType getType() {
 		return type;
+	}
+
+	public EnumFacing getFacing() {
+		IBlockState state = getWorld().getBlockState(getPos());
+		return state.getBlock() == Registry.blockManipulator
+			? state.getValue(BlockManipulator.FACING)
+			: EnumFacing.DOWN;
 	}
 
 	public ItemStack getStack(int slot) {
@@ -120,7 +128,7 @@ public final class TileManipulator extends TileBase implements ITickable {
 	protected void readDescription(NBTTagCompound tag) {
 		if (tag.hasKey("type") && type == null) {
 			int meta = tag.getInteger("type");
-			setType(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
+			setType(VALUES[meta & 1]);
 		}
 
 		if (type == null) return;
@@ -143,21 +151,18 @@ public final class TileManipulator extends TileBase implements ITickable {
 
 	@Override
 	public boolean onActivated(EntityPlayer player, EnumHand hand, EnumFacing side, Vec3d hit) {
-		if (side != EnumFacing.UP) return false;
 		if (player.getEntityWorld().isRemote) return true;
 
 		if (type == null) {
 			int meta = getBlockMetadata();
-			setType(VALUES[meta < 0 || meta >= VALUES.length ? 0 : meta]);
+			setType(VALUES[meta & 1]);
 		}
 
 		ItemStack heldStack = player.getHeldItem(hand);
+		AxisAlignedBB[] boxes = type.boxesFor(getFacing());
 		for (int i = 0; i < type.size(); i++) {
-			AxisAlignedBB box = type.boxes[i];
-			if (hit.yCoord > OFFSET - PIX &&
-				hit.xCoord >= box.minX && hit.xCoord <= box.maxX &&
-				hit.zCoord >= box.minZ && hit.zCoord <= box.maxZ) {
-
+			AxisAlignedBB box = boxes[i];
+			if (box.expand(BOX_EXPAND, BOX_EXPAND, BOX_EXPAND).isVecInside(hit)) {
 				final ItemStack stack = stacks[i];
 				if (heldStack.isEmpty() && !stack.isEmpty()) {
 					if (!player.capabilities.isCreativeMode) {

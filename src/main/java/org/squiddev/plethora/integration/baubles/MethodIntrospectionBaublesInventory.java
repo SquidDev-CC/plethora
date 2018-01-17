@@ -24,7 +24,7 @@ import static org.squiddev.plethora.api.reference.Reference.id;
 public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityPlayer> {
 	public MethodIntrospectionBaublesInventory() {
 		super(
-			"getBaubles", Collections.singleton(PlethoraModules.INTROSPECTION), EntityPlayer.class, true,
+			"getBaubles", Collections.singleton(PlethoraModules.INTROSPECTION_M), EntityPlayer.class, true,
 			"function():table -- Get this player's baubles inventory"
 		);
 	}

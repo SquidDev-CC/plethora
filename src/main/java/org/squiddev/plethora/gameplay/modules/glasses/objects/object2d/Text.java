@@ -104,7 +104,5 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
 		fontrenderer.drawString(text, 0, 0, Integer.rotateRight(colour, 8));
 		GlStateManager.popMatrix();
-
-		GlStateManager.disableTexture2D();
 	}
 }

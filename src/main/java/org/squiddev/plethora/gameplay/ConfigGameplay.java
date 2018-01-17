@@ -199,4 +199,16 @@ public final class ConfigGameplay {
 		@DefaultBoolean(true)
 		public static boolean allowMobs;
 	}
+
+	/**
+	 * Various options that don't belong to anything
+	 */
+	public static class Miscellaneous {
+		/**
+		 * Fun rendering overlay for various objects.
+		 * Basically I'm slightly vain.
+		 */
+		@DefaultBoolean(true)
+		public static boolean funRender;
+	}
 }

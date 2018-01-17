@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.registry;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.client.RenderSquidOverlay;
 import org.squiddev.plethora.gameplay.keyboard.ItemKeyboard;
 import org.squiddev.plethora.gameplay.client.RenderInterfaceLiving;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
@@ -69,6 +70,8 @@ public final class Registry {
 		addModule(itemKeyboard = new ItemKeyboard());
 
 		addModule(blockRedstoneIntegrator = new BlockRedstoneIntegrator());
+
+		addModule(new RenderSquidOverlay());
 	}
 
 	public static void preInit() {

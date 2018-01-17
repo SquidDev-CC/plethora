@@ -24,12 +24,14 @@ public class GlassesInstance implements IAttachable, IReference<GlassesInstance>
 
 	@Override
 	public void attach() {
+		canvas.attach();
 		CanvasHandler.addServer(canvas);
 	}
 
 	@Override
 	public void detach() {
 		CanvasHandler.removeServer(canvas);
+		canvas.detach();
 	}
 
 	@Nonnull

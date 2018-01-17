@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,6 +14,7 @@ import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.modules.ManipulatorType;
 import org.squiddev.plethora.gameplay.modules.TileManipulator;
+import org.squiddev.plethora.utils.MatrixHelpers;
 
 import javax.vecmath.Matrix4f;
 
@@ -21,7 +23,7 @@ import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 
 public final class RenderManipulator extends TileEntitySpecialRenderer<TileManipulator> {
 	@Override
-	public void renderTileEntityAt(TileManipulator tileManipulator, double x, double y, double z, float f, int j) {
+	public void renderTileEntityAt(TileManipulator manipulator, double x, double y, double z, float f, int j) {
 		GlStateManager.pushMatrix();
 
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
@@ -29,26 +31,26 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-		GlStateManager.translate(x, y + OFFSET, z);
+		GlStateManager.translate(x, y, z);
+		ForgeHooksClient.multiplyCurrentGlMatrix(MatrixHelpers.matrixFor(manipulator.getFacing()));
+		GlStateManager.translate(0, OFFSET, 0);
 
-		ManipulatorType type = tileManipulator.getType();
-
-		float delta = (float) tileManipulator.incrementRotation();
+		ManipulatorType type = manipulator.getType();
+		float delta = (float) manipulator.incrementRotation();
 
 		int size = type.size();
+		AxisAlignedBB[] boxes = type.boxesFor(EnumFacing.DOWN);
 		for (int i = 0; i < size; i++) {
-			ItemStack stack = tileManipulator.getStack(i);
+			ItemStack stack = manipulator.getStack(i);
 			if (stack != null && !stack.isEmpty()) {
 				GlStateManager.pushMatrix();
 
-				AxisAlignedBB box = type.boxes[i];
-
+				AxisAlignedBB box = boxes[i];
 				GlStateManager.translate(
 					(box.minX + box.maxX) / 2.0f,
 					type.scale,
 					(box.minZ + box.maxZ) / 2.0f
 				);
-
 
 				IBakedModel model;
 				IModuleHandler handler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);

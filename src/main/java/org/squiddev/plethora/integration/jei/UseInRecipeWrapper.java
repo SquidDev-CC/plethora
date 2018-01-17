@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.jei;
 
 
+import dan200.computercraft.ComputerCraft;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredients;
@@ -8,21 +9,40 @@ import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
+	protected static String MINECART_COMPUTER = "entity.plethora.plethora:minecartComputer.name";
+
 	protected final ItemStack stack;
 	private final IDrawable slotDrawable;
-	private final ItemStack[] usable;
+	private final List<String> usable = new ArrayList<String>();
 	private final String id;
 
 	public UseInRecipeWrapper(@Nonnull ItemStack stack, String id, @Nonnull ItemStack[] useIn, @Nonnull IGuiHelper helper) {
 		this.stack = stack;
 		this.slotDrawable = helper.getSlotDrawable();
-		this.usable = useIn;
 		this.id = id;
+
+		for (ItemStack use : useIn) usable.add(use.getDisplayName());
+
+		if (stack.hasCapability(Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY, null)) {
+			usable.add(Helpers.translateToLocal(MINECART_COMPUTER));
+		}
+
+		if (ComputerCraft.getPocketUpgrade(stack) != null) {
+			usable.add(new ItemStack(ComputerCraft.Items.pocketComputer).getDisplayName());
+		}
+
+		if (ComputerCraft.getTurtleUpgrade(stack) != null) {
+			usable.add(new ItemStack(ComputerCraft.Blocks.turtle).getDisplayName());
+		}
 	}
 
 	@Override
@@ -48,8 +68,7 @@ public abstract class UseInRecipeWrapper extends BlankRecipeWrapper {
 		);
 		yPos += minecraft.fontRendererObj.FONT_HEIGHT;
 
-		for (ItemStack stack : usable) {
-			String name = stack.getDisplayName();
+		for (String name : usable) {
 			minecraft.fontRendererObj.drawString(" - " + name, xPos, yPos, color);
 			yPos += minecraft.fontRendererObj.FONT_HEIGHT;
 		}

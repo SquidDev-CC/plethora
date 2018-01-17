@@ -1,7 +1,6 @@
 package org.squiddev.plethora.gameplay.client.gui;
 
 import dan200.computercraft.client.gui.widgets.WidgetTerminal;
-import dan200.computercraft.core.terminal.Terminal;
 import dan200.computercraft.shared.computer.core.IComputer;
 import dan200.computercraft.shared.computer.core.IComputerContainer;
 import net.minecraft.client.Minecraft;
@@ -35,8 +34,7 @@ public class GuiKeyboard extends GuiScreen {
 
 		mc.player.openContainer = container;
 
-		Terminal terminal = computer.getTerminal();
-		terminalGui = new WidgetTerminal(0, 0, terminal.getWidth(), terminal.getHeight(), new IComputerContainer() {
+		terminalGui = new WidgetTerminal(0, 0, 1, 1, new IComputerContainer() {
 			@Override
 			public IComputer getComputer() {
 				return computer;

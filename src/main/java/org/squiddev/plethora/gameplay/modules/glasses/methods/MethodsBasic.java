@@ -55,11 +55,12 @@ public class MethodsBasic {
 				break;
 			}
 
+			default:
 			case 4: {
 				int r = getInt(args, 0) & 0xFF;
 				int g = getInt(args, 1) & 0xFF;
-				int b = getInt(args, 3) & 0xFF;
-				int a = getInt(args, 4) & 0xFF;
+				int b = getInt(args, 2) & 0xFF;
+				int a = getInt(args, 3) & 0xFF;
 
 				object.setColour((r << 24) | (g << 16) | (b << 8) | a);
 				break;

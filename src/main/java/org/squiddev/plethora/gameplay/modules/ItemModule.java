@@ -35,11 +35,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
-import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.EntityReference;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -58,51 +58,10 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
+import static org.squiddev.plethora.gameplay.modules.PlethoraModules.*;
 import static org.squiddev.plethora.gameplay.registry.Packets.*;
 
 public final class ItemModule extends ItemBase {
-	public static final String INTROSPECTION = "introspection";
-	public static final String LASER = "laser";
-	public static final String SCANNER = "scanner";
-	public static final String SENSOR = "sensor";
-	public static final String KINETIC = "kinetic";
-	public static final String CHAT = "chat";
-	public static final String GLASSES = "glasses";
-
-	public static final int INTROSPECTION_ID = 0;
-	public static final int LASER_ID = 1;
-	public static final int SCANNER_ID = 2;
-	public static final int SENSOR_ID = 3;
-	public static final int KINETIC_ID = 4;
-	public static final int CHAT_ID = 5;
-	public static final int GLASSES_ID = 6;
-
-	private static final int MODULES = 7;
-
-	private static final int[] TURTLE_MODULES = new int[]{
-		INTROSPECTION_ID,
-		LASER_ID,
-		SCANNER_ID,
-		SENSOR_ID,
-	};
-
-	private static final int[] POCKET_MODULES = new int[]{
-		LASER_ID,
-		SCANNER_ID,
-		SENSOR_ID,
-		INTROSPECTION_ID,
-		KINETIC_ID,
-		CHAT_ID,
-	};
-
-	public static final int[] VEHICLE_MODULES = new int[]{
-		LASER_ID,
-		SCANNER_ID,
-		SENSOR_ID,
-		INTROSPECTION_ID,
-		KINETIC_ID,
-	};
-
 	private static final int MAX_TICKS = 72000;
 	private static final int USE_TICKS = 30;
 
@@ -117,27 +76,6 @@ public final class ItemModule extends ItemBase {
 	public ItemModule() {
 		super("module");
 		setHasSubtypes(true);
-	}
-
-	public static String getName(int id) {
-		switch (id) {
-			case INTROSPECTION_ID:
-				return INTROSPECTION;
-			case LASER_ID:
-				return LASER;
-			case SCANNER_ID:
-				return SCANNER;
-			case SENSOR_ID:
-				return SENSOR;
-			case KINETIC_ID:
-				return KINETIC;
-			case CHAT_ID:
-				return CHAT;
-			case GLASSES_ID:
-				return GLASSES;
-			default:
-				return "unknown";
-		}
 	}
 
 	@Nonnull
@@ -444,6 +382,10 @@ public final class ItemModule extends ItemBase {
 					builder.addContext(glasses);
 					builder.addAttachable(glasses);
 				}
+			} else if (stack.getItemDamage() == CHAT_CREATIVE_ID) {
+				ChatListener.Listener listener = new ChatListener.CreativeListener(access);
+				builder.addContext(listener);
+				builder.addAttachable(listener);
 			}
 		}
 

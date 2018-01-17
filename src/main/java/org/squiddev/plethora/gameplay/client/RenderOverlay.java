@@ -31,6 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Registry;
@@ -144,7 +145,7 @@ public class RenderOverlay extends Module implements IClientModule {
 			GlStateManager.translate(-renderManager.viewerPosX, -renderManager.viewerPosY, -renderManager.viewerPosZ);
 
 			switch (stack.getItemDamage()) {
-				case ItemModule.SENSOR_ID: {
+				case PlethoraModules.SENSOR_ID: {
 					// Gather all entities and render them
 					Vec3d position = player.getPositionEyes(event.getPartialTicks());
 					List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(
@@ -162,7 +163,7 @@ public class RenderOverlay extends Module implements IClientModule {
 					}
 					break;
 				}
-				case ItemModule.SCANNER_ID: {
+				case PlethoraModules.SCANNER_ID: {
 					// Try to find all ore blocks and render them
 					BlockPos pos = player.getPosition();
 					final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -180,7 +181,8 @@ public class RenderOverlay extends Module implements IClientModule {
 					}
 					break;
 				}
-				case ItemModule.CHAT_ID: {
+				case PlethoraModules.CHAT_ID:
+				case PlethoraModules.CHAT_CREATIVE_ID: {
 					for (ChatMessage message : chatMessages) {
 						if (message.getWorld() == world.provider.getDimension()) {
 							Vec3d pos = message.getPosition();

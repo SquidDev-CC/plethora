@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 
 import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.reference.IReference;
@@ -107,5 +108,17 @@ public abstract class BaseObject {
 		public BaseObject safeGet() throws LuaException {
 			return get();
 		}
+	}
+
+	/**
+	 * Prepare to draw a flat object.
+	 */
+	@SideOnly(Side.CLIENT)
+	protected static void setupFlat() {
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableLighting();
+		GlStateManager.disableCull();
 	}
 }
