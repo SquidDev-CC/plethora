@@ -32,7 +32,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess access) {
+	public void attach(@Nonnull IComputerAccess access) {
 		super.attach(access);
 
 		int count;
@@ -50,7 +50,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 	}
 
 	@Override
-	public void detach(IComputerAccess access) {
+	public void detach(@Nonnull IComputerAccess access) {
 		super.detach(access);
 
 		int count;

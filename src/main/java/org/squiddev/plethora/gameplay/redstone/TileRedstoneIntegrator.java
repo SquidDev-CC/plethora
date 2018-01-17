@@ -107,6 +107,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		enqueueOutputTick();
 	}
 
+	@Override
 	public void onNeighbourChange() {
 		updateInput();
 	}

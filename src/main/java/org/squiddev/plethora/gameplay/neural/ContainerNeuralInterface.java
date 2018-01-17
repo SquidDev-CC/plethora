@@ -110,6 +110,7 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 	 *
 	 * @see net.minecraftforge.items.ItemStackHandler#insertItem(int, ItemStack, boolean)
 	 */
+	@Override
 	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
 		boolean flag = false;
 		int i = reverseDirection ? endIndex - 1 : startIndex;

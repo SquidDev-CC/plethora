@@ -21,6 +21,7 @@ public class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
 		EntitySelectors.NOT_SPECTATING,
 		new Predicate<Entity>() {
+			@Override
 			public boolean apply(Entity entity) {
 				return entity.canBeCollidedWith();
 			}

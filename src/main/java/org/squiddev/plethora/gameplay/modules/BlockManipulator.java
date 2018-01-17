@@ -143,6 +143,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		return state.getValue(TYPE).ordinal() | state.getValue(FACING).ordinal() << 1;
 	}
 
+	@Override
 	@Deprecated
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		return this.getStateFromMeta(meta).withProperty(FACING, facing.getOpposite());
