@@ -18,7 +18,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -124,7 +127,7 @@ public final class MethodsKineticEntity {
 
 				EntityArrow arrow = (EntityArrow) ReflectionHelper
 					.findMethod(AbstractSkeleton.class, null, new String[]{"func_190726_a", "getArrow"}, float.class)
-						.invoke(skeleton, (float) potency);
+					.invoke(skeleton, (float) potency);
 
 				float rotationYaw = skeleton.rotationYaw;
 				float rotationPitch = skeleton.rotationPitch;

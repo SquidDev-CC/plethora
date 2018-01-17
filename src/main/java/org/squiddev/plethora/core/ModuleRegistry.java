@@ -11,9 +11,9 @@ import dan200.computercraft.shared.util.ImpostorRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.IModuleRegistry;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

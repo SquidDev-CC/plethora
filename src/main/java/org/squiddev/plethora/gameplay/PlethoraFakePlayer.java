@@ -178,11 +178,12 @@ public class PlethoraFakePlayer extends FakePlayer {
 			for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
 				ItemStack stack = living.getItemStackFromSlot(slot);
 
-			if (!stack.isEmpty()) {
-				setItemStackToSlot(slot, stack.copy());
-				getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
-			} else {
-				setItemStackToSlot(slot, ItemStack.EMPTY);}
+				if (!stack.isEmpty()) {
+					setItemStackToSlot(slot, stack.copy());
+					getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
+				} else {
+					setItemStackToSlot(slot, ItemStack.EMPTY);
+				}
 			}
 		}
 

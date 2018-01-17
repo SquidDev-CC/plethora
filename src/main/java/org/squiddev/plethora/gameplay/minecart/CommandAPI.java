@@ -92,6 +92,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return table;
 	}
 
+	@Override
 	public Object[] callMethod(@Nonnull ILuaContext context, int method, @Nonnull Object[] arguments)
 		throws LuaException, InterruptedException {
 		switch (method) {
@@ -101,6 +102,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				}
 				final String command = (String) arguments[0];
 				return context.executeMainThreadTask(new ILuaTask() {
+					@Override
 					public Object[] execute()
 						throws LuaException {
 						return doCommand(command);
@@ -113,6 +115,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				}
 				final String command = (String) arguments[0];
 				long taskID = context.issueMainThreadTask(new ILuaTask() {
+					@Override
 					public Object[] execute()
 						throws LuaException {
 						return doCommand(command);
@@ -122,6 +125,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 			}
 			case 2: { // list
 				return context.executeMainThreadTask(new ILuaTask() {
+					@Override
 					public Object[] execute()
 						throws LuaException {
 						int i = 1;
@@ -160,6 +164,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				final int maxy = ((Number) arguments[4]).intValue();
 				final int maxz = ((Number) arguments[5]).intValue();
 				return context.executeMainThreadTask(new ILuaTask() {
+					@Override
 					public Object[] execute()
 						throws LuaException {
 						World world = entity.getEntityWorld();
@@ -193,6 +198,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				final int y = ((Number) arguments[1]).intValue();
 				final int z = ((Number) arguments[2]).intValue();
 				context.executeMainThreadTask(new ILuaTask() {
+					@Override
 					public Object[] execute()
 						throws LuaException {
 						World world = entity.getEntityWorld();

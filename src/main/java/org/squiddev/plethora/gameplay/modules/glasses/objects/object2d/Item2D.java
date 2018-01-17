@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
-import com.sun.media.jfxmediaimpl.platform.gstreamer.GSTPlatform;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

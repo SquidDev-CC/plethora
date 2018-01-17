@@ -74,7 +74,7 @@ public class MetaItemCrop extends BasicMetaProvider<ItemStack> {
 			for (int i = 0; i < attributes.length; i++) {
 				list.put(i + 1, attributes[i]);
 			}
-			out.put("attributes", attributes);
+			out.put("attributes", list);
 		}
 
 		return out;

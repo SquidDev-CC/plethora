@@ -20,6 +20,7 @@ public class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
 		EntitySelectors.NOT_SPECTATING,
 		new Predicate<Entity>() {
+			@Override
 			public boolean apply(Entity entity) {
 				return entity.canBeCollidedWith();
 			}
@@ -31,7 +32,7 @@ public class PlayerHelpers {
 		if (player instanceof EntityPlayerMP) {
 			return findHit((EntityPlayerMP) player);
 		} else if (player.getEntityWorld().isRemote && player instanceof EntityPlayerSP) {
-			RayTraceResult result =  Minecraft.getMinecraft().objectMouseOver;
+			RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
 			return result == null ? new RayTraceResult(RayTraceResult.Type.MISS, player.getPositionVector(), null, null) : result;
 		} else {
 			return findHit(player, 4.5);

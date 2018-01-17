@@ -29,6 +29,7 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 		super(renderManagerIn);
 	}
 
+	@Override
 	public void doRender(@Nonnull EntityMinecartComputer entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		bindEntityTexture(entity);
