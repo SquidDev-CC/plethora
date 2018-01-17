@@ -66,8 +66,8 @@ public class RenderSquidOverlay extends Module implements IClientModule {
 		@Override
 		@SideOnly(Side.CLIENT)
 		public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-			GameProfile profile = player.getGameProfile(); // profile == null || !profile.getId().equals(uuid) ||
-			if (!ConfigGameplay.Miscellaneous.funRender) return;
+			GameProfile profile = player.getGameProfile();
+			if (profile == null || !profile.getId().equals(uuid) || !ConfigGameplay.Miscellaneous.funRender) return;
 
 			GlStateManager.disableLighting();
 			GlStateManager.disableTexture2D();
