@@ -1,0 +1,33 @@
+---
+layout: text
+---
+
+<h2>{{ page.title }}</h2>
+
+
+<div class="module-header">
+	<div class="module-data">
+		<p>{{ page.summary }}</p>
+
+		<table>
+			<tr>
+				<th>Module:</th>
+				<td>
+					<code>{{ page.module }}</code>
+					(<a href="{{ "methods.html" | relative_url }}#module-{{ page.module | replace: ":", "-" | replace: "_", "-" }}">view methods</a>)
+				</td>
+			</tr>
+
+			<tr>
+				<th>Usable in:</th>
+				<td>{{ page.usable }}</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="module-image">
+		<img src="{{ "images/items/" | relative_url }}{{ page.image }}" />
+	</div>
+</div>
+
+{{ content }}

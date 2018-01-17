@@ -239,5 +239,29 @@ code.class {
 			margin: 0px 0px 15px 0px;
 		}
 	}
+}
 
+.module-header {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+
+	.module-data {
+		flex-grow: 1;
+
+		th, td { padding: 10px; }
+		th {
+			width: 100px;
+			font-weight: 500;
+			border-right: solid 1px #aaa;
+		}
+	}
+
+	.module-image {
+		max-width: 250px;
+		flex-basis: 250px;
+
+		img { width: 100%; }
+	}
 }
