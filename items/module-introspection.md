@@ -1,6 +1,6 @@
 ---
 layout: module
-title: Introspection Module
+title: Introspection module
 
 summary: >-
            The introspection module allows accessing the inventory of a player, also providing the ability to get basic

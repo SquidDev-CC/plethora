@@ -18,7 +18,7 @@ layout: text
 	</div>
 </div>
 
-## Basic usage
+### Basic usage
 Simply right-click an empty minecart with any computer (normal, advanced or command), placing it inside it. Clicking the
 computer screen will turn it on and open the terminal - you can now use it like a normal computer.
 
