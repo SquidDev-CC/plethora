@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-	implementation "dan200.computercraft:ComputerCraft:${project.cc_version}-build10"
+	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-build10"
 	deobfCompile "mezz.jei:jei_${project.mc_version}:3.13.6.392"
 
 	compileOnly "org.squiddev:CCTweaks:${project.mc_version}-1.5.0-pr0:dev"
