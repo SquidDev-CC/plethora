@@ -13,6 +13,8 @@ public class ConverterItemHandler implements IConverter<ICapabilityProvider, IIt
 	@Nullable
 	@Override
 	public IItemHandler convert(@Nonnull ICapabilityProvider from) {
-		return from.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		return from.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+			? from.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+			: null;
 	}
 }

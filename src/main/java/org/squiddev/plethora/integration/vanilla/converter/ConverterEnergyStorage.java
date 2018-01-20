@@ -13,6 +13,8 @@ public class ConverterEnergyStorage implements IConverter<ICapabilityProvider, I
 	@Nullable
 	@Override
 	public IEnergyStorage convert(@Nonnull ICapabilityProvider from) {
-		return from.getCapability(CapabilityEnergy.ENERGY, null);
+		return from.hasCapability(CapabilityEnergy.ENERGY, null)
+			? from.getCapability(CapabilityEnergy.ENERGY, null)
+			: null;
 	}
 }
