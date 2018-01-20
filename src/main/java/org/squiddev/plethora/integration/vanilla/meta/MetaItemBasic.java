@@ -60,9 +60,13 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 
 	@Nullable
 	public static String getNBTHash(@Nonnull ItemStack stack) {
-		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) return null;
+		return stack.hasTagCompound() ? getNBTHash(stack.getTagCompound()) : null;
+	}
 
-		NBTTagCompound tag = stack.getTagCompound();
+	@Nullable
+	public static String getNBTHash(@Nullable NBTTagCompound tag) {
+		if (tag == null || tag.hasNoTags()) return null;
+
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 			OutputStream dump = new NullOutputStream();

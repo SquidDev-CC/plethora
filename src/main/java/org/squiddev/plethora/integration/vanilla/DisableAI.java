@@ -35,7 +35,7 @@ public class DisableAI {
 			public void readNBT(Capability<IDisableAIHandler> capability, IDisableAIHandler instance, EnumFacing side, NBTBase nbt) {
 				instance.setDisabled(nbt != null && nbt instanceof NBTPrimitive && ((NBTPrimitive) nbt).getByte() == 1);
 			}
-		}, DefaultDisableAI.class);
+		}, DefaultDisableAI::new);
 	}
 
 	public static void maybeClear(EntityLiving entity) {

@@ -52,10 +52,10 @@ public class PlethoraCore {
 		asmData = event.getAsmData();
 
 		// Register capabilities
-		CapabilityManager.INSTANCE.register(ICostHandler.class, new DefaultStorage<>(), DefaultCostHandler.class);
-		CapabilityManager.INSTANCE.register(IModuleHandler.class, new DefaultStorage<>(), DefaultModuleHandler.class);
-		CapabilityManager.INSTANCE.register(IPeripheral.class, new DefaultStorage<>(), DefaultPeripheral.class);
-		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral.class);
+		CapabilityManager.INSTANCE.register(ICostHandler.class, new DefaultStorage<>(), DefaultCostHandler::new);
+		CapabilityManager.INSTANCE.register(IModuleHandler.class, new DefaultStorage<>(), DefaultModuleHandler::new);
+		CapabilityManager.INSTANCE.register(IPeripheral.class, new DefaultStorage<>(), DefaultPeripheral::new);
+		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral::new);
 
 		// Various event handlers
 		MinecraftForge.EVENT_BUS.register(this);

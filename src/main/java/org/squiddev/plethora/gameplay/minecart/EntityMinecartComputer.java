@@ -245,7 +245,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
+	public boolean processInitialInteract(@Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
 		if (MinecraftForge.EVENT_BUS.post(new MinecartInteractEvent(this, player, hand))) return true;
 
 		if (!getEntityWorld().isRemote) {
@@ -254,7 +254,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			Vec3d look = player.getLook(1.0f);
 			double reach = 5;
 			if (player instanceof EntityPlayerMP) {
-				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
+				reach = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
 			}
 			Vec3d to = new Vec3d(from.x + look.x * reach, from.y + look.y * reach, from.z + look.z * reach);
 
@@ -692,7 +692,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 			Vec3d look = player.getLook(partialTicks);
 			double reach = 5;
 			if (player instanceof EntityPlayerMP) {
-				reach = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
+				reach = ((EntityPlayerMP) player).getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
 			}
 			Vec3d to = new Vec3d(from.x + look.x * reach, from.y + look.y * reach, from.z + look.z * reach);
 

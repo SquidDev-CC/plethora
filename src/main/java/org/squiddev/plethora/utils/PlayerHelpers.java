@@ -24,24 +24,17 @@ public class PlayerHelpers {
 
 	@Nonnull
 	public static RayTraceResult findHitGuess(EntityPlayer player) {
-		if (player instanceof EntityPlayerMP) {
-			return findHit((EntityPlayerMP) player);
-		} else if (player.getEntityWorld().isRemote && player instanceof EntityPlayerSP) {
+		if (player.getEntityWorld().isRemote && player instanceof EntityPlayerSP) {
 			RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
 			return result == null ? new RayTraceResult(RayTraceResult.Type.MISS, player.getPositionVector(), null, null) : result;
 		} else {
-			return findHit(player, 4.5);
+			return findHit(player, player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue());
 		}
 	}
 
 	@Nonnull
-	public static RayTraceResult findHit(EntityPlayerMP player) {
-		return findHit(player, player.interactionManager.getBlockReachDistance());
-	}
-
-	@Nonnull
 	public static RayTraceResult findHit(EntityPlayerMP player, EntityLivingBase entity) {
-		return findHit(entity, player.interactionManager.getBlockReachDistance());
+		return findHit(entity, player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue());
 	}
 
 	@Nonnull
