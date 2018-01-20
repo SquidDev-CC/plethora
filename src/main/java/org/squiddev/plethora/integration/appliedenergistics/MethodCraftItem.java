@@ -4,9 +4,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
+import appeng.me.helpers.MachineSource;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.*;
@@ -25,7 +25,7 @@ public class MethodCraftItem extends BasicMethod<IAEItemStack> {
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<IAEItemStack> context) {
-		return super.canApply(context) && context.hasContext(IActionHost.class);
+		return super.canApply(context) && context.hasContext(IActionHost.class) && context.hasContext(IGridNode.class);
 	}
 
 	@Nonnull
@@ -36,18 +36,17 @@ public class MethodCraftItem extends BasicMethod<IAEItemStack> {
 		return MethodResult.nextTick(() -> {
 			IContext<IAEItemStack> baked = context.bake();
 
+			IGridNode node = baked.getContext(IGridNode.class);
 			IActionHost host = baked.getContext(IActionHost.class);
-			IGridNode gridNode = ConverterGridNode.findNode(host);
-			if (gridNode == null) throw new LuaException("Cannot find node for block");
 
-			IGrid grid = gridNode.getGrid();
+			IGrid grid = node.getGrid();
 			ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
 
 			IAEItemStack toCraft = baked.getTarget().copy();
 			toCraft.setStackSize(quantity);
 
 			CraftingResult result = new CraftingResult(grid, baked.getContext(IComputerAccess.class), host);
-			crafting.beginCraftingJob(gridNode.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
+			crafting.beginCraftingJob(node.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
 
 			return MethodResult.result(context.makeChild(Reference.id(result)).getObject());
 		});

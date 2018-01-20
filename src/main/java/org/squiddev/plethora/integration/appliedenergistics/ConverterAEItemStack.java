@@ -13,6 +13,6 @@ public class ConverterAEItemStack implements IConverter<IAEItemStack, ItemStack>
 	@Nullable
 	@Override
 	public ItemStack convert(@Nonnull IAEItemStack from) {
-		return from.getItemStack();
+		return from.createItemStack();
 	}
 }

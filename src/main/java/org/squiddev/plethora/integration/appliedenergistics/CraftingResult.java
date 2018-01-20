@@ -5,16 +5,15 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
+import appeng.me.helpers.MachineSource;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
@@ -111,21 +110,6 @@ public class CraftingResult {
 		public IGridNode getActionableNode() {
 			return source.getActionableNode();
 		}
-
-		@Override
-		public IGridNode getGridNode(AEPartLocation aePartLocation) {
-			return source.getGridNode(aePartLocation);
-		}
-
-		@Override
-		public AECableType getCableConnectionType(AEPartLocation aePartLocation) {
-			return source.getCableConnectionType(aePartLocation);
-		}
-
-		@Override
-		public void securityBreak() {
-			source.securityBreak();
-		}
 	}
 
 	private void tryQueue(Object... args) {
@@ -192,12 +176,13 @@ public class CraftingResult {
 		ICraftingJob job = result.getJob();
 		if (job == null) throw new LuaException("Task is still pending");
 
-		IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
+		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+		IItemList<IAEItemStack> plan = channel.createList();
 		job.populatePlan(plan);
 
 		IStorageGrid storage = result.grid.getCache(IStorageGrid.class);
-		IMEMonitor<IAEItemStack> monitor = storage.getItemInventory();
-		BaseActionSource source = new MachineSource(result.source);
+		IMEMonitor<IAEItemStack> monitor = storage.getInventory(channel);
+		IActionSource source = new MachineSource(result.source);
 
 		int i = 0;
 		Map<Integer, Map<String, Object>> out = Maps.newHashMapWithExpectedSize(plan.size());
