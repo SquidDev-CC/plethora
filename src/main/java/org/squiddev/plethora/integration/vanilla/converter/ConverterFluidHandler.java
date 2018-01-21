@@ -13,6 +13,8 @@ public class ConverterFluidHandler implements IConverter<ICapabilityProvider, IF
 	@Nullable
 	@Override
 	public IFluidHandler convert(@Nonnull ICapabilityProvider from) {
-		return from.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return from.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)
+			? from.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)
+			: null;
 	}
 }
