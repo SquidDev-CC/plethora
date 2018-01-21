@@ -130,7 +130,7 @@ public class CanvasHandler {
 		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 2);
 
 		synchronized (canvas.objects) {
-			for (BaseObject object : canvas.objects.valueCollection()) {
+			for (BaseObject object : canvas.objects.values()) {
 				object.draw2D();
 			}
 		}
