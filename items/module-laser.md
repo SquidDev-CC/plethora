@@ -21,8 +21,8 @@ Like all good tools, the laser does one thing, and does it well: firing lasers. 
 arguments: the first two specifying the direction and the last specifying the potency.
 
 The angle is provided through a yaw (angle on the horizontal axis) and pitch (angle on the verticle axis), each measured
-in degrees. The potency is can be any number between 0.5 and 5, with higher values dealing more damage but taking longer
-to recharge (note these values are configurable).
+in degrees. The potency can be any number between 0.5 and 5, with higher values dealing more damage but taking longer to
+recharge (note these values are configurable).
 
 ```lua
 local laser = peripheral.wrap(--[[ whatever ]])
