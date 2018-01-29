@@ -4,13 +4,14 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
+import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @IConverter.Inject(value = IGridHost.class, modId = AppEng.MOD_ID)
-public class ConverterGridNode implements IConverter<IGridHost, IGridNode> {
+public class ConverterGridNode extends DynamicConverter<IGridHost, IGridNode> {
 	@Nullable
 	@Override
 	public IGridNode convert(@Nonnull IGridHost from) {
