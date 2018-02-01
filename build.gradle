@@ -114,7 +114,7 @@ dependencies {
 	compileOnly "MCMultiPart2:MCMultiPart:2.2.2:deobf"
 	compileOnly "refinedstorage:refinedstorage:1.5.8-1240"
 	compileOnly "curseMods:forestry:1.12-5.4.3.128"
-	compile("appeng:appliedenergistics2:rv5-stable-5") { exclude group: "mezz.jei" }
+	compileOnly("appeng:appliedenergistics2:rv5-stable-5") { exclude group: "mezz.jei" }
 	compileOnly "curseMods:Baubles:1.12-1.5.2"
 	compileOnly "curseMods:blockcraftery:0.1.3"
 	compileOnly("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }

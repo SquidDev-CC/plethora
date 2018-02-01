@@ -75,6 +75,12 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	public void detach(@Nonnull IComputerAccess access) {
 	}
 
+	@Nonnull
+	@Override
+	public Object getTarget() {
+		return owner;
+	}
+
 	protected IExecutorFactory getExecutorFactory() {
 		return factory;
 	}
@@ -126,12 +132,6 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
 	public void receivePacket(@Nonnull INetworkAccess network, @Nonnull Packet packet, double distanceTravelled) {
-	}
-
-	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public Object getTarget() {
-		return owner;
 	}
 	//endregion
 }
