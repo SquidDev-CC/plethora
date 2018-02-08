@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,8 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
+		if (stack.isEmpty()) return Collections.emptyMap();
+
 		HashMap<Object, Object> data = getBasicProperties(stack);
 
 		String display = stack.getDisplayName();

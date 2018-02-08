@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -30,15 +31,15 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 
 		{
 			Map<String, Object> armor = Maps.newHashMap();
-			armor.put("boots", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
-			armor.put("leggings", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
-			armor.put("chestplate", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
-			armor.put("helmet", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
+			armor.put("boots", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
+			armor.put("leggings", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
+			armor.put("chestplate", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
+			armor.put("helmet", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
 			map.put("armor", armor);
 		}
 
-		map.put("heldItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
-		map.put("offhandItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
+		map.put("heldItem", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
+		map.put("offhandItem", wrapStack(target, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
 
 		{
 			Map<Object, String> potionEffects = Maps.newHashMap();
@@ -70,8 +71,8 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 		return map;
 	}
 
-	private static <T> ILuaObject wrap(EntityLivingBase entity, T object) {
-		if (object == null) return null;
+	private static ILuaObject wrapStack(EntityLivingBase entity, ItemStack object) {
+		if (object == null || object.isEmpty()) return null;
 
 		return PlethoraAPI.instance().methodRegistry().makeContext(
 			id(object),
