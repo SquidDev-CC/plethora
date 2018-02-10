@@ -35,5 +35,5 @@ instead! As long as your keyboard is not bound to any computer, using it whilst 
 your headpiece instead. In conjunction with the overlay glasses, you can create all sorts of convenient interfaces.
 
 One can also place the keyboard in a _module slot_ of a neural interface. Doing so will mean key presses are continually
-relayed to the interface, even when not in a GUI. Consequently you can add your own keybindings, triggering all sorts of
-actions using the interface.
+relayed to the interface, even when not in in the keyboard's GUI. Consequently you can add your own keybindings,
+triggering all sorts of actions using the interface.
