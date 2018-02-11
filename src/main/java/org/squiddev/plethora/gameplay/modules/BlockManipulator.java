@@ -52,6 +52,7 @@ import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.MatrixHelpers;
+import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -147,6 +148,16 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	@Deprecated
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		return this.getStateFromMeta(meta).withProperty(FACING, facing.getOpposite());
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
+
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileManipulator) {
+			((TileManipulator) te).setOwningProfile(PlayerHelpers.getProfile(placer));
+		}
 	}
 
 	@Nonnull

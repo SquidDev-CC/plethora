@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,6 +11,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -56,10 +58,16 @@ public final class MethodsChat {
 
 					BlockPos pos = entity.getPosition();
 
+					IPlayerOwnable ownable = context.getContext(IPlayerOwnable.class);
+					GameProfile owner = null;
+					if (ownable != null) owner = ownable.getOwningProfile();
+					if (owner == null) owner = PlethoraFakePlayer.PROFILE;
+
 					// We include the position of the entity
 					name = entity.getDisplayName().createCopy();
-					name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, entity, name.getUnformattedText());
+
+					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, entity, owner);
+					fakePlayer.setDisplayName(String.format("[%d, %d, %d] %s", pos.getX(), pos.getY(), pos.getZ(), name.getUnformattedText()));
 					fakePlayer.load(entity);
 					player = fakePlayer;
 				} else {

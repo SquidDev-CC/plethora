@@ -2,19 +2,24 @@ package org.squiddev.plethora.utils;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import org.squiddev.plethora.api.IPlayerOwnable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
@@ -112,6 +117,43 @@ public class PlayerHelpers {
 			return new RayTraceResult(RayTraceResult.Type.MISS, origin, null, null);
 		} else {
 			return hit;
+		}
+	}
+
+	@Nullable
+	public static GameProfile getProfile(Entity entity) {
+		if (entity instanceof EntityPlayer) {
+			return ((EntityPlayer) entity).getGameProfile();
+		} else if (entity instanceof IPlayerOwnable) {
+			return ((IPlayerOwnable) entity).getOwningProfile();
+		} else {
+			return null;
+		}
+	}
+
+	@Nullable
+	public static GameProfile readProfile(@Nonnull NBTTagCompound tag) {
+		if (!tag.hasKey("owner", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND)) {
+			return null;
+		}
+
+		NBTTagCompound owner = tag.getCompoundTag("owner");
+		return new GameProfile(
+			new UUID(owner.getLong("upper_id"), owner.getLong("lower_id")),
+			owner.getString("name")
+		);
+	}
+
+	public static void writeProfile(@Nonnull NBTTagCompound tag, @Nullable GameProfile profile) {
+		if (profile == null) {
+			tag.removeTag("owner");
+		} else {
+			NBTTagCompound owner = new NBTTagCompound();
+			tag.setTag("owner", owner);
+
+			owner.setLong("upper_id", profile.getId().getMostSignificantBits());
+			owner.setLong("lower_id", profile.getId().getLeastSignificantBits());
+			owner.setString("name", profile.getName());
 		}
 	}
 }

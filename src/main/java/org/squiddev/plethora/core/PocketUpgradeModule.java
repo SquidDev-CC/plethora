@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.pocket.IPocketAccess;
@@ -13,10 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.api.EntityWorldLocation;
-import org.squiddev.plethora.api.IAttachable;
-import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.*;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -26,6 +24,7 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,6 +137,8 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		BasicContextBuilder builder = new BasicContextBuilder();
 		handler.getAdditionalContext(access, builder);
+
+		builder.addContext(new PocketPlayerOwnable(access));
 		builder.addContext(location);
 		builder.addContext(entity, new IReference<Entity>() {
 			@Nonnull
@@ -228,7 +229,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		@Nonnull
 		@Override
-		public Object getOwner() {
+		public Entity getOwner() {
 			return entity;
 		}
 
@@ -258,6 +259,32 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		@Override
 		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
 			if (wrapper != null) wrapper.queueEvent(event, args);
+		}
+	}
+
+	public static class PocketPlayerOwnable implements IPlayerOwnable, IReference<PocketPlayerOwnable> {
+		private final PocketModuleAccess access;
+
+		public PocketPlayerOwnable(PocketModuleAccess access) {
+			this.access = access;
+		}
+
+		@Nullable
+		@Override
+		public GameProfile getOwningProfile() {
+			return PlayerHelpers.getProfile(access.getOwner());
+		}
+
+		@Nonnull
+		@Override
+		public PocketPlayerOwnable get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public PocketPlayerOwnable safeGet() throws LuaException {
+			return this;
 		}
 	}
 }

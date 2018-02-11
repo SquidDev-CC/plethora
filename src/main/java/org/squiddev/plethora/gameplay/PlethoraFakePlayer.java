@@ -22,6 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.utils.FakeNetHandler;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ import java.util.WeakHashMap;
 public class PlethoraFakePlayer extends FakePlayer {
 	private static final WeakHashMap<Entity, PlethoraFakePlayer> registeredPlayers = new WeakHashMap<Entity, PlethoraFakePlayer>();
 
-	private static final GameProfile profile = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
+	public static final GameProfile PROFILE = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
 
 	private final WeakReference<Entity> owner;
 
@@ -41,26 +42,28 @@ public class PlethoraFakePlayer extends FakePlayer {
 	private int currentDamage = -1;
 	private int currentDamageState = -1;
 
-	public PlethoraFakePlayer(WorldServer world, Entity owner) {
-		super(world, profile);
+	private String displayName;
+
+	public PlethoraFakePlayer(WorldServer world, Entity owner, GameProfile profile) {
+		super(world, profile != null && profile.isComplete() ? profile : PROFILE);
 		connection = new FakeNetHandler(this);
 		setSize(0, 0);
 		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
 	}
 
-	public PlethoraFakePlayer(WorldServer world, Entity owner, String name) {
-		super(world, new GameProfile(Constants.FAKEPLAYER_UUID, name));
-		connection = new FakeNetHandler(this);
-		setSize(0, 0);
-		this.owner = owner == null ? null : new WeakReference<Entity>(owner);
+	@Deprecated
+	public PlethoraFakePlayer(World world) {
+		super((WorldServer) world, PROFILE);
+		this.owner = null;
 	}
 
-	public PlethoraFakePlayer(WorldServer world) {
-		this(world, (Entity) null);
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
-	public PlethoraFakePlayer(WorldServer world, String name) {
-		this(world, null, name);
+	@Override
+	public String getDisplayNameString() {
+		return displayName != null ? displayName : super.getDisplayNameString();
 	}
 
 	@Override
@@ -224,10 +227,14 @@ public class PlethoraFakePlayer extends FakePlayer {
 		return owner == null ? null : owner.get();
 	}
 
-	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity) {
+	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity, IPlayerOwnable ownable) {
+		return getPlayer(world, entity, ownable == null ? null : ownable.getOwningProfile());
+	}
+
+	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity, GameProfile profile) {
 		PlethoraFakePlayer fake = registeredPlayers.get(entity);
 		if (fake == null) {
-			fake = new PlethoraFakePlayer(world, entity);
+			fake = new PlethoraFakePlayer(world, entity, profile);
 			registeredPlayers.put(entity, fake);
 		}
 

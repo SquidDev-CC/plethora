@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
@@ -10,6 +11,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.TurtleWorldLocation;
 import org.squiddev.plethora.api.method.*;
@@ -26,6 +28,8 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -87,6 +91,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		BasicContextBuilder builder = new BasicContextBuilder();
 		handler.getAdditionalContext(access, builder);
 
+		builder.addContext(new TurtlePlayerOwnable(turtle));
 		builder.<IWorldLocation>addContext(new TurtleWorldLocation(turtle));
 		builder.addContext(turtle, Reference.id(turtle));
 
@@ -218,6 +223,51 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		@Override
 		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
 			if (wrapper != null) wrapper.queueEvent(event, args);
+		}
+	}
+
+	public static class TurtlePlayerOwnable implements IPlayerOwnable, IReference<TurtlePlayerOwnable> {
+		private static boolean checkedField;
+		private static Method getProfile;
+
+		private final ITurtleAccess access;
+
+		public TurtlePlayerOwnable(ITurtleAccess access) {
+			this.access = access;
+		}
+
+		@Nullable
+		@Override
+		public GameProfile getOwningProfile() {
+			if (!checkedField) {
+				try {
+					getProfile = ITurtleAccess.class.getMethod("getOwningPlayer");
+				} catch (NoSuchMethodException ignored) {
+				}
+				checkedField = true;
+			}
+
+			if (getProfile != null) {
+				try {
+					return (GameProfile) getProfile.invoke(access);
+				} catch (IllegalAccessException ignored) {
+				} catch (InvocationTargetException ignored) {
+				}
+			}
+
+			return null;
+		}
+
+		@Nonnull
+		@Override
+		public TurtlePlayerOwnable get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public TurtlePlayerOwnable safeGet() throws LuaException {
+			return this;
 		}
 	}
 }

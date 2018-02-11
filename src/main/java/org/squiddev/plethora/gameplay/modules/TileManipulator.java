@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay.modules;
 
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.gameplay.TileBase;
@@ -28,9 +30,10 @@ import static org.squiddev.plethora.gameplay.modules.BlockManipulator.BOX_EXPAND
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.OFFSET;
 import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
-public final class TileManipulator extends TileBase implements ITickable {
+public final class TileManipulator extends TileBase implements ITickable, IPlayerOwnable {
 	private ManipulatorType type;
 	private ItemStack[] stacks;
+	private GameProfile profile;
 	private int stackHash;
 
 	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
@@ -225,5 +228,15 @@ public final class TileManipulator extends TileBase implements ITickable {
 	@Override
 	public void removed() {
 		executor.reset();
+	}
+
+	public void setOwningProfile(GameProfile profile) {
+		this.profile = profile;
+	}
+
+	@Nullable
+	@Override
+	public GameProfile getOwningProfile() {
+		return profile;
 	}
 }
