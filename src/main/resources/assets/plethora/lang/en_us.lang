@@ -10,6 +10,7 @@ item.plethora.module.module_laser.desc=It fires lasers. 'nough said
 death.attack.laser=%1$s was vapourised by %2$s
 death.attack.laser.item=%1$s was vapourised by %2$s using %3$s
 entity.plethora.plethora:laser.name=A Frickin' laser
+entity.plethora:laser.name=A Frickin' laser
 
 item.plethora.module.module_scanner.name=Block scanner
 item.plethora.module.module_scanner.adjective=Scanner
