@@ -225,13 +225,13 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public boolean isFullBlock(IBlockState state) {
+	@Deprecated
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
