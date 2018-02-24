@@ -96,10 +96,6 @@ public class RenderSquidOverlay extends Module implements IClientModule {
 				angle = BASE_ANGLE - adjusted * BASE_ANGLE;
 			}
 
-
-//			DebugLogger.info(new Vec3d(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ).distanceTo(
-//				new Vec3d(player.posX, player.posY, player.posZ)) + " !");
-
 			tick = (tick + partialTicks) % (Math.PI * 2 / OFFSET_SPEED);
 
 			for (int i = 0; i < TENTACLES; i++) {

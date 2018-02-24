@@ -26,11 +26,11 @@ public class ModelInterface extends ModelBiped {
 
 			ModelRenderer main = new ModelRenderer(model, 0, 0);
 			main.setRotationPoint(0.0F, 0.0F, 0.0F);
-			main.addBox(-0.1F, -5.5F, -5.1F, 5, 3, 1, 0.0F);
+			main.addBox(-0.1F, -5.0F, -5.1F, 5, 3, 1, 0.0F);
 
 			ModelRenderer side = new ModelRenderer(model, 5, 0);
 			side.setRotationPoint(0.0F, 0.0F, 0.0F);
-			side.addBox(3.9F, -5.5F, -4.1F, 1, 2, 7, 0.0F);
+			side.addBox(3.9F, -5.0F, -4.1F, 1, 2, 7, 0.0F);
 
 			model.bipedHeadwear.addChild(main);
 			model.bipedHeadwear.addChild(side);
@@ -61,13 +61,15 @@ public class ModelInterface extends ModelBiped {
 	}
 
 	@Override
-	public void render(@Nonnull Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+	public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 
 		GlStateManager.pushMatrix();
-		if (entity.isSneaking()) GlStateManager.translate(0, 0.2f, 0);
+		if (entity.isSneaking()) {
+			GlStateManager.translate(0, 0.2f, 0);
+		}
 
-		bipedHeadwear.render(f5);
+		bipedHeadwear.render(scale);
 
 		GlStateManager.popMatrix();
 	}

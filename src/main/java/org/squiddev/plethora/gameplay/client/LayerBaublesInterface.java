@@ -29,19 +29,12 @@ public class LayerBaublesInterface implements LayerRenderer<EntityPlayer> {
 		if (stack == null) return;
 
 		GlStateManager.pushMatrix();
-
-		model.bipedHeadwear.postRender(PIXEL);
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-
-		if (player.getItemStackFromSlot(NeuralHelpers.ARMOR_SLOT) != null) {
-			GlStateManager.translate(0.05f, 0, -0.05f);
-		}
-
 		Minecraft.getMinecraft().getTextureManager().bindTexture(ModelInterface.TEXTURE_RESOURCE);
 
 		ModelInterface iface = ModelInterface.getNormal();
-		ModelInterface.setRotateAngle(iface.bipedHeadwear, 0, 0, 0);
-		iface.bipedHeadwear.render(PIXEL);
+		iface.isSneak = player.isSneaking();
+		iface.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
 		GlStateManager.popMatrix();
 	}
