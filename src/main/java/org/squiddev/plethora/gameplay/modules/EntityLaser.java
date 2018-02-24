@@ -10,8 +10,8 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -306,12 +306,10 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 					} else if (hardness > -1 && hardness <= potency) {
 						potency -= hardness;
 
-						List<ItemStack> drops = block.getDrops(world, position, blockState, 0);
-						world.setBlockToAir(position);
-						if (drops != null) {
-							for (ItemStack stack : drops) {
-								Block.spawnAsEntity(world, position, stack);
-							}
+						TileEntity te = world.getTileEntity(position);
+						if (block.removedByPlayer(blockState, world, position, player, true)) {
+							block.onBlockDestroyedByPlayer(world, position, blockState);
+							block.harvestBlock(world, player, position, blockState, te, null);
 						}
 					} else {
 						potency = -1;
