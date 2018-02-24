@@ -66,6 +66,7 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 		map.put("isWet", target.isWet());
 		map.put("isChild", target.isChild());
 		map.put("isDead", target.isDead);
+		map.put("isElytraFlying", target.isElytraFlying());
 
 		return map;
 	}
