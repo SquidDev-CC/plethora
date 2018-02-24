@@ -121,6 +121,10 @@ public class CanvasHandler {
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
 
+		// If we've no font renderer then we're probably not quite ready yet
+		Minecraft mc = Minecraft.getMinecraft();
+		if (mc.fontRendererObj == null) return;
+
 		GlStateManager.pushMatrix();
 
 		// The hotbar renders at -90 (See GuiIngame#renderTooltip)
