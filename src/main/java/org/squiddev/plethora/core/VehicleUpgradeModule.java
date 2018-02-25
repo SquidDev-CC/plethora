@@ -103,7 +103,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, cost, builder.getObjectsArray(), container
+			container, builder.getObjectsArray(), cost, container
 		);
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);

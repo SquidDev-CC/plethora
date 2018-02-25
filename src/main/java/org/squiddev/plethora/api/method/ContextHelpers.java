@@ -21,7 +21,7 @@ public final class ContextHelpers {
 	 * @param list    The list to get items from.
 	 * @return The converted list.
 	 */
-	@Nullable
+	@Nonnull
 	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Collection<?> list) {
 		if (list == null) return Collections.emptyMap();
 
@@ -45,7 +45,7 @@ public final class ContextHelpers {
 	 * @param list    The list to get items from.
 	 * @return The converted list.
 	 */
-	@Nullable
+	@Nonnull
 	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Object[] list) {
 		if (list == null) return Collections.emptyMap();
 
@@ -69,7 +69,7 @@ public final class ContextHelpers {
 	 * @param list    The list to get items from.
 	 * @return The converted list.
 	 */
-	@Nullable
+	@Nonnull
 	public static Map<Integer, ILuaObject> getObjectList(@Nonnull IContext<?> context, @Nullable Collection<?> list) {
 		if (list == null) return Collections.emptyMap();
 
@@ -79,7 +79,7 @@ public final class ContextHelpers {
 			if (element == null) {
 				++i;
 			} else {
-				map.put(++i, context.makeChild(Reference.id(element)).getObject());
+				map.put(++i, context.makeChildId(element).getObject());
 			}
 		}
 

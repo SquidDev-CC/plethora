@@ -5,40 +5,44 @@ import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
-import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
+import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.core.Context;
+import org.squiddev.plethora.core.UnbakedContext;
+import org.squiddev.plethora.core.executor.DefaultExecutor;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.squiddev.plethora.api.reference.Reference.entity;
-import static org.squiddev.plethora.api.reference.Reference.id;
-
 /**
  * A basic provider for living entities
  */
 @IMetaProvider.Inject(EntityLivingBase.class)
-public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
+public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull EntityLivingBase target) {
+	public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityLivingBase> context) {
+		EntityLivingBase target = context.getTarget();
 		Map<Object, Object> map = Maps.newHashMap();
 
 		{
 			Map<String, Object> armor = Maps.newHashMap();
-			armor.put("boots", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
-			armor.put("leggings", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
-			armor.put("chestplate", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
-			armor.put("helmet", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
+			armor.put("boots", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
+			armor.put("leggings", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
+			armor.put("chestplate", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
+			armor.put("helmet", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
 			map.put("armor", armor);
 		}
 
-		map.put("heldItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
-		map.put("offhandItem", wrap(target, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
+		map.put("heldItem", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
+		map.put("offhandItem", wrap(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
 
 		{
 			Map<Object, String> potionEffects = Maps.newHashMap();
@@ -71,14 +75,16 @@ public class MetaEntityLiving extends BasicMetaProvider<EntityLivingBase> {
 		return map;
 	}
 
-	private static <T> ILuaObject wrap(EntityLivingBase entity, T object) {
+	private static <T> ILuaObject wrap(IPartialContext<?> context, T object) {
 		if (object == null) return null;
 
-		return PlethoraAPI.instance().methodRegistry().makeContext(
-			id(object),
-			CostHelpers.getCostHandler(entity),
-			BasicModuleContainer.EMPTY_REF,
-			entity(entity)
-		).getObject();
+		if (context instanceof IContext) {
+			return ((IContext) context).makeChildId(object).getObject();
+		} else {
+			IUnbakedContext<T> unbaked = new UnbakedContext<T>(Reference.id(object), new IReference<?>[0], context.getCostHandler(), BasicModuleContainer.EMPTY_REF, DefaultExecutor.INSTANCE);
+			IContext<T> baked = new Context<T>(unbaked, object, new Object[0], context.getCostHandler(), BasicModuleContainer.EMPTY);
+
+			return baked.getObject();
+		}
 	}
 }

@@ -322,7 +322,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		);
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, cost, builder.getObjectsArray(), container
+			container, builder.getObjectsArray(), cost, container
 		);
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
@@ -79,15 +78,6 @@ public interface IUnbakedContext<T> {
 	 * @return The new context using the specified executor
 	 */
 	IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor);
-
-	/**
-	 * Get a lua object from this context
-	 *
-	 * @return The built Lua object
-	 * @throws IllegalStateException If the context cannot be baked
-	 */
-	@Nonnull
-	ILuaObject getObject();
 
 	/**
 	 * Get the cost handler associated with this object

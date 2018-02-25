@@ -115,7 +115,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			containerRef, cost, containerRef, builder.getReferenceArray());
 
 		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, cost, builder.getObjectsArray(), container
+			container, builder.getObjectsArray(), cost, container
 		);
 
 		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);

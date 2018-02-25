@@ -21,7 +21,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 	private final ICostHandler handler;
 	private final IModuleContainer modules;
 
-	public PartialContext(@Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull IModuleContainer modules) {
+	public PartialContext(@Nonnull T target, @Nonnull Object[] context, @Nonnull ICostHandler handler, @Nonnull IModuleContainer modules) {
 		this.target = target;
 		this.handler = handler;
 		this.context = context;
@@ -74,7 +74,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 		arrayCopy(context, wholeContext, newContext.length);
 		wholeContext[wholeContext.length - 1] = target;
 
-		return new PartialContext<U>(newTarget, handler, wholeContext, modules);
+		return new PartialContext<U>(newTarget, wholeContext, handler, modules);
 	}
 
 	@Nonnull

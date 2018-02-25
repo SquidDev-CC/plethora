@@ -18,8 +18,6 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static org.squiddev.plethora.api.reference.Reference.id;
-
 public class MethodsGrid {
 	@BasicObjectMethod.Inject(
 		value = IGridBlock.class, modId = AppEng.MOD_ID, worldThread = true,
@@ -81,7 +79,7 @@ public class MethodsGrid {
 
 				return stack == null
 					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(id(stack)).getObject());
+					: MethodResult.result(baked.makeChildId(stack).getObject());
 			}
 		});
 	}
@@ -107,7 +105,7 @@ public class MethodsGrid {
 				for (IAEItemStack aeStack : grid.getItemInventory().getStorageList()) {
 					ItemStack stack = aeStack.getItemStack();
 					if (fingerprint.matches(stack)) {
-						out.put(++i, baked.makeChild(id(aeStack)).getObject());
+						out.put(++i, baked.makeChildId(aeStack).getObject());
 					}
 				}
 

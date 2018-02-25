@@ -10,7 +10,6 @@ import appeng.core.AppEng;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
@@ -52,7 +51,7 @@ public class MethodCraftItem extends BasicMethod<IAEItemStack> {
 				CraftingResult result = new CraftingResult(grid, baked.getContext(IComputerAccess.class), host);
 				crafting.beginCraftingJob(gridNode.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
 
-				return MethodResult.result(context.makeChild(Reference.id(result)).getObject());
+				return MethodResult.result(baked.makeChildId(result).getObject());
 			}
 		});
 	}

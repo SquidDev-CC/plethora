@@ -51,7 +51,7 @@ public class MethodsMultipart {
 				IMultipart part = container.getPartFromID(id);
 				return part == null
 					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, id)).getObject());
+					: MethodResult.result(baked.makeChild(part, new ReferenceMultipart(container, id)).getObject());
 			}
 		});
 	}
@@ -111,7 +111,7 @@ public class MethodsMultipart {
 				IMultipart part = container.getPartInSlot(slot);
 				return part == null
 					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
+					: MethodResult.result(baked.makeChild(part, new ReferenceMultipart(container, part)).getObject());
 			}
 		});
 	}

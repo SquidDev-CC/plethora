@@ -7,7 +7,6 @@ import com.raoulvdberge.refinedstorage.api.network.INetworkMaster;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
@@ -50,7 +49,7 @@ public final class MethodCraftItem extends BasicMethod<ItemStack> {
 					network.addCraftingTask(task);
 				}
 
-				return MethodResult.result(success, context.makeChild(Reference.id(task)).getObject());
+				return MethodResult.result(success, baked.makeChildId(task).getObject());
 			}
 		});
 	}

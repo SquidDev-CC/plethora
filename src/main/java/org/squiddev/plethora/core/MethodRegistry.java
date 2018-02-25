@@ -104,7 +104,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(handler, "handler cannot be null");
 		Preconditions.checkNotNull(context, "context cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, DefaultExecutor.INSTANCE);
+		return new UnbakedContext<T>(target, context, handler, modules, DefaultExecutor.INSTANCE);
 	}
 
 	@Nonnull
