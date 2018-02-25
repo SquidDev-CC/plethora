@@ -27,6 +27,7 @@ import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
@@ -158,7 +159,7 @@ public final class NeuralHelpers {
 		builder.addContext(owner, entity(owner));
 
 		ICostHandler cost = CostHelpers.getCostHandler(owner);
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {

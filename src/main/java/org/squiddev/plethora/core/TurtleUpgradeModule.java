@@ -19,6 +19,7 @@ import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
@@ -96,7 +97,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		builder.addContext(turtle, Reference.id(turtle));
 
 		final IModuleContainer container = access.getContainer();
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -226,7 +227,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		}
 	}
 
-	public static class TurtlePlayerOwnable implements IPlayerOwnable, IReference<TurtlePlayerOwnable> {
+	public static class TurtlePlayerOwnable extends ConstantReference<TurtlePlayerOwnable> implements IPlayerOwnable {
 		private static boolean checkedField;
 		private static Method getProfile;
 

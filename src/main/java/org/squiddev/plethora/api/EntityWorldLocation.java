@@ -7,13 +7,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 
 /**
  * A world position for an entity
  */
-public class EntityWorldLocation implements IWorldLocation {
+public class EntityWorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
 	private final Entity entity;
 
 	public EntityWorldLocation(@Nonnull Entity entity) {

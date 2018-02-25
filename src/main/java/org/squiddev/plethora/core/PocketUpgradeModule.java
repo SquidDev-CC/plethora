@@ -20,6 +20,7 @@ import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
@@ -77,7 +78,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		final PocketModuleAccess access = new PocketModuleAccess(pocket, handler);
 		final IModuleContainer container = access.getContainer();
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -133,6 +134,11 @@ class PocketUpgradeModule implements IPocketUpgrade {
 					return new WorldLocation(entity.getEntityWorld(), entity.getPosition());
 				}
 			}
+
+			@Override
+			public boolean isConstant() {
+				return true;
+			}
 		};
 
 		BasicContextBuilder builder = new BasicContextBuilder();
@@ -153,6 +159,11 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			@Override
 			public Entity safeGet() throws LuaException {
 				return get();
+			}
+
+			@Override
+			public boolean isConstant() {
+				return true;
 			}
 		});
 
@@ -262,7 +273,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		}
 	}
 
-	public static class PocketPlayerOwnable implements IPlayerOwnable, IReference<PocketPlayerOwnable> {
+	public static class PocketPlayerOwnable extends ConstantReference<PocketPlayerOwnable> implements IPlayerOwnable {
 		private final PocketModuleAccess access;
 
 		public PocketPlayerOwnable(PocketModuleAccess access) {

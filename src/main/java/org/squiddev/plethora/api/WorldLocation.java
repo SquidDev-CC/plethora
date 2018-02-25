@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 
@@ -14,7 +15,7 @@ import javax.annotation.Nonnull;
  *
  * @see org.squiddev.plethora.api.method.IContext
  */
-public final class WorldLocation implements IWorldLocation {
+public final class WorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
 	private final World world;
 	private final BlockPos pos;
 	private final Vec3d loc;

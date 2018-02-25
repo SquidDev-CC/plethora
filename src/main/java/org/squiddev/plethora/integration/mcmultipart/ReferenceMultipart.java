@@ -3,12 +3,12 @@ package org.squiddev.plethora.integration.mcmultipart;
 import dan200.computercraft.api.lua.LuaException;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IMultipartContainer;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public class ReferenceMultipart implements IReference<IMultipart> {
+public class ReferenceMultipart extends DynamicReference<IMultipart> {
 	private final UUID id;
 	private final IMultipartContainer container;
 

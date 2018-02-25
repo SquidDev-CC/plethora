@@ -15,6 +15,7 @@ import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.api.vehicle.IVehicleAccess;
@@ -82,7 +83,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		builder.addContext(vehicle.getVehicle(), Reference.entity(vehicle.getVehicle()));
 
 		final IModuleContainer container = access.getContainer();
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {

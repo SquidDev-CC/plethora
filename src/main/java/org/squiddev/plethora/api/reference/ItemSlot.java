@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * A slot in an inventory
  */
-public class ItemSlot implements IReference<ItemSlot> {
+public class ItemSlot extends ConstantReference<ItemSlot> {
 	private final ItemStack stack;
 	private final int slot;
 	private final int meta;
