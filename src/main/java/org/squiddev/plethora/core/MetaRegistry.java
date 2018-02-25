@@ -56,10 +56,11 @@ public final class MetaRegistry implements IMetaRegistry {
 
 		HashMap<Object, Object> out = Maps.newHashMap();
 
+		Object target = context.getTarget();
 		List<?> objects = PlethoraAPI.instance().converterRegistry().convertAll(context.getTarget());
 		Collections.reverse(objects);
 		for (Object child : objects) {
-			IPartialContext<?> childContext = context.makePartialChild(child);
+			IPartialContext<?> childContext = child == target ? context : context.makePartialChild(child);
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
 				out.putAll(provider.getMeta(childContext));
 			}

@@ -86,7 +86,7 @@ public final class MethodsScanner {
 				BlockPos pos = location.getPos().add(x, y, z);
 
 				Map<Object, Object> meta = baked
-					.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
+					.makeChild(new BlockReference(new WorldLocation(world, pos)))
 					.getMeta();
 
 				return MethodResult.result(meta);

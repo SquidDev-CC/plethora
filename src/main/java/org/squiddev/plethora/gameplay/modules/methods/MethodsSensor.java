@@ -13,6 +13,7 @@ import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
+import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
@@ -34,7 +35,6 @@ public final class MethodsSensor {
 		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class, worldThread = true,
 		doc = "function():table -- Scan for entities in the vicinity"
 	)
-	@Nullable
 	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
@@ -63,11 +63,13 @@ public final class MethodsSensor {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
-				Entity entity = findEntityByUUID(baked.getContext(IWorldLocation.class), uuid);
+				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				Entity entity = findEntityByUUID(location, uuid);
 				if (entity == null) {
 					return MethodResult.empty();
 				} else {
-					return MethodResult.result(baked.makePartialChild(entity).getMeta());
+					return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius))
+						.getMeta());
 				}
 			}
 		});
@@ -86,11 +88,13 @@ public final class MethodsSensor {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
-				Entity entity = findEntityByName(baked.getContext(IWorldLocation.class), name);
+				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				Entity entity = findEntityByName(location, name);
 				if (entity == null) {
 					return MethodResult.empty();
 				} else {
-					return MethodResult.result(baked.makePartialChild(entity).getMeta());
+					return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius))
+						.getMeta());
 				}
 			}
 		});
