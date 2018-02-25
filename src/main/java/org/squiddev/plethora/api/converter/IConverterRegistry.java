@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.converter;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * A registry for implicitly converting objects
@@ -22,5 +21,5 @@ public interface IConverterRegistry {
 	 * @return All converted values
 	 */
 	@Nonnull
-	List<?> convertAll(@Nonnull Object in);
+	Iterable<?> convertAll(@Nonnull Object in);
 }

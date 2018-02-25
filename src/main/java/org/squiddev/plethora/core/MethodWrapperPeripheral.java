@@ -12,18 +12,15 @@ import org.squiddev.cctweaks.api.network.INetworkAccess;
 import org.squiddev.cctweaks.api.network.INetworkedPeripheral;
 import org.squiddev.cctweaks.api.peripheral.IPeripheralTargeted;
 import org.squiddev.cctweaks.core.network.NetworkAccessDelegate;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IResultExecutor;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
-
-import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Handles integration with a {@link IPeripheral}
@@ -39,14 +36,14 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	private Object delegate;
 
-	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<IUnbakedContext<?>> contexts, IExecutorFactory factory) {
+	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<UnbakedContext<?>> contexts, IExecutorFactory factory) {
 		super(methods, contexts);
 		this.owner = owner;
 		this.type = name;
 		this.factory = factory;
 	}
 
-	public MethodWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory) {
+	public MethodWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory) {
 		this(name, owner, methods.getLeft(), methods.getRight(), factory);
 	}
 
@@ -60,10 +57,26 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
 		IResultExecutor executor = factory.createExecutor(access);
 
-		IUnbakedContext context = getContext(method).withContext(getReferences(access, luaContext));
-		context = context.withExecutor(executor);
+		UnbakedContext context = getContext(method);
+		Object[] extraRef = getReferences(access, luaContext);
 
-		MethodResult result = doCallMethod(getMethod(method), context, args);
+		int totalSize = context.keys.length + extraRef.length;
+		String[] keys = new String[totalSize];
+		Object[] references = new Object[totalSize];
+
+		for (int i = 0; i < extraRef.length; i++) {
+			keys[i] = ContextKeys.COMPUTER;
+			references[i] = extraRef[i];
+		}
+
+		System.arraycopy(context.keys, 0, keys, extraRef.length, context.keys.length);
+		System.arraycopy(context.references, 0, references, extraRef.length, context.references.length);
+
+		UnbakedContext<?> full = new UnbakedContext(
+			context.target, keys, references, context.handler, context.modules, context.executor
+		);
+
+		MethodResult result = doCallMethod(getMethod(method), full, args);
 		return executor.execute(result, luaContext);
 	}
 
@@ -92,8 +105,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	//region CCTweaks
 	@Override
 	@Optional.Method(modid = CCTweaks.ID)
-	protected IReference<?>[] getReferences(IComputerAccess access, ILuaContext context) {
-		return new IReference[]{id(access), id(context), id(getDelegate())};
+	protected Object[] getReferences(IComputerAccess access, ILuaContext context) {
+		return new Object[]{access, context, getDelegate()};
 	}
 
 	@Optional.Method(modid = CCTweaks.ID)

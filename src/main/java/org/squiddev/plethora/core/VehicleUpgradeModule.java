@@ -10,7 +10,10 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.ICostHandler;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -72,15 +75,9 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		MethodRegistry registry = MethodRegistry.instance;
 		Entity entity = vehicle.getVehicle();
 
-		ICostHandler cost = registry.getCostHandler(entity, null);
+		ICostHandler cost = CostHelpers.getCostHandler(entity, null);
 
 		final VehicleModuleAccess access = new VehicleModuleAccess(vehicle, handler);
-		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(access, builder);
-
-		builder.<IWorldLocation>addContext(new EntityWorldLocation(entity));
-		builder.addContext(vehicle, Reference.id(vehicle));
-		builder.addContext(vehicle.getVehicle(), Reference.entity(vehicle.getVehicle()));
 
 		final IModuleContainer container = access.getContainer();
 		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
@@ -99,17 +96,18 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 			}
 		};
 
-		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray()
-		);
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(cost)
+			.withModules(container, containerRef)
+			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new EntityWorldLocation(entity))
+			.addContext(ContextKeys.ORIGIN, vehicle, Reference.id(vehicle))
+			.addContext(ContextKeys.ORIGIN, vehicle.getVehicle(), Reference.entity(vehicle.getVehicle()));
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, builder.getObjectsArray(), cost, container
-		);
+		handler.getAdditionalContext(access, factory);
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), builder.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {

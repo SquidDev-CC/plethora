@@ -5,7 +5,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.cctweaks.core.utils.DebugLogger;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.core.executor.TrackingExecutor;
 
@@ -25,7 +24,7 @@ public class TrackingWrapperPeripheral extends MethodWrapperPeripheral {
 	private final Collection<IAttachable> attachments;
 	private final Set<IComputerAccess> accesses = Collections.newSetFromMap(new ConcurrentHashMap<IComputerAccess, Boolean>());
 
-	public TrackingWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, Collection<IAttachable> attachments) {
+	public TrackingWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory, Collection<IAttachable> attachments) {
 		super(name, owner, methods, new TrackingExecutor(factory));
 		this.attachments = attachments;
 		this.trackingFactory = (TrackingExecutor) getExecutorFactory();

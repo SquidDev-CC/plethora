@@ -1,8 +1,6 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -15,88 +13,61 @@ import javax.annotation.Nonnull;
  * A context which doesn't have solidified references.
  */
 public final class UnbakedContext<T> implements IUnbakedContext<T> {
-	private final IReference<T> target;
-	private final IReference<?>[] context;
-	private final ICostHandler handler;
-	private final IReference<IModuleContainer> modules;
-	private final IResultExecutor executor;
+	protected final int target;
+	protected final String[] keys;
+	protected final Object[] references;
 
-	public UnbakedContext(IReference<T> target, IReference<?>[] context, ICostHandler handler, IReference<IModuleContainer> modules, IResultExecutor executor) {
+	protected final ICostHandler handler;
+	protected final IReference<IModuleContainer> modules;
+	protected final IResultExecutor executor;
+
+	UnbakedContext(int target, String[] keys, Object[] references, ICostHandler handler, IReference<IModuleContainer> modules, IResultExecutor executor) {
 		this.target = target;
 		this.handler = handler;
-		this.context = context;
+		this.keys = keys;
+		this.references = references;
 		this.modules = modules;
 		this.executor = executor;
 	}
 
+	UnbakedContext<?> withIndex(int index) {
+		return index == target ? this : new UnbakedContext(index, keys, references, handler, modules, executor);
+	}
+
 	@Nonnull
 	@Override
-	public IContext<T> bake() throws LuaException {
-		T value = target.get();
-
-		Object[] baked = new Object[context.length];
-		for (int i = baked.length - 1; i >= 0; i--) {
-			baked[i] = context[i].get();
+	public Context<T> bake() throws LuaException {
+		Object[] values = new Object[references.length];
+		for (int i = 0; i < references.length; i++) {
+			Object reference = references[i];
+			if (reference instanceof IReference) {
+				values[i] = ((IReference) reference).get();
+			} else if (reference instanceof ConverterReference) {
+				values[i] = null;
+			} else {
+				values[i] = reference;
+			}
 		}
 
-		return new Context<T>(this, value, baked, handler, modules.get());
+		return new Context<T>(this, values, modules.get());
 	}
 
 	@Nonnull
 	@Override
-	public IContext<T> safeBake() throws LuaException {
-		T value = target.safeGet();
-
-		Object[] baked = new Object[context.length];
-		for (int i = baked.length - 1; i >= 0; i--) {
-			baked[i] = context[i].safeGet();
+	public Context<T> safeBake() throws LuaException {
+		Object[] values = new Object[references.length];
+		for (int i = 0; i < references.length; i++) {
+			Object reference = references[i];
+			if (reference instanceof IReference) {
+				values[i] = ((IReference) reference).safeGet();
+			} else if (reference instanceof ConverterReference) {
+				values[i] = ((ConverterReference) reference).tryConvert(values);
+			} else {
+				values[i] = reference;
+			}
 		}
 
-		return new Context<T>(this, value, baked, handler, modules.safeGet());
-	}
-
-	@Nonnull
-	@Override
-	public <U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> newTarget, @Nonnull IReference<?>... newContext) {
-		Preconditions.checkNotNull(newTarget, "target cannot be null");
-		Preconditions.checkNotNull(newContext, "context cannot be null");
-
-		IReference<?>[] wholeContext = new IReference<?>[newContext.length + context.length + 1];
-		arrayCopy(newContext, wholeContext, 0);
-		arrayCopy(context, wholeContext, newContext.length);
-		wholeContext[wholeContext.length - 1] = target;
-
-		return new UnbakedContext<U>(newTarget, wholeContext, handler, modules, executor);
-	}
-
-	@Nonnull
-	@Override
-	public IUnbakedContext<T> withContext(@Nonnull IReference<?>... newContext) {
-		Preconditions.checkNotNull(newContext, "context cannot be null");
-
-		IReference<?>[] wholeContext = new IReference<?>[newContext.length + context.length];
-		arrayCopy(newContext, wholeContext, 0);
-		arrayCopy(context, wholeContext, newContext.length);
-
-		return new UnbakedContext<T>(target, wholeContext, handler, modules, executor);
-	}
-
-	@Override
-	public IUnbakedContext<T> withCostHandler(@Nonnull ICostHandler handler) {
-		Preconditions.checkNotNull(handler, "handler cannot be null");
-		return new UnbakedContext<T>(target, context, handler, modules, executor);
-	}
-
-	@Override
-	public IUnbakedContext<T> withModules(@Nonnull IReference<IModuleContainer> modules) {
-		Preconditions.checkNotNull(modules, "modules cannot be null");
-		return new UnbakedContext<T>(target, context, handler, modules, executor);
-	}
-
-	@Override
-	public IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor) {
-		Preconditions.checkNotNull(executor, "executor cannot be null");
-		return new UnbakedContext<T>(target, context, handler, modules, executor);
+		return new Context<T>(this, values, modules.safeGet());
 	}
 
 	@Nonnull
@@ -109,9 +80,5 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	@Override
 	public IResultExecutor getExecutor() {
 		return executor;
-	}
-
-	public static <T> void arrayCopy(T[] src, T[] to, int start) {
-		System.arraycopy(src, 0, to, start, src.length);
 	}
 }

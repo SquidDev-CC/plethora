@@ -15,7 +15,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.*;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -74,7 +75,6 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		MethodRegistry registry = MethodRegistry.instance;
 
 		final Entity entity = pocket.getEntity();
-		ICostHandler cost = DefaultCostHandler.get(pocket);
 
 		final PocketModuleAccess access = new PocketModuleAccess(pocket, handler);
 		final IModuleContainer container = access.getContainer();
@@ -141,43 +141,34 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			}
 		};
 
-		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(access, builder);
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(DefaultCostHandler.get(pocket))
+			.withModules(container, containerRef)
+			.addContext(ContextKeys.ORIGIN, new PocketPlayerOwnable(access))
+			.addContext(ContextKeys.ORIGIN, location)
+			.addContext(ContextKeys.ORIGIN, entity, new ConstantReference<Entity>() {
+				@Nonnull
+				@Override
+				public Entity get() throws LuaException {
+					Entity accessEntity = pocket.getEntity();
 
-		builder.addContext(new PocketPlayerOwnable(access));
-		builder.addContext(location);
-		builder.addContext(entity, new IReference<Entity>() {
-			@Nonnull
-			@Override
-			public Entity get() throws LuaException {
-				Entity accessEntity = pocket.getEntity();
-				if (accessEntity != entity) throw new LuaException("Entity has changed");
-				return accessEntity;
-			}
+					// TODO: Just do a null check?
+					if (accessEntity != entity || accessEntity == null) throw new LuaException("Entity has changed");
+					return accessEntity;
+				}
 
-			@Nonnull
-			@Override
-			public Entity safeGet() throws LuaException {
-				return get();
-			}
+				@Nonnull
+				@Override
+				public Entity safeGet() throws LuaException {
+					return get();
+				}
+			});
 
-			@Override
-			public boolean isConstant() {
-				return true;
-			}
-		});
+		handler.getAdditionalContext(access, factory);
 
-		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray()
-		);
-
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, builder.getObjectsArray(), cost, container
-		);
-
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), builder.getAttachments());
+			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), factory.getAttachments());
 		} else {
 			return null;
 		}
@@ -207,7 +198,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	private static final class PocketPeripheral extends TrackingWrapperPeripheral {
 		private final Entity entity;
 
-		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
+		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
 			super(owner.getUpgradeID().toString(), owner, methods, factory, attachments);
 			this.entity = access.entity;
 			access.wrapper = this;

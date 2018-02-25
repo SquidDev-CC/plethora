@@ -14,7 +14,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.TurtleWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -86,15 +87,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		MethodRegistry registry = MethodRegistry.instance;
 
-		ICostHandler cost = DefaultCostHandler.get(turtle);
-
 		final TurtleModuleAccess access = new TurtleModuleAccess(turtle, side, handler);
-		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(access, builder);
-
-		builder.addContext(new TurtlePlayerOwnable(turtle));
-		builder.<IWorldLocation>addContext(new TurtleWorldLocation(turtle));
-		builder.addContext(turtle, Reference.id(turtle));
 
 		final IModuleContainer container = access.getContainer();
 		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
@@ -112,16 +105,18 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			}
 		};
 
-		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray());
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(DefaultCostHandler.get(turtle))
+			.withModules(container, containerRef)
+			.addContext(ContextKeys.ORIGIN, new TurtlePlayerOwnable(turtle))
+			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new TurtleWorldLocation(turtle))
+			.addContext(ContextKeys.ORIGIN, turtle, Reference.id(turtle));
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, builder.getObjectsArray(), cost, container
-		);
+		handler.getAdditionalContext(access, factory);
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), builder.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
@@ -132,7 +127,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	@Nonnull
 	@Override
 	public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
-		return null;
+		return TurtleCommandResult.failure("Cannot use tool");
 	}
 
 	@Nonnull

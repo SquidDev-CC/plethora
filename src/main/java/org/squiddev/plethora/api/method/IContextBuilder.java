@@ -12,22 +12,30 @@ public interface IContextBuilder {
 	/**
 	 * Add an additional object to the current context.
 	 *
+	 * @param key       The context key to insert under.
 	 * @param baked     The object that this reference will return
 	 * @param reference A reference to this object
+	 * @return The current {@link IContextBuilder}.
 	 */
-	<T> void addContext(@Nonnull T baked, @Nonnull IReference<T> reference);
+	@Nonnull
+	<T> IContextBuilder addContext(@Nonnull String key, @Nonnull T baked, @Nonnull IReference<T> reference);
 
 	/**
 	 * Add an additional object to the current context.
 	 *
+	 * @param key    The context key to insert under.
 	 * @param object The object
+	 * @return The current {@link IContextFactory}.
 	 */
-	<T extends IReference<T>> void addContext(@Nonnull T object);
+	@Nonnull
+	<T extends IReference<T>> IContextBuilder addContext(@Nonnull String key, @Nonnull T object);
 
 	/**
 	 * Add an an attachment listener
 	 *
 	 * @param attachable An attachable object which listens to when the resulting object is attached.
+	 * @return The current {@link IContextBuilder}.
 	 */
-	void addAttachable(@Nonnull IAttachable attachable);
+	@Nonnull
+	IContextBuilder addAttachable(@Nonnull IAttachable attachable);
 }

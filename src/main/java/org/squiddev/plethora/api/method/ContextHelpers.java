@@ -80,6 +80,7 @@ public final class ContextHelpers {
 				++i;
 			} else {
 				map.put(++i, context.makeChildId(element).getObject());
+				map.put(++i, context.makeChild(element, Reference.id(element)).getObject());
 			}
 		}
 
