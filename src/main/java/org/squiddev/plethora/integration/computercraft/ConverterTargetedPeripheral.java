@@ -80,6 +80,18 @@ public class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, 
 			}
 		}
 
+		// Handle the case where the multiperipheral is wrapped
+		if (wrappedMultiPeripheral != null && wrappedMultiPeripheralPeripheral != null && wrappedMultiPeripheral.isInstance(from)) {
+			try {
+				IPeripheral wrapped = (IPeripheral) wrappedMultiPeripheralPeripheral.get(from);
+
+				to = getTarget(wrapped);
+				if (wrapped != to) return to;
+			} catch (ReflectiveOperationException e) {
+				DebugLogger.error("Cannot extract peripherals from multi-peripheral", e);
+			}
+		}
+
 		return null;
 	}
 

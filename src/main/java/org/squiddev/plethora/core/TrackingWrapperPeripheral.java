@@ -2,11 +2,11 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.cctweaks.core.utils.DebugLogger;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
 import org.squiddev.plethora.core.executor.TrackingExecutor;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
