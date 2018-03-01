@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -34,50 +33,6 @@ public interface IUnbakedContext<T> {
 	 */
 	@Nonnull
 	IContext<T> safeBake() throws LuaException;
-
-	/**
-	 * Make a child context
-	 *
-	 * @param target  The child's target
-	 * @param context Additional context items
-	 * @return The child context
-	 */
-	@Nonnull
-	<U> IUnbakedContext<U> makeChild(@Nonnull IReference<U> target, @Nonnull IReference<?>... context);
-
-	/**
-	 * Include additional properties in this context
-	 *
-	 * @param context The additional context items
-	 * @return The new context
-	 */
-	@Nonnull
-	IUnbakedContext<T> withContext(@Nonnull IReference<?>... context);
-
-	/**
-	 * Create a new context with a different cost handler but the same context
-	 *
-	 * @param handler The cost handler for this object
-	 * @return The new context using the specified handlers
-	 */
-	IUnbakedContext<T> withCostHandler(@Nonnull ICostHandler handler);
-
-	/**
-	 * Create a new context with different modules but the same context
-	 *
-	 * @param modules A reference which will all modules for this context. This must return a constant value.
-	 * @return The new context using the specified handlers
-	 */
-	IUnbakedContext<T> withModules(@Nonnull IReference<IModuleContainer> modules);
-
-
-	/**
-	 * Create a new context with a different executor the same context
-	 *
-	 * @param executor The result executor for this object
-	 * @return The new context using the specified executor
-	 */
-	IUnbakedContext<T> withExecutor(@Nonnull IResultExecutor executor);
 
 	/**
 	 * Get the cost handler associated with this object

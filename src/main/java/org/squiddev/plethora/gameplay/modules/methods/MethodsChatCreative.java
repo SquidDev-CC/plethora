@@ -6,6 +6,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -42,8 +43,8 @@ public final class MethodsChatCreative {
 
 				// Attempt to extract the server from the current world.
 				MinecraftServer server = null;
-				if (context.hasContext(IWorldLocation.class)) {
-					server = context.getContext(IWorldLocation.class).getWorld().getMinecraftServer();
+				if (context.hasContext(ContextKeys.ORIGIN, IWorldLocation.class)) {
+					server = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class).getWorld().getMinecraftServer();
 				}
 
 				// If that failed then just get the global server.

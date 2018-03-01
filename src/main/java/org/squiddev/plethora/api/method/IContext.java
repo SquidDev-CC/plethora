@@ -47,11 +47,6 @@ public interface IContext<T> extends IPartialContext<T> {
 	@Nonnull
 	IUnbakedContext<T> unbake();
 
-	/**
-	 * Get a lua object from this context
-	 *
-	 * @return The built Lua object
-	 */
 	@Nonnull
 	ILuaObject getObject();
 }

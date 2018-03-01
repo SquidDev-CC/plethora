@@ -92,7 +92,7 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 					IToolPart part = partIter.next();
 					ItemStack partStack = part.getItemstackWithMaterial(material);
 					if (partStack != null) {
-						parts.put(++partIdx, context.makePartialChild(partStack, pmt).getMeta());
+						parts.put(++partIdx, context.makePartialChild(pmt).makePartialChild(partStack).getMeta());
 					}
 				}
 			}

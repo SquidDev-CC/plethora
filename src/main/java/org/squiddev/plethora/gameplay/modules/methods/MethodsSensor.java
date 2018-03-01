@@ -7,6 +7,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -63,7 +64,7 @@ public final class MethodsSensor {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				Entity entity = findEntityByUUID(location, uuid);
 				if (entity == null) {
 					return MethodResult.empty();
@@ -88,7 +89,7 @@ public final class MethodsSensor {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				Entity entity = findEntityByName(location, name);
 				if (entity == null) {
 					return MethodResult.empty();

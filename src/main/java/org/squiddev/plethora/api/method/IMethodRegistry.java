@@ -3,8 +3,6 @@ package org.squiddev.plethora.api.method;
 import com.google.common.collect.Multimap;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,18 +48,6 @@ public interface IMethodRegistry {
 	 */
 	@Nonnull
 	Multimap<Class<?>, IMethod<?>> getMethods();
-
-	/**
-	 * Build a context
-	 *
-	 * @param target  The object to target
-	 * @param handler The cost handler for this object
-	 * @param modules A reference which will all modules for this context. This must return a constant value.
-	 * @param context Additional context items
-	 * @return The built context
-	 */
-	@Nonnull
-	<T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<IModuleContainer> modules, @Nonnull IReference<?>... context);
 
 	/**
 	 * Get the cost handler for this object

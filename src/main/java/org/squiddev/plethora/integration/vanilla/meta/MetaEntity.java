@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -19,7 +20,7 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<Entity> context) {
-		return getBasicProperties(context.getTarget(), context.getContext(IWorldLocation.class));
+		return getBasicProperties(context.getTarget(), context.getContext(ContextKeys.ORIGIN, IWorldLocation.class));
 	}
 
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull Entity entity, @Nullable IWorldLocation location) {

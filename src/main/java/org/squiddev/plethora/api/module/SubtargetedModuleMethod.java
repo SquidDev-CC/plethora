@@ -1,10 +1,7 @@
 package org.squiddev.plethora.api.module;
 
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
@@ -38,7 +35,13 @@ public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod i
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
-		return super.canApply(context) && context.hasContext(klass);
+		if (!super.canApply(context)) return false;
+		if (context.hasContext(ContextKeys.ORIGIN, klass)) return true;
+
+		for (ResourceLocation module : getModules()) {
+			if (context.hasContext(module.toString(), klass)) return true;
+		}
+		return false;
 	}
 
 	@Nonnull

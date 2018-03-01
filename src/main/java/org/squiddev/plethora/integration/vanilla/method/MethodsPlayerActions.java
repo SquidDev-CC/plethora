@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -66,7 +67,7 @@ public final class MethodsPlayerActions {
 			@Nonnull
 			public MethodResult call() throws Exception {
 				IContext<?> baked = context.bake();
-				EntityLivingBase entity = baked.getContext(EntityLivingBase.class);
+				EntityLivingBase entity = baked.getContext(ContextKeys.ORIGIN, EntityLivingBase.class);
 
 				EntityPlayerMP player;
 				PlethoraFakePlayer fakePlayer;
@@ -76,7 +77,8 @@ public final class MethodsPlayerActions {
 				} else if (entity instanceof EntityPlayer) {
 					throw new LuaException("An unexpected player was used");
 				} else {
-					player = fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity, baked.getContext(IPlayerOwnable.class));
+					IPlayerOwnable ownable = baked.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+					player = fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity, ownable);
 				}
 
 				if (fakePlayer != null) fakePlayer.load(entity);
@@ -95,7 +97,8 @@ public final class MethodsPlayerActions {
 		doc = "function():boolean, string|nil -- Left click with this item. Returns the action taken."
 	)
 	public static Object[] swing(EntityLiving entity, IContext<IModuleContainer> context, Object[] args) {
-		PlethoraFakePlayer fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity, context.getContext(IPlayerOwnable.class));
+		IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+		PlethoraFakePlayer fakePlayer = PlethoraFakePlayer.getPlayer((WorldServer) entity.worldObj, entity, ownable);
 
 		fakePlayer.load(entity);
 		try {

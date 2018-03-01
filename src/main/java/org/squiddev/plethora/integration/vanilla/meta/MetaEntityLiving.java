@@ -9,13 +9,8 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.module.BasicModuleContainer;
-import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
-import org.squiddev.plethora.core.Context;
-import org.squiddev.plethora.core.UnbakedContext;
-import org.squiddev.plethora.core.executor.DefaultExecutor;
+import org.squiddev.plethora.core.ContextFactory;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -81,10 +76,7 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		if (context instanceof IContext) {
 			return ((IContext) context).makeChildId(object).getObject();
 		} else {
-			IUnbakedContext<T> unbaked = new UnbakedContext<T>(Reference.id(object), new IReference<?>[0], context.getCostHandler(), BasicModuleContainer.EMPTY_REF, DefaultExecutor.INSTANCE);
-			IContext<T> baked = new Context<T>(unbaked, object, new Object[0], context.getCostHandler(), BasicModuleContainer.EMPTY);
-
-			return baked.getObject();
+			return ContextFactory.of(object, Reference.id(object)).getObject();
 		}
 	}
 }
