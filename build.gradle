@@ -102,7 +102,7 @@ def curseMod(String mod, int id, String version) {
 
 dependencies {
 	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
-	deobfCompile "mezz.jei:jei_1.12:4.7.0.68"
+	compile "mezz.jei:jei_1.12:4.7.0.68"
 
 	compileOnly "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
 	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
@@ -121,11 +121,12 @@ dependencies {
 	compileOnly "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 
 	// All the Curse mods
-	compileOnly curseMod("botania", 2451047, "r1.9-345")
-	compileOnly curseMod("forestry", 2517403, "1.11.2-5.3.4.225")
-	compileOnly curseMod("baubles", 2458753, "1.11-1.4.6")
-	compileOnly curseMod("storage-drawers", 2446107, "1.11.2-4.2.10")
-	compileOnly curseMod("chameleon", 2419176, "1.11.2-3.1.0")
+	compileOnly curseMod("botania", 2524591, "r1.10-353")
+	compileOnly curseMod("forestry", 2532388, "1.12.2-5.8.0.250")
+	compileOnly curseMod("baubles", 2518667, "1.12-1.5.2")
+	compileOnly curseMod("storage-drawers", 2536306, "1.12.2-5.3.5")
+	compileOnly curseMod("chameleon", 2450900, "1.12-4.1.3")
+	compileOnly curseMod("blockcraftery", 2485336, "0.1.3")
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 

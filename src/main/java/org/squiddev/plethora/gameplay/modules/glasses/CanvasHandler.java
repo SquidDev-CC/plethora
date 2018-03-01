@@ -123,7 +123,7 @@ public class CanvasHandler {
 
 		// If we've no font renderer then we're probably not quite ready yet
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.fontRendererObj == null) return;
+		if (mc.fontRenderer == null) return;
 
 		GlStateManager.pushMatrix();
 
