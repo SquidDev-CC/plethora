@@ -31,4 +31,13 @@ public interface IReference<T> {
 	 */
 	@Nonnull
 	T safeGet() throws LuaException;
+
+	/**
+	 * Whether this reference will always return the same object (or an equivalent one).
+	 *
+	 * @return If this reference is constant.
+	 * @see ConstantReference
+	 * @see DynamicReference
+	 */
+	boolean isConstant();
 }

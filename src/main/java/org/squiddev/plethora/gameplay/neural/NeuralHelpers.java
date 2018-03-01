@@ -22,16 +22,17 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.ICostHandler;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.core.ConfigCore;
-import org.squiddev.plethora.core.MethodRegistry;
-import org.squiddev.plethora.core.PartialContext;
-import org.squiddev.plethora.core.TrackingWrapperPeripheral;
+import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.TinySlot;
@@ -143,22 +144,8 @@ public final class NeuralHelpers {
 		final IModuleContainer container = new BasicModuleContainer(modules);
 		Map<ResourceLocation, NeuralAccess> accessMap = Maps.newHashMap();
 
-		BasicContextBuilder builder = new BasicContextBuilder();
-		for (IModuleHandler handler : moduleHandlers) {
-			ResourceLocation module = handler.getModule();
-			NeuralAccess access = accessMap.get(module);
-			if (access == null) {
-				accessMap.put(module, access = new NeuralAccess(owner, computer, handler, container));
-			}
-
-			handler.getAdditionalContext(access, builder);
-		}
-
-		builder.<IWorldLocation>addContext(new EntityWorldLocation(owner));
-		builder.addContext(owner, entity(owner));
-
 		ICostHandler cost = CostHelpers.getCostHandler(owner);
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -184,15 +171,23 @@ public final class NeuralHelpers {
 			}
 		};
 
-		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray()
-		);
+		ContextFactory<IModuleContainer> builder = ContextFactory.of(container, containerRef)
+			.withCostHandler(cost)
+			.withModules(container, containerRef)
+			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new EntityWorldLocation(owner))
+			.addContext(ContextKeys.ORIGIN, owner, entity(owner));
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, cost, builder.getObjectsArray(), container
-		);
+		for (IModuleHandler handler : moduleHandlers) {
+			ResourceLocation module = handler.getModule();
+			NeuralAccess access = accessMap.get(module);
+			if (access == null) {
+				accessMap.put(module, access = new NeuralAccess(owner, computer, handler, container));
+			}
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
+			handler.getAdditionalContext(access, builder);
+		}
+
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(builder.getBaked());
 		if (paired.getLeft().size() > 0) {
 			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), stackHash);
 			for (NeuralAccess access : accessMap.values()) {

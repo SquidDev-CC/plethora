@@ -60,6 +60,7 @@ $RECYCLE.BIN/
 /build-*/
 /bin/
 /lib/ # Include libs manually
+/lib-*/
 
 # Gradle
 # =========================

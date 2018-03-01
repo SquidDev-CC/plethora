@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,6 +11,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -26,6 +29,7 @@ import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
+import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
 
 public final class MethodsChat {
 	@SubtargetedModuleMethod.Inject(
@@ -41,7 +45,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
+				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
 
 				EntityPlayerMP player;
 				ITextComponent name;
@@ -56,10 +60,16 @@ public final class MethodsChat {
 
 					BlockPos pos = entity.getPosition();
 
+					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+					GameProfile owner = null;
+					if (ownable != null) owner = ownable.getOwningProfile();
+					if (owner == null) owner = PlethoraFakePlayer.PROFILE;
+
 					// We include the position of the entity
 					name = entity.getDisplayName().createCopy();
-					name.appendText(String.format("[%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ()));
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, name.getUnformattedText());
+
+					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
+					fakePlayer.setDisplayName(String.format("[%d, %d, %d] %s", pos.getX(), pos.getY(), pos.getZ(), name.getUnformattedText()));
 					fakePlayer.load(entity);
 					player = fakePlayer;
 				} else {
@@ -90,8 +100,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
-
+				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
 				entity.sendMessage(ForgeHooks.newChatWithLinks(message));
 				return MethodResult.empty();
 			}

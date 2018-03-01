@@ -22,6 +22,19 @@ public interface IConverter<TIn, TOut> {
 	TOut convert(@Nonnull TIn from);
 
 	/**
+	 * Whether this converter will always return the same object for a given
+	 * input.
+	 *
+	 * Note, you may make some assumptions about the conversion,
+	 * such that the block and tile will not change.
+	 *
+	 * @return If this converter is constant.
+	 * @see ConstantConverter
+	 * @see DynamicConverter
+	 */
+	boolean isConstant();
+
+	/**
 	 * Automatically register a converter.
 	 *
 	 * The class must have a public constructor and implement {@link IConverter}.

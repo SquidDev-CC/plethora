@@ -12,14 +12,9 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.reference.IReference;
-import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
-import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -100,15 +95,6 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Nonnull
 	@Override
-	public <T> IUnbakedContext<T> makeContext(@Nonnull IReference<T> target, @Nonnull ICostHandler handler, @Nonnull IReference<IModuleContainer> modules, @Nonnull IReference<?>... context) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(handler, "handler cannot be null");
-		Preconditions.checkNotNull(context, "context cannot be null");
-		return new UnbakedContext<T>(target, handler, context, modules, DefaultExecutor.INSTANCE);
-	}
-
-	@Nonnull
-	@Override
 	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side) {
 		Preconditions.checkNotNull(object, "object cannot be null");
 		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, side);
@@ -134,44 +120,36 @@ public final class MethodRegistry implements IMethodRegistry {
 		return property.getInt();
 	}
 
-	public Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> getMethodsPaired(IUnbakedContext<?> initialContext, IPartialContext<?> initialBaked) {
+	public Pair<List<IMethod<?>>, List<UnbakedContext<?>>> getMethodsPaired(Context<?> builder) {
 		ArrayList<IMethod<?>> methods = Lists.newArrayList();
-		ArrayList<IUnbakedContext<?>> contexts = Lists.newArrayList();
+		ArrayList<UnbakedContext<?>> contexts = Lists.newArrayList();
 		HashMap<String, Integer> methodLookup = new HashMap<String, Integer>();
 
-		Object initialTarget = initialBaked.getTarget();
-		for (Object obj : PlethoraAPI.instance().converterRegistry().convertAll(initialTarget)) {
-			IUnbakedContext<?> ctx = null;
-			IPartialContext<?> ctxBaked;
+		String[] keys = builder.keys;
+		Object[] values = builder.values;
 
-			boolean isInitial = obj == initialTarget;
-			if (isInitial) {
-				ctxBaked = initialBaked;
-			} else {
-				ctxBaked = initialBaked.makePartialChild(obj);
-			}
+		for (int i = values.length - 1; i >= 0; i--) {
+			if (!ContextKeys.TARGET.equals(keys[i])) continue;
 
-			for (IMethod method : getMethods(ctxBaked)) {
+			UnbakedContext<?> unbaked = null;
+			for (IMethod method : getMethods(builder.withIndex(i))) {
 				// Skip IConverterExclude methods
-				if (!isInitial && method instanceof IConverterExcludeMethod) {
+				if (i != builder.target && method instanceof IConverterExcludeMethod) {
 					continue;
 				}
 
-				// Lazy load context
-				if (ctx == null) {
-					ctx = isInitial ? initialContext : initialContext.makeChild(Reference.id(obj));
-				}
+				if (unbaked == null) unbaked = builder.unbake().withIndex(i);
 
 				Integer existing = methodLookup.get(method.getName());
 				if (existing != null) {
 					int index = existing;
 					if (method.getPriority() > methods.get(index).getPriority()) {
 						methods.set(index, method);
-						contexts.set(index, ctx);
+						contexts.set(index, unbaked);
 					}
 				} else {
 					methods.add(method);
-					contexts.add(ctx);
+					contexts.add(unbaked);
 					methodLookup.put(method.getName(), methods.size() - 1);
 				}
 			}
@@ -179,29 +157,25 @@ public final class MethodRegistry implements IMethodRegistry {
 
 		if (methods.size() > 0) {
 			IMethodCollection collection = new MethodCollection(methods);
-			IUnbakedContext<IMethodCollection> ctx = null;
-			IPartialContext<IMethodCollection> baked = initialBaked.makePartialChild(collection);
-			for (IMethod method : getMethods(baked)) {
-				if (ctx == null) {
-					ctx = initialContext.makeChild(Reference.id(collection));
-				}
 
+			Context<IMethodCollection> baked = builder.makeChildId(collection);
+			for (IMethod method : getMethods(baked)) {
 				Integer existing = methodLookup.get(method.getName());
 				if (existing != null) {
 					int index = existing;
 					if (method.getPriority() > methods.get(index).getPriority()) {
 						methods.set(index, method);
-						contexts.set(index, ctx);
+						contexts.set(index, baked.unbake());
 					}
 				} else {
 					methods.add(method);
-					contexts.add(ctx);
+					contexts.add(baked.unbake());
 					methodLookup.put(method.getName(), methods.size() - 1);
 				}
 			}
 		}
 
-		return Pair.<List<IMethod<?>>, List<IUnbakedContext<?>>>of(methods, contexts);
+		return Pair.<List<IMethod<?>>, List<UnbakedContext<?>>>of(methods, contexts);
 	}
 
 	@SuppressWarnings("unchecked")

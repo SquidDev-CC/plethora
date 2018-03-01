@@ -6,10 +6,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
@@ -51,15 +51,21 @@ public final class MetaRegistry implements IMetaRegistry {
 	@SuppressWarnings("unchecked")
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<?> context) {
 		Preconditions.checkNotNull(context, "context cannot be null");
+		if (!(context instanceof PartialContext)) throw new IllegalStateException("Unknown context class");
+
+		PartialContext partial = (PartialContext<?>) context;
+		String[] keys = partial.keys;
+		Object[] values = partial.values;
 
 		// TODO: Handle priority across each conversion correctly
 
 		HashMap<Object, Object> out = Maps.newHashMap();
+		for (int i = values.length - 1; i >= 0; i--) {
+			if (!ContextKeys.TARGET.equals(keys[i])) continue;
 
-		List<?> objects = PlethoraAPI.instance().converterRegistry().convertAll(context.getTarget());
-		Collections.reverse(objects);
-		for (Object child : objects) {
-			IPartialContext<?> childContext = context.makePartialChild(child);
+			Object child = values[i];
+			IPartialContext<?> childContext = partial.withIndex(i);
+
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
 				out.putAll(provider.getMeta(childContext));
 			}

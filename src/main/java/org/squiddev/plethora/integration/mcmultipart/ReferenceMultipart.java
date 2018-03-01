@@ -4,11 +4,11 @@ import dan200.computercraft.api.lua.LuaException;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 
-public class ReferenceMultipart implements IReference<IPartInfo> {
+public class ReferenceMultipart extends DynamicReference<IPartInfo> {
 	private final IPartSlot slot;
 	private final IMultipartContainer container;
 

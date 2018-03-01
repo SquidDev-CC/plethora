@@ -6,14 +6,14 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.module.IModuleAccess;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class CanvasServer implements IReference<CanvasServer> {
+public class CanvasServer extends ConstantReference<CanvasServer> {
 	private final int canvasId;
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;

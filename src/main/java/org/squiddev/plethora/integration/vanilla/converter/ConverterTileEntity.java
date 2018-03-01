@@ -4,6 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.reference.BlockReference;
 
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
  * Gets a block reference from a tile entity
  */
 @IConverter.Inject(TileEntity.class)
-public class ConverterTileEntity implements IConverter<TileEntity, BlockReference> {
+public class ConverterTileEntity extends ConstantConverter<TileEntity, BlockReference> {
 	@Nullable
 	@Override
 	public BlockReference convert(@Nonnull TileEntity from) {

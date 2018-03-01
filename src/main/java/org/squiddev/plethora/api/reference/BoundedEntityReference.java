@@ -28,7 +28,7 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 
 		if (entity.getEntityWorld() != location.getWorld()) throw new LuaException("The entity has gone");
 
-		Vec3d pos = entity.getLookVec().subtract(location.getLoc());
+		Vec3d pos = entity.getPositionVector().subtract(location.getLoc());
 		if (
 			pos.xCoord < -radius || pos.xCoord > radius ||
 				pos.yCoord < -radius || pos.yCoord > radius ||

@@ -9,7 +9,6 @@ import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -56,8 +55,7 @@ public class MethodsModules {
 		if (newModules.size() == 0) return null;
 
 		ILuaObject object = context
-			.unbake()
-			.makeChild(Reference.id(new BasicModuleContainer(newModules)))
+			.makeChildId(new BasicModuleContainer(newModules))
 			.getObject();
 
 		if (object.getMethodNames().length == 0) {

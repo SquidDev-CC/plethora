@@ -53,10 +53,6 @@ repositories {
 	// ComputerCraft
 	maven { url "https://cc.crzd.me/maven/" }
 
-	// Chameleon + Storage Drawers
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2358/893/[module]-[revision](.[ext])" }
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2367/598/[module]-[revision](.[ext])" }
-
 	// CCTweaks + ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
 
@@ -80,17 +76,28 @@ repositories {
 	// RF
 	maven { url = "http://maven.covers1624.net" }
 
-	// Forestry
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2379/506/[module]_[revision](.[ext])" }
-
-	// Applied Energistics 2
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2356/184/[module]-[revision](.[ext])" }
-
-	// Baubles
-	ivy { artifactPattern "https://addons-origin.cursecdn.com/files/2424/450/[module]-[revision](.[ext])"}
-
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
+}
+
+def curseMod(String mod, int id, String version) {
+	def f = file("lib-${project.mc_version}/${mod}-${version}.jar")
+	if (!f.exists()) {
+		f.parentFile.mkdirs();
+
+		def url = new URL("https://minecraft.curseforge.com/projects/${mod}/files/${id}/download");
+		logger.info("Fetching ${mod} (${version}) from ${url}")
+
+		def connection = url.openConnection();
+		connection.setRequestProperty("User-Agent", "Gradle file downloader");
+		connection.connect();
+
+		def i = connection.getInputStream();
+		f.withOutputStream { it << i }
+		i.close()
+	}
+
+	files(f)
 }
 
 dependencies {
@@ -107,19 +114,22 @@ dependencies {
 	compileOnly "slimeknights:TConstruct:${project.mc_version}-2.7.0.26"
 	compileOnly "slimeknights.mantle:Mantle:${project.mc_version}-1.2.0.26"
 
-	// Storage drawers + Dependencies
-	compileOnly "curseMods:Chameleon:1.11-3.0.2"
-	compileOnly "curseMods:StorageDrawers:${project.mc_version}-4.1.0"
-
 	compileOnly "MCMultiPart2:MCMultiPart:2.0.2:deobf"
 	compileOnly "refinedstorage:refinedstorage:1.4.21-1251"
-	compileOnly "curseMods:forestry:${project.mc_version}-5.3.1.34"
-	compileOnly "curseMods:appliedenergistics2:rv4-alpha-9"
-	compileOnly "curseMods:Baubles:1.11-1.4.5"
 	compileOnly("codechicken:ForgeMultipart:${project.mc_version}-2.1.0.34:deobf") { exclude group: "codechicken" }
 	compileOnly "codechicken:CodeChickenLib:${project.mc_version}-2.6.0.264:deobf"
 
+	// All the Curse mods
+	compileOnly curseMod("botania", 2391169, "r1.9-341")
+	compileOnly curseMod("forestry", 2517394, "1.10.2-5.2.17.388")
+	compileOnly curseMod("applied-energistics-2", 2454983, "rv4-stable-1")
+	compileOnly curseMod("baubles", 2518666, "1.10.2-1.3.13")
+	compileOnly curseMod("storage-drawers", 2446106, "1.10.2-3.7.10")
+	compileOnly curseMod("chameleon", 2419174, "1.10.2-2.3.0")
+
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
+
+	testCompile 'junit:junit:4.11'
 }
 
 processResources {

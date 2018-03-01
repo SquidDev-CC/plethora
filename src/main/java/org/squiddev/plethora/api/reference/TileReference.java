@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 /**
  * An reference to a tile. Ensures it is there.
  */
-public class TileReference<T extends TileEntity> implements IReference<T> {
+public class TileReference<T extends TileEntity> extends ConstantReference<T> {
 	private final WeakReference<T> tile;
 	private final BlockPos pos;
 	private final World world;

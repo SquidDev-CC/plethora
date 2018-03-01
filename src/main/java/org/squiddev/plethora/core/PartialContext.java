@@ -3,6 +3,7 @@ package org.squiddev.plethora.core;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -10,32 +11,35 @@ import org.squiddev.plethora.api.transfer.ITransferRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import static org.squiddev.plethora.core.UnbakedContext.arrayCopy;
-
 public class PartialContext<T> implements IPartialContext<T> {
-	private final T target;
-	private final Object[] context;
-	private final ICostHandler handler;
-	private final IModuleContainer modules;
+	protected final int target;
+	protected final String[] keys;
+	protected final Object[] values;
+	protected final ICostHandler handler;
+	protected final IModuleContainer modules;
 
-	public PartialContext(@Nonnull T target, @Nonnull ICostHandler handler, @Nonnull Object[] context, @Nonnull IModuleContainer modules) {
+	PartialContext(int target, String[] keys, @Nonnull Object[] values, @Nonnull ICostHandler handler, @Nonnull IModuleContainer modules) {
 		this.target = target;
+		this.keys = keys;
 		this.handler = handler;
-		this.context = context;
+		this.values = values;
 		this.modules = modules;
 	}
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("unchecked")
 	public T getTarget() {
-		return target;
+		return (T) values[target];
 	}
 
-	public Object[] getContext() {
-		return context;
+	PartialContext<?> withIndex(int index) {
+		return index == target ? this : new PartialContext(index, keys, values, handler, modules);
 	}
 
 	@Override
@@ -43,8 +47,8 @@ public class PartialContext<T> implements IPartialContext<T> {
 	public <V> V getContext(@Nonnull Class<V> klass) {
 		Preconditions.checkNotNull(klass, "klass cannot be null");
 
-		for (int i = context.length - 1; i >= 0; i--) {
-			Object obj = context[i];
+		for (int i = values.length - 1; i >= 0; i--) {
+			Object obj = values[i];
 			if (klass.isInstance(obj)) return (V) obj;
 		}
 
@@ -55,9 +59,35 @@ public class PartialContext<T> implements IPartialContext<T> {
 	public <V> boolean hasContext(@Nonnull Class<V> klass) {
 		Preconditions.checkNotNull(klass, "klass cannot be null");
 
-		for (int i = context.length - 1; i >= 0; i--) {
-			Object obj = context[i];
+		for (int i = values.length - 1; i >= 0; i--) {
+			Object obj = values[i];
 			if (klass.isInstance(obj)) return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <V> V getContext(@Nonnull String contextKey, @Nonnull Class<V> klass) {
+		Preconditions.checkNotNull(contextKey, "contextKey cannot be null");
+		Preconditions.checkNotNull(klass, "klass cannot be null");
+
+		for (int i = values.length - 1; i >= 0; i--) {
+			Object obj = values[i];
+			if (contextKey.equals(keys[i]) && klass.isInstance(obj)) return (V) obj;
+		}
+
+		return null;
+	}
+
+	@Override
+	public <V> boolean hasContext(@Nonnull String contextKey, @Nonnull Class<V> klass) {
+		Preconditions.checkNotNull(klass, "klass cannot be null");
+
+		for (int i = values.length - 1; i >= 0; i--) {
+			Object obj = values[i];
+			if (contextKey.equals(keys[i]) && klass.isInstance(obj)) return true;
 		}
 
 		return false;
@@ -65,16 +95,26 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Nonnull
 	@Override
-	public <U> IPartialContext<U> makePartialChild(@Nonnull U newTarget, @Nonnull Object... newContext) {
-		Preconditions.checkNotNull(newTarget, "target cannot be null");
-		Preconditions.checkNotNull(newContext, "context cannot be null");
+	public <U> PartialContext<U> makePartialChild(@Nonnull U target) {
+		Preconditions.checkNotNull(target, "target cannot be null");
 
-		Object[] wholeContext = new Object[newContext.length + context.length + 1];
-		arrayCopy(newContext, wholeContext, 0);
-		arrayCopy(context, wholeContext, newContext.length);
-		wholeContext[wholeContext.length - 1] = target;
+		ArrayList<String> keys = new ArrayList<String>(this.keys.length + 1);
+		ArrayList<Object> values = new ArrayList<Object>(this.values.length + 1);
 
-		return new PartialContext<U>(newTarget, handler, wholeContext, modules);
+		Collections.addAll(keys, this.keys);
+		Collections.addAll(values, this.values);
+
+		for (int i = keys.size() - 1; i >= 0; i--) {
+			if (!ContextKeys.TARGET.equals(keys.get(i))) continue;
+			keys.set(i, ContextKeys.GENERIC);
+		}
+
+		// Add the new target and convert it.
+		keys.add(ContextKeys.TARGET);
+		values.add(target);
+		ConverterRegistry.instance.extendConverted(keys, values, this.values.length);
+
+		return new PartialContext<U>(this.values.length, keys.toArray(new String[keys.size()]), values.toArray(), handler, modules);
 	}
 
 	@Nonnull
@@ -94,15 +134,13 @@ public class PartialContext<T> implements IPartialContext<T> {
 		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
 
 		// Lookup the primary
-		Object found = registry.getTransferPart(target, primary, false);
-		if (found == null) {
-			for (int i = context.length - 1; i >= 0; i--) {
-				found = registry.getTransferPart(context[i], primary, false);
-				if (found != null) break;
-			}
-
-			if (found == null) return null;
+		Object found = null;
+		for (int i = values.length - 1; i >= 0; i--) {
+			found = registry.getTransferPart(values[i], primary, false);
+			if (found != null) break;
 		}
+
+		if (found == null) return null;
 
 		// Lookup the secondary from the primary.
 		// This means that the root object is consistent: "<x>.<y>" will always target a sub-part of "<x>".
@@ -122,8 +160,8 @@ public class PartialContext<T> implements IPartialContext<T> {
 		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
 
 		out.addAll(registry.getTransferLocations(target, true));
-		for (int i = context.length - 1; i >= 0; i--) {
-			out.addAll(registry.getTransferLocations(context[i], true));
+		for (int i = values.length - 1; i >= 0; i--) {
+			out.addAll(registry.getTransferLocations(values[i], true));
 		}
 
 		return out;

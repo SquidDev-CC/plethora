@@ -28,6 +28,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -49,6 +50,8 @@ import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.TinySlot;
+import vazkii.botania.api.item.ICosmeticAttachable;
+import vazkii.botania.common.lib.LibMisc;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,9 +62,10 @@ import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "baubles.api.IBauble", modid = Baubles.MODID),
-	@Optional.Interface(iface = "org.squiddev.cctweaks.api.computer.ICustomRomItem", modid = CCTweaks.ID)
+	@Optional.Interface(iface = "org.squiddev.cctweaks.api.computer.ICustomRomItem", modid = CCTweaks.ID),
+	@Optional.Interface(iface = "vazkii.botania.api.item.ICosmeticAttachable", modid = LibMisc.MOD_ID)
 })
-public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble, ICustomRomItem {
+public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble, ICustomRomItem, ICosmeticAttachable {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -323,6 +327,28 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		tag.removeTag("sessionID");
 	}
 
+	@Override
+	public ItemStack getCosmeticItem(ItemStack stack) {
+		if (!stack.hasTagCompound()) return null;
+
+		NBTTagCompound tag = stack.getTagCompound();
+		if (!tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)) return null;
+
+		return ItemStack.loadItemStackFromNBT(tag.getCompoundTag("cosmetic"));
+	}
+
+	@Override
+	public void setCosmeticItem(ItemStack stack, ItemStack cosmetic) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
+
+		if (cosmetic == null) {
+			tag.removeTag("cosmetic");
+		} else {
+			tag.setTag("cosmetic", cosmetic.serializeNBT());
+		}
+	}
+
 	private static class InvProvider implements ICapabilityProvider {
 		private final IItemHandler inv;
 
@@ -380,6 +406,15 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 				out.add("Has custom ROM (disk ID: " + id + ")");
 			} else {
 				out.add("Has custom ROM");
+			}
+		}
+
+		if (Loader.isModLoaded(LibMisc.MOD_ID)) {
+			ItemStack cosmetic = getCosmeticItem(stack);
+			if (cosmetic != null) {
+				out.add(Helpers
+					.translateToLocalFormatted("botaniamisc.hasCosmetic", cosmetic.getDisplayName())
+					.replaceAll("&", "\u00a7"));
 			}
 		}
 	}

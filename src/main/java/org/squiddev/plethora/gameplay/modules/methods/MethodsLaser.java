@@ -1,16 +1,19 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Vec3d;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.EntityLaser;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
@@ -46,10 +49,22 @@ public final class MethodsLaser {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				IWorldLocation location = context.getContext(IWorldLocation.class);
+				IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				Vec3d pos = location.getLoc();
 
 				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
+
+				{
+					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+					Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
+
+					GameProfile profile = null;
+					if (ownable != null) profile = ownable.getOwningProfile();
+					if (profile == null) profile = PlayerHelpers.getProfile(entity);
+
+					laser.setShooter(entity, profile);
+				}
+
 				if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
 					double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
 					double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
@@ -84,7 +99,6 @@ public final class MethodsLaser {
 					Vec3d vector = entity.getPositionVector();
 					double offset = entity.width + 0.2;
 					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
-					laser.setShooter(entity);
 
 					// Offset positions to be around the edge of the entity. Avoids damaging the entity.
 					laser.setPosition(

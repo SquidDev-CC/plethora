@@ -42,17 +42,21 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.CostHelpers;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.BlockBase;
 import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.MatrixHelpers;
+import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -150,6 +154,16 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		return getStateFromMeta(meta).withProperty(FACING, facing.getOpposite());
 	}
 
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
+
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileManipulator) {
+			((TileManipulator) te).setOwningProfile(PlayerHelpers.getProfile(placer));
+		}
+	}
+
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
@@ -215,13 +229,13 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public boolean isFullBlock(IBlockState state) {
+	@Deprecated
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
@@ -261,22 +275,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		final IModuleContainer container = new BasicModuleContainer(modules);
 		Map<ResourceLocation, ManipulatorAccess> accessMap = Maps.newHashMap();
 
-		BasicContextBuilder builder = new BasicContextBuilder();
-		for (IModuleHandler handler : moduleHandlers) {
-			ResourceLocation module = handler.getModule();
-			ManipulatorAccess access = accessMap.get(module);
-			if (access == null) {
-				accessMap.put(module, access = new ManipulatorAccess(manipulator, handler, container));
-			}
-
-			handler.getAdditionalContext(access, builder);
-		}
-
-		builder.addContext(te, tile(te));
-		builder.<IWorldLocation>addContext(new WorldLocation(world, blockPos));
-
-		ICostHandler cost = CostHelpers.getCostHandler(manipulator);
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -307,17 +306,25 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			}
 		};
 
-		IUnbakedContext<IModuleContainer> context = MethodRegistry.instance.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray()
-		);
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(CostHelpers.getCostHandler(manipulator))
+			.withModules(container, containerRef)
+			.addContext(ContextKeys.ORIGIN, te, tile(te))
+			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new WorldLocation(world, blockPos));
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<IModuleContainer>(
-			container, cost, builder.getObjectsArray(), container
-		);
+		for (IModuleHandler handler : moduleHandlers) {
+			ResourceLocation module = handler.getModule();
+			ManipulatorAccess access = accessMap.get(module);
+			if (access == null) {
+				accessMap.put(module, access = new ManipulatorAccess(manipulator, handler, container));
+			}
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(context, baked);
+			handler.getAdditionalContext(access, factory);
+		}
+
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getFactory(), builder.getAttachments(), stackHash);
+			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getFactory(), factory.getAttachments(), stackHash);
 			for (ManipulatorAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}

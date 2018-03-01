@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -80,13 +81,13 @@ public final class MethodsScanner {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location = baked.getContext(IWorldLocation.class);
+				IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 
 				World world = location.getWorld();
 				BlockPos pos = location.getPos().add(x, y, z);
 
 				Map<Object, Object> meta = baked
-					.makePartialChild(new BlockReference(new WorldLocation(world, pos)))
+					.makeChild(new BlockReference(new WorldLocation(world, pos)))
 					.getMeta();
 
 				return MethodResult.result(meta);

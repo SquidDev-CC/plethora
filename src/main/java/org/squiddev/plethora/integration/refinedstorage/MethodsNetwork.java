@@ -9,7 +9,6 @@ import com.raoulvdberge.refinedstorage.tile.TileController;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.integration.ItemFingerprint;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
@@ -17,8 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import static org.squiddev.plethora.api.reference.Reference.id;
 
 public class MethodsNetwork {
 	@BasicObjectMethod.Inject(
@@ -78,7 +75,7 @@ public class MethodsNetwork {
 
 				return stack == null
 					? MethodResult.empty()
-					: MethodResult.result(baked.makeChild(id(stack)).getObject());
+					: MethodResult.result(baked.makeChildId(stack).getObject());
 			}
 		});
 	}
@@ -102,7 +99,7 @@ public class MethodsNetwork {
 				Map<Integer, Object> out = Maps.newHashMap();
 				for (ItemStack stack : baked.getTarget().getItemStorageCache().getList().getStacks()) {
 					if (fingerprint.matches(stack)) {
-						out.put(++i, baked.makeChild(id(stack)).getObject());
+						out.put(++i, baked.makeChildId(stack).getObject());
 					}
 				}
 
@@ -121,7 +118,7 @@ public class MethodsNetwork {
 		int i = 0;
 		Map<Integer, Object> output = Maps.newHashMapWithExpectedSize(tasks.size());
 		for (ICraftingTask task : tasks) {
-			output.put(++i, context.makeChild(Reference.id(task)).getObject());
+			output.put(++i, context.makeChildId(task).getObject());
 		}
 
 		return new Object[]{output};

@@ -5,11 +5,11 @@ import codechicken.multipart.TileMultipart;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 
-public class ReferenceMultipart implements IReference<TMultiPart> {
+public class ReferenceMultipart extends DynamicReference<TMultiPart> {
 	private final TMultiPart part;
 	private final TileMultipart container;
 
