@@ -10,6 +10,7 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -310,7 +311,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 						TileEntity te = world.getTileEntity(position);
 						if (block.removedByPlayer(blockState, world, position, player, true)) {
 							block.onBlockDestroyedByPlayer(world, position, blockState);
-							block.harvestBlock(world, player, position, blockState, te, null);
+							block.harvestBlock(world, player, position, blockState, te, ItemStack.EMPTY);
 						}
 					} else {
 						potency = -1;
@@ -387,7 +388,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 
 			if (current == null || current.provider.getDimension() != shooterPos.getDimension()) {
 				// Don't load another dimension unless we have to
-				World replace = force ? shooterPos.getWorld(worldObj.getMinecraftServer()) : shooterPos.getWorld();
+				World replace = force ? shooterPos.getWorld(getEntityWorld().getMinecraftServer()) : shooterPos.getWorld();
 
 				if (replace == null) {
 					syncFromEntity(fakePlayer, this);
@@ -408,7 +409,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 	}
 
 	private static void syncFromPos(EntityPlayer player, World world, Vec3d pos, float yaw, float pitch) {
-		player.worldObj = world;
+		player.setWorld(world);
 		player.setPositionAndRotation(pos.xCoord, pos.yCoord, pos.zCoord, yaw, pitch);
 	}
 

@@ -334,7 +334,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		NBTTagCompound tag = stack.getTagCompound();
 		if (!tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)) return null;
 
-		return ItemStack.loadItemStackFromNBT(tag.getCompoundTag("cosmetic"));
+		return new ItemStack(tag.getCompoundTag("cosmetic"));
 	}
 
 	@Override

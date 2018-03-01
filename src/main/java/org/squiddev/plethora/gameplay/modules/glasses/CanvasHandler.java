@@ -96,7 +96,7 @@ public class CanvasHandler {
 		EntityPlayer playerMP = Minecraft.getMinecraft().player;
 		ItemStack stack = NeuralHelpers.getStack(playerMP);
 
-		if (stack == null) return null;
+		if (stack.isEmpty()) return null;
 
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null || !tag.hasKey(MODULE_DATA, NBT.TAG_COMPOUND)) return null;

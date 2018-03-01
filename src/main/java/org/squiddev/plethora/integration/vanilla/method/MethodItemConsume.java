@@ -29,11 +29,9 @@ public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 
 		ItemStack stack = context.getTarget().getStack();
 
-		if (stack != null && context.hasContext(EntityPlayer.class)) {
+		if (!stack.isEmpty() && context.hasContext(EntityPlayer.class)) {
 			EnumAction action = stack.getItemUseAction();
-			if (action == EnumAction.EAT || action == EnumAction.DRINK) {
-				return true;
-			}
+			return action == EnumAction.EAT || action == EnumAction.DRINK;
 		}
 
 		return false;
