@@ -49,14 +49,14 @@ public final class MethodsLaser {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				IWorldLocation location = context.getContext(IWorldLocation.class);
+				IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				Vec3d pos = location.getLoc();
 
 				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
 
 				{
-					IPlayerOwnable ownable = context.getContext(IPlayerOwnable.class);
-					Entity entity = context.getContext(Entity.class);
+					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+					Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
 
 					GameProfile profile = null;
 					if (ownable != null) profile = ownable.getOwningProfile();

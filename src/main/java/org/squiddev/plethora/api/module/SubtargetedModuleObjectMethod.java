@@ -37,7 +37,13 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleContainerOb
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<IModuleContainer> context) {
-		return super.canApply(context) && context.hasContext(klass);
+		if (!super.canApply(context)) return false;
+		if (context.hasContext(ContextKeys.ORIGIN, klass)) return true;
+
+		for (ResourceLocation module : getModules()) {
+			if (context.hasContext(module.toString(), klass)) return true;
+		}
+		return false;
 	}
 
 	@Nonnull
@@ -49,7 +55,15 @@ public abstract class SubtargetedModuleObjectMethod<T> extends ModuleContainerOb
 	@Nullable
 	@Override
 	public final Object[] apply(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		return apply(context.getContext(klass), context, args);
+		T object = context.getContext(ContextKeys.ORIGIN, klass);
+		if (object == null) {
+			for (ResourceLocation module : getModules()) {
+				object = context.getContext(module.toString(), klass);
+				if (object != null) break;
+			}
+		}
+
+		return apply(object, context, args);
 	}
 
 	@Nullable

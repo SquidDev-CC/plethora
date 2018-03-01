@@ -12,6 +12,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -28,6 +29,7 @@ import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
+import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
 
 public final class MethodsChat {
 	@SubtargetedModuleMethod.Inject(
@@ -43,7 +45,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
+				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
 
 				EntityPlayerMP player;
 				ITextComponent name;
@@ -58,7 +60,7 @@ public final class MethodsChat {
 
 					BlockPos pos = entity.getPosition();
 
-					IPlayerOwnable ownable = context.getContext(IPlayerOwnable.class);
+					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
 					GameProfile owner = null;
 					if (ownable != null) owner = ownable.getOwningProfile();
 					if (owner == null) owner = PlethoraFakePlayer.PROFILE;
@@ -98,8 +100,7 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = context.getContext(Entity.class);
-
+				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
 				entity.addChatMessage(ForgeHooks.newChatWithLinks(message));
 				return MethodResult.empty();
 			}

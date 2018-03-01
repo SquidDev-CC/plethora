@@ -28,7 +28,7 @@ public class MethodsCanvas {
 	)
 	public static MethodResult canvas(IUnbakedContext<IModuleContainer> context, Object[] args) throws LuaException {
 		IContext<IModuleContainer> baked = context.safeBake();
-		GlassesInstance server = baked.getContext(GlassesInstance.class);
+		GlassesInstance server = baked.getContext(PlethoraModules.GLASSES_S, GlassesInstance.class);
 		return MethodResult.result(baked.makeChild(server.getCanvas()).getObject());
 	}
 

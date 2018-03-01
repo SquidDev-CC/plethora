@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
@@ -21,7 +22,7 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 
 		if (!(stack.getItem() instanceof ICraftingPatternItem)) return Collections.emptyMap();
 
-		IWorldLocation position = context.getContext(IWorldLocation.class);
+		IWorldLocation position = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 		if (position != null) {
 			ICraftingPatternItem pattern = (ICraftingPatternItem) stack.getItem();
 			return context.makePartialChild(pattern.getPatternForItem(stack, position.getWorld())).getMeta();

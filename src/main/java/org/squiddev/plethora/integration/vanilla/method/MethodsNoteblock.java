@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -85,7 +86,7 @@ public class MethodsNoteblock {
 		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+				IWorldLocation location = context.bake().getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				BlockPos pos = location.getPos();
 				Vec3d vec = location.getLoc();
 
@@ -120,7 +121,7 @@ public class MethodsNoteblock {
 		context.getExecutor().executeAsync(MethodResult.nextTick(new Callable<MethodResult>() {
 			@Override
 			public MethodResult call() throws Exception {
-				IWorldLocation location = context.bake().getContext(IWorldLocation.class);
+				IWorldLocation location = context.bake().getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 				BlockPos pos = location.getPos();
 
 				location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, pitch);
