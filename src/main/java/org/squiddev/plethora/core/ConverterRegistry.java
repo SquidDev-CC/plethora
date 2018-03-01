@@ -4,7 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Sets;
+import gnu.trove.impl.Constants;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.converter.IConverter;
@@ -54,7 +55,8 @@ public class ConverterRegistry implements IConverterRegistry {
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 		if (keys.size() != references.size()) throw new IllegalStateException("lists must be of the same size");
 
-		Set<Object> allConverted = Sets.newHashSet(values);
+		TObjectIntHashMap<Object> positions = new TObjectIntHashMap<Object>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+		for (int i = 0; i < values.size(); i++) positions.put(values.get(i), i);
 
 		for (int i = startPoint; i < values.size(); i++) {
 			Object target = values.get(i);
@@ -63,7 +65,11 @@ public class ConverterRegistry implements IConverterRegistry {
 			for (Class<?> klass : new ClassIteratorIterable(initial)) {
 				for (IConverter<?, ?> converter : converters.get(klass)) {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
-					if (converted != null && allConverted.add(converted)) {
+					if (converted == null) continue;
+
+					int existing = positions.get(converted);
+					if (existing == positions.getNoEntryValue()) {
+						positions.put(converted, keys.size());
 						keys.add(keys.get(i));
 						values.add(converted);
 
@@ -77,8 +83,18 @@ public class ConverterRegistry implements IConverterRegistry {
 							}
 						}
 
-
 						references.add(isConstant ? converted : new ConverterReference(i, klass, converter));
+					} else if (requiresInsertion(keys, values, existing, keys.get(i), converted)) {
+						positions.put(converted, keys.size());
+						keys.add(keys.get(i));
+						values.add(converted);
+
+						Object reference = references.get(existing);
+						if (reference instanceof ConverterReference && ((ConverterReference) reference).isIdentity()) {
+							references.add(reference);
+						} else {
+							references.add(ConverterReference.identity(existing));
+						}
 					}
 				}
 			}
@@ -92,7 +108,8 @@ public class ConverterRegistry implements IConverterRegistry {
 
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 
-		Set<Object> allConverted = Sets.newHashSet(values);
+		TObjectIntHashMap<Object> positions = new TObjectIntHashMap<Object>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+		for (int i = 0; i < values.size(); i++) positions.put(values.get(i), i);
 
 		for (int i = startPoint; i < values.size(); i++) {
 			Object target = values.get(i);
@@ -101,13 +118,26 @@ public class ConverterRegistry implements IConverterRegistry {
 			for (Class<?> klass : new ClassIteratorIterable(initial)) {
 				for (IConverter<?, ?> converter : converters.get(klass)) {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
-					if (converted != null && allConverted.add(converted)) {
+					if (converted == null) continue;
+
+					int existing = positions.get(converted);
+					if (existing == positions.getNoEntryValue() || requiresInsertion(keys, values, existing, keys.get(i), converted)) {
+						positions.put(converted, keys.size());
 						keys.add(keys.get(i));
 						values.add(converted);
 					}
 				}
 			}
 		}
+	}
+
+	private static boolean requiresInsertion(List<String> keys, List<Object> values, int existing, String key, Object value) {
+		for (int i = existing; i >= 0; i--) {
+			if (values.get(i).equals(value) && keys.get(i).equals(key)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

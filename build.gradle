@@ -123,6 +123,8 @@ dependencies {
 	compileOnly curseMod("chameleon", 2419174, "1.10.2-2.3.0")
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
+
+	testCompile 'junit:junit:4.11'
 }
 
 processResources {

@@ -41,7 +41,7 @@ public final class Context<T> extends PartialContext<T> implements IContext<T> {
 		Collections.addAll(values, this.values);
 
 		for (int i = keys.size() - 1; i >= 0; i--) {
-			if (!ContextKeys.TARGET.equals(keys.get(i))) break;
+			if (!ContextKeys.TARGET.equals(keys.get(i))) continue;
 			keys.set(i, ContextKeys.GENERIC);
 		}
 

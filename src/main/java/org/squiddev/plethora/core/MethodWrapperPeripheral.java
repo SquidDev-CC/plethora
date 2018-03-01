@@ -63,14 +63,13 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		int totalSize = context.keys.length + extraRef.length;
 		String[] keys = new String[totalSize];
 		Object[] references = new Object[totalSize];
+		System.arraycopy(context.keys, 0, keys, 0, context.keys.length);
+		System.arraycopy(context.references, 0, references, 0, context.references.length);
 
 		for (int i = 0; i < extraRef.length; i++) {
-			keys[i] = ContextKeys.COMPUTER;
-			references[i] = extraRef[i];
+			keys[context.keys.length + i] = ContextKeys.COMPUTER;
+			references[context.keys.length + i] = extraRef[i];
 		}
-
-		System.arraycopy(context.keys, 0, keys, extraRef.length, context.keys.length);
-		System.arraycopy(context.references, 0, references, extraRef.length, context.references.length);
 
 		UnbakedContext<?> full = new UnbakedContext(
 			context.target, keys, references, context.handler, context.modules, context.executor

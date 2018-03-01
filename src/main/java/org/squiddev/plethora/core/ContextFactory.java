@@ -20,9 +20,8 @@ import java.util.List;
  * Concrete implementation of {@link IContextBuilder} and {@link IContextFactory}.
  */
 public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
-	private final List<String> targetKeys;
-	private final List<Object> targetValues;
-	private final List<Object> targetReferences;
+	private final Object targetValue;
+	private final Object targetReference;
 
 	private final List<String> keys = new ArrayList<String>();
 	private final List<Object> values = new ArrayList<Object>();
@@ -40,15 +39,8 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	private Object[] combinedReferences;
 
 	private ContextFactory(T target, IReference<T> targetReference) {
-		targetKeys = new ArrayList<String>(1);
-		targetValues = new ArrayList<Object>(1);
-		targetReferences = new ArrayList<Object>(1);
-
-		targetKeys.add(ContextKeys.TARGET);
-		targetValues.add(target);
-		targetReferences.add(targetReference);
-
-		ConverterRegistry.instance.extendConverted(targetKeys, targetValues, targetReferences, 0);
+		this.targetValue = target;
+		this.targetReference = targetReference;
 	}
 
 	public static <T> ContextFactory<T> of(T target, IReference<T> targetReference) {
@@ -130,24 +122,22 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 
 	private void setup() {
 		if (combinedKeys == null) {
-			int size = keys.size() + targetKeys.size();
+			List<String> combinedKeysList = Lists.newArrayListWithExpectedSize(keys.size() + 1);
+			List<Object> combinedValuesList = Lists.newArrayListWithExpectedSize(keys.size() + 1);
+			List<Object> combinedReferencesList = Lists.newArrayListWithExpectedSize(keys.size() + 1);
 
-			combinedKeys = new String[size];
-			combinedValues = new Object[size];
-			combinedReferences = new Object[size];
+			combinedKeysList.addAll(keys);
+			combinedValuesList.addAll(values);
+			combinedReferencesList.addAll(references);
 
-			int j = 0;
-			for (int i = 0; i < keys.size(); i++, j++) {
-				combinedKeys[j] = keys.get(i);
-				combinedValues[j] = values.get(i);
-				combinedReferences[j] = references.get(i);
-			}
+			combinedKeysList.add(ContextKeys.TARGET);
+			combinedValuesList.add(targetValue);
+			combinedReferencesList.add(targetReference);
+			ConverterRegistry.instance.extendConverted(combinedKeysList, combinedValuesList, combinedReferencesList, combinedKeysList.size() - 1);
 
-			for (int i = 0; i < targetKeys.size(); i++, j++) {
-				combinedKeys[j] = targetKeys.get(i);
-				combinedValues[j] = targetValues.get(i);
-				combinedReferences[j] = targetReferences.get(i);
-			}
+			combinedKeys = combinedKeysList.toArray(new String[combinedKeysList.size()]);
+			combinedValues = combinedValuesList.toArray();
+			combinedReferences = combinedReferencesList.toArray();
 		}
 	}
 

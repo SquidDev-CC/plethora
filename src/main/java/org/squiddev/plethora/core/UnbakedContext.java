@@ -43,7 +43,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			if (reference instanceof IReference) {
 				values[i] = ((IReference) reference).get();
 			} else if (reference instanceof ConverterReference) {
-				values[i] = null;
+				values[i] = ((ConverterReference) reference).tryConvert(values);
 			} else {
 				values[i] = reference;
 			}
@@ -61,7 +61,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			if (reference instanceof IReference) {
 				values[i] = ((IReference) reference).safeGet();
 			} else if (reference instanceof ConverterReference) {
-				values[i] = ((ConverterReference) reference).tryConvert(values);
+				values[i] = null;
 			} else {
 				values[i] = reference;
 			}
