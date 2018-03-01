@@ -4,14 +4,14 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 
 /**
  * A proxy object for canvases, which allows using a separate getCanvas() method.
  */
-public class GlassesInstance implements IAttachable, IReference<GlassesInstance> {
+public class GlassesInstance extends ConstantReference<GlassesInstance> implements IAttachable {
 	private final CanvasServer canvas;
 
 	public GlassesInstance(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {

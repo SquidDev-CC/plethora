@@ -8,7 +8,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
-import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.utils.LuaPattern;
@@ -49,7 +49,7 @@ public class ChatListener extends Module {
 		}
 	}
 
-	public static class Listener implements IAttachable, IReference<Listener> {
+	public static class Listener extends ConstantReference<Listener> implements IAttachable {
 		private final IModuleAccess access;
 		private final Entity owner;
 		private final Set<String> patterns = Sets.newHashSet();

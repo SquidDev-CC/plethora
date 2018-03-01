@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -85,7 +86,7 @@ public abstract class BaseObject {
 		return new BaseObjectReference(canvas, this);
 	}
 
-	private static class BaseObjectReference implements IReference<BaseObject> {
+	private static class BaseObjectReference extends ConstantReference<BaseObject> {
 		private final CanvasServer canvas;
 		private final int id;
 

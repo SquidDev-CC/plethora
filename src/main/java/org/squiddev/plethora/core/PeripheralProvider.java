@@ -9,12 +9,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.ICostHandler;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.core.executor.DefaultExecutor;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -48,12 +47,13 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 				MethodRegistry registry = MethodRegistry.instance;
 
-				ICostHandler handler = registry.getCostHandler(te, enumFacing);
-				BlockReference reference = new BlockReference(new WorldLocation(world, blockPos), world.getBlockState(blockPos), te);
-				IUnbakedContext<BlockReference> context = registry.makeContext(reference, handler, BasicModuleContainer.EMPTY_REF, new WorldLocation(world, blockPos));
-				IPartialContext<BlockReference> baked = new PartialContext<>(reference, handler, new Object[]{new WorldLocation(world, blockPos)}, BasicModuleContainer.EMPTY);
+				WorldLocation location = new WorldLocation(world, blockPos);
+				BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te);
+				ContextFactory<BlockReference> factory = ContextFactory.of(reference)
+					.withCostHandler(CostHelpers.getCostHandler(te, enumFacing))
+					.<IWorldLocation>addContext(ContextKeys.ORIGIN, location);
 
-				Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+				Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 				if (paired.getLeft().size() > 0) {
 					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, DefaultExecutor.INSTANCE);
 				}

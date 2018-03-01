@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -18,20 +20,20 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
+import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.WorldPosition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
-public final class EntityLaser extends Entity implements IProjectile {
+public final class EntityLaser extends Entity implements IProjectile, IPlayerOwnable {
 	private static final int TICKS_EXISTED = 30 * 20;
 	private static final Random random = new Random();
 
@@ -40,7 +42,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 	@Nullable
 	private EntityPlayer shooterPlayer;
 	@Nullable
-	private UUID shooterId;
+	private GameProfile shooterOwner;
 
 	@Nullable
 	private WorldPosition shooterPos;
@@ -52,11 +54,11 @@ public final class EntityLaser extends Entity implements IProjectile {
 		setSize(0.25f, 0.25f);
 	}
 
-	public EntityLaser(World world, Entity shooter, float inaccuracy, float potency) {
+	public EntityLaser(World world, @Nonnull Entity shooter, float inaccuracy, float potency) {
 		this(world);
 
 		this.potency = potency;
-		setShooter(shooter);
+		setShooter(shooter, PlayerHelpers.getProfile(shooter));
 
 		setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
 
@@ -73,21 +75,12 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 	public EntityLaser(World world, Vec3d shooter) {
 		this(world);
-		setShooter(new WorldPosition(world, shooter));
-	}
-
-	public EntityLaser(World world, BlockPos shooter) {
-		this(world);
 		this.shooterPos = new WorldPosition(world, shooter);
 	}
 
-	public void setShooter(@Nonnull Entity shooter) {
+	public void setShooter(@Nullable Entity shooter, @Nullable GameProfile profile) {
 		this.shooter = shooter;
-		this.shooterId = shooter.getPersistentID();
-	}
-
-	public void setShooter(WorldPosition position) {
-		this.shooterPos = position;
+		this.shooterOwner = profile;
 	}
 
 	@Override
@@ -140,13 +133,8 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 	@Override
 	public void writeEntityToNBT(@Nonnull NBTTagCompound tag) {
-		if (shooterId != null) {
-			tag.setString("shooterId", shooterId.toString());
-		}
-
-		if (shooterPos != null) {
-			tag.setTag("shooterPos", shooterPos.serializeNBT());
-		}
+		PlayerHelpers.writeProfile(tag, shooterOwner);
+		if (shooterPos != null) tag.setTag("shooterPos", shooterPos.serializeNBT());
 
 		tag.setFloat("potency", potency);
 	}
@@ -154,15 +142,8 @@ public final class EntityLaser extends Entity implements IProjectile {
 	@Override
 	public void readEntityFromNBT(@Nonnull NBTTagCompound tag) {
 		shooter = null;
-		shooterId = null;
 		shooterPlayer = null;
-
-		if (tag.hasKey("shooterId", 8)) {
-			try {
-				shooterId = UUID.fromString(tag.getString("shooterId"));
-			} catch (IllegalArgumentException ignored) {
-			}
-		}
+		shooterOwner = PlayerHelpers.readProfile(tag);
 
 		if (tag.hasKey("shooterPos", 10)) {
 			shooterPos = WorldPosition.deserializeNBT(tag.getCompoundTag("shooterPos"));
@@ -327,13 +308,10 @@ public final class EntityLaser extends Entity implements IProjectile {
 					} else if (hardness > -1 && hardness <= potency) {
 						potency -= hardness;
 
-						NonNullList<ItemStack> drops = NonNullList.create();
-						block.getDrops(drops, world, position, blockState, 0);
-						world.setBlockToAir(position);
-						if (drops != null) {
-							for (ItemStack stack : drops) {
-								Block.spawnAsEntity(world, position, stack);
-							}
+						TileEntity te = world.getTileEntity(position);
+						if (block.removedByPlayer(blockState, world, position, player, true)) {
+							block.onBlockDestroyedByPlayer(world, position, blockState);
+							block.harvestBlock(world, player, position, blockState, te, ItemStack.EMPTY);
 						}
 					} else {
 						potency = -1;
@@ -376,12 +354,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
-		if (shooterId != null) {
-			Entity newShooter = world.getEntityFromUuid(shooterId);
-			return shooter = newShooter;
-		}
-
-		return shooter = shooterPlayer = new PlethoraFakePlayer(world);
+		return shooter = shooterPlayer = new PlethoraFakePlayer(world, null, shooterOwner);
 	}
 
 	/**
@@ -400,7 +373,7 @@ public final class EntityLaser extends Entity implements IProjectile {
 		if (!(worldObj instanceof WorldServer)) return null;
 		WorldServer world = (WorldServer) worldObj;
 
-		return shooterPlayer = new PlethoraFakePlayer(world);
+		return shooterPlayer = new PlethoraFakePlayer(world, shooter, shooterOwner);
 	}
 
 	private void syncPositions(boolean force) {
@@ -415,15 +388,15 @@ public final class EntityLaser extends Entity implements IProjectile {
 
 			if (current == null || current.provider.getDimension() != shooterPos.getDimension()) {
 				// Don't load another dimension unless we have to
-				World replace = force ? shooterPos.getWorld(FMLCommonHandler.instance().getMinecraftServerInstance()) : shooterPos.getWorld();
+				World replace = force ? shooterPos.getWorld(getEntityWorld().getMinecraftServer()) : shooterPos.getWorld();
 
 				if (replace == null) {
 					syncFromEntity(fakePlayer, this);
 				} else {
-					syncFromPos(fakePlayer, shooterPos.getPos(), rotationYaw, rotationPitch);
+					syncFromPos(fakePlayer, replace, shooterPos.getPos(), rotationYaw, rotationPitch);
 				}
 			} else {
-				syncFromPos(fakePlayer, shooterPos.getPos(), rotationYaw, rotationPitch);
+				syncFromPos(fakePlayer, shooterPos.getWorld(), shooterPos.getPos(), rotationYaw, rotationPitch);
 			}
 		} else {
 			syncFromEntity(fakePlayer, this);
@@ -435,7 +408,14 @@ public final class EntityLaser extends Entity implements IProjectile {
 		player.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 	}
 
-	private static void syncFromPos(EntityPlayer player, Vec3d pos, float yaw, float pitch) {
+	private static void syncFromPos(EntityPlayer player, World world, Vec3d pos, float yaw, float pitch) {
+		player.setWorld(world);
 		player.setPositionAndRotation(pos.x, pos.y, pos.z, yaw, pitch);
+	}
+
+	@Nullable
+	@Override
+	public GameProfile getOwningProfile() {
+		return shooterOwner;
 	}
 }

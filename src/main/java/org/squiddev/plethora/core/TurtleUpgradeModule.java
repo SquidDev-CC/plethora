@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
@@ -10,13 +11,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.TurtleWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
@@ -26,6 +30,8 @@ import org.squiddev.plethora.core.executor.IExecutorFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -82,17 +88,10 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		MethodRegistry registry = MethodRegistry.instance;
 
-		ICostHandler cost = DefaultCostHandler.get(turtle);
-
 		final TurtleModuleAccess access = new TurtleModuleAccess(turtle, side, handler);
-		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(access, builder);
-
-		builder.addContext(new TurtleWorldLocation(turtle));
-		builder.addContext(turtle, Reference.id(turtle));
 
 		final IModuleContainer container = access.getContainer();
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -107,16 +106,18 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 			}
 		};
 
-		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray());
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(DefaultCostHandler.get(turtle))
+			.withModules(container, containerRef)
+			.addContext(ContextKeys.ORIGIN, new TurtlePlayerOwnable(turtle))
+			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new TurtleWorldLocation(turtle))
+			.addContext(ContextKeys.ORIGIN, turtle, Reference.id(turtle));
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<>(
-			container, cost, builder.getObjectsArray(), container
-		);
+		handler.getAdditionalContext(access, factory);
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), builder.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
@@ -127,7 +128,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 	@Nonnull
 	@Override
 	public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
-		return TurtleCommandResult.failure();
+		return TurtleCommandResult.failure("Cannot use tool");
 	}
 
 	@Nonnull
@@ -219,6 +220,51 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		@Override
 		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
 			if (wrapper != null) wrapper.queueEvent(event, args);
+		}
+	}
+
+	public static class TurtlePlayerOwnable extends ConstantReference<TurtlePlayerOwnable> implements IPlayerOwnable {
+		private static boolean checkedField;
+		private static Method getProfile;
+
+		private final ITurtleAccess access;
+
+		public TurtlePlayerOwnable(ITurtleAccess access) {
+			this.access = access;
+		}
+
+		@Nullable
+		@Override
+		public GameProfile getOwningProfile() {
+			if (!checkedField) {
+				try {
+					getProfile = ITurtleAccess.class.getMethod("getOwningPlayer");
+				} catch (NoSuchMethodException ignored) {
+				}
+				checkedField = true;
+			}
+
+			if (getProfile != null) {
+				try {
+					return (GameProfile) getProfile.invoke(access);
+				} catch (IllegalAccessException ignored) {
+				} catch (InvocationTargetException ignored) {
+				}
+			}
+
+			return null;
+		}
+
+		@Nonnull
+		@Override
+		public TurtlePlayerOwnable get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public TurtlePlayerOwnable safeGet() throws LuaException {
+			return this;
 		}
 	}
 }

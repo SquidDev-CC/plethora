@@ -96,7 +96,7 @@ public class CanvasHandler {
 		EntityPlayer playerMP = Minecraft.getMinecraft().player;
 		ItemStack stack = NeuralHelpers.getStack(playerMP);
 
-		if (stack == null) return null;
+		if (stack.isEmpty()) return null;
 
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null || !tag.hasKey(MODULE_DATA, NBT.TAG_COMPOUND)) return null;
@@ -120,6 +120,10 @@ public class CanvasHandler {
 
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
+
+		// If we've no font renderer then we're probably not quite ready yet
+		Minecraft mc = Minecraft.getMinecraft();
+		if (mc.fontRendererObj == null) return;
 
 		GlStateManager.pushMatrix();
 

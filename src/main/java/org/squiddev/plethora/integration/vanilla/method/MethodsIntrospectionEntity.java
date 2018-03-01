@@ -8,15 +8,12 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Various introspection modules which rely on Vanilla classes.
@@ -29,8 +26,7 @@ public class MethodsIntrospectionEntity {
 	@Nullable
 	public static Object[] getInventory(EntityPlayer player, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		IItemHandler inventory = new PlayerMainInvWrapper(player.inventory);
-		IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
-		return new Object[]{newContext.getObject()};
+		return new Object[]{context.makeChildId(inventory).getObject()};
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
@@ -40,8 +36,7 @@ public class MethodsIntrospectionEntity {
 	@Nullable
 	public static Object[] getEquipment(EntityLivingBase entity, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		IItemHandler inventory = new EquipmentInvWrapper(entity);
-		IUnbakedContext<IItemHandler> newContext = context.makeChild(id(inventory));
-		return new Object[]{newContext.getObject()};
+		return new Object[]{context.makeChildId(inventory).getObject()};
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
@@ -51,7 +46,6 @@ public class MethodsIntrospectionEntity {
 	@Nullable
 	public static Object[] getEnder(EntityPlayer player, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		IInventory inventory = player.getInventoryEnderChest();
-		IUnbakedContext<IInventory> newContext = context.makeChild(id(inventory));
-		return new Object[]{newContext.getObject()};
+		return new Object[]{context.makeChildId(inventory).getObject()};
 	}
 }

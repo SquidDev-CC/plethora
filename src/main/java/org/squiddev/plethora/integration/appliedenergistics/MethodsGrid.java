@@ -86,7 +86,7 @@ public class MethodsGrid {
 
 			return stack == null
 				? MethodResult.empty()
-				: MethodResult.result(baked.makeChild(id(stack)).getObject());
+				: MethodResult.result(baked.makeChildId(stack).getObject());
 		});
 	}
 
@@ -114,7 +114,7 @@ public class MethodsGrid {
 				stack.setCount(1);
 
 				if (fingerprint.matches(stack)) {
-					out.put(++i, baked.makeChild(id(aeStack)).getObject());
+					out.put(++i, baked.makeChildId(aeStack).getObject());
 				}
 			}
 

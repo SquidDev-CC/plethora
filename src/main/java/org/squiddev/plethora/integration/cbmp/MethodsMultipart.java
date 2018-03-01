@@ -62,7 +62,7 @@ public class MethodsMultipart {
 			TMultiPart part = container.partMap(slot.i);
 			return part == null
 				? MethodResult.empty()
-				: MethodResult.result(baked.makeChild(new ReferenceMultipart(container, part)).getObject());
+				: MethodResult.result(baked.makeChild(part, new ReferenceMultipart(container, part)).getObject());
 		});
 	}
 

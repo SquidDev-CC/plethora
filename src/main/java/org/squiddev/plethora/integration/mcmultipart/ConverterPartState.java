@@ -5,13 +5,14 @@ import mcmultipart.api.container.IPartInfo;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @IConverter.Inject(value = IPartInfo.class, modId = MCMultiPart.MODID)
-public class ConverterPartState implements IConverter<IPartInfo, IBlockState> {
+public class ConverterPartState extends DynamicConverter<IPartInfo, IBlockState> {
 	@Nullable
 	@Override
 	@SuppressWarnings("deprecation")

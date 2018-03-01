@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.minecart;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
@@ -57,6 +58,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.vehicle.IVehicleAccess;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
@@ -67,6 +69,7 @@ import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Packets;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -78,7 +81,7 @@ import javax.vecmath.Vector4f;
 import static org.squiddev.plethora.api.Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY;
 import static org.squiddev.plethora.gameplay.Plethora.ID;
 
-public class EntityMinecartComputer extends EntityMinecart {
+public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwnable {
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
 
 	private static final int[] PERIPHERAL_MAPPINGS = new int[]{1, 5, 4, 2};
@@ -102,6 +105,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 	private int id;
 	private boolean on;
 	private boolean startOn;
+	private GameProfile profile;
 
 	/**
 	 * The item handler, representing all upgrades in the minecart
@@ -131,7 +135,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 		for (int i = 0; i < SLOTS; i++) accesses[i] = new VehicleAccess(this);
 	}
 
-	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId) {
+	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId, GameProfile profile) {
 		this(minecart.getEntityWorld());
 
 		setPositionAndRotation(minecart.posX, minecart.posY, minecart.posZ, minecart.rotationYaw, minecart.rotationPitch);
@@ -151,6 +155,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 		setFamily(family);
 		setCustomNameTag(label == null ? "" : label);
 		this.romId = romId;
+
+		this.profile = profile;
 	}
 
 	@Override
@@ -305,6 +311,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 			tag.removeTag("rom_id");
 		}
 		tag.setTag("items", itemHandler.serializeNBT());
+
+		PlayerHelpers.writeProfile(tag, profile);
 	}
 
 	@Override
@@ -318,6 +326,8 @@ public class EntityMinecartComputer extends EntityMinecart {
 		if (tag.hasKey("items", Constants.NBT.TAG_COMPOUND)) {
 			itemHandler.deserializeNBT(tag.getCompoundTag("items"));
 		}
+
+		profile = PlayerHelpers.readProfile(tag);
 	}
 
 	@Nonnull
@@ -591,6 +601,12 @@ public class EntityMinecartComputer extends EntityMinecart {
 		return -1;
 	}
 
+	@Nullable
+	@Override
+	public GameProfile getOwningProfile() {
+		return profile;
+	}
+
 	public static class MinecartModule extends Module implements IClientModule, IMessageHandler<MessageMinecartSlot, IMessage> {
 		@Override
 		public void preInit() {
@@ -643,7 +659,7 @@ public class EntityMinecartComputer extends EntityMinecart {
 
 			event.setCanceled(true);
 			minecart.setDead();
-			minecart.getEntityWorld().spawnEntity(new EntityMinecartComputer(minecart, id, label, family, romId));
+			minecart.getEntityWorld().spawnEntity(new EntityMinecartComputer(minecart, id, label, family, romId, player.getGameProfile()));
 
 			if (!player.capabilities.isCreativeMode) {
 				stack.grow(-1);

@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 /**
  * An reference to an entity. Ensures it is still alive.
  */
-public class EntityReference<T extends Entity> implements IReference<T> {
+public class EntityReference<T extends Entity> extends ConstantReference<T> {
 	private final WeakReference<T> entity;
 
 	public EntityReference(T entity) {

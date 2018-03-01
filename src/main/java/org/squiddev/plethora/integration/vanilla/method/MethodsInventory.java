@@ -41,7 +41,8 @@ public final class MethodsInventory {
 		final int slot = getInt(args, 0);
 
 		return MethodResult.nextTick(() -> {
-			IItemHandler inventory = context.bake().getTarget();
+				IContext<IItemHandler > baked = context.bake();
+				IItemHandler inventory = baked.getTarget();
 
 			assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 
@@ -50,7 +51,7 @@ public final class MethodsInventory {
 				return MethodResult.empty();
 			} else {
 				ItemSlot item = new ItemSlot(inventory, slot - 1);
-				return MethodResult.result(context.makeChild(item).getObject());
+				return MethodResult.result(baked.makeChildId(item).getObject());
 			}
 		});
 	}

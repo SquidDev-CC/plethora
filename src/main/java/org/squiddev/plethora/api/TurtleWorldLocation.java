@@ -6,13 +6,14 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 
 /**
  * A world location for turtles
  */
-public class TurtleWorldLocation implements IWorldLocation {
+public class TurtleWorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
 	private final ITurtleAccess turtle;
 
 	public TurtleWorldLocation(@Nonnull ITurtleAccess turtle) {

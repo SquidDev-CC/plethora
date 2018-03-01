@@ -5,10 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
-import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -44,7 +41,7 @@ public final class MethodsKinetic {
 		);
 
 		return MethodResult.nextTick(() -> {
-			Entity entity = context.bake().getContext(Entity.class);
+			Entity entity = context.bake().getContext(ContextKeys.ORIGIN, Entity.class);
 			ItemModule.launch(entity, yaw, pitch, power);
 			return MethodResult.empty();
 		});
@@ -92,7 +89,7 @@ public final class MethodsKinetic {
 		);
 
 		return MethodResult.nextTick(() -> {
-			EntityLiving living = context.bake().getContext(EntityLiving.class);
+			EntityLiving living = context.bake().getContext(ContextKeys.ORIGIN, EntityLiving.class);
 			PathNavigate navigator = living.getNavigator();
 
 			Path path = navigator.getPathToXYZ(

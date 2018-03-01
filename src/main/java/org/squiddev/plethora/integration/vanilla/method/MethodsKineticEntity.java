@@ -18,10 +18,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -48,7 +45,7 @@ public final class MethodsKineticEntity {
 		final double pitch = getReal(args, 1) % 360;
 
 		return MethodResult.nextTick(() -> {
-			EntityLivingBase target = context.bake().getContext(EntityLivingBase.class);
+			EntityLivingBase target = context.bake().getContext(ContextKeys.ORIGIN, EntityLivingBase.class);
 			if (target instanceof EntityPlayerMP) {
 				NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
 				handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
@@ -90,7 +87,7 @@ public final class MethodsKineticEntity {
 		return MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> baked = context.bake();
 
-			EntityEnderman target = baked.getContext(EntityEnderman.class);
+			EntityEnderman target = baked.getContext(ContextKeys.ORIGIN, EntityEnderman.class);
 			return MethodResult.result(target.teleportTo(target.posX + x, target.posY + y, target.posZ + z));
 		});
 	}
@@ -109,7 +106,7 @@ public final class MethodsKineticEntity {
 
 		return MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> context = unbaked.bake();
-			AbstractSkeleton skeleton = context.getContext(AbstractSkeleton.class);
+			AbstractSkeleton skeleton = context.getContext(ContextKeys.ORIGIN, AbstractSkeleton.class);
 
 			ItemStack stack = skeleton.getHeldItem(EnumHand.MAIN_HAND);
 			if (stack.isEmpty() || stack.getItem() != Items.BOW) throw new LuaException("Not holding a bow");
@@ -162,7 +159,7 @@ public final class MethodsKineticEntity {
 		return MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> baked = context.bake();
 
-			EntityMinecart target = baked.getContext(EntityMinecart.class);
+			EntityMinecart target = baked.getContext(ContextKeys.ORIGIN, EntityMinecart.class);
 			double vx = target.motionX;
 			double vz = target.motionZ;
 			double len = Math.sqrt(vx * vx + vz * vz);

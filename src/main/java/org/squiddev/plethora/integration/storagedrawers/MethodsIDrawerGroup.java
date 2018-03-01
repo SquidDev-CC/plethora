@@ -7,7 +7,6 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
-import static org.squiddev.plethora.api.reference.Reference.id;
 
 public class MethodsIDrawerGroup {
 	@BasicObjectMethod.Inject(
@@ -34,7 +33,7 @@ public class MethodsIDrawerGroup {
 			IDrawer drawer = group.getDrawer(slot - 1);
 			if (drawer == null) return MethodResult.empty();
 
-			return MethodResult.result(baked.makeChild(id(drawer)).getObject());
+			return MethodResult.result(baked.makeChildId(drawer).getObject());
 		});
 	}
 }

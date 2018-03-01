@@ -1,10 +1,10 @@
 package org.squiddev.plethora.api;
 
 import com.google.common.base.Preconditions;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
 
@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
  *
  * @see org.squiddev.plethora.api.method.IContext
  */
-public final class WorldLocation implements IWorldLocation {
+public final class WorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
 	private final World world;
 	private final BlockPos pos;
 	private final Vec3d loc;
@@ -61,13 +61,27 @@ public final class WorldLocation implements IWorldLocation {
 
 	@Nonnull
 	@Override
-	public IWorldLocation get() throws LuaException {
+	public IWorldLocation get() {
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IWorldLocation safeGet() throws LuaException {
+	public IWorldLocation safeGet() {
 		return this;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || !(obj instanceof WorldLocation)) return false;
+
+		WorldLocation other = (WorldLocation) obj;
+		return world.equals(other.world) && pos.equals(other.pos);
+	}
+
+	@Override
+	public int hashCode() {
+		return world.hashCode() * 31 + pos.hashCode();
 	}
 }

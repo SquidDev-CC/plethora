@@ -1,13 +1,11 @@
 package org.squiddev.plethora.api.reference;
 
-import dan200.computercraft.api.lua.LuaException;
-
 import javax.annotation.Nonnull;
 
 /**
  * A reference that returns its value
  */
-public final class IdentityReference<T> implements IReference<T> {
+public final class IdentityReference<T> extends ConstantReference<T> {
 	private final T object;
 
 	public IdentityReference(@Nonnull T object) {
@@ -16,13 +14,13 @@ public final class IdentityReference<T> implements IReference<T> {
 
 	@Nonnull
 	@Override
-	public T get() throws LuaException {
+	public T get() {
 		return object;
 	}
 
 	@Nonnull
 	@Override
-	public T safeGet() throws LuaException {
+	public T safeGet() {
 		return object;
 	}
 }

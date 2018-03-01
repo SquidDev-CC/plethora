@@ -1,5 +1,6 @@
 package org.squiddev.plethora.core;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.pocket.IPocketAccess;
@@ -13,19 +14,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.api.EntityWorldLocation;
-import org.squiddev.plethora.api.IAttachable;
-import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.WorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
 import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,11 +76,10 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		MethodRegistry registry = MethodRegistry.instance;
 
 		final Entity entity = pocket.getEntity();
-		ICostHandler cost = DefaultCostHandler.get(pocket);
 
 		final PocketModuleAccess access = new PocketModuleAccess(pocket, handler);
 		final IModuleContainer container = access.getContainer();
-		IReference<IModuleContainer> containerRef = new IReference<IModuleContainer>() {
+		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
 			public IModuleContainer get() throws LuaException {
@@ -135,38 +135,41 @@ class PocketUpgradeModule implements IPocketUpgrade {
 					return new WorldLocation(entity.getEntityWorld(), entity.getPosition());
 				}
 			}
+
+			@Override
+			public boolean isConstant() {
+				return true;
+			}
 		};
 
-		BasicContextBuilder builder = new BasicContextBuilder();
-		handler.getAdditionalContext(access, builder);
-		builder.addContext(location);
-		builder.addContext(entity, new IReference<Entity>() {
-			@Nonnull
-			@Override
-			public Entity get() throws LuaException {
-				Entity accessEntity = pocket.getEntity();
-				if (accessEntity != entity) throw new LuaException("Entity has changed");
-				return accessEntity;
-			}
+		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
+			.withCostHandler(DefaultCostHandler.get(pocket))
+			.withModules(container, containerRef)
+			.addContext(ContextKeys.ORIGIN, new PocketPlayerOwnable(access))
+			.addContext(ContextKeys.ORIGIN, location)
+			.addContext(ContextKeys.ORIGIN, entity, new ConstantReference<Entity>() {
+				@Nonnull
+				@Override
+				public Entity get() throws LuaException {
+					Entity accessEntity = pocket.getEntity();
 
-			@Nonnull
-			@Override
-			public Entity safeGet() throws LuaException {
-				return get();
-			}
-		});
+					// TODO: Just do a null check?
+					if (accessEntity != entity || accessEntity == null) throw new LuaException("Entity has changed");
+					return accessEntity;
+				}
 
-		IUnbakedContext<IModuleContainer> context = registry.makeContext(
-			containerRef, cost, containerRef, builder.getReferenceArray()
-		);
+				@Nonnull
+				@Override
+				public Entity safeGet() throws LuaException {
+					return get();
+				}
+			});
 
-		IPartialContext<IModuleContainer> baked = new PartialContext<>(
-			container, cost, builder.getObjectsArray(), container
-		);
+		handler.getAdditionalContext(access, factory);
 
-		Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> paired = registry.getMethodsPaired(context, baked);
+		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), builder.getAttachments());
+			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), factory.getAttachments());
 		} else {
 			return null;
 		}
@@ -196,7 +199,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	private static final class PocketPeripheral extends TrackingWrapperPeripheral {
 		private final Entity entity;
 
-		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<IUnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
+		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
 			super(owner.getUpgradeID().toString(), owner, methods, factory, attachments);
 			this.entity = access.entity;
 			access.wrapper = this;
@@ -229,7 +232,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		@Nonnull
 		@Override
-		public Object getOwner() {
+		public Entity getOwner() {
 			return entity;
 		}
 
@@ -259,6 +262,32 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		@Override
 		public void queueEvent(@Nonnull String event, @Nullable Object... args) {
 			if (wrapper != null) wrapper.queueEvent(event, args);
+		}
+	}
+
+	public static class PocketPlayerOwnable extends ConstantReference<PocketPlayerOwnable> implements IPlayerOwnable {
+		private final PocketModuleAccess access;
+
+		public PocketPlayerOwnable(PocketModuleAccess access) {
+			this.access = access;
+		}
+
+		@Nullable
+		@Override
+		public GameProfile getOwningProfile() {
+			return PlayerHelpers.getProfile(access.getOwner());
+		}
+
+		@Nonnull
+		@Override
+		public PocketPlayerOwnable get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public PocketPlayerOwnable safeGet() throws LuaException {
+			return this;
 		}
 	}
 }

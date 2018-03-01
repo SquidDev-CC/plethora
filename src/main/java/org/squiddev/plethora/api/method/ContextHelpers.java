@@ -79,7 +79,8 @@ public final class ContextHelpers {
 			if (element == null) {
 				++i;
 			} else {
-				map.put(++i, context.makeChild(Reference.id(element)).getObject());
+				map.put(++i, context.makeChildId(element).getObject());
+				map.put(++i, context.makeChild(element, Reference.id(element)).getObject());
 			}
 		}
 

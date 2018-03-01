@@ -6,6 +6,7 @@ import ic2.core.IC2;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
@@ -15,7 +16,7 @@ import javax.annotation.Nullable;
  * Gets the tile from a particular position
  */
 @IConverter.Inject(value = TileEntity.class, modId = IC2.MODID)
-public class ConverterEnergyTile implements IConverter<TileEntity, IEnergyTile> {
+public class ConverterEnergyTile extends DynamicConverter<TileEntity, IEnergyTile> {
 	@Nullable
 	@Override
 	public IEnergyTile convert(@Nonnull TileEntity from) {

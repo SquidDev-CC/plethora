@@ -36,7 +36,7 @@ public class MethodsCanvas2D {
 
 		canvas.add(rectangle);
 
-		return MethodResult.result(baked.makeChild(rectangle.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(rectangle, rectangle.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(start:table, end:table[, color:number][, thickness:number]):table -- Create a new line.")
@@ -56,7 +56,7 @@ public class MethodsCanvas2D {
 
 		canvas.add(line);
 
-		return MethodResult.result(baked.makeChild(line.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(line, line.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.")
@@ -74,7 +74,7 @@ public class MethodsCanvas2D {
 
 		canvas.add(dot);
 
-		return MethodResult.result(baked.makeChild(dot.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(dot, dot.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(position:table, text:string, [, color:number][, size:number]):table -- Create a new text object.")
@@ -94,7 +94,7 @@ public class MethodsCanvas2D {
 
 		canvas.add(text);
 
-		return MethodResult.result(baked.makeChild(text.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(text, text.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(p1:table, p2:table, p3:table, [, color:number]):table -- Create a new triangle, composed of three points.")
@@ -115,7 +115,7 @@ public class MethodsCanvas2D {
 
 		canvas.add(triangle);
 
-		return MethodResult.result(baked.makeChild(triangle.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(triangle, triangle.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(points...:table, [, color:number]):table -- Create a new polygon, composed of many points.")
@@ -134,7 +134,7 @@ public class MethodsCanvas2D {
 		}
 
 		canvas.add(polygon);
-		return MethodResult.result(baked.makeChild(polygon.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(polygon, polygon.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(points...:table, [, color:number][, thickness:number]):table -- Create a new line loop, composed of many points.")
@@ -155,7 +155,7 @@ public class MethodsCanvas2D {
 		}
 
 		canvas.add(lines);
-		return MethodResult.result(baked.makeChild(lines.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(lines, lines.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(position:table, id:string[, damage:number][, scale:number]):table -- Create a item icon.")
@@ -178,7 +178,7 @@ public class MethodsCanvas2D {
 		model.setDamage(damage);
 
 		canvas.add(model);
-		return MethodResult.result(baked.makeChild(model.reference(canvas)).getObject());
+		return MethodResult.result(baked.makeChild(model, model.reference(canvas)).getObject());
 	}
 
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function():number, number -- Get the size of this canvas.")
