@@ -93,14 +93,13 @@ public class MethodsInventoryWorld {
 		World world = location.getWorld();
 		Vec3d pos = location.getLoc();
 		if (direction != null) {
-			pos = pos.addVector(
-				direction.getFrontOffsetX() * 0.6,
-				direction.getFrontOffsetY() * 0.6,
-				direction.getFrontOffsetZ() * 0.6
-			);
+			pos = pos.add(new Vec3d(direction.getDirectionVec()).scale(0.75));
 		}
 
 		EntityItem entity = new EntityItem(world, pos.x, pos.y, pos.z, stack.copy());
+		entity.motionX = 0;
+		entity.motionY = 0;
+		entity.motionZ = 0;
 		entity.setDefaultPickupDelay();
 		world.spawnEntity(entity);
 

@@ -82,7 +82,7 @@ public class MethodWrapper implements IMethodDescriptor {
 	private static final IMethodRegistry registry = PlethoraAPI.instance().methodRegistry();
 
 	@SuppressWarnings("unchecked")
-	static MethodResult doCallMethod(IMethod method, IUnbakedContext context, Object[] args) throws LuaException {
+	static MethodResult doCallMethod(IMethod method, IUnbakedContext<?> context, Object[] args) throws LuaException {
 		try {
 			CostHelpers.checkCost(context.getCostHandler(), registry.getBaseMethodCost(method));
 			return method.apply(context, args);

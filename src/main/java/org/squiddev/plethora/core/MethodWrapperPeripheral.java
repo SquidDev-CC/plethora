@@ -57,7 +57,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
 		IResultExecutor executor = factory.createExecutor(access);
 
-		UnbakedContext context = getContext(method);
+		UnbakedContext<?> context = getContext(method);
 		Object[] extraRef = getReferences(access, luaContext);
 
 		int totalSize = context.keys.length + extraRef.length;

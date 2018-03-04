@@ -25,7 +25,7 @@ public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject 
 
 	@Override
 	public Object[] callMethod(@Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
-		IUnbakedContext context = getContext(method);
+		IUnbakedContext<?> context = getContext(method);
 		MethodResult result = doCallMethod(getMethod(method), context, args);
 
 		return context.getExecutor().execute(result, luaContext);
