@@ -25,8 +25,10 @@ public class ConverterInventory extends ConstantConverter<IInventory, IItemHandl
 			return (IItemHandler) from;
 		}
 
+		// We could do this in ConverterItemHandler, but this is a constant so prefer it here.
 		if (from instanceof ICapabilityProvider && ((ICapabilityProvider) from).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
-			return null;
+			IItemHandler handler = ((ICapabilityProvider) from).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (handler != null) return handler;
 		}
 
 		return new InvWrapper(from);
