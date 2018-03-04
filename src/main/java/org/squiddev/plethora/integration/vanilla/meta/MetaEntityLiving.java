@@ -75,7 +75,7 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		if (object == null || object.isEmpty()) return null;
 
 		if (context instanceof IContext) {
-			return ((IContext) context).makeChildId(object).getObject();
+			return ((IContext<?>) context).makeChildId(object).getObject();
 		} else {
 			return ContextFactory.of(object, Reference.id(object)).getObject();
 		}

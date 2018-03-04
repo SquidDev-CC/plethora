@@ -71,7 +71,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 			references[context.keys.length + i] = extraRef[i];
 		}
 
-		UnbakedContext<?> full = new UnbakedContext(
+		UnbakedContext<?> full = new UnbakedContext<>(
 			context.target, keys, references, context.handler, context.modules, context.executor
 		);
 

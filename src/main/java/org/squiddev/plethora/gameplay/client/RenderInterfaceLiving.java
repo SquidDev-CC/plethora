@@ -76,6 +76,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		inject(EntityMooshroom.class, 0, 4, -2);
 		injectMonocle(EntityMule.class, -1.5f, -4.5f, 0, 0, -90, 0);
 		inject(EntityOcelot.class, -1, 3, 0);
+		injectMonocle(EntityParrot.class, -3, 2, -2, 0, -90, 0);
 		inject(EntityPig.class, 0, 4, -4);
 		injectMonocle(EntityRabbit.class, 0, 5, 1.5f, 0, 0, 0);
 		inject(EntitySheep.class, 0, 2, -2);
@@ -180,6 +181,8 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 			return ((ModelShulker) model).head;
 		} else if (model instanceof ModelIllager) {
 			return ((ModelIllager) model).head;
+		} else if (model instanceof ModelParrot) {
+			return ObfuscationReflectionHelper.getPrivateValue(ModelParrot.class, (ModelParrot) model, "field_192768_e");
 		} else if (model instanceof ModelBiped) {
 			return ((ModelBiped) model).bipedHead;
 		} else {

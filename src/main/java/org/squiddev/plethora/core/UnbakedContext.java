@@ -31,7 +31,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 	}
 
 	UnbakedContext<?> withIndex(int index) {
-		return index == target ? this : new UnbakedContext(index, keys, references, handler, modules, executor);
+		return index == target ? this : new UnbakedContext<>(index, keys, references, handler, modules, executor);
 	}
 
 	@Nonnull
