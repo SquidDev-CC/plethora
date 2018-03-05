@@ -23,8 +23,8 @@ public class TransferTileEntity implements ITransferProvider<TileEntity> {
 
 	public TransferTileEntity() {
 		Map<String, EnumFacing> mappings = this.mappings = Maps.newHashMap();
-		mappings.put("bottom", EnumFacing.DOWN);
-		mappings.put("top", EnumFacing.UP);
+		mappings.put("below", EnumFacing.DOWN);
+		mappings.put("above", EnumFacing.UP);
 		for (EnumFacing facing : EnumFacing.VALUES) {
 			mappings.put(facing.getName(), facing);
 		}
