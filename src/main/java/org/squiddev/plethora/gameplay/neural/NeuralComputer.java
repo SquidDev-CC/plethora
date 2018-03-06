@@ -6,6 +6,7 @@ import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -27,7 +28,7 @@ import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.*;
 public class NeuralComputer extends ServerComputer {
 	private WeakReference<EntityLivingBase> entity;
 
-	private final ItemStack[] stacks = new ItemStack[INV_SIZE];
+	private final NonNullList<ItemStack> stacks = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
 	private int stackHash;
 
 	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
@@ -89,7 +90,7 @@ public class NeuralComputer extends ServerComputer {
 		if (dirtyStatus != 0) {
 			for (int slot = 0; slot < INV_SIZE; slot++) {
 				if ((dirtyStatus & (1 << slot)) == 1 << slot) {
-					stacks[slot] = handler.getStackInSlot(slot);
+					stacks.set(slot, handler.getStackInSlot(slot));
 				}
 			}
 
@@ -98,8 +99,8 @@ public class NeuralComputer extends ServerComputer {
 
 		// Update peripherals
 		for (int slot = 0; slot < PERIPHERAL_SIZE; slot++) {
-			ItemStack peripheral = stacks[slot];
-			if (peripheral == null || peripheral.isEmpty()) continue;
+			ItemStack peripheral = stacks.get(slot);
+			if (peripheral.isEmpty()) continue;
 
 			IPeripheralHandler peripheralHandler = peripheral.getCapability(Constants.PERIPHERAL_HANDLER_CAPABILITY, null);
 			if (peripheralHandler != null) {
@@ -116,7 +117,7 @@ public class NeuralComputer extends ServerComputer {
 			for (int slot = 0; slot < PERIPHERAL_SIZE; slot++) {
 				if ((dirtyStatus & (1 << slot)) == 1 << slot) {
 					// We skip the "back" slot
-					setPeripheral(slot < BACK ? slot : slot + 1, buildPeripheral(stacks[slot]));
+					setPeripheral(slot < BACK ? slot : slot + 1, buildPeripheral(stacks.get(slot)));
 				}
 			}
 

@@ -19,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -364,17 +365,17 @@ public class Helpers {
 		}
 	}
 
-	public static int hashStack(ItemStack stack) {
+	public static int hashStack(@Nonnull ItemStack stack) {
 		int hash = stack.getItem().hashCode() * 31 + stack.getItemDamage();
 		if (stack.hasTagCompound()) hash = hash * 31 + stack.getTagCompound().hashCode();
 		return hash;
 	}
 
-	public static int hashStacks(ItemStack[] stacks) {
+	public static int hashStacks(NonNullList<ItemStack> stacks) {
 		int hash = 0;
 		for (ItemStack stack : stacks) {
 			hash *= 31;
-			if (stack != null) hash += Helpers.hashStack(stack);
+			if (!stack.isEmpty()) hash += Helpers.hashStack(stack);
 		}
 		return hash;
 	}

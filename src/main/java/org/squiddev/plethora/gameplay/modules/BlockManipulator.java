@@ -233,7 +233,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = manipulator.getStack(i);
-			if (stack == null) continue;
+			if (stack.isEmpty()) continue;
 
 			stack = stacks[i] = stack.copy();
 
@@ -287,7 +287,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			.withCostHandler(CostHelpers.getCostHandler(manipulator))
 			.withModules(container, containerRef)
 			.addContext(ContextKeys.ORIGIN, te, tile(te))
-			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new WorldLocation(world, blockPos));
+			.addContext(ContextKeys.ORIGIN, new WorldLocation(world, blockPos));
 
 		for (IModuleHandler handler : moduleHandlers) {
 			ResourceLocation module = handler.getModule();

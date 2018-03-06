@@ -6,10 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -24,7 +21,6 @@ import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.BOX_EXPAND;
@@ -33,7 +29,7 @@ import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
 
 public final class TileManipulator extends TileBase implements ITickable, IPlayerOwnable {
 	private ManipulatorType type;
-	private ItemStack[] stacks;
+	private NonNullList<ItemStack> stacks;
 	private GameProfile profile;
 	private int stackHash;
 
@@ -56,7 +52,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 		if (this.type != null) return;
 
 		this.type = type;
-		stacks = new ItemStack[type.size()];
+		stacks = NonNullList.withSize(type.size(), ItemStack.EMPTY);
 	}
 
 	public ManipulatorType getType() {
@@ -70,8 +66,9 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 			: EnumFacing.DOWN;
 	}
 
+	@Nonnull
 	public ItemStack getStack(int slot) {
-		return stacks[slot];
+		return stacks.get(slot);
 	}
 
 	public int getStackHash() {
@@ -109,9 +106,9 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 	@Override
 	protected void writeDescription(NBTTagCompound tag) {
 		tag.setInteger("type", type.ordinal());
-		for (int i = 0; i < stacks.length; i++) {
-			ItemStack stack = stacks[i];
-			if (stack != null) {
+		for (int i = 0; i < stacks.size(); i++) {
+			ItemStack stack = stacks.get(i);
+			if (!stack.isEmpty()) {
 				tag.setTag("stack" + i, stack.serializeNBT());
 			} else {
 				tag.removeTag("stack" + i);
@@ -137,11 +134,11 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 
 		if (type == null) return;
 
-		for (int i = 0; i < stacks.length; i++) {
+		for (int i = 0; i < stacks.size(); i++) {
 			if (tag.hasKey("stack" + i)) {
-				stacks[i] = new ItemStack(tag.getCompoundTag("stack" + i));
+				stacks.set(i, new ItemStack(tag.getCompoundTag("stack" + i)));
 			} else {
-				stacks[i] = null;
+				stacks.set(i, ItemStack.EMPTY);
 			}
 		}
 
@@ -167,20 +164,21 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 		for (int i = 0; i < type.size(); i++) {
 			AxisAlignedBB box = boxes[i];
 			if (box.grow(BOX_EXPAND, BOX_EXPAND, BOX_EXPAND).contains(hit)) {
-				final ItemStack stack = stacks[i];
+				final ItemStack stack = stacks.get(i);
 				if (heldStack.isEmpty() && !stack.isEmpty()) {
 					if (!player.capabilities.isCreativeMode) {
-						Helpers.spawnItemStack(getWorld(), pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+						Vec3d offsetPos = new Vec3d(pos).add(new Vec3d(getFacing().getOpposite().getDirectionVec()).scale(OFFSET));
+						Helpers.spawnItemStack(getWorld(), offsetPos.x, offsetPos.y, offsetPos.z, stack);
 					}
 
-					stacks[i] = ItemStack.EMPTY;
+					stacks.set(i, ItemStack.EMPTY);
 					stackHash = Helpers.hashStacks(stacks);
 					markForUpdate();
 
 					break;
-				} else if ((stack == null || stack.isEmpty()) && !heldStack.isEmpty() && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
-					stacks[i] = heldStack.copy();
-					stacks[i].setCount(1);
+				} else if (stack.isEmpty() && !heldStack.isEmpty() && heldStack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null)) {
+					stacks.set(i, heldStack.copy());
+					stacks.get(i).setCount(1);
 					stackHash = Helpers.hashStacks(stacks);
 
 					if (!player.capabilities.isCreativeMode) {
@@ -204,13 +202,14 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 	public void broken() {
 		if (stacks == null) return;
 
+		Vec3d offsetPos = new Vec3d(pos).add(new Vec3d(getFacing().getOpposite().getDirectionVec()).scale(OFFSET));
 		for (ItemStack stack : stacks) {
 			if (stack != null) {
-				Helpers.spawnItemStack(getWorld(), pos.getX(), pos.getY() + OFFSET, pos.getZ(), stack);
+				Helpers.spawnItemStack(getWorld(), offsetPos.x, offsetPos.y, offsetPos.z, stack);
 			}
 		}
 
-		Arrays.fill(stacks, null);
+		stacks.clear();
 		stackHash = 0;
 	}
 

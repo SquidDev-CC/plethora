@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
@@ -105,8 +106,8 @@ public final class NeuralHelpers {
 		return slot == null ? ItemStack.EMPTY : slot.getStack();
 	}
 
-	public static IPeripheral buildPeripheral(@Nullable ItemStack stack) {
-		if (stack == null || stack.isEmpty()) return null;
+	public static IPeripheral buildPeripheral(@Nonnull ItemStack stack) {
+		if (stack.isEmpty()) return null;
 
 		IPeripheral peripheral = stack.getCapability(Constants.PERIPHERAL_CAPABILITY, null);
 		if (peripheral != null) return peripheral;
@@ -117,17 +118,17 @@ public final class NeuralHelpers {
 		return null;
 	}
 
-	public static IPeripheral buildModules(final NeuralComputer computer, final ItemStack[] inventory, Entity owner) {
-		final ItemStack[] stacks = new ItemStack[MODULE_SIZE];
+	public static IPeripheral buildModules(final NeuralComputer computer, final NonNullList<ItemStack> inventory, Entity owner) {
+		final NonNullList<ItemStack> stacks = NonNullList.withSize(MODULE_SIZE, ItemStack.EMPTY);
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
 		final int stackHash = computer.getStackHash();
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
-			ItemStack stack = inventory[PERIPHERAL_SIZE + i];
-			if (stack == null || stack.isEmpty()) continue;
+			ItemStack stack = inventory.get(PERIPHERAL_SIZE + i);
+			if (stack.isEmpty()) continue;
 
-			stack = stacks[i] = stack.copy();
+			stacks.set(i, stack = stack.copy());
 
 			IModuleHandler moduleHandler = stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 			if (moduleHandler == null) continue;
@@ -150,9 +151,9 @@ public final class NeuralHelpers {
 			@Override
 			public IModuleContainer get() throws LuaException {
 				for (int i = 0; i < MODULE_SIZE; i++) {
-					ItemStack oldStack = stacks[i];
-					ItemStack newStack = inventory[PERIPHERAL_SIZE + i];
-					if (oldStack != null && !ItemStack.areItemStacksEqual(stacks[i], newStack)) {
+					ItemStack oldStack = stacks.get(i);
+					ItemStack newStack = inventory.get(PERIPHERAL_SIZE + i);
+					if (!oldStack.isEmpty() && !ItemStack.areItemStacksEqual(oldStack, newStack)) {
 						IModuleHandler moduleHandler = oldStack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 						throw new LuaException("The " + moduleHandler.getModule() + " module has been removed");
 					}
