@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
@@ -55,20 +54,17 @@ public final class MethodsChat {
 			} else if (entity.getEntityWorld() instanceof WorldServer) {
 				if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
 
-				BlockPos pos = entity.getPosition();
-
-					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
-					GameProfile owner = null;
-					if (ownable != null) owner = ownable.getOwningProfile();
-					if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
-					name = entity.getDisplayName().createCopy();
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
-					fakePlayer.setDisplayName(String.format("[%d, %d, %d]%s", pos.getX(), pos.getY(), pos.getZ(), name.getUnformattedText()));
-					fakePlayer.load(entity);
-					player = fakePlayer;
-				} else {
-					throw new LuaException("Cannot post to chat");
-				}
+				IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+				GameProfile owner = null;
+				if (ownable != null) owner = ownable.getOwningProfile();
+				if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
+				name = entity.getDisplayName().createCopy();
+				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
+				fakePlayer.load(entity);
+				player = fakePlayer;
+			} else {
+				throw new LuaException("Cannot post to chat");
+			}
 
 			// Create the chat event and post to chat
 			TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));

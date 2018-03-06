@@ -326,9 +326,9 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 					syncPositions(true);
 
 					Entity shooter = getShooter();
-					DamageSource source = shooter == null || shooter instanceof PlethoraFakePlayer ?
-						new EntityDamageSource("laser", this) :
-						new EntityDamageSourceIndirect("laser", this, shooter);
+					DamageSource source = shooter == null
+						? new EntityDamageSource("laser", this)
+						: new EntityDamageSourceIndirect("laser", this, shooter);
 
 					source.setProjectile();
 

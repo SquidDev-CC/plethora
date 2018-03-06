@@ -4,18 +4,26 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.stats.StatBase;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -43,28 +51,22 @@ public class PlethoraFakePlayer extends FakePlayer {
 	private int currentDamage = -1;
 	private int currentDamageState = -1;
 
-	private String displayName;
-
 	public PlethoraFakePlayer(WorldServer world, Entity owner, GameProfile profile) {
 		super(world, profile != null && profile.isComplete() ? profile : PROFILE);
 		connection = new FakeNetHandler(this);
 		setSize(0, 0);
-		this.owner = owner == null ? null : new WeakReference<>(owner);
+		if (owner != null) {
+			setCustomNameTag(owner.getName());
+			this.owner = new WeakReference<>(owner);
+		} else {
+			this.owner = null;
+		}
 	}
 
 	@Deprecated
 	public PlethoraFakePlayer(World world) {
 		super((WorldServer) world, PROFILE);
 		this.owner = null;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	@Override
-	public String getDisplayNameString() {
-		return displayName != null ? displayName : super.getDisplayNameString();
 	}
 
 	@Override
@@ -92,6 +94,33 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 	@Override
 	public void playSound(@Nonnull SoundEvent soundIn, float volume, float pitch) {
+	}
+
+	@Nonnull
+	@Override
+	protected HoverEvent getHoverEvent() {
+		NBTTagCompound tag = new NBTTagCompound();
+		Entity owner = getOwner();
+		if (owner != null) {
+			tag.setString("id", owner.getCachedUniqueIdString());
+			tag.setString("name", owner.getName());
+			ResourceLocation type = EntityList.getKey(owner);
+			if (type != null) tag.setString("type", type.toString());
+		} else {
+			tag.setString("id", getCachedUniqueIdString());
+			tag.setString("name", getName());
+		}
+
+		return new HoverEvent(HoverEvent.Action.SHOW_ENTITY, new TextComponentString(tag.toString()));
+	}
+
+	@Override
+	public void addStat(StatBase stat, int count) {
+		MinecraftServer server = world.getMinecraftServer();
+		if (server != null && getGameProfile() != PROFILE) {
+			EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(getUniqueID());
+			if (player != null) player.addStat(stat, count);
+		}
 	}
 
 	@Override
