@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -378,7 +380,14 @@ public final class ItemModule extends ItemBase {
 		}
 
 		if (ConfigGameplay.Kinetic.launchFloatReset && entity instanceof EntityPlayerMP) {
-			((EntityPlayerMP) entity).connection.floatingTickCount = 0;
+			try {
+				// Set .floatingTickCount to 0. Ideally we could do this with access transformers, but
+				// it doesn't appear to work under all environments
+				ObfuscationReflectionHelper.setPrivateValue(NetHandlerPlayServer.class,
+					((EntityPlayerMP) entity).connection, 0, "field_147365_f");
+			} catch (RuntimeException ignored) {
+				// This'll be logged by FML, so we'll ignore it for now.
+			}
 		}
 	}
 }
