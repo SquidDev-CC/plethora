@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -17,11 +18,13 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
+import org.squiddev.plethora.api.module.ModuleContainerMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.vanilla.FakePlayerProviderEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,8 +35,8 @@ import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
 
 public final class MethodsChat {
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Entity.class,
+	@ModuleContainerMethod.Inject(
+		value = PlethoraModules.CHAT_S,
 		doc = "function(message:string) -- Send a message to everyone"
 	)
 	@Nonnull
@@ -46,6 +49,7 @@ public final class MethodsChat {
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
 				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
+			IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
 
 				EntityPlayerMP player;
 				ITextComponent name;
@@ -55,26 +59,20 @@ public final class MethodsChat {
 					name = entity.getDisplayName();
 					player = (EntityPlayerMP) entity;
 
-				} else if (entity.worldObj instanceof WorldServer) {
+				} else if (entity != null && entity.worldObj instanceof WorldServer) {
 					if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
 
-					BlockPos pos = entity.getPosition();
+				GameProfile owner = null;
+				if (ownable != null) owner = ownable.getOwningProfile();
+				if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
+				name = entity.getDisplayName().createCopy();
 
-					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
-					GameProfile owner = null;
-					if (ownable != null) owner = ownable.getOwningProfile();
-					if (owner == null) owner = PlethoraFakePlayer.PROFILE;
-
-					// We include the position of the entity
-					name = entity.getDisplayName().createCopy();
-
-					PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.worldObj, entity, owner);
-					fakePlayer.setDisplayName(String.format("[%d, %d, %d] %s", pos.getX(), pos.getY(), pos.getZ(), name.getUnformattedText()));
-					fakePlayer.load(entity);
-					player = fakePlayer;
-				} else {
-					throw new LuaException("Cannot post to chat");
-				}
+				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
+				FakePlayerProviderEntity.load(fakePlayer, entity);
+				player = fakePlayer;
+			} else {
+				throw new LuaException("Cannot post to chat");
+			}
 
 				// Create the chat event and post to chat
 				TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
@@ -88,7 +86,7 @@ public final class MethodsChat {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Entity.class,
+		module = PlethoraModules.CHAT_S, target = ICommandSender.class,
 		doc = "function(message:string) -- Send a message to yourself"
 	)
 	@Nonnull
@@ -100,8 +98,8 @@ public final class MethodsChat {
 			@Override
 			public MethodResult call() throws Exception {
 				IContext<IModuleContainer> context = unbaked.bake();
-				Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
-				entity.addChatMessage(ForgeHooks.newChatWithLinks(message));
+				ICommandSender sender = getOriginOr(context, PlethoraModules.CHAT_S, ICommandSender.class);
+				sender.addChatMessage(ForgeHooks.newChatWithLinks(message));
 				return MethodResult.empty();
 			}
 		});

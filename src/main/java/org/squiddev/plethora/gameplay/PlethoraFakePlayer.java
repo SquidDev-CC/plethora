@@ -4,34 +4,32 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.stats.StatBase;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.utils.FakeNetHandler;
 
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
 
 public class PlethoraFakePlayer extends FakePlayer {
-	private static final WeakHashMap<Entity, PlethoraFakePlayer> registeredPlayers = new WeakHashMap<Entity, PlethoraFakePlayer>();
-
 	public static final GameProfile PROFILE = new GameProfile(Constants.FAKEPLAYER_UUID, "[" + Plethora.ID + "]");
 
 	private final WeakReference<Entity> owner;
@@ -66,6 +64,50 @@ public class PlethoraFakePlayer extends FakePlayer {
 		return displayName != null ? displayName : super.getDisplayNameString();
 	}
 
+	@Nonnull
+	@Override
+	protected HoverEvent getHoverEvent() {
+		NBTTagCompound tag = new NBTTagCompound();
+		Entity owner = getOwner();
+		if (owner != null) {
+			tag.setString("id", owner.getCachedUniqueIdString());
+			tag.setString("name", owner.getName());
+			String type = EntityList.getEntityString(owner);
+			if (type != null) tag.setString("type", type);
+		} else {
+			tag.setString("id", getCachedUniqueIdString());
+			tag.setString("name", getName());
+		}
+
+		return new HoverEvent(HoverEvent.Action.SHOW_ENTITY, new TextComponentString(tag.toString()));
+	}
+
+
+	public Entity getOwner() {
+		return owner == null ? null : owner.get();
+	}
+
+	//region FakePlayer overrides
+	@Override
+	public void addStat(StatBase stat, int count) {
+		MinecraftServer server = getEntityWorld().getMinecraftServer();
+		if (server != null && getGameProfile() != PROFILE) {
+			EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(getUniqueID());
+			if (player != null) player.addStat(stat, count);
+		}
+	}
+
+	@Override
+	public Vec3d getPositionVector() {
+		return new Vec3d(posX, posY, posZ);
+	}
+
+
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+	}
+
 	@Override
 	public boolean canAttackPlayer(EntityPlayer player) {
 		return true;
@@ -93,20 +135,12 @@ public class PlethoraFakePlayer extends FakePlayer {
 	public void playSound(@Nonnull SoundEvent soundIn, float volume, float pitch) {
 	}
 
-	@Override
-	public Vec3d getPositionVector() {
-		return new Vec3d(posX, posY, posZ);
+	public void updateCooldown() {
+		ticksSinceLastSwing = 20;
 	}
+	//endregion
 
-	public Pair<Boolean, String> attack(EntityLivingBase entity, Entity hitEntity) {
-		if (hitEntity != null) {
-			attackTargetEntityWithCurrentItem(hitEntity);
-			return Pair.of(true, "entity");
-		}
-
-		return Pair.of(false, "Nothing to attack here");
-	}
-
+	//region Dig
 	private void setState(Block block, BlockPos pos) {
 		interactionManager.cancelDestroyingBlock();
 		interactionManager.durabilityRemainingOnBlock = -1;
@@ -158,86 +192,5 @@ public class PlethoraFakePlayer extends FakePlayer {
 
 		return Pair.of(false, "Nothing to dig here");
 	}
-
-	public void load(Entity from) {
-		worldObj = from.worldObj;
-		setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
-		rotationYawHead = rotationYaw;
-		setSize(from.width, from.height);
-		eyeHeight = from.height;
-
-		setSneaking(from.isSneaking());
-
-		inventory.currentItem = 0;
-
-		if (from instanceof EntityLivingBase) {
-			EntityLivingBase living = (EntityLivingBase) from;
-			for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
-				ItemStack stack = living.getItemStackFromSlot(slot);
-
-				if (stack != null) {
-					setItemStackToSlot(slot, stack.copy());
-					getAttributeMap().applyAttributeModifiers(stack.getAttributeModifiers(slot));
-				} else {
-					setItemStackToSlot(slot, null);
-				}
-			}
-		}
-
-		inventory.markDirty();
-	}
-
-	public void unload(EntityLivingBase from) {
-		inventory.currentItem = 0;
-		setSize(0, 0);
-		eyeHeight = getDefaultEyeHeight();
-
-
-		for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
-			ItemStack stack = getItemStackFromSlot(slot);
-			if (!ItemStack.areItemStacksEqual(stack, from.getItemStackFromSlot(slot))) {
-				from.setItemStackToSlot(slot, stack);
-			}
-
-			if (stack != null) {
-				getAttributeMap().removeAttributeModifiers(stack.getAttributeModifiers(slot));
-			}
-		}
-
-		ItemStack[] main = inventory.mainInventory;
-		IItemHandler handler = new EquipmentInvWrapper(from);
-		for (int i = 1; i < main.length; i++) {
-			ItemStack stack = main[i];
-			for (int j = 0; j < 5; j++) {
-				if (stack == null || stack.stackSize <= 0) break;
-				stack = handler.insertItem(j, stack, false);
-			}
-
-			if (stack != null && stack.stackSize > 0) {
-				dropItem(stack, true, false);
-			}
-
-			main[i] = null;
-		}
-
-		inventory.markDirty();
-	}
-
-	public Entity getOwner() {
-		return owner == null ? null : owner.get();
-	}
-
-	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity, IPlayerOwnable ownable) {
-		return getPlayer(world, entity, ownable == null ? null : ownable.getOwningProfile());
-	}
-
-	public static PlethoraFakePlayer getPlayer(WorldServer world, Entity entity, GameProfile profile) {
-		PlethoraFakePlayer fake = registeredPlayers.get(entity);
-		if (fake == null) {
-			fake = new PlethoraFakePlayer(world, entity, profile);
-			registeredPlayers.put(entity, fake);
-		}
-
-		return fake;
-	}
+	//endregion
 }

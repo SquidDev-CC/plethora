@@ -37,12 +37,12 @@ import java.util.List;
 /**
  * Wraps a module item as a turtle upgrade.
  */
-class TurtleUpgradeModule implements ITurtleUpgrade {
+public class TurtleUpgradeModule implements ITurtleUpgrade {
 	private final IModuleHandler handler;
 	private final ItemStack stack;
 	private final String adjective;
 
-	TurtleUpgradeModule(@Nonnull ItemStack stack, @Nonnull IModuleHandler handler, @Nonnull String adjective) {
+	protected TurtleUpgradeModule(@Nonnull ItemStack stack, @Nonnull IModuleHandler handler, @Nonnull String adjective) {
 		this.handler = handler;
 		this.stack = stack;
 		this.adjective = adjective;
@@ -76,14 +76,14 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 		return stack;
 	}
 
+	protected boolean isBlacklisted() {
+		String moduleName = handler.getModule().toString();
+		return ConfigCore.Blacklist.blacklistModulesTurtle.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName);
+	}
+
 	@Override
 	public IPeripheral createPeripheral(@Nonnull final ITurtleAccess turtle, @Nonnull final TurtleSide side) {
-		final ResourceLocation thisModule = handler.getModule();
-
-		String moduleName = thisModule.toString();
-		if (ConfigCore.Blacklist.blacklistModulesTurtle.contains(moduleName) || ConfigCore.Blacklist.blacklistModules.contains(moduleName)) {
-			return null;
-		}
+		if (isBlacklisted()) return null;
 
 		MethodRegistry registry = MethodRegistry.instance;
 
@@ -116,7 +116,7 @@ class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), factory.getAttachments());
+			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(handler.getModule().toString(), this, paired, new ContextDelayedExecutor(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
