@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.refinedstorage;
 
 import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
+import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
@@ -10,11 +11,10 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.integration.ItemFingerprint;
+import org.squiddev.plethora.integration.vanilla.NullableItemStack;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MethodsNetwork {
 	@BasicObjectMethod.Inject(
@@ -46,13 +46,27 @@ public class MethodsNetwork {
 		doc = "function():table -- List all items which are stored in the network"
 	)
 	public static Object[] listAvailableItems(IContext<INetwork> context, Object[] args) {
-		Collection<ItemStack> items = context.getTarget().getItemStorageCache().getList().getStacks();
+		INetwork network = context.getTarget();
+		Collection<ItemStack> items = network.getItemStorageCache().getList().getStacks();
+		Set<ItemIdentity> seen = new HashSet<>();
 
 		int i = 0;
 		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
 		for (ItemStack stack : items) {
+			seen.add(new ItemIdentity(stack));
 			output.put(++i, MetaItemBasic.getBasicProperties(stack));
 		}
+
+		for (ICraftingPattern pattern : network.getCraftingManager().getPatterns()) {
+			for (ItemStack stack : pattern.getOutputs()) {
+				if (stack != null && seen.add(new ItemIdentity(stack))) {
+					Map<Object, Object> result = MetaItemBasic.getBasicProperties(stack);
+					result.put("count", 0);
+					output.put(++i, result);
+				}
+			}
+		}
+
 		return new Object[]{output};
 	}
 
@@ -68,11 +82,23 @@ public class MethodsNetwork {
 
 		return MethodResult.nextTick(() -> {
 			IContext<INetwork> baked = context.bake();
-			ItemStack stack = findStack(baked.getTarget(), fingerprint);
+			INetwork network = baked.getTarget();
 
-			return stack == null
-				? MethodResult.empty()
-				: MethodResult.result(baked.makeChildId(stack).getObject());
+			for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
+				if (fingerprint.matches(stack)) {
+					return MethodResult.result(baked.makeChildId(NullableItemStack.normal(stack)).getObject());
+				}
+			}
+
+			for (ICraftingPattern pattern : network.getCraftingManager().getPatterns()) {
+				for (ItemStack stack : pattern.getOutputs()) {
+					if (fingerprint.matches(stack)) {
+						return MethodResult.result(baked.makeChildId(NullableItemStack.empty(stack)).getObject());
+					}
+				}
+			}
+
+			return MethodResult.empty();
 		});
 	}
 
@@ -88,12 +114,23 @@ public class MethodsNetwork {
 
 		return MethodResult.nextTick(() -> {
 			IContext<INetwork> baked = context.bake();
+			INetwork network = baked.getTarget();
+			Set<ItemIdentity> seen = new HashSet<>();
 
 			int i = 0;
 			Map<Integer, Object> out = Maps.newHashMap();
-			for (ItemStack stack : baked.getTarget().getItemStorageCache().getList().getStacks()) {
+			for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
 				if (fingerprint.matches(stack)) {
-					out.put(++i, baked.makeChildId(stack).getObject());
+					seen.add(new ItemIdentity(stack));
+					out.put(++i, baked.makeChildId(NullableItemStack.normal(stack)).getObject());
+				}
+			}
+
+			for (ICraftingPattern pattern : network.getCraftingManager().getPatterns()) {
+				for (ItemStack stack : pattern.getOutputs()) {
+					if (stack != null && fingerprint.matches(stack) && seen.add(new ItemIdentity(stack))) {
+						out.put(++i, baked.makeChildId(NullableItemStack.empty(stack)).getObject());
+					}
 				}
 			}
 
@@ -115,13 +152,5 @@ public class MethodsNetwork {
 		}
 
 		return new Object[]{output};
-	}
-
-	private static ItemStack findStack(INetwork network, ItemFingerprint fingerprint) {
-		for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
-			if (fingerprint.matches(stack)) return stack;
-		}
-
-		return null;
 	}
 }
