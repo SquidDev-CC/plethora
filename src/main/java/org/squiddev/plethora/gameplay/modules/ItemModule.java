@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -204,6 +205,15 @@ public final class ItemModule extends ItemBase {
 		for (int id : TURTLE_MODULES) {
 			ItemStack stack = new ItemStack(this, 1, id);
 			registry.registerTurtleUpgrade(stack);
+		}
+
+		{
+			ItemStack stack = new ItemStack(this, 1, KINETIC_ID);
+			ComputerCraftAPI.registerTurtleUpgrade(new TurtleUpgradeKinetic(
+				stack,
+				stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null),
+				stack.getUnlocalizedName() + ".adjective")
+			);
 		}
 
 		for (int id : POCKET_MODULES) {
