@@ -2,7 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -38,10 +38,10 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 		result.put("yaw", entity.rotationYaw);
 
 		if (location != null && location.getWorld() == entity.getEntityWorld()) {
-			BlockPos pos = location.getPos();
-			result.put("x", entity.posX - pos.getX());
-			result.put("y", entity.posY - pos.getY());
-			result.put("z", entity.posZ - pos.getZ());
+			Vec3d pos = location.getLoc();
+			result.put("x", entity.posX - pos.x);
+			result.put("y", entity.posY - pos.y);
+			result.put("z", entity.posZ - pos.z);
 		}
 
 		return result;
