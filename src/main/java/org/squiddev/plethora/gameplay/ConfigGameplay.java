@@ -51,6 +51,12 @@ public final class ConfigGameplay {
 		@Range(min = 0)
 		public static double damage;
 
+		/**
+		 * The maximum time in ticks a laser can exist for before it'll despawn.
+		 */
+		@DefaultInt(5 * 20)
+		@Range(min = 0)
+		public static int lifetime;
 	}
 
 	public static class Kinetic {

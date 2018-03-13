@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Random;
 
 public final class EntityLaser extends Entity implements IProjectile, IPlayerOwnable {
-	private static final int TICKS_EXISTED = 30 * 20;
 	private static final Random random = new Random();
 
 	@Nullable
@@ -242,7 +241,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 			setPosition(posX, posY, posZ);
 		}
 
-		if (!worldObj.isRemote && (potency <= 0 || ticksExisted > TICKS_EXISTED)) {
+		if (!worldObj.isRemote && (potency <= 0 || ticksExisted > ConfigGameplay.Laser.lifetime)) {
 			setDead();
 		}
 	}

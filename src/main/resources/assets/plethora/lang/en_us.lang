@@ -108,6 +108,7 @@ gui.config.plethora.laser.minimumPotency=Minimum potency
 gui.config.plethora.laser.maximumPotency=Maximum potency
 gui.config.plethora.laser.cost=Cost
 gui.config.plethora.laser.damage=Damage
+gui.config.plethora.laser.lifetime=Lifetime
 
 gui.config.plethora.kinetic=Kinetic augment
 gui.config.plethora.kinetic.launchMax=Maximum launch factor
