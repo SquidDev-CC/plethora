@@ -199,8 +199,15 @@ public final class ConfigGameplay {
 		public static boolean allowFormatting;
 
 		/**
-		 * Whether mobs are allowed to post chat messages. Otherwise
-		 * this is just limited to players.
+		 * Whether offline players are allowed to post chat messages.
+		 * Otherwise this is just limited to those who are online players.
+		 */
+		@DefaultBoolean(true)
+		public static boolean allowOffline;
+
+		/**
+		 * Whether mobs are allowed to post chat messages.
+		 * Otherwise this is just limited to players.
 		 */
 		@DefaultBoolean(true)
 		public static boolean allowMobs;

@@ -12,6 +12,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -24,6 +25,7 @@ import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.FakePlayerProviderEntity;
+import org.squiddev.plethora.integration.vanilla.FakePlayerProviderLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,28 +46,42 @@ public final class MethodsChat {
 
 		return MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> context = unbaked.bake();
+
+			// If we've got an entity, just use that
+			@Nullable
 			Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
-			IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+			@Nullable
+			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+
+			IPlayerOwnable moduleOwner = context.getContext(PlethoraModules.CHAT_S, IPlayerOwnable.class);
+			GameProfile moduleProfile = moduleOwner == null ? null : moduleOwner.getOwningProfile();
 
 			EntityPlayerMP player;
 			ITextComponent name;
 
 			// Attempt to guess who is posting it and their position.
 			if (entity instanceof EntityPlayerMP) {
+				// If we've got some player, go ahead as normal
 				name = entity.getDisplayName();
 				player = (EntityPlayerMP) entity;
-
-			} else if (entity != null && entity.getEntityWorld() instanceof WorldServer) {
-				if (!ConfigGameplay.Chat.allowMobs) throw new LuaException("Mobs cannot post to chat");
-
-				GameProfile owner = null;
-				if (ownable != null) owner = ownable.getOwningProfile();
+			} else if (ConfigGameplay.Chat.allowMobs && entity != null && entity.getEntityWorld() instanceof WorldServer) {
+				IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+				GameProfile owner = ownable == null ? null : ownable.getOwningProfile();
 				if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
+
 				name = entity.getDisplayName().createCopy();
 
 				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
 				FakePlayerProviderEntity.load(fakePlayer, entity);
 				player = fakePlayer;
+			} else if (ConfigGameplay.Chat.allowOffline && moduleProfile != null && location != null && location.getWorld() instanceof WorldServer) {
+				// If we've got a location and a game profile _associated with this module_ then we use that
+				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) location.getWorld(), null, moduleProfile);
+				fakePlayer.setCustomNameTag(moduleProfile.getName());
+				FakePlayerProviderLocation.load(fakePlayer, location);
+				player = fakePlayer;
+
+				name = fakePlayer.getDisplayName();
 			} else {
 				throw new LuaException("Cannot post to chat");
 			}

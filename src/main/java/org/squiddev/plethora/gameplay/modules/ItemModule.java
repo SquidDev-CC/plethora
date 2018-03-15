@@ -1,6 +1,8 @@
 package org.squiddev.plethora.gameplay.modules;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,11 +32,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
+import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
+import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
@@ -46,6 +50,7 @@ import org.squiddev.plethora.gameplay.modules.glasses.*;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import java.util.Arrays;
@@ -96,8 +101,8 @@ public final class ItemModule extends ItemBase {
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
 			case CHAT_ID:
-				if (!world.isRemote && !(player instanceof FakePlayer)) {
-					if (player.isSneaking()) {
+				if (!world.isRemote) {
+					if (player.isSneaking() && !player.getGameProfile().getName().startsWith("[")) {
 						UUID id = player.getGameProfile().getId();
 						if (id != null) {
 							NBTTagCompound compound = getTag(stack);
@@ -294,9 +299,10 @@ public final class ItemModule extends ItemBase {
 		public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 			String moduleKey = moduleId.toString();
 			Entity entity = getEntity(stack);
-			if (entity != null) {
-				builder.addContext(moduleKey, entity, new EntityReference<>(entity));
-			}
+			if (entity != null) builder.addContext(moduleKey, entity, new EntityReference<>(entity));
+
+			GameProfile profile = getProfile(stack);
+			if (profile != null) builder.addContext(moduleKey, new ConstantOwnable(profile));
 
 			if (stack.getItemDamage() == CHAT_ID) {
 				// Add a chat listener if we've got an entity (and are a chat module).
@@ -340,6 +346,15 @@ public final class ItemModule extends ItemBase {
 				RenderHelpers.getMesher().getItemModel(stack),
 				matrix
 			);
+		}
+	}
+
+	private static GameProfile getProfile(ItemStack stack) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("id_lower", 99)) {
+			return new GameProfile(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")), tag.getString("bound_name"));
+		} else {
+			return null;
 		}
 	}
 
@@ -398,6 +413,47 @@ public final class ItemModule extends ItemBase {
 			} catch (RuntimeException ignored) {
 				// This'll be logged by FML, so we'll ignore it for now.
 			}
+		}
+	}
+
+	private static class ConstantOwnable extends ConstantReference<ConstantOwnable> implements IPlayerOwnable {
+		private final GameProfile profile;
+
+		private ConstantOwnable(GameProfile profile) {
+			this.profile = profile;
+		}
+
+		@Nullable
+		@Override
+		public GameProfile getOwningProfile() {
+			return profile;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			ConstantOwnable that = (ConstantOwnable) o;
+
+			return profile != null ? profile.equals(that.profile) : that.profile == null;
+		}
+
+		@Override
+		public int hashCode() {
+			return profile != null ? profile.hashCode() : 0;
+		}
+
+		@Nonnull
+		@Override
+		public ConstantOwnable get() throws LuaException {
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public ConstantOwnable safeGet() throws LuaException {
+			return this;
 		}
 	}
 }
