@@ -41,8 +41,8 @@ public final class MethodsInventory {
 		final int slot = getInt(args, 0);
 
 		return MethodResult.nextTick(() -> {
-				IContext<IItemHandler > baked = context.bake();
-				IItemHandler inventory = baked.getTarget();
+			IContext<IItemHandler> baked = context.bake();
+			IItemHandler inventory = baked.getTarget();
 
 			assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 

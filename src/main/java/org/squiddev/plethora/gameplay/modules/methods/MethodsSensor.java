@@ -60,13 +60,13 @@ public final class MethodsSensor {
 		final UUID uuid = getUUID(args, 0);
 
 		return MethodResult.nextTick(() -> {
-				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location =baked.getContext(ContextKeys.ORIGIN,IWorldLocation.class);
-				Entity entity = findEntityByUUID(location, uuid);
-				if (entity == null) {
-					return MethodResult.empty();
-				} else {
-					return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
+			IContext<IModuleContainer> baked = context.bake();
+			IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+			Entity entity = findEntityByUUID(location, uuid);
+			if (entity == null) {
+				return MethodResult.empty();
+			} else {
+				return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
 
 			}
 		});
@@ -82,13 +82,13 @@ public final class MethodsSensor {
 		final String name = getString(args, 0);
 
 		return MethodResult.nextTick(() -> {
-				IContext<IModuleContainer> baked = context.bake();
-				IWorldLocation location =baked.getContext(ContextKeys.ORIGIN,IWorldLocation.class);
-				Entity entity = findEntityByName(location, name);
-				if (entity == null) {
-					return MethodResult.empty();
-				} else {
-					return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
+			IContext<IModuleContainer> baked = context.bake();
+			IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+			Entity entity = findEntityByName(location, name);
+			if (entity == null) {
+				return MethodResult.empty();
+			} else {
+				return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
 
 			}
 		});

@@ -22,7 +22,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.squiddev.plethora.api.reference.Reference.id;
 import static org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic.getNBTHash;
 
 public class MethodsGrid {

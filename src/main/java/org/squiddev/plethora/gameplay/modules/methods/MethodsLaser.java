@@ -49,20 +49,21 @@ public final class MethodsLaser {
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 			Vec3d pos = location.getLoc();
 
-				EntityLaser laser = new EntityLaser(location.getWorld(), pos);
-	{
-					IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
-					Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
+			EntityLaser laser = new EntityLaser(location.getWorld(), pos);
+			{
+				IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+				Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
 
-					GameProfile profile = null;
-					if (ownable != null) profile = ownable.getOwningProfile();
-					if (profile == null) profile = PlayerHelpers.getProfile(entity);
+				GameProfile profile = null;
+				if (ownable != null) profile = ownable.getOwningProfile();
+				if (profile == null) profile = PlayerHelpers.getProfile(entity);
 
-					laser.setShooter(entity, profile);
-				}			if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
-					double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
-					double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
-					double vOff = 0.3; // The laser is 0.25 high, so we add a little more.
+				laser.setShooter(entity, profile);
+			}
+			if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
+				double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
+				double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
+				double vOff = 0.3; // The laser is 0.25 high, so we add a little more.
 
 				// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
 				// the block below/above in most cases.
@@ -83,16 +84,16 @@ public final class MethodsLaser {
 					zOffset = motionZ / length * hOff;
 				}
 
-					laser.setPosition(
-						pos.x + xOffset,
-						pos.y + yOffset,
-						pos.z + zOffset
-					);
-				} else if (context.hasContext(Entity.class)) {
-					Entity entity = context.getContext(Entity.class);
-					Vec3d vector = entity.getPositionVector();
-					double offset = entity.width + 0.2;
-					double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+				laser.setPosition(
+					pos.x + xOffset,
+					pos.y + yOffset,
+					pos.z + zOffset
+				);
+			} else if (context.hasContext(Entity.class)) {
+				Entity entity = context.getContext(Entity.class);
+				Vec3d vector = entity.getPositionVector();
+				double offset = entity.width + 0.2;
+				double length = Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 
 
 				// Offset positions to be around the edge of the entity. Avoids damaging the entity.

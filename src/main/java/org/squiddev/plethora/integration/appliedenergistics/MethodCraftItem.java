@@ -44,8 +44,9 @@ public class MethodCraftItem extends BasicMethod<IAEItemStack> {
 			IAEItemStack toCraft = baked.getTarget().copy();
 			toCraft.setStackSize(quantity);
 
-				IComputerAccess computer = baked.getContext(ContextKeys.COMPUTER, IComputerAccess.class);CraftingResult result = new CraftingResult(grid, computer, host);
-				crafting.beginCraftingJob(node.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
+			IComputerAccess computer = baked.getContext(ContextKeys.COMPUTER, IComputerAccess.class);
+			CraftingResult result = new CraftingResult(grid, computer, host);
+			crafting.beginCraftingJob(node.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
 
 			return MethodResult.result(baked.makeChildId(result).getObject());
 		});
