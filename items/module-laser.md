@@ -55,4 +55,4 @@ The laser can be configured within the `laser` category of the `plethora.cfg` fi
  - `damage=4`: The damage done to an entity for each potency. Players and most mobs have 20 health, meaning a fully
    charged laser can kill an unarmoured creature with one hit.
 
-[cost_system]: http://localhost:8080/plethora/cost-system.html
+[cost_system]: {{ "cost-system.html" | relative_url }}

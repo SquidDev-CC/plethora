@@ -4,8 +4,8 @@ title: Moving items
 ---
 
 ## Transferring items and other things
-No automation system is useful if you can't receive an input or output an, urm, output. This is where transfer locations
-come in. Transfer locations are a remote location that a peripheral can interact with, sending items or other things.
+No automation system is useful if you can't receive an input or produce an output. This is where transfer locations come
+in. Transfer locations are a remote location that a peripheral can interact with, sending items or other things.
 
 ### Transfer locations
 To get started, wrap an inventory such as a chest and call the `.getTransferLocations()` method. This will print out a
@@ -26,9 +26,10 @@ You might also see a list of numbers. These correspond to the slots in the inven
 transferring into one of these slots you transfer into that item's internal storage. This allows you to insert items
 into backpacks or the like.
 
-One final list will only appear if your peripheral is connected to a modem and you
-have [CCTweaks](https://minecraft.curseforge/projects/cctweaks) installed. This will list all other peripherals on a
-network, allowing item transfer across a wired network.
+One final list will only appear if your peripheral is connected to a modem and you have
+[CCTweaks](https://minecraft.curseforge/projects/cctweaks) or
+[CC:Tweaked](https://minecraft.curseforge.com/projects/plethora-peripherals/files/2541773/download) installed. This will
+list all other peripherals on a network, allowing item transfer across a wired network.
 
 ### Chaining locations
 If needed, you can chain transfer locations together with a dot (`.`). For instance, to access the left side of the
@@ -38,7 +39,7 @@ inventory above you, you would use `up.left_side`. If you need to list the "chil
 ```lua
 chest.getTransferLocations()
 
-{ "up", "east", "up_side", "down_side", "0", "1", ... }
+{ "up", "east", ... }
 
 chest.getTransferLocations("up")
 

@@ -67,4 +67,4 @@ The kinetic augment can be configured with the `kinetic` section of the `plethor
 > **Note:** This is not an exhaustive list of configuration options for the kinetic augment - this only includes ones
 > which require further explaination. Please consult the config file for a full list.
 
-[cost_system]: http://localhost:8080/plethora/cost-system.html
+[cost_system]: {{ "cost-system.html" | relative_url }}
