@@ -86,7 +86,7 @@ public class MethodsInventoryTransfer {
 	}
 
 	@Nullable
-	private static IItemHandler extractHandler(@Nonnull Object object) {
+	public static IItemHandler extractHandler(@Nonnull Object object) {
 		for (Object child : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
 			if (child instanceof IItemHandler) return (IItemHandler) child;
 

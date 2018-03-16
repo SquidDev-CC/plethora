@@ -16,6 +16,8 @@ import java.util.Set;
 
 /**
  * Provides locations for adjacent blocks and the current one
+ *
+ * We block secondary accesses as that allows people to do `self.north.north.north`, which is just silly
  */
 @ITransferProvider.Inject(value = TileEntity.class, secondary = false)
 public class TransferTileEntity implements ITransferProvider<TileEntity> {

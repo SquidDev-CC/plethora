@@ -11,8 +11,10 @@ import java.util.Set;
 
 /**
  * Transfer location that allows accessing child slots
+ *
+ * We block primary accesses as they end up being rather noisy
  */
-@ITransferProvider.Inject(value = IItemHandler.class)
+@ITransferProvider.Inject(value = IItemHandler.class, primary = false)
 public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> {
 	@Nullable
 	@Override

@@ -14,8 +14,10 @@ import java.util.Set;
 
 /**
  * Transfer location that provides one side of a capability provider
+ *
+ * We block primary accesses as they end up being rather noisy
  */
-@ITransferProvider.Inject(value = ICapabilityProvider.class)
+@ITransferProvider.Inject(value = ICapabilityProvider.class, primary = false)
 public class TransferSidedCapability implements ITransferProvider<ICapabilityProvider> {
 	private final Map<String, EnumFacing> mappings;
 
