@@ -53,7 +53,7 @@ repositories {
 	// ComputerCraft
 	maven { url "https://cc.crzd.me/maven/" }
 
-	// CCTweaks + ConfigGen
+	// ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
 
 	// IC2 API
@@ -104,7 +104,6 @@ dependencies {
 	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	compile "mezz.jei:jei_1.12:4.7.0.68"
 
-	compileOnly "org.squiddev:CCTweaks:1.11.2-1.5.0-pr0:dev" // TODO: Upload initial 1.12 version
 	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
 	compileOnly "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
 	compileOnly "buildcraft:buildcraft:7.99.14"

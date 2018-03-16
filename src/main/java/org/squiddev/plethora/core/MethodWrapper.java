@@ -3,9 +3,6 @@ package org.squiddev.plethora.core;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraftforge.fml.common.Optional;
-import org.squiddev.cctweaks.CCTweaks;
-import org.squiddev.cctweaks.api.lua.IMethodDescriptor;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.utils.DebugLogger;
@@ -18,11 +15,7 @@ import java.util.List;
  * @see dan200.computercraft.api.peripheral.IPeripheral
  * @see dan200.computercraft.api.lua.ILuaObject
  */
-@Optional.Interface(
-	iface = "org.squiddev.cctweaks.api.lua.IMethodDescriptor",
-	modid = CCTweaks.ID
-)
-public class MethodWrapper implements IMethodDescriptor {
+public class MethodWrapper {
 	private final List<IMethod<?>> methods;
 	private final List<UnbakedContext<?>> contexts;
 
@@ -92,11 +85,5 @@ public class MethodWrapper implements IMethodDescriptor {
 			DebugLogger.error("Unexpected error calling " + method.getName(), e);
 			throw new LuaException("Java Exception Thrown: " + e.toString());
 		}
-	}
-
-	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public boolean willYield(int method) {
-		return getMethod(method).willYield();
 	}
 }

@@ -43,8 +43,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.squiddev.cctweaks.CCTweaks;
-import org.squiddev.cctweaks.api.computer.ICustomRomItem;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
@@ -64,10 +62,9 @@ import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "baubles.api.IBauble", modid = Baubles.MODID),
-	@Optional.Interface(iface = "org.squiddev.cctweaks.api.computer.ICustomRomItem", modid = CCTweaks.ID),
 	@Optional.Interface(iface = "vazkii.botania.api.item.ICosmeticAttachable", modid = LibMisc.MOD_ID)
 })
-public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble, ICustomRomItem, ICosmeticAttachable {
+public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble, ICosmeticAttachable {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -298,38 +295,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	}
 
 	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public boolean hasCustomRom(@Nonnull ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("rom_id", 99);
-	}
-
-	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public int getCustomRom(@Nonnull ItemStack stack) {
-		return stack.getTagCompound().getInteger("rom_id");
-	}
-
-	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public void clearCustomRom(@Nonnull ItemStack stack) {
-		NBTTagCompound tag = stack.getTagCompound();
-		if (tag != null) {
-			tag.removeTag("rom_id");
-			tag.removeTag("instanceID");
-			tag.removeTag("sessionID");
-		}
-	}
-
-	@Override
-	@Optional.Method(modid = CCTweaks.ID)
-	public void setCustomRom(@Nonnull ItemStack stack, int id) {
-		NBTTagCompound tag = ItemBase.getTag(stack);
-		tag.setInteger("rom_id", id);
-		tag.removeTag("instanceID");
-		tag.removeTag("sessionID");
-	}
-
-	@Override
 	public ItemStack getCosmeticItem(ItemStack stack) {
 		if (!stack.hasTagCompound()) return null;
 
@@ -399,16 +364,6 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		if (flag.isAdvanced()) {
 			if (tag != null && tag.hasKey(COMPUTER_ID)) {
 				out.add("Computer ID " + tag.getInteger(COMPUTER_ID));
-			}
-		}
-
-		// Include ROM id (CCTweaks compat)
-		if (tag != null && tag.hasKey("rom_id") && Loader.isModLoaded(CCTweaks.ID)) {
-			int id = tag.getInteger("rom_id");
-			if (flag.isAdvanced() && id >= 0) {
-				out.add("Has custom ROM (disk ID: " + id + ")");
-			} else {
-				out.add("Has custom ROM");
 			}
 		}
 

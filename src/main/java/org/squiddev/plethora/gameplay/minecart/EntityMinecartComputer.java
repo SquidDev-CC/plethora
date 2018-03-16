@@ -45,7 +45,6 @@ import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -56,13 +55,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.squiddev.cctweaks.CCTweaks;
-import org.squiddev.cctweaks.api.computer.IExtendedServerComputer;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.vehicle.IVehicleAccess;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
-import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.entity.RenderMinecartComputer;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
@@ -122,8 +118,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	 */
 	private final VehicleAccess[] accesses = new VehicleAccess[SLOTS];
 
-	private int romId = -1;
-
 	@SideOnly(Side.CLIENT)
 	private Integer lastClientId;
 
@@ -135,7 +129,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		for (int i = 0; i < SLOTS; i++) accesses[i] = new VehicleAccess(this);
 	}
 
-	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, int romId, GameProfile profile) {
+	public EntityMinecartComputer(EntityMinecartEmpty minecart, int id, String label, ComputerFamily family, GameProfile profile) {
 		this(minecart.getEntityWorld());
 
 		setPositionAndRotation(minecart.posX, minecart.posY, minecart.posZ, minecart.rotationYaw, minecart.rotationPitch);
@@ -154,7 +148,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		this.id = id;
 		setFamily(family);
 		setCustomNameTag(label == null ? "" : label);
-		this.romId = romId;
 
 		this.profile = profile;
 	}
@@ -305,11 +298,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		tag.setInteger("computerId", id);
 		tag.setByte("family", (byte) getFamily().ordinal());
 		tag.setBoolean("on", startOn || on);
-		if (romId >= 0) {
-			tag.setInteger("rom_id", romId);
-		} else {
-			tag.removeTag("rom_id");
-		}
 		tag.setTag("items", itemHandler.serializeNBT());
 
 		PlayerHelpers.writeProfile(tag, profile);
@@ -322,7 +310,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		id = tag.getInteger("computerId");
 		setFamily(FAMILIES[tag.getByte("family")]);
 		startOn |= tag.getBoolean("on");
-		romId = tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
 		if (tag.hasKey("items", Constants.NBT.TAG_COMPOUND)) {
 			itemHandler.deserializeNBT(tag.getCompoundTag("items"));
 		}
@@ -344,10 +331,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 			computer = new ServerComputer(getEntityWorld(), id, getCustomNameTag(), instanceId, getFamily(), 51, 19);
 			computer.setWorld(getEntityWorld());
 			computer.setPosition(getPosition());
-
-			if (romId >= 0 && Loader.isModLoaded(CCTweaks.ID)) {
-				((IExtendedServerComputer) computer).setCustomRom(romId);
-			}
 
 			for (int slot = 0; slot < SLOTS; slot++) {
 				IVehicleUpgradeHandler upgrade = itemHandler.getUpgrade(slot);
@@ -445,7 +428,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 			entityDropItem(new ItemStack(Items.MINECART, 1), 0);
 
 			ItemStack stack = ComputerItemFactory.create(id, getCustomNameTag(), getFamily());
-			if (romId >= 0) ItemBase.getTag(stack).setInteger("rom_id", romId);
 			entityDropItem(stack, 0);
 
 			for (int i = 0; i < SLOTS; i++) {
@@ -650,16 +632,12 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 			String label = computerItem.getLabel(stack);
 			ComputerFamily family = computerItem.getFamily(stack);
 
-			// Copy ROM id (CCTweaks compat)
-			NBTTagCompound tag = stack.getTagCompound();
-			int romId = tag != null && tag.hasKey("rom_id", 99) ? tag.getInteger("rom_id") : -1;
-
 			player.swingArm(event.getHand());
 			if (minecart.getEntityWorld().isRemote) return;
 
 			event.setCanceled(true);
 			minecart.setDead();
-			minecart.getEntityWorld().spawnEntity(new EntityMinecartComputer(minecart, id, label, family, romId, player.getGameProfile()));
+			minecart.getEntityWorld().spawnEntity(new EntityMinecartComputer(minecart, id, label, family, player.getGameProfile()));
 
 			if (!player.capabilities.isCreativeMode) {
 				stack.grow(-1);

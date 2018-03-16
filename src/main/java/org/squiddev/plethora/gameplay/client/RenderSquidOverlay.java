@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.cctweaks.CCTweaks;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.gameplay.registry.Module;
@@ -29,7 +28,7 @@ public class RenderSquidOverlay extends Module implements IClientModule {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void clientInit() {
-		if (Loader.isModLoaded(CCTweaks.ID)) return;
+		if (Loader.isModLoaded("cctweaks")) return;
 
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderLayer layer = new RenderLayer();
