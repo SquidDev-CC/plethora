@@ -1,8 +1,10 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -35,11 +37,11 @@ public final class MethodsSensor {
 		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class, worldThread = true,
 		doc = "function():table -- Scan for entities in the vicinity"
 	)
-	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos), DEFAULT_PREDICATE);
 
 		int i = 0;
 		HashMap<Integer, Object> map = Maps.newHashMap();
@@ -104,21 +106,19 @@ public final class MethodsSensor {
 
 	@Nullable
 	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) {
-		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
-		for (Entity entity : entities) {
-			if (entity.getUniqueID().equals(uuid)) return entity;
-		}
-
-		return null;
+		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
+			entity -> DEFAULT_PREDICATE.apply(entity) && entity.getUniqueID().equals(uuid));
+		return entities.size() > 0 ? entities.get(0) : null;
 	}
 
 	@Nullable
 	private static Entity findEntityByName(IWorldLocation location, String name) {
-		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()));
-		for (Entity entity : entities) {
-			if (Helpers.getName(entity).equals(name)) return entity;
-		}
+		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
+			entity -> DEFAULT_PREDICATE.apply(entity) && Helpers.getName(entity).equals(name));
 
-		return null;
+		return entities.size() > 0 ? entities.get(0) : null;
 	}
+
+	private static final Predicate<Entity> DEFAULT_PREDICATE = entity ->
+		entity != null && entity.isEntityAlive() && (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isSpectator());
 }
