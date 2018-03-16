@@ -41,7 +41,7 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 		for (EntityPlayerMP player : players.getPlayers()) {
 			if (Helpers.isHolding(player, Registry.itemModule, PlethoraModules.CHAT_ID) ||
 				Helpers.isHolding(player, Registry.itemModule, PlethoraModules.CHAT_CREATIVE_ID)) {
-				if (player != sender && player.getEntityWorld() == sender.getEntityWorld() && player.getDistanceToEntity(sender) <= distance) {
+				if (player != sender && player.getEntityWorld() == sender.getEntityWorld() && player.getDistanceSq(sender) <= distance) {
 					Plethora.network.sendTo(message, player);
 				}
 			}

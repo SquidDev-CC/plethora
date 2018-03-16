@@ -461,7 +461,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	}
 
 	public boolean isUsable(EntityPlayer player) {
-		if (isDead || player.getDistanceSqToEntity(this) > 64.0D) return false;
+		if (isDead || player.getDistanceSq(this) > 64.0D) return false;
 
 		if (getFamily() == ComputerFamily.Command) {
 			if (getEntityWorld().isRemote) return true;

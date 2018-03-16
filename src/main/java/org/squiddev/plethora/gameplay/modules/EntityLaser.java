@@ -69,7 +69,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 		motionX = -MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
 		motionZ = MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
 		motionY = -MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI);
-		setThrowableHeading(motionX, motionY, motionZ, 1.5f, inaccuracy);
+		shoot(motionX, motionY, motionZ, 1.5f, inaccuracy);
 	}
 
 	public EntityLaser(World world, Vec3d shooter) {
@@ -91,7 +91,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 	}
 
 	@Override
-	public void setThrowableHeading(double vx, double vy, double vz, float velocity, float inaccuracy) {
+	public void shoot(double vx, double vy, double vz, float velocity, float inaccuracy) {
 		// Normalise magnitude
 		float magnitude = MathHelper.sqrt(vx * vx + vy * vy + vz * vz);
 		vx /= magnitude;

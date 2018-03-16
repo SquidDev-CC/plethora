@@ -123,7 +123,7 @@ public final class MethodsKineticEntity {
 			float motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
 			float motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
 
-			arrow.setThrowableHeading(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
+			arrow.shoot(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
 
 			double damage = potency * 2;
 			int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
