@@ -14,15 +14,12 @@ import appeng.core.AppEng;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.integration.ItemFingerprint;
 
-import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic.getNBTHash;
+import static org.squiddev.plethora.integration.appliedenergistics.MetaAEItemStack.getBasicProperties;
 
 public class MethodsGrid {
 	@BasicObjectMethod.Inject(
@@ -63,9 +60,7 @@ public class MethodsGrid {
 
 		int i = 0;
 		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
-		for (IAEItemStack stack : items) {
-			output.put(++i, getBasicProperties(stack));
-		}
+		for (IAEItemStack stack : items) output.put(++i, getBasicProperties(stack));
 		return new Object[]{output};
 	}
 
@@ -77,7 +72,7 @@ public class MethodsGrid {
 			"leave the other fields empty."
 	)
 	public static MethodResult findItem(final IUnbakedContext<IGrid> context, Object[] args) throws LuaException {
-		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
+		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
 			IContext<IGrid> baked = context.bake();
@@ -97,7 +92,7 @@ public class MethodsGrid {
 			"leave the other fields empty."
 	)
 	public static MethodResult findItems(final IUnbakedContext<IGrid> context, Object[] args) throws LuaException {
-		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
+		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
 			IContext<IGrid> baked = context.bake();
@@ -107,12 +102,9 @@ public class MethodsGrid {
 
 			int i = 0;
 			Map<Integer, Object> out = Maps.newHashMap();
-			for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
-				// Force the stack to be non-empty
-				ItemStack stack = aeStack.createItemStack();
-				stack.setCount(1);
-
-				if (fingerprint.matches(stack)) {
+			IAEItemStack filter = channel.createStack(new ItemStack(fingerprint.item, fingerprint.damage));
+			for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList().findFuzzy(filter, FuzzyMode.IGNORE_ALL)) {
+				if (fingerprint.matches(aeStack.getDefinition())) {
 					out.put(++i, baked.makeChildId(aeStack).getObject());
 				}
 			}
@@ -138,32 +130,9 @@ public class MethodsGrid {
 
 		IAEItemStack filter = channel.createStack(new ItemStack(fingerprint.item, fingerprint.damage));
 		for (IAEItemStack aeStack : list.findFuzzy(filter, FuzzyMode.IGNORE_ALL)) {
-			// Force the stack to be non-empty
-			if (fingerprint.damage != OreDictionary.WILDCARD_VALUE && aeStack.getItemDamage() != fingerprint.damage) {
-				continue;
-			}
-
-			ItemStack stack = aeStack.createItemStack();
-			if (fingerprint.hash != null && !fingerprint.hash.equals(getNBTHash(stack.getTagCompound()))) continue;
-
-			return aeStack;
+			if (fingerprint.matches(aeStack.getDefinition())) return aeStack;
 		}
 
 		return null;
-	}
-
-	@Nonnull
-	public static HashMap<Object, Object> getBasicProperties(@Nonnull IAEItemStack stack) {
-		HashMap<Object, Object> data = Maps.newHashMap();
-
-		// If the stack is empty then resize it to allow us to extract the item
-		data.put("name", stack.getItem().getRegistryName().toString());
-		data.put("damage", stack.getItemDamage());
-
-		ItemStack mainStack = stack.createItemStack();
-		data.put("count", mainStack.getCount());
-		data.put("nbtHash", getNBTHash(mainStack.getTagCompound()));
-
-		return data;
 	}
 }

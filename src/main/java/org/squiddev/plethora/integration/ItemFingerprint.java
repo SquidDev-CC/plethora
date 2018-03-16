@@ -42,11 +42,12 @@ public class ItemFingerprint {
 	}
 
 	@Nonnull
-	public static ItemFingerprint fromLua(@Nullable Object arg) throws LuaException {
+	public static ItemFingerprint fromLua(@Nonnull Object[] args, int index) throws LuaException {
 		String name;
 		Integer damage;
 		String hash;
 
+		Object arg = index >= args.length ? null : args[index];
 		if (arg instanceof String) {
 			String contents = (String) arg;
 			int atIdx = contents.lastIndexOf('@');
@@ -84,7 +85,7 @@ public class ItemFingerprint {
 			damage = damageObj == null ? null : ((Number) damageObj).intValue();
 			hash = hashObj == null ? null : (String) hashObj;
 		} else {
-			throw badArgument(0, "string|table", arg);
+			throw badArgument(index, "string|table", arg);
 		}
 
 		ResourceLocation nameRes = new ResourceLocation(name);

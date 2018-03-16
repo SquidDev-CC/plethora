@@ -78,7 +78,7 @@ public class MethodsNetwork {
 			"leave the other fields empty."
 	)
 	public static MethodResult findItem(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
-		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
+		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
 			IContext<INetwork> baked = context.bake();
@@ -110,7 +110,7 @@ public class MethodsNetwork {
 			"leave the other fields empty."
 	)
 	public static MethodResult findItems(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
-		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args.length == 0 ? null : args[0]);
+		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
 			IContext<INetwork> baked = context.bake();

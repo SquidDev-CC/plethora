@@ -14,6 +14,6 @@ public class ConverterAEItemStack extends DynamicConverter<IAEItemStack, ItemSta
 	@Nullable
 	@Override
 	public ItemStack convert(@Nonnull IAEItemStack from) {
-		return from.createItemStack();
+		return from.getStackSize() == 0 ? from.getDefinition() : from.createItemStack();
 	}
 }
