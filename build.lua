@@ -6,6 +6,7 @@ local files = {
 	"laser-sentry.lua",
 	"auto-feeder.lua",
 	"fly.lua",
+	"ore-scanner.lua",
 }
 
 local pre = "examples/"
