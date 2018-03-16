@@ -31,9 +31,9 @@ public class MetaTileCrop extends BasicMetaProvider<ICropTile> {
 
 		out.put("growthPoints", object.getGrowthPoints());
 		out.put("size", object.getCurrentSize());
-		out.put("humidity", object.getHumidity());
-		out.put("airQuality", object.getAirQuality());
-		out.put("nutrients", object.getNutrients());
+		out.put("humidity", object.getTerrainHumidity());
+		out.put("airQuality", object.getTerrainAirQuality());
+		out.put("nutrients", object.getTerrainNutrients());
 
 		return out;
 	}

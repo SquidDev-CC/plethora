@@ -105,7 +105,7 @@ dependencies {
 	compile "mezz.jei:jei_1.12:4.7.0.68"
 
 	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
-	compileOnly "net.industrial-craft:industrialcraft-2:2.6.99-ex110:dev"
+	compileOnly "net.industrial-craft:industrialcraft-2:2.8.9-ex112:dev"
 	compileOnly "buildcraft:buildcraft:7.99.14"
 	compileOnly "net.darkhax.tesla:Tesla-1.12:1.0.61:deobf"
 
