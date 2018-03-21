@@ -20,10 +20,8 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
-import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
-import org.squiddev.plethora.core.capabilities.DefaultModuleHandler;
-import org.squiddev.plethora.core.capabilities.DefaultPeripheral;
-import org.squiddev.plethora.core.capabilities.DefaultStorage;
+import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
+import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.SharedDelayedExecutor;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
@@ -55,6 +53,7 @@ public class PlethoraCore {
 		CapabilityManager.INSTANCE.register(IModuleHandler.class, new DefaultStorage<>(), DefaultModuleHandler::new);
 		CapabilityManager.INSTANCE.register(IPeripheral.class, new DefaultStorage<>(), DefaultPeripheral::new);
 		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral::new);
+		CapabilityManager.INSTANCE.register(IVehicleUpgradeHandler.class, new DefaultStorage<>(), DefaultVehicleUpgradeHandler::new);
 
 		// Various event handlers
 		MinecraftForge.EVENT_BUS.register(this);
