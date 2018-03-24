@@ -133,4 +133,19 @@ public class MethodsBasic {
 		Textable object = context.safeBake().getTarget();
 		return MethodResult.result(object.hasShadow());
 	}
+	
+	@BasicMethod.Inject(value = Textable.class, doc = "function():number -- Get the line height for this object.")
+	public static MethodResult getLineHeight(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+		return MethodResult.result(object.getLineHeight());
+	}
+
+	@BasicMethod.Inject(value = Textable.class, doc = "function(scale:number) -- Set the line height for this object.")
+	public static MethodResult setLineHeight(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+
+		short lineHeight = (short) getInt(args, 0);
+		object.setLineHeight(lineHeight);
+		return MethodResult.empty();
+	}
 }

@@ -22,6 +22,8 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	private Point2D position = new Point2D();
 	private float size = 1;
 	private String text = "";
+	private boolean dropShadow = false;
+	private short lineHeight = 9;
 
 	// We use a two dimensional string array to indicate where tabs are.
 	// For example, "Hello\tworld\nFoo\tBar" would become {{"Hello", "world"}, {"Foo", "Bar"}}
@@ -30,7 +32,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	// A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide. Used during rendering
 	private static final int TAB_WIDTH = 16;
 	private String[][] lines = EMPTY_LINES;
-	private boolean dropShadow = false;
+	
 
 	public Text(int id) {
 		super(id);
@@ -93,6 +95,19 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	public boolean hasShadow() {
 		return dropShadow;
 	}
+	
+
+	@Override
+	public void setLineHeight(short lineHeight) {
+		if (this.lineHeight == lineHeight) return;
+		this.lineHeight = lineHeight;
+		setDirty();
+	}
+
+	@Override
+	public short getLineHeight() {
+		return lineHeight;
+	}
 
 	@Override
 	public void writeInital(ByteBuf buf) {
@@ -100,6 +115,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		position.write(buf);
 		buf.writeFloat(size);
 		buf.writeBoolean(dropShadow);
+		buf.writeShort(lineHeight);
 		ByteBufUtils.writeUTF8String(buf, text);
 	}
 
@@ -109,6 +125,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		position.read(buf);
 		size = buf.readFloat();
 		dropShadow = buf.readBoolean();
+		lineHeight = buf.readShort();
 		text = ByteBufUtils.readUTF8String(buf);
 		lines = splitText(text);
 	}
@@ -145,7 +162,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 			// Carriage return
 			x = 0;
 			// Set x to the next tab location
-			y += fontrenderer.FONT_HEIGHT;
+			y += this.lineHeight;
 		}
 
 		GlStateManager.popMatrix();

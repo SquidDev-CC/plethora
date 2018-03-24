@@ -13,4 +13,7 @@ public interface Textable {
 	
 	void setShadow(boolean dropShadow);
 	boolean hasShadow();
+	
+	void setLineHeight(short height);
+	short getLineHeight();
 }
