@@ -119,7 +119,7 @@ public class MethodsBasic {
 		return MethodResult.empty();
 	}
 	
-	@BasicMethod.Inject(value = Textable.class, doc = "function(shadow:boolean):number -- Set the shadow for this object")
+	@BasicMethod.Inject(value = Textable.class, doc = "function(shadow:boolean):number -- Set the shadow for this object.")
 	public static MethodResult setShadow(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
 		Textable object = context.safeBake().getTarget();
 
@@ -128,7 +128,7 @@ public class MethodsBasic {
 		return MethodResult.empty();
 	}
 	
-	@BasicMethod.Inject(value = Textable.class, doc = "function():boolean -- Get the shadow for this object")
+	@BasicMethod.Inject(value = Textable.class, doc = "function():boolean -- Get the shadow for this object.")
 	public static MethodResult hasShadow(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
 		Textable object = context.safeBake().getTarget();
 		return MethodResult.result(object.hasShadow());
