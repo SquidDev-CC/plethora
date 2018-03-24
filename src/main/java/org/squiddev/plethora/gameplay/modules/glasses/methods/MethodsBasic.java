@@ -13,6 +13,7 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.getBoolean;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
@@ -116,5 +117,20 @@ public class MethodsBasic {
 		assertBetween(contents.length(), 0, 512, "string length out of bounds (%s)");
 		object.setText(contents);
 		return MethodResult.empty();
+	}
+	
+	@BasicMethod.Inject(value = Textable.class, doc = "function(shadow:boolean):number -- Set the shadow for this object")
+	public static MethodResult setShadow(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+
+		boolean shadow = getBoolean(args, 0);
+		object.setShadow(shadow);
+		return MethodResult.empty();
+	}
+	
+	@BasicMethod.Inject(value = Textable.class, doc = "function():boolean -- Get the shadow for this object")
+	public static MethodResult hasShadow(IUnbakedContext<Textable> context, Object[] args) throws LuaException {
+		Textable object = context.safeBake().getTarget();
+		return MethodResult.result(object.hasShadow());
 	}
 }

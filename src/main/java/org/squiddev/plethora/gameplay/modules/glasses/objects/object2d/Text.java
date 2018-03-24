@@ -14,10 +14,23 @@ import javax.annotation.Nonnull;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.TEXT_2D;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 public class Text extends ColourableObject implements Positionable2D, Scalable, Textable {
 	private Point2D position = new Point2D();
 	private float size = 1;
 	private String text = "";
+
+	// We use a two dimensional string array to indicate where tabs are.
+	// For example, "Hello\tworld\nFoo\tBar" would become {{"Hello", "world"}, {"Foo", "Bar"}}
+	// This is used in the rendering to simulate tabs.
+	private static final String[][] EMPTY_LINES = {};
+	// A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide. Used during rendering
+	private static final int TAB_WIDTH = 16;
+	private String[][] lines = EMPTY_LINES;
+	private boolean dropShadow = false;
 
 	public Text(int id) {
 		super(id);
@@ -64,8 +77,21 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	public void setText(@Nonnull String text) {
 		if (!this.text.equals(text)) {
 			this.text = text;
+			lines = splitText(text);
 			setDirty();
 		}
+	}
+	
+	@Override
+	public void setShadow(boolean dropShadow) {
+		if (this.dropShadow == dropShadow) return;
+		this.dropShadow = dropShadow;
+		setDirty();
+	}
+	
+	@Override
+	public boolean hasShadow() {
+		return dropShadow;
 	}
 
 	@Override
@@ -73,6 +99,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		super.writeInital(buf);
 		position.write(buf);
 		buf.writeFloat(size);
+		buf.writeBoolean(dropShadow);
 		ByteBufUtils.writeUTF8String(buf, text);
 	}
 
@@ -81,7 +108,9 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		super.readInitial(buf);
 		position.read(buf);
 		size = buf.readFloat();
+		dropShadow = buf.readBoolean();
 		text = ByteBufUtils.readUTF8String(buf);
+		lines = splitText(text);
 	}
 
 	@Override
@@ -101,8 +130,30 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(position.x, position.y, 0);
 		GlStateManager.scale(size, size, 1);
-		// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
-		fontrenderer.drawString(text, 0, 0, Integer.rotateRight(colour, 8));
+
+		int x = 0;
+		int y = 0;
+		for (String[] fullLine : lines) {
+			for (String tabSection : fullLine) {
+				// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
+				if (dropShadow)
+					x = fontrenderer.drawStringWithShadow(tabSection, x, y, Integer.rotateRight(colour, 8));
+				else
+					x = fontrenderer.drawString(tabSection, x, y, Integer.rotateRight(colour, 8));
+				x = (int) Math.floor(x/TAB_WIDTH)*TAB_WIDTH+TAB_WIDTH;
+			}
+			// Carriage return
+			x = 0;
+			// Set x to the next tab location
+			y += fontrenderer.FONT_HEIGHT;
+		}
+
 		GlStateManager.popMatrix();
 	}
+
+	private String[][] splitText(String text) {
+		String[] lines = text.split("\n|\r");
+		return Arrays.stream(lines).map(str -> str.split("\t")).toArray(String[][]::new);
+	}
+
 }
