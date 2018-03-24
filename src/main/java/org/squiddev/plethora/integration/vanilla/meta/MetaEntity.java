@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
@@ -20,7 +21,22 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<Entity> context) {
-		return getBasicProperties(context.getTarget(), context.getContext(ContextKeys.ORIGIN, IWorldLocation.class));
+		Entity entity = context.getTarget();
+		IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+
+		Map<Object, Object> result = getBasicProperties(entity, location);
+
+		{
+			Map<String, Double> subBlock = new HashMap<>();
+			result.put("withinBlock", subBlock);
+
+			double posY = entity.posY + entity.getEyeHeight();
+			subBlock.put("x", entity.posX - MathHelper.floor(entity.posX));
+			subBlock.put("y", posY - MathHelper.floor(posY));
+			subBlock.put("z", entity.posZ - MathHelper.floor(entity.posZ));
+		}
+
+		return result;
 	}
 
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull Entity entity, @Nullable IWorldLocation location) {
@@ -40,7 +56,7 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 		if (location != null && location.getWorld() == entity.getEntityWorld()) {
 			Vec3d pos = location.getLoc();
 			result.put("x", entity.posX - pos.x);
-			result.put("y", entity.posY - pos.y);
+			result.put("y", entity.posY + entity.getEyeHeight() - pos.y);
 			result.put("z", entity.posZ - pos.z);
 		}
 

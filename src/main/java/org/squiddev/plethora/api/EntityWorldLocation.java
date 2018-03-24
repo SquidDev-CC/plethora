@@ -3,7 +3,6 @@ package org.squiddev.plethora.api;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -31,17 +30,13 @@ public class EntityWorldLocation extends ConstantReference<IWorldLocation> imple
 	@Nonnull
 	@Override
 	public BlockPos getPos() {
-		return entity.getPosition();
+		return new BlockPos(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
 	}
 
 	@Nonnull
 	@Override
 	public Vec3d getLoc() {
-		if (entity instanceof EntityLivingBase) {
-			return entity.getPositionVector().addVector(0, entity.getEyeHeight(), 0);
-		} else {
-			return entity.getPositionVector();
-		}
+		return new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
 	}
 
 	@Nonnull
