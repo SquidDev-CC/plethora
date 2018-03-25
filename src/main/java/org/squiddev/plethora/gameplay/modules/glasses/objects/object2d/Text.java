@@ -6,34 +6,42 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.TEXT_2D;
 
-import java.util.Arrays;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 public class Text extends ColourableObject implements Positionable2D, Scalable, Textable {
+	/**
+	 * We use a two dimensional string array to indicate where tabs are.
+	 * For example, {@code "Hello\tworld\nFoo\tBar"} would become
+	 * {@code {{"Hello", "world"}, {"Foo", "Bar"}}}.
+	 *
+	 * This is used in the rendering to simulate tabs.
+	 */
+	private static final String[][] EMPTY_LINES = {};
+
+	/**
+	 * A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide.
+	 * Used during rendering
+	 */
+	private static final int TAB_WIDTH = 16;
+
+	private static final Pattern SPLIT_PATTERN = Pattern.compile("\r\n|\n|\r");
+
 	private Point2D position = new Point2D();
 	private float size = 1;
-	private String text = "";
-	private boolean dropShadow = false;
 	private short lineHeight = 9;
+	private boolean dropShadow = false;
 
-	// We use a two dimensional string array to indicate where tabs are.
-	// For example, "Hello\tworld\nFoo\tBar" would become {{"Hello", "world"}, {"Foo", "Bar"}}
-	// This is used in the rendering to simulate tabs.
-	private static final String[][] EMPTY_LINES = {};
-	// A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide. Used during rendering
-	private static final int TAB_WIDTH = 16;
+	private String text = "";
 	private String[][] lines = EMPTY_LINES;
-	private static final Pattern SPLIT_PATTERN = Pattern.compile("\r\n|\n|\r");
-	
 
 	public Text(int id) {
 		super(id);
@@ -84,19 +92,19 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 			setDirty();
 		}
 	}
-	
+
 	@Override
 	public void setShadow(boolean dropShadow) {
-		if (this.dropShadow == dropShadow) return;
-		this.dropShadow = dropShadow;
-		setDirty();
+		if (this.dropShadow != dropShadow) {
+			this.dropShadow = dropShadow;
+			setDirty();
+		}
 	}
-	
+
 	@Override
 	public boolean hasShadow() {
 		return dropShadow;
 	}
-	
 
 	@Override
 	public void setLineHeight(short lineHeight) {
@@ -132,6 +140,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw2D() {
 		int colour = getColour();
 
@@ -154,13 +163,12 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 			int x = 0;
 			for (String tabSection : fullLine) {
 				// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
-				x = dropShadow
-						  ? fontrenderer.drawStringWithShadow(tabSection, x, y, Integer.rotateRight(colour, 8))
-						  : fontrenderer.drawString(tabSection, x, y, Integer.rotateRight(colour, 8));
-				x = (int) Math.floor(x/TAB_WIDTH)*TAB_WIDTH+TAB_WIDTH;
+				x = fontrenderer.drawString(tabSection, x, y, Integer.rotateRight(colour, 8), dropShadow);
+
+				// Round the X coordinate to the next tab stop.
+				x = (x / TAB_WIDTH) * TAB_WIDTH + TAB_WIDTH;
 			}
-			// Carriage return
-			// Set x to the next tab location
+
 			y += this.lineHeight;
 		}
 
@@ -168,8 +176,51 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	}
 
 	private String[][] splitText(String text) {
-		String[] lines = SPLIT_PATTERN.split(text); // Split the text by \n\r, \n or \r
-		return Arrays.stream(lines).map(str -> str.split("\t")).toArray(String[][]::new);
+		String[] lines = SPLIT_PATTERN.split(text);
+
+		String[][] splitLines = new String[lines.length][];
+		StringBuilder format = new StringBuilder();
+		for (int i = 0; i < lines.length; i++) {
+			String[] tabs = splitLines[i] = lines[i].split("\t");
+
+			for (int j = 0; j < tabs.length; j++) {
+				String tab = tabs[j];
+				format.append(tab);
+
+				appendFormat(format, tabs[j] = format.toString());
+			}
+		}
+
+		return splitLines;
 	}
 
+	private static void appendFormat(StringBuilder builder, String text) {
+		builder.setLength(0);
+
+		int l = text.length();
+		int i = -1;
+		while ((i = text.indexOf('\u00a7', i + 1)) != -1) {
+			if (i < l - 1) {
+				char c0 = text.charAt(i + 1);
+
+				if (isFormatColor(c0)) {
+					builder.setLength(0);
+					builder.append('\u00a7').append(c0);
+				} else if (isFormatSpecial(c0)) {
+					builder.append('\u00a7').append(c0);
+				}
+			}
+		}
+	}
+
+	private static boolean isFormatColor(char colorChar) {
+		return colorChar >= '0' && colorChar <= '9' || colorChar >= 'a' && colorChar <= 'f' || colorChar >= 'A' && colorChar <= 'F';
+	}
+
+	/**
+	 * Checks if the char code is O-K...lLrRk-o... used to set special formatting.
+	 */
+	private static boolean isFormatSpecial(char formatChar) {
+		return formatChar >= 'k' && formatChar <= 'o' || formatChar >= 'K' && formatChar <= 'O' || formatChar == 'r' || formatChar == 'R';
+	}
 }
