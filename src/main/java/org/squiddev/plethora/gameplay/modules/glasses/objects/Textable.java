@@ -10,4 +10,12 @@ public interface Textable {
 	String getText();
 
 	void setText(@Nonnull String text);
+
+	void setShadow(boolean dropShadow);
+
+	boolean hasShadow();
+
+	void setLineHeight(short height);
+
+	short getLineHeight();
 }
