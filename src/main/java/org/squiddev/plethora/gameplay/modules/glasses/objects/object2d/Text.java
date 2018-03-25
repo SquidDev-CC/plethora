@@ -32,6 +32,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	// A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide. Used during rendering
 	private static final int TAB_WIDTH = 16;
 	private String[][] lines = EMPTY_LINES;
+	private static final Pattern SPLIT_PATTERN = Pattern.compile("\r\n|\n|\r");
 	
 
 	public Text(int id) {
@@ -148,19 +149,17 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		GlStateManager.translate(position.x, position.y, 0);
 		GlStateManager.scale(size, size, 1);
 
-		int x = 0;
 		int y = 0;
 		for (String[] fullLine : lines) {
+			int x = 0;
 			for (String tabSection : fullLine) {
 				// We use 0xRRGGBBAA, but the font renderer expects 0xAARRGGBB, so we rotate the bits
-				if (dropShadow)
-					x = fontrenderer.drawStringWithShadow(tabSection, x, y, Integer.rotateRight(colour, 8));
-				else
-					x = fontrenderer.drawString(tabSection, x, y, Integer.rotateRight(colour, 8));
+				x = dropShadow
+						  ? fontrenderer.drawStringWithShadow(tabSection, x, y, Integer.rotateRight(colour, 8))
+						  : fontrenderer.drawString(tabSection, x, y, Integer.rotateRight(colour, 8));
 				x = (int) Math.floor(x/TAB_WIDTH)*TAB_WIDTH+TAB_WIDTH;
 			}
 			// Carriage return
-			x = 0;
 			// Set x to the next tab location
 			y += this.lineHeight;
 		}
@@ -169,7 +168,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	}
 
 	private String[][] splitText(String text) {
-		String[] lines = text.split("\n|\r");
+		String[] lines = SPLIT_PATTERN.split(text); // Split the text by \n\r, \n or \r
 		return Arrays.stream(lines).map(str -> str.split("\t")).toArray(String[][]::new);
 	}
 
