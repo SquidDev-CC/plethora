@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.network.INetwork;
+import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -24,7 +25,7 @@ public class MethodExportItem extends BasicMethod<NullableItemStack> implements 
 
 	@Override
 	public boolean canApply(@Nonnull IPartialContext<NullableItemStack> context) {
-		return super.canApply(context) && context.hasContext(INetwork.class);
+		return super.canApply(context) && context.hasContext(INetworkNode.class);
 	}
 
 	@Nonnull
@@ -50,11 +51,12 @@ public class MethodExportItem extends BasicMethod<NullableItemStack> implements 
 			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 
 			NullableItemStack toExtract = baked.getTarget();
-			INetwork grid = baked.getContext(INetwork.class);
+			INetwork network = baked.getContext(INetworkNode.class).getNetwork();
+			if (network == null) throw new LuaException("Cannot find network");
 
 			// Extract the item from the inventory
 			int extractLimit = Math.min(limit, toExtract.getFilledStack().getMaxStackSize());
-			ItemStack toInsert = grid.extractItem(toExtract.getFilledStack(), extractLimit, false);
+			ItemStack toInsert = network.extractItem(toExtract.getFilledStack(), extractLimit, false);
 
 			// Attempt to insert into the appropriate inventory
 			ItemStack remainder = toSlot <= 0
@@ -63,7 +65,7 @@ public class MethodExportItem extends BasicMethod<NullableItemStack> implements 
 
 			// If not everything could be inserted, replace back in the inventory
 			if (!remainder.isEmpty()) {
-				grid.insertItem(remainder, remainder.getCount(), false);
+				network.insertItem(remainder, remainder.getCount(), false);
 			}
 
 			return MethodResult.result(toInsert.getCount() - remainder.getCount());

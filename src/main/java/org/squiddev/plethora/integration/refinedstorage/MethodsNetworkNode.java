@@ -16,7 +16,11 @@ import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import java.util.*;
 
-public class MethodsNetwork {
+/**
+ * Whilst these methods could be implemented on {@link INetwork}, we have to implement them on
+ * {@link INetworkNode} instead as the converter may fail.
+ */
+public class MethodsNetworkNode {
 	@BasicObjectMethod.Inject(
 		value = INetworkNode.class, modId = RS.ID, worldThread = true,
 		doc = "function():int -- Get the energy usage of this RefinedStorage node"
@@ -26,27 +30,37 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetwork.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID, worldThread = true,
 		doc = "function():int -- Get the energy usage of this RefinedStorage network"
 	)
-	public static Object[] getNetworkEnergyUsage(IContext<INetwork> context, Object[] args) {
-		return new Object[]{context.getTarget().getEnergyUsage()};
+	public static Object[] getNetworkEnergyUsage(IContext<INetworkNode> context, Object[] args) {
+		INetworkNode node = context.getTarget();
+		INetwork network = node.getNetwork();
+		return new Object[]{network != null ? network.getEnergyUsage() : node.getEnergyUsage()};
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileController.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID, worldThread = true,
 		doc = "function():int -- Get the energy stored usage in this RefinedStorage network"
 	)
-	public static Object[] getNetworkEnergyStored(IContext<TileController> context, Object[] args) {
-		return new Object[]{context.getTarget().getEnergy().getEnergyStored()};
+	public static Object[] getNetworkEnergyStored(IContext<INetworkNode> context, Object[] args) {
+		INetworkNode node = context.getTarget();
+		INetwork network = node.getNetwork();
+		return new Object[]{
+			network instanceof TileController
+				? ((TileController) network).getEnergy().getEnergyStored()
+				: 0
+		};
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetwork.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID, worldThread = true,
 		doc = "function():table -- List all items which are stored in the network"
 	)
-	public static Object[] listAvailableItems(IContext<INetwork> context, Object[] args) {
-		INetwork network = context.getTarget();
+	public static Object[] listAvailableItems(IContext<INetworkNode> context, Object[] args) {
+		INetwork network = context.getTarget().getNetwork();
+		if (network == null) return new Object[]{Collections.emptyMap()};
+
 		Collection<ItemStack> items = network.getItemStorageCache().getList().getStacks();
 		Set<ItemIdentity> seen = new HashSet<>();
 
@@ -71,18 +85,19 @@ public class MethodsNetwork {
 	}
 
 	@BasicMethod.Inject(
-		value = INetwork.class, modId = RS.ID,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function(item:string|table):table -- Search for an item in the network. " +
 			"You can specify the item as a string, with or without the damage value ('minecraft:stone' or 'minecraft:stone@0') " +
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static MethodResult findItem(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
+	public static MethodResult findItem(final IUnbakedContext<INetworkNode> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
-			IContext<INetwork> baked = context.bake();
-			INetwork network = baked.getTarget();
+			IContext<INetworkNode> baked = context.bake();
+			INetwork network = baked.getTarget().getNetwork();
+			if (network == null) return MethodResult.empty();
 
 			for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
 				if (fingerprint.matches(stack)) {
@@ -103,18 +118,20 @@ public class MethodsNetwork {
 	}
 
 	@BasicMethod.Inject(
-		value = INetwork.class, modId = RS.ID,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function(item:string|table):table -- Search all items in the network. " +
 			"You can specify the item as a string, with or without the damage value ('minecraft:stone' or 'minecraft:stone@0') " +
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static MethodResult findItems(final IUnbakedContext<INetwork> context, Object[] args) throws LuaException {
+	public static MethodResult findItems(final IUnbakedContext<INetworkNode> context, Object[] args) throws LuaException {
 		final ItemFingerprint fingerprint = ItemFingerprint.fromLua(args, 0);
 
 		return MethodResult.nextTick(() -> {
-			IContext<INetwork> baked = context.bake();
-			INetwork network = baked.getTarget();
+			IContext<INetworkNode> baked = context.bake();
+			INetwork network = baked.getTarget().getNetwork();
+			if (network == null) return MethodResult.result(Collections.emptyMap());
+
 			Set<ItemIdentity> seen = new HashSet<>();
 
 			int i = 0;
@@ -139,11 +156,14 @@ public class MethodsNetwork {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetwork.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID, worldThread = true,
 		doc = "function():table -- List all crafting tasks in the network"
 	)
-	public static Object[] getCraftingTasks(IContext<INetwork> context, Object[] args) {
-		List<ICraftingTask> tasks = context.getTarget().getCraftingManager().getTasks();
+	public static Object[] getCraftingTasks(IContext<INetworkNode> context, Object[] args) {
+		INetwork network = context.getTarget().getNetwork();
+		if (network == null) return new Object[]{Collections.emptyMap()};
+
+		List<ICraftingTask> tasks = network.getCraftingManager().getTasks();
 
 		int i = 0;
 		Map<Integer, Object> output = Maps.newHashMapWithExpectedSize(tasks.size());
