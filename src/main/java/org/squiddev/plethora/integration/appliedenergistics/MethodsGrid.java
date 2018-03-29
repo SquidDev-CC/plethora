@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration.appliedenergistics;
 
 import appeng.api.AEApi;
-import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -13,7 +12,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.integration.ItemFingerprint;
 
@@ -102,8 +100,7 @@ public class MethodsGrid {
 
 			int i = 0;
 			Map<Integer, Object> out = Maps.newHashMap();
-			IAEItemStack filter = channel.createStack(new ItemStack(fingerprint.item, fingerprint.damage));
-			for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList().findFuzzy(filter, FuzzyMode.IGNORE_ALL)) {
+			for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
 				if (fingerprint.matches(aeStack.getDefinition())) {
 					out.put(++i, baked.makeChildId(aeStack).getObject());
 				}
@@ -126,10 +123,8 @@ public class MethodsGrid {
 	private static IAEItemStack findStack(IGrid network, ItemFingerprint fingerprint) {
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 		IStorageGrid grid = network.getCache(IStorageGrid.class);
-		IItemList<IAEItemStack> list = grid.getInventory(channel).getStorageList();
 
-		IAEItemStack filter = channel.createStack(new ItemStack(fingerprint.item, fingerprint.damage));
-		for (IAEItemStack aeStack : list.findFuzzy(filter, FuzzyMode.IGNORE_ALL)) {
+		for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
 			if (fingerprint.matches(aeStack.getDefinition())) return aeStack;
 		}
 

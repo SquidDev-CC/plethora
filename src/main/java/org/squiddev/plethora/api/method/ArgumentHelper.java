@@ -7,8 +7,7 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.UUID;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.badArgument;
-import static dan200.computercraft.core.apis.ArgumentHelper.getType;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 /**
  * Various helpers for arguments.
@@ -16,23 +15,18 @@ import static dan200.computercraft.core.apis.ArgumentHelper.getType;
  * @see dan200.computercraft.core.apis.ArgumentHelper
  */
 public final class ArgumentHelper {
+	@Nonnull
+	public static LuaException badObjectType(@Nonnull String key, @Nonnull String expected, @Nullable Object object) {
+		return badObject(key, expected, getType(object));
+	}
 
 	@Nonnull
-	public static LuaException badObject(@Nullable Object object, @Nonnull String kind, @Nonnull String expected) {
-		return new LuaException("bad key " + kind + " (expected " + expected + ", got " + getType(object) + ")");
+	public static LuaException badObject(@Nonnull String key, @Nonnull String expected, @Nonnull String type) {
+		return new LuaException("bad key '" + key + "' (" + expected + " expected, got " + type + ")");
 	}
 
 	public static float getFloat(@Nonnull Object[] args, int index) throws LuaException {
-		if (index >= args.length) {
-			throw badArgument(index, "number", "nil");
-		} else {
-			Object value = args[index];
-			if (value instanceof Number) {
-				return ((Number) value).floatValue();
-			} else {
-				throw badArgument(index, "number", value);
-			}
-		}
+		return (float) getReal(args, index);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,6 +94,18 @@ public final class ArgumentHelper {
 	public static void assertBetween(int value, int min, int max, String message) throws LuaException {
 		if (value < min || value > max) {
 			throw new LuaException(String.format(message, "between " + min + " and " + max));
+		}
+	}
+
+	public static String numberType(double value) {
+		if (Double.isNaN(value)) {
+			return "nan";
+		} else if (value == Double.POSITIVE_INFINITY) {
+			return "inf";
+		} else if (value == Double.NEGATIVE_INFINITY) {
+			return "-inf";
+		} else {
+			return "number";
 		}
 	}
 }

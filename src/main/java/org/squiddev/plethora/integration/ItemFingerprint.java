@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.badArgument;
-import static org.squiddev.plethora.api.method.ArgumentHelper.badObject;
+import static org.squiddev.plethora.api.method.ArgumentHelper.*;
 
 /**
  * An representation of an item which can be used to compare stacks.
@@ -69,23 +69,27 @@ public class ItemFingerprint {
 			Map<?, ?> data = (Map) arg;
 
 			Object nameObj = data.get("name");
-			if (!(nameObj instanceof String)) throw badObject(nameObj, "key 'name'", "string");
+			if (!(nameObj instanceof String)) throw badObjectType("name", "string", nameObj);
 
 			Object damageObj = data.get("damage");
-			if (damageObj != null && !(damageObj instanceof Number)) {
-				throw badObject(damageObj, "key 'damage'", "int|nil");
+			if (damageObj != null) {
+				if (!(damageObj instanceof Number)) {
+					throw badObjectType("damage", "number", damageObj);
+				} else if (!Double.isFinite(((Number) damageObj).doubleValue())) {
+					throw badObject("damage", "number", numberType(((Number) damageObj).doubleValue()));
+				}
 			}
 
 			Object hashObj = data.get("nbthash");
 			if (hashObj != null && !(hashObj instanceof String)) {
-				throw badObject(hashObj, "key 'nbthash'", "string|nil");
+				throw badObjectType("nbthash", "string", hashObj);
 			}
 
 			name = (String) nameObj;
 			damage = damageObj == null ? null : ((Number) damageObj).intValue();
 			hash = hashObj == null ? null : (String) hashObj;
 		} else {
-			throw badArgument(index, "string|table", arg);
+			throw badArgument(index, "string or table", arg);
 		}
 
 		ResourceLocation nameRes = new ResourceLocation(name);
