@@ -5,7 +5,7 @@ layout: default
 
 ## Ore scanner <small>[Raw](ore-scanner.lua) | [Annotated](ore-scanner.html)</small>
 ```lua
---- This renders an mini-map showing nearby ores using the overlay glasses and block scanner.
+--- This renders a minimap showing nearby ores using the overlay glasses and block scanner.
 
 --- We start the program by specifying a series of configuration options. Feel free to ignore these, and use the values
 --- inline. Whilst you don't strictly speaking need a delay between each iteration, it does reduce the impact on the
