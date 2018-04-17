@@ -125,7 +125,7 @@ public final class ConfigCore {
 		public static HashSet<String> blacklistModulesPocket;
 
 		/**
-		 * List of modules to blacklist from being mounted on a minecart.
+		 * List of modules to blacklist from being mounted on a minecart or other vehicle.
 		 *
 		 * This includes all blacklisted modules.
 		 */

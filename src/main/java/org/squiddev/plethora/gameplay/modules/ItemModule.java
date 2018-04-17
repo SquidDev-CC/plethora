@@ -41,6 +41,7 @@ import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
+import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -71,7 +72,7 @@ public final class ItemModule extends ItemBase {
 	 * We multiply the gaussian by this number.
 	 * This is the change in velocity for each axis after normalisation.
 	 *
-	 * @see net.minecraft.entity.projectile.EntityThrowable#setThrowableHeading(double, double, double, float, float)
+	 * @see net.minecraft.entity.projectile.EntityThrowable#shoot(double, double, double, float, float)
 	 */
 	private static final float LASER_MAX_SPREAD = (float) (0.1 / 0.007499999832361937);
 
@@ -86,6 +87,10 @@ public final class ItemModule extends ItemBase {
 		return super.getUnlocalizedName() + ".module_" + getName(stack.getItemDamage());
 	}
 
+	private boolean isBlacklisted(ItemStack stack) {
+		return ConfigCore.Blacklist.blacklistModules.contains(Plethora.RESOURCE_DOMAIN + ":" + getName(stack.getItemDamage()));
+	}
+
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> out) {
 		if (!isInCreativeTab(tab)) return;
@@ -98,6 +103,9 @@ public final class ItemModule extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
+
+		if (!world.isRemote && isBlacklisted(stack)) return ActionResult.newResult(EnumActionResult.FAIL, stack);
+
 		switch (stack.getItemDamage()) {
 			case INTROSPECTION_ID:
 			case CHAT_ID:
@@ -130,6 +138,7 @@ public final class ItemModule extends ItemBase {
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int remaining) {
 		if (world.isRemote) return;
+		if (isBlacklisted(stack)) return;
 
 		// Get the number of ticks the laser has been used for
 		// We use a float we'll have to cast it later anyway

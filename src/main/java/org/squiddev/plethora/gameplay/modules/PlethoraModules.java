@@ -27,7 +27,7 @@ public class PlethoraModules {
 
 	public static final int MODULES = 8;
 
-	private static String[] NAMES = new String[]{
+	private static final String[] NAMES = new String[]{
 		INTROSPECTION, LASER, SCANNER, SENSOR, KINETIC, CHAT, GLASSES, CHAT_CREATIVE
 	};
 
