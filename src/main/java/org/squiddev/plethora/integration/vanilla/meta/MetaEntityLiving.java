@@ -10,8 +10,8 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.ContextFactory;
+import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -74,10 +74,11 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 	private static ILuaObject wrapStack(IPartialContext<?> context, ItemStack object) {
 		if (object == null || object.isEmpty()) return null;
 
+		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
 		if (context instanceof IContext) {
-			return ((IContext<?>) context).makeChildId(object).getObject();
+			return ((IContext<?>) context).makeChildId(wrapper).getObject();
 		} else {
-			return ContextFactory.of(object, Reference.id(object)).getObject();
+			return ContextFactory.of(wrapper).getObject();
 		}
 	}
 }
