@@ -83,7 +83,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void onSeverStarting(FMLServerStartingEvent event) {
+	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandPlethora());
 	}
 
