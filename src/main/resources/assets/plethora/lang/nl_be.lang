@@ -14,7 +14,7 @@ entity.plethora:laser.name=Een Frickin' laser
 
 item.plethora.module.module_scanner.name=Blokscanner
 item.plethora.module.module_scanner.adjective=Scanner
-item.plethora.module.module_scanner.desc=Staat toe dat blokken worden gescand in de buurt
+item.plethora.module.module_scanner.desc=Staat toe dat blokken in de buurt worden gescand
 
 item.plethora.module.module_sensor.name=Entiteitsensor
 item.plethora.module.module_sensor.adjective=Entiteitsensor
@@ -26,7 +26,7 @@ item.plethora.module.module_kinetic.desc=Maakt controle over je lichaam mogelijk
 
 item.plethora.module.module_chat.name=Chatrecorder
 item.plethora.module.module_chat.adjective=Luisteren
-item.plethora.module.module_chat.desc=Maakt het luisteren van chat-gebeurtenissen mogelijk
+item.plethora.module.module_chat.desc=Maakt het luisteren naar chat-gebeurtenissen mogelijk
 
 item.plethora.module.module_chat_creative.name=Creative chatrecorder
 item.plethora.module.module_chat_creative.adjective=Onderscheppen
@@ -48,7 +48,7 @@ tile.plethora.manipulator.mark_2.desc=Wordt gebruikt voor het koppelen met meerd
 # Keyboard
 item.plethora.keyboard.name=Toetsenbord
 item.plethora.keyboard.adjective=Interactief
-item.plethora.keyboard.desc=Voer van op afstand in op computers. Shift+Rechts-klik om te linken met een computer.
+item.plethora.keyboard.desc=Toetsenbord invoer van computer op afstand. Shift+Rechts-klik om te linken met een computer.
 item.plethora.keyboard.bound=Verbonden met blok
 item.plethora.keyboard.cleared=Verbinding vrijgemaakt
 item.plethora.keyboard.binding=Verbonden met %s
@@ -67,11 +67,11 @@ gui.plethora.neuralInterface.modules=Bekijk modules
 
 # Redstone integrator
 tile.plethora.redstone_integrator.name=Redstone-integrator
-tile.plethora.redstone_integrator.desc=Redstone-niveaus ophalen en instellen voor deze blok
+tile.plethora.redstone_integrator.desc=Redstone-niveaus ophalen en instellen voor dit blok
 
 # Upgrade adjectives
 adjective.plethora.clock=Chronisch
-adjective.plethora.daylight_detector=Lichtgevoelige
+adjective.plethora.daylight_detector=Lichtgevoelig
 adjective.plethora.note_block=Akoestisch
 
 # Minecart
@@ -116,12 +116,12 @@ gui.config.plethora.kinetic.launchCost=Lanceringkosten
 gui.config.plethora.kinetic.launchYScale=Lancering Y schaal
 gui.config.plethora.kinetic.launchElytraScale=Elytra-lanceringsschaal
 gui.config.plethora.kinetic.launchFallReset=Lancering valafstandsreset
-gui.config.plethora.kinetic.launchFloatReset=Launcerings zweefreset
+gui.config.plethora.kinetic.launchFloatReset=Lancerings zweefreset
 gui.config.plethora.kinetic.walkRange=Maximum wandelbereik
 gui.config.plethora.kinetic.walkSpeed=Maximum wandelsnelheid
 gui.config.plethora.kinetic.walkCost=Wandelkosten
 gui.config.plethora.kinetic.teleportRange=Maximum teleporteerafstand
-gui.config.plethora.kinetic.teleportCost=Teleporteerkosten
+gui.config.plethora.kinetic.teleportCost=Teleporteer kosten
 gui.config.plethora.kinetic.shootCost=Boogschietkosten
 gui.config.plethora.kinetic.propelMax=Maximum mijnkar voortstuwing
 gui.config.plethora.kinetic.propelCost=Mijnkar voortstuwingskosten
