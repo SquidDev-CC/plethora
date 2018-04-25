@@ -50,7 +50,7 @@ item.plethora.keyboard.name=Toetsenbord
 item.plethora.keyboard.adjective=Interactief
 item.plethora.keyboard.desc=Toetsenbord invoer van computer op afstand. Shift+Rechts-klik om te linken met een computer.
 item.plethora.keyboard.bound=Verbonden met blok
-item.plethora.keyboard.cleared=Verbinding vrijgemaakt
+item.plethora.keyboard.cleared=Verbinding verbroken
 item.plethora.keyboard.binding=Verbonden met %s
 item.plethora.keyboard.broken=Verbinding met %s verbroken
 item.plethora.keyboard.close=Toetsenbord geopend. Duw op ESC om te sluiten.
@@ -71,7 +71,7 @@ tile.plethora.redstone_integrator.desc=Redstone-niveaus ophalen en instellen voo
 
 # Upgrade adjectives
 adjective.plethora.clock=Chronisch
-adjective.plethora.daylight_detector=Lichtgevoelig
+adjective.plethora.daylight_detector=Lichtgevoelige
 adjective.plethora.note_block=Akoestisch
 
 # Minecart
