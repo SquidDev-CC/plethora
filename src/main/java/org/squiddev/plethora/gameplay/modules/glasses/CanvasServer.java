@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
-import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
@@ -11,17 +10,17 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 public class CanvasServer extends ConstantReference<CanvasServer> {
 	private final int canvasId;
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;
 
-	private final TIntObjectHashMap<BaseObject> objects = new TIntObjectHashMap<BaseObject>();
+	private final TIntObjectHashMap<BaseObject> objects = new TIntObjectHashMap<>();
 	private int lastId = 0;
 
-	private final Set<BaseObject> added = Sets.newHashSet();
 	private final TIntHashSet removed = new TIntHashSet();
 
 	public CanvasServer(int canvasId, @Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
@@ -56,23 +55,21 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 
 	@Nullable
 	public synchronized MessageCanvasUpdate getUpdateMessage() {
-		for (BaseObject added : added) added.resetDirty();
-
-		ArrayList<BaseObject> changed = null;
+		List<BaseObject> changed = null;
 		for (BaseObject object : objects.valueCollection()) {
-			if (object.isDirty()) {
-				if (changed == null) changed = new ArrayList<BaseObject>();
+			if (object.pollDirty()) {
+				if (changed == null) changed = new ArrayList<>();
 				changed.add(object);
 			}
 		}
 
-		if (changed == null && added.size() == 0 && removed.size() == 0) return null;
+		if (changed == null && removed.size() == 0) return null;
 
-		if (changed == null) changed = new ArrayList<BaseObject>(0);
+		if (changed == null) changed = Collections.emptyList();
 		MessageCanvasUpdate message = new MessageCanvasUpdate(
-			canvasId, changed, new ArrayList<BaseObject>(added), removed.toArray()
+			canvasId, changed, removed.toArray()
 		);
-		added.clear();
+
 		removed.clear();
 
 		return message;
@@ -82,9 +79,6 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 		if (objects.put(object.id, object) != null) {
 			throw new IllegalStateException("An object already exists with that key");
 		}
-
-		object.resetDirty();
-		added.add(object);
 	}
 
 	public synchronized void remove(BaseObject object) {
@@ -92,7 +86,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 			throw new IllegalStateException("No such object with this key");
 		}
 
-		if (!added.remove(object)) removed.add(object.id);
+		removed.add(object.id);
 	}
 
 	public synchronized BaseObject getObject(int id) {
@@ -101,7 +95,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 
 	public synchronized void clear() {
 		for (BaseObject object : objects.valueCollection()) {
-			if (!added.remove(object)) removed.add(object.id);
+			removed.add(object.id);
 		}
 		objects.clear();
 	}

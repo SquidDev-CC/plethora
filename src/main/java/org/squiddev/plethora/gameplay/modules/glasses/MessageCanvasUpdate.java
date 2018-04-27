@@ -12,13 +12,11 @@ import java.util.List;
 public class MessageCanvasUpdate implements IMessage {
 	private int canvasId;
 	private List<BaseObject> changed;
-	private List<BaseObject> added;
 	private int[] removed;
 
-	public MessageCanvasUpdate(int canvasId, List<BaseObject> changed, List<BaseObject> added, int[] removed) {
+	public MessageCanvasUpdate(int canvasId, List<BaseObject> changed, int[] removed) {
 		this.canvasId = canvasId;
 		this.changed = changed;
-		this.added = added;
 		this.removed = removed;
 	}
 
@@ -30,15 +28,9 @@ public class MessageCanvasUpdate implements IMessage {
 		canvasId = buf.readInt();
 
 		int changedLength = buf.readInt();
-		changed = new ArrayList<BaseObject>(changedLength);
+		changed = new ArrayList<>(changedLength);
 		for (int i = 0; i < changedLength; i++) {
 			changed.add(ObjectRegistry.read(buf));
-		}
-
-		int addedLength = buf.readInt();
-		added = new ArrayList<BaseObject>(addedLength);
-		for (int i = 0; i < addedLength; i++) {
-			added.add(ObjectRegistry.read(buf));
 		}
 
 		int removedLength = buf.readInt();
@@ -57,11 +49,6 @@ public class MessageCanvasUpdate implements IMessage {
 			ObjectRegistry.write(buf, object);
 		}
 
-		buf.writeInt(added.size());
-		for (BaseObject object : added) {
-			ObjectRegistry.write(buf, object);
-		}
-
 		buf.writeInt(removed.length);
 		for (int id : removed) {
 			buf.writeInt(id);
@@ -76,7 +63,6 @@ public class MessageCanvasUpdate implements IMessage {
 
 			synchronized (canvas.objects) {
 				for (BaseObject obj : message.changed) canvas.objects.put(obj.id, obj);
-				for (BaseObject obj : message.added) canvas.objects.put(obj.id, obj);
 				for (int id : message.removed) canvas.objects.remove(id);
 			}
 

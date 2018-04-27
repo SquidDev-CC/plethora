@@ -26,12 +26,10 @@ public abstract class BaseObject {
 	 */
 	public abstract byte getType();
 
-	public boolean isDirty() {
-		return dirty;
-	}
-
-	void resetDirty() {
+	boolean pollDirty() {
+		boolean value = dirty;
 		dirty = false;
+		return value;
 	}
 
 	protected void setDirty() {
