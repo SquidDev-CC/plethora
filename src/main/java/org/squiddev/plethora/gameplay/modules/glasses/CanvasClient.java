@@ -6,6 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_3D;
 
 public class CanvasClient {
 	public final int id;
@@ -16,6 +17,7 @@ public class CanvasClient {
 	public CanvasClient(int id) {
 		this.id = id;
 		this.childrenOf.put(ID_2D, new IntAVLTreeSet());
+		this.childrenOf.put(ID_3D, new IntAVLTreeSet());
 	}
 
 	public void updateObject(BaseObject object) {

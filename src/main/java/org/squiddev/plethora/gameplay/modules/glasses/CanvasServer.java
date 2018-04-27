@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_3D;
 
 public final class CanvasServer extends ConstantReference<CanvasServer> implements IAttachable {
-
 	private final int canvasId;
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;
@@ -26,9 +26,10 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 
 	private final IntSet removed = new IntOpenHashSet();
 
-	private AtomicInteger lastId = new AtomicInteger(ID_2D);
+	private AtomicInteger lastId = new AtomicInteger(ID_3D);
 
 	private final ObjectGroup.Group2D group2D = () -> ID_2D;
+	private final ObjectGroup.Origin3D origin3D = () -> ID_3D;
 
 	public CanvasServer(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
 		this.canvasId = CanvasHandler.nextId();
@@ -36,6 +37,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		this.player = player;
 
 		this.childrenOf.put(ID_2D, new IntOpenHashSet());
+		this.childrenOf.put(ID_3D, new IntOpenHashSet());
 	}
 
 	@Override
@@ -58,6 +60,10 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 
 	public ObjectGroup.Group2D canvas2d() {
 		return group2D;
+	}
+
+	public ObjectGroup.Origin3D canvas3d() {
+		return origin3D;
 	}
 
 	@Nonnull

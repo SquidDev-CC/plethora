@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,6 +27,7 @@ import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_D
 
 public class CanvasHandler {
 	public static final int ID_2D = 0;
+	public static final int ID_3D = 1;
 
 	public static final int WIDTH = 512;
 	public static final int HEIGHT = 512 / 16 * 9;
@@ -145,5 +147,16 @@ public class CanvasHandler {
 		GlStateManager.enableCull();
 
 		GlStateManager.popMatrix();
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onWorldRender(RenderWorldLastEvent event) {
+		CanvasClient canvas = getCanvas();
+		if (canvas == null) return;
+
+		synchronized (canvas) {
+			canvas.drawChildren(canvas.getChildren(ID_3D).iterator());
+		}
 	}
 }

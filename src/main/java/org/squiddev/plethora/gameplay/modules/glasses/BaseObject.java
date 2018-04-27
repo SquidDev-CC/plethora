@@ -93,7 +93,7 @@ public abstract class BaseObject {
 	}
 
 	/**
-	 * Draw this object in the 2D context.
+	 * Draw this object
 	 *
 	 * @param canvas The canvas context we are drawing within
 	 */
