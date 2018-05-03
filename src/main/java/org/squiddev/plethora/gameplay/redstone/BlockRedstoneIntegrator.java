@@ -32,17 +32,15 @@ import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * We extends {@link BlockGeneric} as the bundled redstone provider requires it:
  * {@link ComputerCraftAPI#getBundledRedstoneOutput(World, BlockPos, EnumFacing)}.
- *
- * This means
  */
 public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModule, IPeripheralProvider {
-	private static final HashSet<TileRedstoneIntegrator> toTick = Sets.newHashSet();
+	private static final Set<TileRedstoneIntegrator> toTick = Sets.newConcurrentHashSet();
 
 	private static final String NAME = "redstone_integrator";
 
@@ -78,7 +76,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@Nonnull
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
@@ -131,19 +129,17 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	}
 
 	public static void enqueueTick(TileRedstoneIntegrator tile) {
-		synchronized (toTick) {
-			toTick.add(tile);
-		}
+		toTick.add(tile);
 	}
 
 	@SubscribeEvent
 	public void handleTick(TickEvent.ServerTickEvent e) {
 		if (e.phase == TickEvent.Phase.START) {
-			synchronized (toTick) {
-				for (TileRedstoneIntegrator tile : toTick) {
-					tile.updateOnce();
-				}
-				toTick.clear();
+			Iterator<TileRedstoneIntegrator> iterator = toTick.iterator();
+			while (iterator.hasNext()) {
+				TileRedstoneIntegrator tile = iterator.next();
+				tile.updateOnce();
+				iterator.remove();
 			}
 		}
 	}
@@ -152,12 +148,10 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 	public void handleUnload(WorldEvent.Unload e) {
 		World eventWorld = e.getWorld();
 		if (!eventWorld.isRemote) {
-			synchronized (toTick) {
-				Iterator<TileRedstoneIntegrator> iter = toTick.iterator();
-				while (iter.hasNext()) {
-					World world = iter.next().getWorld();
-					if (world == null || world == eventWorld) iter.remove();
-				}
+			Iterator<TileRedstoneIntegrator> iterator = toTick.iterator();
+			while (iterator.hasNext()) {
+				World world = iterator.next().getWorld();
+				if (world == null || world == eventWorld) iterator.remove();
 			}
 		}
 	}

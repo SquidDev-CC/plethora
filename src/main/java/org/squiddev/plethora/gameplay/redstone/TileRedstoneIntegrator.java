@@ -10,6 +10,7 @@ import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.util.RedstoneUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.gameplay.registry.Registry;
@@ -17,13 +18,12 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getBoolean;
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getEnum;
 
 public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private final byte[] inputs = new byte[6];
@@ -34,7 +34,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private boolean outputDirty = false;
 	private boolean inputDirty = false;
 
-	private final Set<IComputerAccess> computers = Sets.newHashSet();
+	private final Set<IComputerAccess> computers = Sets.newConcurrentHashSet();
 
 	private void updateInput() {
 		World worldObj = getWorld();
@@ -120,6 +120,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		return new ItemStack(Registry.blockRedstoneIntegrator);
 	}
 
+	@Override
+	public void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
+		super.getDroppedItems(drops, creative);
+		if (!creative) drops.add(getPickedItem());
+	}
+
 	//region Redstone output providers
 	@Override
 	public boolean getRedstoneConnectivity(EnumFacing side) {
@@ -173,7 +179,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 				return new Object[]{result};
 			}
 			case 1: { // setOutput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				byte power = getBoolean(args, 1) ? (byte) 15 : 0;
 
 				outputs[side] = power;
@@ -182,15 +188,15 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 				return null;
 			}
 			case 2: { // getOutput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{outputs[side] > 0};
 			}
 			case 3: { // getInput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{inputs[side] > 0};
 			}
 			case 4: { // setBundledOutput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				int power = getInt(args, 1);
 
 				bundledOutputs[side] = power;
@@ -198,21 +204,21 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 				return null;
 			}
 			case 5: { // getBundledOutput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{bundledOutputs[side]};
 			}
 			case 6: { // getBundledInput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{bundledInputs[side]};
 			}
 			case 7: { // testBundledInput
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				int power = getInt(args, 1);
 				return new Object[]{(bundledInputs[side] & power) == power};
 			}
 			case 8: // setAnalogueOutput
 			case 9: {
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				int power = getInt(args, 1);
 
 				assertBetween(power, 0, 15, "Power out of range (%s)");
@@ -223,12 +229,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 			}
 			case 10: // getAnalogueOutput
 			case 11: {
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{outputs[side]};
 			}
 			case 12: // getAnalogueInput
 			case 13: {
-				int side = getEnum(args, 0, EnumFacing.class).ordinal();
+				int side = getFacing(args, 0).ordinal();
 				return new Object[]{inputs[side]};
 			}
 			default:
@@ -249,6 +255,19 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	@Override
 	public boolean equals(IPeripheral other) {
 		return this == other;
+	}
+
+	private static EnumFacing getFacing(Object[] args, int index) throws LuaException {
+		String value = getString(args, index);
+		if (value.equalsIgnoreCase("bottom")) return EnumFacing.DOWN;
+		if (value.equalsIgnoreCase("top")) return EnumFacing.UP;
+
+		EnumFacing facing = EnumFacing.byName(value);
+		if (facing == null) {
+			throw new LuaException("Bad name '" + value.toLowerCase(Locale.ENGLISH) + "' for argument " + (index + 1));
+		}
+
+		return facing;
 	}
 	//endregion
 }

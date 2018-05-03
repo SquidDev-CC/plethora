@@ -32,7 +32,7 @@ public final class ArgumentHelper {
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
-		if (index >= args.length) throw badArgument(index, "number", "no value");
+		if (index >= args.length) throw badArgument(index, "string", "no value");
 		Object value = args[index];
 		if (value instanceof String) {
 			String name = (String) value;
@@ -49,7 +49,7 @@ public final class ArgumentHelper {
 	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
-		if (index >= args.length) throw badArgument(index, "number", "no value");
+		if (index >= args.length) throw badArgument(index, "string", "no value");
 		Object value = args[index];
 		if (value instanceof String) {
 			String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
