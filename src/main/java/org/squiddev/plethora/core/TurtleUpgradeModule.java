@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
@@ -24,8 +23,7 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
-import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
-import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.TaskRunner;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,7 +115,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(handler.getModule().toString(), this, paired, new ContextDelayedExecutor(), factory.getAttachments());
+			AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(handler.getModule().toString(), this, paired, new TaskRunner(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
@@ -168,13 +166,12 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 	public void update(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side) {
 		IPeripheral peripheral = turtle.getPeripheral(side);
 		if (peripheral instanceof MethodWrapperPeripheral) {
-			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
-			if (executor instanceof ITickable) ((ITickable) executor).update();
+			((MethodWrapperPeripheral) peripheral).getRunner().update();
 		}
 	}
 
 	private static final class TurtleModuleAccess implements IModuleAccess {
-		private TrackingWrapperPeripheral wrapper;
+		private AttachableWrapperPeripheral wrapper;
 
 		private final ITurtleAccess access;
 		private final TurtleSide side;

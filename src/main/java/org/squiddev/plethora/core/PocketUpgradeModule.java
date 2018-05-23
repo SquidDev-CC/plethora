@@ -8,7 +8,6 @@ import dan200.computercraft.api.pocket.IPocketUpgrade;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -24,8 +23,7 @@ import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
-import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
-import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
@@ -169,7 +167,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, new ContextDelayedExecutor(), factory.getAttachments());
+			return new PocketPeripheral(this, access, paired, factory.getAttachments());
 		} else {
 			return null;
 		}
@@ -185,9 +183,8 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				access.invalidatePeripheral();
 			}
 
-			// Update the enqueued method
-			IExecutorFactory executor = methodWrapper.getExecutorFactory();
-			if (executor instanceof ITickable) ((ITickable) executor).update();
+			// Update the task runner
+			methodWrapper.getRunner().update();
 		}
 	}
 
@@ -196,11 +193,15 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		return false;
 	}
 
-	private static final class PocketPeripheral extends TrackingWrapperPeripheral {
+	private static final class PocketPeripheral extends AttachableWrapperPeripheral {
 		private final Entity entity;
 
-		public PocketPeripheral(PocketUpgradeModule owner, PocketModuleAccess access, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory, List<IAttachable> attachments) {
-			super(owner.getUpgradeID().toString(), owner, methods, factory, attachments);
+		public PocketPeripheral(
+			PocketUpgradeModule owner, PocketModuleAccess access,
+			Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+			List<IAttachable> attachments
+		) {
+			super(owner.getUpgradeID().toString(), owner, methods, new TaskRunner(), attachments);
 			this.entity = access.entity;
 			access.wrapper = this;
 		}
@@ -216,7 +217,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 	}
 
 	private static final class PocketModuleAccess implements IModuleAccess {
-		private TrackingWrapperPeripheral wrapper;
+		private AttachableWrapperPeripheral wrapper;
 
 		private final IPocketAccess access;
 		private final Entity entity;

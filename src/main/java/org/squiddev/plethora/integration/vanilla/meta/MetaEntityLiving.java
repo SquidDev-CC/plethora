@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.ContextFactory;
+import org.squiddev.plethora.core.executor.BasicExecutor;
 import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
@@ -78,7 +79,7 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		if (context instanceof IContext) {
 			return ((IContext<?>) context).makeChildId(wrapper).getObject();
 		} else {
-			return ContextFactory.of(wrapper).getObject();
+			return ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
 		}
 	}
 }

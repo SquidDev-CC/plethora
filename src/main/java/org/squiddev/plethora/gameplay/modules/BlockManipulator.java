@@ -301,7 +301,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getFactory(), factory.getAttachments(), stackHash);
+			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getRunner(), factory.getAttachments(), stackHash);
 			for (ManipulatorAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}
@@ -335,7 +335,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	private static final class ManipulatorAccess implements IModuleAccess {
-		private TrackingWrapperPeripheral wrapper;
+		private AttachableWrapperPeripheral wrapper;
 
 		private final TileManipulator tile;
 		private final IWorldLocation location;

@@ -9,10 +9,15 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.ComputerAccessExecutor;
+import org.squiddev.plethora.core.executor.TaskRunner;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles integration with a {@link IPeripheral}
@@ -20,19 +25,25 @@ import java.util.List;
 public class MethodWrapperPeripheral extends MethodWrapper implements IPeripheral {
 	private final Object owner;
 	private final String type;
-	private final IExecutorFactory factory;
 
-	private Object delegate;
+	private final TaskRunner runner;
+	private final Map<IComputerAccess, ComputerAccessExecutor> accesses = new ConcurrentHashMap<>();
 
-	public MethodWrapperPeripheral(String name, Object owner, List<IMethod<?>> methods, List<UnbakedContext<?>> contexts, IExecutorFactory factory) {
+	public MethodWrapperPeripheral(
+		String name, Object owner, List<IMethod<?>> methods, List<UnbakedContext<?>> contexts,
+		TaskRunner runner
+	) {
 		super(methods, contexts);
 		this.owner = owner;
 		this.type = name;
-		this.factory = factory;
+		this.runner = runner;
 	}
 
-	public MethodWrapperPeripheral(String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods, IExecutorFactory factory) {
-		this(name, owner, methods.getLeft(), methods.getRight(), factory);
+	public MethodWrapperPeripheral(
+		String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+		TaskRunner runner
+	) {
+		this(name, owner, methods.getLeft(), methods.getRight(), runner);
 	}
 
 	@Nonnull
@@ -43,7 +54,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext luaContext, int method, @Nonnull final Object[] args) throws LuaException, InterruptedException {
-		IResultExecutor executor = factory.createExecutor(access);
+		IResultExecutor executor = accesses.get(access);
+		if (executor == null) throw new LuaException("Not attached to this computer");
 
 		UnbakedContext<?> context = getContext(method);
 		Object[] extraRef = getReferences(access, luaContext);
@@ -60,7 +72,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 		}
 
 		UnbakedContext<?> full = new UnbakedContext<>(
-			context.target, keys, references, context.handler, context.modules, context.executor
+			context.target, keys, references, context.handler, context.modules, executor
 		);
 
 		MethodResult result = doCallMethod(getMethod(method), full, args);
@@ -69,10 +81,32 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 	@Override
 	public void attach(@Nonnull IComputerAccess access) {
+		ComputerAccessExecutor executor = new ComputerAccessExecutor(access, runner);
+		executor.attach();
+
+		ComputerAccessExecutor previous = accesses.put(access, executor);
+		if (previous != null) previous.detach();// Should never happen but...
 	}
 
 	@Override
 	public void detach(@Nonnull IComputerAccess access) {
+		ComputerAccessExecutor executor = accesses.remove(access);
+		if (executor != null) executor.detach();
+	}
+
+	public void queueEvent(@Nonnull String name, @Nullable Object... args) {
+		for (IComputerAccess access : accesses.keySet()) {
+			try {
+				access.queueEvent(name, args);
+			} catch (RuntimeException e) {
+				DebugLogger.error("Cannot queue event on " + access, e);
+			}
+		}
+	}
+
+	@Nonnull
+	public TaskRunner getRunner() {
+		return runner;
 	}
 
 	/**
@@ -83,10 +117,6 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	@Nonnull
 	public Object getTarget() {
 		return owner;
-	}
-
-	protected IExecutorFactory getExecutorFactory() {
-		return factory;
 	}
 
 	@Override

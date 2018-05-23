@@ -22,7 +22,7 @@ import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.capabilities.*;
-import org.squiddev.plethora.core.executor.SharedDelayedExecutor;
+import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
@@ -91,7 +91,7 @@ public class PlethoraCore {
 	public void onServerStart(FMLServerStartedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
-			SharedDelayedExecutor.INSTANCE.reset();
+			TaskRunner.SHARED.reset();
 		}
 	}
 
@@ -99,7 +99,7 @@ public class PlethoraCore {
 	public void onServerStopped(FMLServerStoppedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
-			SharedDelayedExecutor.INSTANCE.reset();
+			TaskRunner.SHARED.reset();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class PlethoraCore {
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			DefaultCostHandler.update();
-			SharedDelayedExecutor.INSTANCE.update();
+			TaskRunner.SHARED.update();
 		}
 	}
 

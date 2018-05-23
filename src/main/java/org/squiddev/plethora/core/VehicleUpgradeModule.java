@@ -5,7 +5,6 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.EntityWorldLocation;
@@ -23,8 +22,7 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.api.vehicle.IVehicleAccess;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
-import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
-import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.TaskRunner;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,8 +55,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 	@Override
 	public void update(@Nonnull IVehicleAccess vehicle, @Nonnull IPeripheral peripheral) {
 		if (peripheral instanceof MethodWrapperPeripheral) {
-			IExecutorFactory executor = ((MethodWrapperPeripheral) peripheral).getExecutorFactory();
-			if (executor instanceof ITickable) ((ITickable) executor).update();
+			((MethodWrapperPeripheral) peripheral).getRunner().update();
 		}
 	}
 
@@ -107,7 +104,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().size() > 0) {
-			TrackingWrapperPeripheral peripheral = new TrackingWrapperPeripheral(moduleName, this, paired, new ContextDelayedExecutor(), factory.getAttachments());
+			AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(moduleName, this, paired, new TaskRunner(), factory.getAttachments());
 			access.wrapper = peripheral;
 			return peripheral;
 		} else {
@@ -116,7 +113,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 	}
 
 	private static final class VehicleModuleAccess implements IModuleAccess {
-		private TrackingWrapperPeripheral wrapper;
+		private AttachableWrapperPeripheral wrapper;
 
 		private final IVehicleAccess access;
 		private final IWorldLocation location;

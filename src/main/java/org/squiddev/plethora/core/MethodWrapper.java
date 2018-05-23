@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class MethodWrapper {
 		}
 	}
 
+	@Nonnull
 	public String[] getMethodNames() {
 		return names;
 	}

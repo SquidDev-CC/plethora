@@ -19,6 +19,8 @@ import static org.squiddev.plethora.core.ConfigCore.CostSystem;
  * @see org.squiddev.plethora.core.PlethoraCore#onServerTick(TickEvent.ServerTickEvent)
  */
 public final class DefaultCostHandler implements ICostHandler {
+	public static final DefaultCostHandler EMPTY = new DefaultCostHandler(0, 0, 0, false, false);
+
 	/**
 	 * Used to store all handlers.
 	 * This uses the identity function
@@ -32,16 +34,14 @@ public final class DefaultCostHandler implements ICostHandler {
 	private final boolean allowAwait;
 
 	public DefaultCostHandler(double initial, double regenRate, double limit, boolean allowNegative, boolean allowAwait) {
-		this.allowAwait = allowAwait;
 		Preconditions.checkArgument(initial >= 0, "initial must be >= 0");
-		Preconditions.checkArgument(regenRate > 0, "regenRate must be > 0");
-
-		Preconditions.checkArgument(limit > 0, "limit must be > 0");
-		Preconditions.checkArgument(limit > regenRate, "limit must be > regenRate");
+		Preconditions.checkArgument(regenRate >= 0, "regenRate must be > 0");
+		Preconditions.checkArgument(limit >= 0, "limit must be >= 0");
 
 		this.regenRate = regenRate;
 		this.limit = limit;
 		this.allowNegative = allowNegative;
+		this.allowAwait = allowAwait;
 	}
 
 	public DefaultCostHandler() {
@@ -103,9 +103,7 @@ public final class DefaultCostHandler implements ICostHandler {
 	}
 
 	private synchronized void regen() {
-		if (value < limit) {
-			value = Math.min(limit, value + regenRate);
-		}
+		if (value < limit) value = Math.min(limit, value + regenRate);
 	}
 
 	public static ICostHandler get(Object owner) {

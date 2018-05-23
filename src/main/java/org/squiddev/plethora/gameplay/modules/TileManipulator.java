@@ -13,8 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPlayerOwnable;
-import org.squiddev.plethora.core.executor.ContextDelayedExecutor;
-import org.squiddev.plethora.core.executor.IExecutorFactory;
+import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.gameplay.TileBase;
 import org.squiddev.plethora.gameplay.registry.Registry;
 import org.squiddev.plethora.utils.Helpers;
@@ -35,7 +34,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 
 	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 
-	private final ContextDelayedExecutor executor = new ContextDelayedExecutor();
+	private final TaskRunner runner = new TaskRunner();
 
 	// Lazily loaded render options
 	private double offset = -1;
@@ -223,16 +222,17 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 
 	@Override
 	public void update() {
-		executor.update();
+		runner.update();
 	}
 
-	public IExecutorFactory getFactory() {
-		return executor;
+	@Nonnull
+	public TaskRunner getRunner() {
+		return runner;
 	}
 
 	@Override
 	public void removed() {
-		executor.reset();
+		runner.reset();
 	}
 
 	public void setOwningProfile(GameProfile profile) {

@@ -9,7 +9,7 @@ import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
-import org.squiddev.plethora.core.executor.DefaultExecutor;
+import org.squiddev.plethora.core.executor.NeverExecutor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 
 	private final List<IAttachable> attachments = Lists.newArrayList();
 
-	private IResultExecutor executor = DefaultExecutor.INSTANCE;
-	private ICostHandler handler = new DefaultCostHandler();
+	private IResultExecutor executor = NeverExecutor.INSTANCE;
+	private ICostHandler handler = DefaultCostHandler.EMPTY;
 	private IModuleContainer modules = BasicModuleContainer.EMPTY;
 	private IReference<IModuleContainer> moduleReference = BasicModuleContainer.EMPTY_REF;
 

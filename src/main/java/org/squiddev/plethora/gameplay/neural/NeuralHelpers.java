@@ -201,7 +201,7 @@ public final class NeuralHelpers {
 	}
 
 	private static final class NeuralAccess implements IModuleAccess {
-		private TrackingWrapperPeripheral wrapper;
+		private AttachableWrapperPeripheral wrapper;
 
 		private final Entity owner;
 		private final NeuralComputer computer;

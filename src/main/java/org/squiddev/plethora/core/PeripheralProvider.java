@@ -15,7 +15,7 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.reference.BlockReference;
-import org.squiddev.plethora.core.executor.DefaultExecutor;
+import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -55,7 +55,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 				Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 				if (paired.getLeft().size() > 0) {
-					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, DefaultExecutor.INSTANCE);
+					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
 				}
 			} catch (RuntimeException e) {
 				DebugLogger.error("Error getting peripheral", e);
