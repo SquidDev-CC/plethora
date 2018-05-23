@@ -24,8 +24,8 @@ import static net.minecraftforge.common.util.Constants.NBT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_DATA;
 
 public class CanvasHandler {
-	public static final double WIDTH = 512;
-	public static final double HEIGHT = 512 / 16 * 9;
+	public static final int WIDTH = 512;
+	public static final int HEIGHT = 512 / 16 * 9;
 
 	private static AtomicInteger id = new AtomicInteger(0);
 	private static final HashSet<CanvasServer> server = Sets.newHashSet();
