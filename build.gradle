@@ -53,6 +53,8 @@ repositories {
 	// ComputerCraft
 	maven { url "https://cc.crzd.me/maven/" }
 
+	maven { url "https://squiddev.cc/maven/" }
+
 	// ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
 
@@ -103,6 +105,8 @@ def curseMod(String mod, int id, String version) {
 dependencies {
 	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	compile "mezz.jei:jei_1.12:4.7.0.68"
+
+	compileOnly "org.squiddev:cc-tweaked:1.80pr1.6"
 
 	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
 	compileOnly "net.industrial-craft:industrialcraft-2:2.8.9-ex112:dev"

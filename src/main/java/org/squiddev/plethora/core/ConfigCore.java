@@ -22,7 +22,7 @@ public final class ConfigCore {
 	}
 
 	public static void sync() {
-		ConfigCoreForgeLoader.doSync();
+		ConfigCoreForgeLoader.sync();
 	}
 
 	/**

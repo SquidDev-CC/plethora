@@ -31,14 +31,18 @@ public abstract class Task {
 
 	protected abstract void finish(@Nonnull LuaException e);
 
+	protected void submitTiming(long time) {
+	}
+
 	public boolean update() {
 		if (!resolver.update()) return false;
 
+		long start = System.nanoTime();
 		try {
 			MethodResult next = callback.call();
 			if (next.isFinal()) {
-				finish(next.getResult());
 				markFinished();
+				finish(next.getResult());
 				return true;
 			} else {
 				resolver = next.getResolver();
@@ -46,14 +50,16 @@ public abstract class Task {
 				return false;
 			}
 		} catch (LuaException e) {
-			finish(e);
 			markFinished();
+			finish(e);
 			return true;
 		} catch (Throwable e) {
-			finish(new LuaException("Java Exception Thrown: " + e.toString()));
 			markFinished();
+			finish(new LuaException("Java Exception Thrown: " + e.toString()));
 			DebugLogger.error("Unexpected error", e);
 			return true;
+		} finally {
+			submitTiming(System.nanoTime() - start);
 		}
 	}
 

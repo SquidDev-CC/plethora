@@ -15,7 +15,7 @@ public final class ConfigGameplay {
 	}
 
 	public static void sync() {
-		ConfigGameplayForgeLoader.doSync();
+		ConfigGameplayForgeLoader.sync();
 	}
 
 	/**
