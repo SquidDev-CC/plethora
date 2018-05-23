@@ -4,7 +4,10 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IMethodRegistry;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.List;
@@ -77,8 +80,13 @@ public class MethodWrapper {
 	@SuppressWarnings("unchecked")
 	static MethodResult doCallMethod(IMethod method, IUnbakedContext<?> context, Object[] args) throws LuaException {
 		try {
-			CostHelpers.checkCost(context.getCostHandler(), registry.getBaseMethodCost(method));
-			return method.apply(context, args);
+			double cost = registry.getBaseMethodCost(method);
+			if (cost <= 0) return method.apply(context, args);
+
+			// This is a little sub-optimal, as argument validation will be deferred until later.
+			// However, we don't have much of a way round this as the method could technically
+			// have side effects.
+			return context.getCostHandler().await(cost, () -> method.apply(context, args));
 		} catch (LuaException e) {
 			throw e;
 		} catch (Throwable e) {

@@ -5,7 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -35,16 +38,11 @@ public final class MethodsKinetic {
 
 		assertBetween(power, 0, Kinetic.launchMax, "Power out of range (%s).");
 
-		CostHelpers.checkCost(
-			context.getCostHandler(),
-			power * Kinetic.launchCost
-		);
-
-		return MethodResult.nextTick(() -> {
+		return context.getCostHandler().await(power * Kinetic.launchCost, MethodResult.nextTick(() -> {
 			Entity entity = context.bake().getContext(ContextKeys.ORIGIN, Entity.class);
 			ItemModule.launch(entity, yaw, pitch, power);
 			return MethodResult.empty();
-		});
+		}));
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
@@ -83,12 +81,8 @@ public final class MethodsKinetic {
 			assertBetween(speed, 1, Kinetic.walkSpeed, "Speed coordinate out of bounds (%s)");
 		}
 
-		CostHelpers.checkCost(
-			context.getCostHandler(),
-			Math.sqrt(x * x + y * y + z * z) * Kinetic.walkCost
-		);
-
-		return MethodResult.nextTick(() -> {
+		double cost = Math.sqrt(x * x + y * y + z * z) * Kinetic.walkCost;
+		return context.getCostHandler().await(cost, MethodResult.nextTick(() -> {
 			EntityLiving living = context.bake().getContext(ContextKeys.ORIGIN, EntityLiving.class);
 			PathNavigate navigator = living.getNavigator();
 
@@ -107,7 +101,7 @@ public final class MethodsKinetic {
 			}
 
 			return MethodResult.result(living.getNavigator().setPath(path, speed));
-		});
+		}));
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(

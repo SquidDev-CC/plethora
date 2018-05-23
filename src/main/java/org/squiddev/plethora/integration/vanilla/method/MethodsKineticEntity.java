@@ -18,7 +18,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -79,17 +82,14 @@ public final class MethodsKineticEntity {
 		assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
 		assertBetween(z, -Kinetic.teleportRange, Kinetic.teleportRange, "Z coordinate out of bounds (%s)");
 
-		CostHelpers.checkCost(
-			context.getCostHandler(),
-			Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost
-		);
 
-		return MethodResult.nextTick(() -> {
+		double cost = Math.sqrt(x * x + y * y + z * z) * Kinetic.teleportCost;
+		return context.getCostHandler().await(cost, MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> baked = context.bake();
 
 			EntityEnderman target = baked.getContext(ContextKeys.ORIGIN, EntityEnderman.class);
 			return MethodResult.result(target.teleportTo(target.posX + x, target.posY + y, target.posZ + z));
-		});
+		}));
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -102,9 +102,7 @@ public final class MethodsKineticEntity {
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
-		CostHelpers.checkCost(unbaked.getCostHandler(), Kinetic.shootCost * potency);
-
-		return MethodResult.nextTick(() -> {
+		return unbaked.getCostHandler().await(Kinetic.shootCost * potency, MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> context = unbaked.bake();
 			AbstractSkeleton skeleton = context.getContext(ContextKeys.ORIGIN, AbstractSkeleton.class);
 
@@ -136,7 +134,7 @@ public final class MethodsKineticEntity {
 
 			location.getWorld().spawnEntity(arrow);
 			return MethodResult.empty();
-		});
+		}));
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -148,15 +146,10 @@ public final class MethodsKineticEntity {
 
 		assertBetween(given, -Kinetic.propelMax, Kinetic.propelMax, "Velocity coordinate out of bounds (%s)");
 
-		CostHelpers.checkCost(
-			context.getCostHandler(),
-			Math.abs(given) * Kinetic.propelCost
-		);
-
 		// We provide a number * 10 as it seems more "friendly".
 		final double velocity = given * 0.1;
 
-		return MethodResult.nextTick(() -> {
+		return context.getCostHandler().await(Math.abs(given) * Kinetic.propelCost, MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> baked = context.bake();
 
 			EntityMinecart target = baked.getContext(ContextKeys.ORIGIN, EntityMinecart.class);
@@ -175,7 +168,7 @@ public final class MethodsKineticEntity {
 			target.addVelocity(velocity * vx / len, 0, velocity * vz / len);
 			target.velocityChanged = true;
 			return MethodResult.empty();
-		});
+		}));
 	}
 }
 

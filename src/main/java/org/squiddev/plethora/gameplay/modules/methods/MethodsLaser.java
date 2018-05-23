@@ -38,13 +38,11 @@ public final class MethodsLaser {
 
 		ArgumentHelper.assertBetween(potency, minimumPotency, maximumPotency, "Potency out of range (%s).");
 
-		CostHelpers.checkCost(unbaked.getCostHandler(), potency * cost);
-
 		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionY = -Math.sin(pitch / 180.0f * (float) Math.PI);
 
-		return MethodResult.nextTick(() -> {
+		return unbaked.getCostHandler().await(potency * cost, MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> context = unbaked.bake();
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 			Vec3d pos = location.getLoc();
@@ -112,6 +110,6 @@ public final class MethodsLaser {
 			location.getWorld().spawnEntity(laser);
 
 			return MethodResult.empty();
-		});
+		}));
 	}
 }

@@ -67,6 +67,14 @@ public final class ConfigCore {
 		@DefaultBoolean(false)
 		@RequiresRestart(mc = false, world = true)
 		public static boolean allowNegative;
+
+		/**
+		 * Wait for the system to get sufficient energy instead of throwing
+		 * an error.
+		 */
+		@DefaultBoolean(true)
+		@RequiresRestart(mc = false, world = true)
+		public static boolean awaitRegen;
 	}
 
 	/**

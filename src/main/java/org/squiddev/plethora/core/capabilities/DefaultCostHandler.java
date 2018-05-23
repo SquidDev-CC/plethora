@@ -2,10 +2,14 @@ package org.squiddev.plethora.core.capabilities;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.MapMaker;
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.squiddev.plethora.api.method.ICostHandler;
+import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static org.squiddev.plethora.core.ConfigCore.CostSystem;
 
@@ -25,8 +29,10 @@ public final class DefaultCostHandler implements ICostHandler {
 	private final double regenRate;
 	private final double limit;
 	private final boolean allowNegative;
+	private final boolean allowAwait;
 
-	public DefaultCostHandler(double initial, double regenRate, double limit, boolean allowNegative) {
+	public DefaultCostHandler(double initial, double regenRate, double limit, boolean allowNegative, boolean allowAwait) {
+		this.allowAwait = allowAwait;
 		Preconditions.checkArgument(initial >= 0, "initial must be >= 0");
 		Preconditions.checkArgument(regenRate > 0, "regenRate must be > 0");
 
@@ -39,7 +45,7 @@ public final class DefaultCostHandler implements ICostHandler {
 	}
 
 	public DefaultCostHandler() {
-		this(CostSystem.initial, CostSystem.regen, CostSystem.limit, CostSystem.allowNegative);
+		this(CostSystem.initial, CostSystem.regen, CostSystem.limit, CostSystem.allowNegative, CostSystem.awaitRegen);
 	}
 
 	@Override
@@ -59,6 +65,41 @@ public final class DefaultCostHandler implements ICostHandler {
 
 		value -= amount;
 		return true;
+	}
+
+	@Override
+	public MethodResult await(double amount, MethodResult next) throws LuaException {
+		// First try to consume as normal, unwrapping if not possible.
+		if (consume(amount)) return next;
+
+		// Otherwise if we'll never be able to consume then give up.
+		if ((!allowNegative && amount > limit) || !allowAwait) {
+			throw new LuaException("Insufficient energy (requires " + amount + ", has " + value + ".");
+		}
+
+		return MethodResult.awaiting(() -> consume(amount), () -> next);
+	}
+
+	@Override
+	public MethodResult await(double amount, Callable<MethodResult> next) throws LuaException {
+		// First try to consume as normal, unwrapping if not possible.
+		if (consume(amount)) {
+			try {
+				return next.call();
+			} catch (LuaException e) {
+				throw e;
+			} catch (Throwable e) {
+				DebugLogger.error("Unexpected error", e);
+				throw new LuaException("Java Exception Thrown: " + e.toString());
+			}
+		}
+
+		// Otherwise if we'll never be able to consume then give up.
+		if ((!allowNegative && amount > limit) || !allowAwait) {
+			throw new LuaException("Insufficient energy (requires " + amount + ", has " + value + ".");
+		}
+
+		return MethodResult.awaiting(() -> consume(amount), next);
 	}
 
 	private synchronized void regen() {

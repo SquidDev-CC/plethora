@@ -1,8 +1,10 @@
 package org.squiddev.plethora.api.method;
 
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.concurrent.Callable;
 
 /**
  * Stores a value that regenerates over time.
@@ -31,4 +33,24 @@ public interface ICostHandler {
 	 * @return If there is sufficient energy
 	 */
 	boolean consume(double amount);
+
+	/**
+	 * Start a method once this cost handler has sufficient energy to consume it.
+	 *
+	 * @param amount The amount of energy to consume. This must be >= 0.
+	 * @param next   The method result to continue with once we have sufficient energy.
+	 * @return The method result
+	 * @throws LuaException If there will never be sufficient energy.
+	 */
+	MethodResult await(double amount, MethodResult next) throws LuaException;
+
+	/**
+	 * Start a method once this cost handler has sufficient energy to consume it.
+	 *
+	 * @param amount The amount of energy to consume. This must be >= 0.
+	 * @param next   The callback to continue with once we have sufficient energy.
+	 * @return The method result
+	 * @throws LuaException If there will never be sufficient energy.
+	 */
+	MethodResult await(double amount, Callable<MethodResult> next) throws LuaException;
 }
