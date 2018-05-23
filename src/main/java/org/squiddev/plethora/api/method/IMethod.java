@@ -83,13 +83,6 @@ public interface IMethod<T> {
 	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
 
 	/**
-	 * Determine whether this method will ever yield.
-	 *
-	 * @return If this method will yield. Only return {@code false} if you are 100% certain it will never yield.
-	 */
-	boolean willYield();
-
-	/**
 	 * Automatically register a method.
 	 *
 	 * The class must have a public constructor and implement {@link IMethod}.

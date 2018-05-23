@@ -57,11 +57,6 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 		return docs;
 	}
 
-	@Override
-	public boolean willYield() {
-		return true;
-	}
-
 	/**
 	 * Delegate to a normal method from a {@link BasicMethod}.
 	 *
