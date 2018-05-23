@@ -12,21 +12,21 @@ public final class MethodResult {
 
 	private final Object[] result;
 	private final Callable<MethodResult> next;
-	private final int delay;
+	private final Resolver resolver;
 
 	private MethodResult(Object[] result) {
 		this.result = result;
 		this.next = null;
-		this.delay = -1;
+		this.resolver = IMMEDIATE;
 	}
 
-	private MethodResult(Callable<MethodResult> next, int delay) {
+	private MethodResult(Callable<MethodResult> next, Resolver resolver) {
 		Preconditions.checkNotNull(next, "next cannot be null");
-		Preconditions.checkArgument(delay >= 0, "delay must be >= 0");
+		Preconditions.checkNotNull(resolver, "resolver cannot be null");
 
 		this.result = null;
 		this.next = next;
-		this.delay = delay;
+		this.resolver = resolver;
 	}
 
 	public boolean isFinal() {
@@ -43,9 +43,9 @@ public final class MethodResult {
 		return next;
 	}
 
-	public int getDelay() {
+	public Resolver getResolver() {
 		if (isFinal()) throw new IllegalStateException("MethodResult is a result");
-		return delay;
+		return resolver;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class MethodResult {
 	 * @see #nextTick(Runnable)
 	 */
 	public static MethodResult nextTick(Callable<MethodResult> next) {
-		return new MethodResult(next, 0);
+		return new MethodResult(next, IMMEDIATE);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public final class MethodResult {
 	 * @see #nextTick(Callable)
 	 */
 	public static MethodResult nextTick(Runnable next) {
-		return new MethodResult(wrap(next), 0);
+		return new MethodResult(wrap(next), IMMEDIATE);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class MethodResult {
 	 * @see #delayed(int, Runnable)
 	 */
 	public static MethodResult delayed(int delay, Callable<MethodResult> next) {
-		return new MethodResult(next, delay);
+		return new MethodResult(next, delay <= 0 ? IMMEDIATE : new DelayedResolver(delay));
 	}
 
 	/**
@@ -91,7 +91,18 @@ public final class MethodResult {
 	 * @see #delayed(int, Callable)
 	 */
 	public static MethodResult delayed(int delay, Runnable next) {
-		return new MethodResult(wrap(next), delay);
+		return new MethodResult(wrap(next), delay <= 0 ? IMMEDIATE : new DelayedResolver(delay));
+	}
+
+	/**
+	 * Execute a method when the resolver evaluates to true
+	 *
+	 * @param resolver The resolver to wait on
+	 * @param next     The callback to execute
+	 * @return THe built MethodResult
+	 */
+	public static MethodResult awaiting(Resolver resolver, Callable<MethodResult> next) {
+		return new MethodResult(next, resolver);
 	}
 
 	/**
@@ -112,7 +123,9 @@ public final class MethodResult {
 	 * @return The built MethodResult
 	 */
 	public static MethodResult delayedResult(int delay, final Object... args) {
-		return new MethodResult(() -> MethodResult.result(args), delay);
+		return delay <= 0
+			? new MethodResult(args)
+			: new MethodResult(() -> MethodResult.result(args), new DelayedResolver(delay));
 	}
 
 	/**
@@ -140,4 +153,23 @@ public final class MethodResult {
 			return empty;
 		};
 	}
+
+	public interface Resolver {
+		boolean update();
+	}
+
+	private static class DelayedResolver implements Resolver {
+		private int remaining;
+
+		DelayedResolver(int remaining) {
+			this.remaining = remaining;
+		}
+
+		@Override
+		public boolean update() {
+			return remaining-- == 0;
+		}
+	}
+
+	private static final Resolver IMMEDIATE = () -> true;
 }

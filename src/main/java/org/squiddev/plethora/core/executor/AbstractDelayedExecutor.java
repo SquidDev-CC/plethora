@@ -118,12 +118,12 @@ public class AbstractDelayedExecutor implements ITickable {
 
 	protected abstract static class LuaTask {
 		private LuaTask next;
-		private int remaining;
+		private MethodResult.Resolver resolver;
 		private Callable<MethodResult> task;
 
 		protected LuaTask(MethodResult task) {
 			this.task = task.getCallback();
-			remaining = task.getDelay();
+			resolver = task.getResolver();
 		}
 
 		protected abstract void onSuccess(Object[] result);
@@ -133,13 +133,8 @@ public class AbstractDelayedExecutor implements ITickable {
 		protected abstract void onCancel();
 
 		private void update() {
-			if (remaining < 0) {
-				DebugLogger.warn("Task has negative time remaining!");
-				return;
-			}
-
-			if (remaining == 0) {
-				remaining--;
+			if (resolver.update()) {
+				resolver = null;
 
 				try {
 					MethodResult next = task.call();
@@ -147,7 +142,7 @@ public class AbstractDelayedExecutor implements ITickable {
 						onSuccess(next.getResult());
 					} else {
 						task = next.getCallback();
-						remaining = next.getDelay();
+						resolver = next.getResolver();
 					}
 				} catch (LuaException e) {
 					onFailure(e);
@@ -155,13 +150,11 @@ public class AbstractDelayedExecutor implements ITickable {
 					DebugLogger.error("Error in task: ", e);
 					onFailure(e);
 				}
-			} else {
-				remaining--;
 			}
 		}
 
 		public boolean isDone() {
-			return remaining < 0;
+			return resolver == null;
 		}
 	}
 

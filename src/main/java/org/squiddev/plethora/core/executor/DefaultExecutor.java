@@ -59,7 +59,7 @@ public final class DefaultExecutor implements IResultExecutor, IExecutorFactory 
 
 	private static class Task implements ILuaTask {
 		public Object[] returnValue;
-		private int remaining;
+		private MethodResult.Resolver resolver;
 		private Callable<MethodResult> callback;
 
 		public Task(MethodResult result) {
@@ -70,15 +70,16 @@ public final class DefaultExecutor implements IResultExecutor, IExecutorFactory 
 			if (result.isFinal()) {
 				returnValue = result.getResult();
 			} else {
-				remaining = result.getDelay();
+				resolver = result.getResolver();
 				callback = result.getCallback();
 			}
 		}
 
 		@Override
 		public Object[] execute() throws LuaException {
-			if (remaining == 0) {
-				remaining--;
+			if (resolver.update()) {
+				resolver = null;
+
 				try {
 					setup(callback.call());
 				} catch (LuaException e) {
@@ -87,14 +88,12 @@ public final class DefaultExecutor implements IResultExecutor, IExecutorFactory 
 					DebugLogger.error("Unexpected error", e);
 					throw new LuaException("Java Exception Thrown: " + e.toString());
 				}
-			} else {
-				remaining--;
 			}
 			return null;
 		}
 
 		public boolean done() {
-			return remaining < 0;
+			return resolver == null;
 		}
 	}
 }
