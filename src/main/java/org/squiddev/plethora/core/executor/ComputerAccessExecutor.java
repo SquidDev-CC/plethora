@@ -7,12 +7,10 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.PlethoraTimings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 /**
@@ -51,7 +49,6 @@ public class ComputerAccessExecutor implements IResultExecutor {
 
 		while (true) {
 			Object[] response = context.pullEvent(null);
-			DebugLogger.info("Got " + Arrays.toString(response) + " / " + task.finished());
 			assertAttached();
 
 			if (response.length >= 1 && EVENT_NAME.equals(response[0]) && task.finished()) break;
@@ -101,10 +98,10 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		protected void finish(Object[] result) {
 			this.result = result;
 			try {
-				DebugLogger.info("Queuing");
 				access.queueEvent(EVENT_NAME, null);
-			} catch (RuntimeException e) {
-				DebugLogger.error("Cannot queue event. This is an unavoidable race condition. Sorry.", e);
+			} catch (RuntimeException ignored) {
+				// There is sadly nothing we can do about this, as there's always a slight
+				// chance of a race condition.
 			}
 		}
 

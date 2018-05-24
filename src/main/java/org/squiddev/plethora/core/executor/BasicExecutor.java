@@ -64,22 +64,24 @@ public final class BasicExecutor implements IResultExecutor {
 
 		@Override
 		public Object[] execute() throws LuaException {
-			if (!resolver.update()) return null;
-			resolver = null;
+			while (resolver.update()) {
+				resolver = null;
 
-			try {
-				MethodResult result = callback.call();
-				if (result.isFinal()) {
-					returnValue = result.getResult();
-				} else {
-					resolver = result.getResolver();
-					callback = result.getCallback();
+				try {
+					MethodResult result = callback.call();
+					if (result.isFinal()) {
+						returnValue = result.getResult();
+						return null;
+					} else {
+						resolver = result.getResolver();
+						callback = result.getCallback();
+					}
+				} catch (LuaException e) {
+					throw e;
+				} catch (Throwable e) {
+					DebugLogger.error("Unexpected error", e);
+					throw new LuaException("Java Exception Thrown: " + e.toString());
 				}
-			} catch (LuaException e) {
-				throw e;
-			} catch (Throwable e) {
-				DebugLogger.error("Unexpected error", e);
-				throw new LuaException("Java Exception Thrown: " + e.toString());
 			}
 
 			return null;

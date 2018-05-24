@@ -35,32 +35,33 @@ public abstract class Task {
 	}
 
 	public boolean update() {
-		if (!resolver.update()) return false;
-
-		long start = System.nanoTime();
-		try {
-			MethodResult next = callback.call();
-			if (next.isFinal()) {
+		while (resolver.update()) {
+			long start = System.nanoTime();
+			try {
+				MethodResult next = callback.call();
+				if (next.isFinal()) {
+					markFinished();
+					finish(next.getResult());
+					return true;
+				} else {
+					resolver = next.getResolver();
+					callback = next.getCallback();
+				}
+			} catch (LuaException e) {
 				markFinished();
-				finish(next.getResult());
+				finish(e);
 				return true;
-			} else {
-				resolver = next.getResolver();
-				callback = next.getCallback();
-				return false;
+			} catch (Throwable e) {
+				markFinished();
+				finish(new LuaException("Java Exception Thrown: " + e.toString()));
+				DebugLogger.error("Unexpected error", e);
+				return true;
+			} finally {
+				submitTiming(System.nanoTime() - start);
 			}
-		} catch (LuaException e) {
-			markFinished();
-			finish(e);
-			return true;
-		} catch (Throwable e) {
-			markFinished();
-			finish(new LuaException("Java Exception Thrown: " + e.toString()));
-			DebugLogger.error("Unexpected error", e);
-			return true;
-		} finally {
-			submitTiming(System.nanoTime() - start);
 		}
+
+		return false;
 	}
 
 	protected final void markFinished() {

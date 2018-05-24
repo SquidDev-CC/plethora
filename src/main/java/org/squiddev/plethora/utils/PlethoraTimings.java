@@ -71,9 +71,7 @@ public final class PlethoraTimings {
 
 		try {
 			addTimingImpl(computer, time);
-		} catch (ReflectiveOperationException ignored) {
-		} catch (RuntimeException e) {
-			DebugLogger.error("Could not dump", e);
+		} catch (ReflectiveOperationException | RuntimeException ignored) {
 		}
 	}
 
