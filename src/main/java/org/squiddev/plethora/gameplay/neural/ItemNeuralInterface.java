@@ -294,22 +294,23 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCosmeticItem(ItemStack stack) {
-		if (!stack.hasTagCompound()) return null;
+	public ItemStack getCosmeticItem(@Nonnull ItemStack stack) {
+		if (!stack.hasTagCompound()) return ItemStack.EMPTY;
 
 		NBTTagCompound tag = stack.getTagCompound();
-		if (!tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)) return null;
+		if (!tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)) return ItemStack.EMPTY;
 
 		return new ItemStack(tag.getCompoundTag("cosmetic"));
 	}
 
 	@Override
-	public void setCosmeticItem(ItemStack stack, ItemStack cosmetic) {
+	public void setCosmeticItem(@Nonnull ItemStack stack, @Nonnull ItemStack cosmetic) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
 
-		if (cosmetic == null) {
+		if (cosmetic.isEmpty()) {
 			tag.removeTag("cosmetic");
 		} else {
 			tag.setTag("cosmetic", cosmetic.serializeNBT());
