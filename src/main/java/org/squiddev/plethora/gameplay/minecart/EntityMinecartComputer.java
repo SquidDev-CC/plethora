@@ -352,6 +352,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	}
 
 	@Nullable
+	@SideOnly(Side.CLIENT)
 	public ClientComputer getClientComputer() {
 		final ClientComputerRegistry manager = ComputerCraft.clientComputerRegistry;
 		int instanceId = getInstanceId();

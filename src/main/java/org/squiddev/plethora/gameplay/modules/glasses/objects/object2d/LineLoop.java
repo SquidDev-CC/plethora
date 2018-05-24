@@ -1,6 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
@@ -45,6 +47,7 @@ public class LineLoop extends Polygon implements Scalable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw2D() {
 		if (points.size() < 2) return;
 

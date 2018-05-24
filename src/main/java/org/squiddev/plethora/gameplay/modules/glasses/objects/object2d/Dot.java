@@ -2,6 +2,8 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
@@ -63,6 +65,7 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw2D() {
 		setupFlat();
 

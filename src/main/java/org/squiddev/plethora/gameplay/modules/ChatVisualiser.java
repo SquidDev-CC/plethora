@@ -50,7 +50,7 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 
 	@Override
 	public IMessage onMessage(ChatMessage message, MessageContext ctx) {
-		RenderOverlay.addMessage(message);
+		if (ctx.side == Side.CLIENT) RenderOverlay.addMessage(message);
 		return null;
 	}
 

@@ -100,6 +100,7 @@ public class ClientKeyListener implements IMessageHandler<ListenMessage, IMessag
 
 		public long lastTime;
 
+		@SideOnly(Side.CLIENT)
 		private KeyDown(int key, char character) {
 			this.key = key;
 			this.character = character;

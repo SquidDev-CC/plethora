@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.EntityWorldLocation;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -39,6 +41,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 
 	@Nonnull
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(@Nonnull IVehicleAccess access) {
 		Pair<IBakedModel, Matrix4f> model = handler.getModel(0);
 

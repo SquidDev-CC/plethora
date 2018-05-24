@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.client.gui.GuiKeyboard;
 import org.squiddev.plethora.gameplay.client.gui.GuiMinecartComputer;
 import org.squiddev.plethora.gameplay.client.gui.GuiNeuralInterface;
@@ -28,6 +30,7 @@ public class GuiHandler implements IGuiHandler {
 	private static final int GUI_FLAG_ENTITY = 1;
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		switch (id) {
 			case GUI_NEURAL: {

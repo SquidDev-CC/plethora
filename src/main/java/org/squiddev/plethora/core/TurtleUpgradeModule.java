@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -131,6 +133,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 
 	@Nonnull
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(ITurtleAccess turtle, @Nonnull TurtleSide side) {
 		float xOffset = side == TurtleSide.Left ? -0.40625f : 0.40625f;
 		Matrix4f transform = new Matrix4f(

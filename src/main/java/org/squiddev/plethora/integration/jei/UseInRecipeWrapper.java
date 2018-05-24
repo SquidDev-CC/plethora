@@ -9,6 +9,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -53,6 +55,7 @@ public abstract class UseInRecipeWrapper implements IRecipeWrapper {
 	public abstract boolean isValid();
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
 		int xPos = (recipeWidth - slotDrawable.getWidth()) / 2;
 		int yPos = 0;

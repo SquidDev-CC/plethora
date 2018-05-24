@@ -2,6 +2,8 @@ package org.squiddev.plethora.core.modules;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -35,6 +37,7 @@ public class ModuleHandlerTransform implements IModuleHandler {
 
 	@Nonnull
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pair<IBakedModel, Matrix4f> getModel(float delta) {
 		return Pair.of(proxy.getModel(delta).getLeft(), transform);
 	}

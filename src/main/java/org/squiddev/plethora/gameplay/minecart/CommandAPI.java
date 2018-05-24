@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
@@ -242,11 +244,13 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getCommandBlockType() {
 		return 0;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void fillInInfo(@Nonnull ByteBuf byteBuf) {
 	}
 

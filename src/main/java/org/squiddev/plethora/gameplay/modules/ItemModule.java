@@ -340,6 +340,7 @@ public final class ItemModule extends ItemBase {
 
 		@Nonnull
 		@Override
+		@SideOnly(Side.CLIENT)
 		public Pair<IBakedModel, Matrix4f> getModel(float delta) {
 			Matrix4f matrix = new Matrix4f();
 			matrix.setIdentity();

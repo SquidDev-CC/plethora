@@ -133,6 +133,7 @@ dependencies {
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
+	// compileOnly "org.squiddev:forgelint:0.1.1"
 	compileOnly "com.google.errorprone:error_prone_annotations:2.0.21"
 
 	testCompile 'junit:junit:4.11'
@@ -162,6 +163,9 @@ gradle.projectsEvaluated {
 		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing"
 	}
 }
+
+// Not quite ready for common usage, but helped a lot in checking stuff
+// compileJava { options.compilerArgs << "-Xplugin:ForgeLint" }
 
 curseforge {
 	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
