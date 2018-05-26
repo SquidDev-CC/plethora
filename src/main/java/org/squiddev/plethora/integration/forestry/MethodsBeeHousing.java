@@ -1,14 +1,19 @@
 package org.squiddev.plethora.integration.forestry;
 
 import com.google.common.collect.Maps;
+import forestry.api.apiculture.IAlleleBeeSpecies;
 import forestry.api.apiculture.IBeeHousing;
+import forestry.api.apiculture.IBeeRoot;
 import forestry.api.core.IErrorState;
+import forestry.api.genetics.*;
 import forestry.core.config.Constants;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.utils.DebugLogger;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class MethodsBeeHousing {
@@ -67,5 +72,48 @@ public class MethodsBeeHousing {
 			out.put(++i, state.getUniqueName());
 		}
 		return new Object[]{out};
+	}
+
+	private static ISpeciesRoot getBeeRoot() {
+		return AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
+	}
+
+	@BasicObjectMethod.Inject(
+			value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = false,
+			doc = "function():table -- Get a list of all bee species"
+	)
+	public static Object[] getSpeciesList(IContext<IBeeHousing> context, Object[] arg) {
+		ISpeciesRoot beeRoot = getBeeRoot();
+		IChromosomeType speciesType = beeRoot.getSpeciesChromosomeType();
+		Collection<IAllele> allSpecies = AlleleManager.alleleRegistry.getRegisteredAlleles(speciesType);
+		Map<Integer, Object> out = Maps.newHashMapWithExpectedSize(beeRoot.getSpeciesCount());
+
+		int i = 0;
+		for (IAllele allele : allSpecies) {
+			if (((IAlleleSpecies) allele).isSecret()) continue;
+
+			out.put(++i, MetaGenome.getAllele(allele));
+		}
+
+		return new Object[] { out };
+	}
+
+	@BasicObjectMethod.Inject(
+			value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = false,
+			doc = "function():table -- Get a list of all bee mutations"
+	)
+	public static Object[] getMutationsList(IContext<IBeeHousing> context, Object[] arg) {
+		ISpeciesRoot beeRoot = getBeeRoot();
+		List<? extends IMutation> mutations = beeRoot.getMutations(false);
+		Map<Integer, Map<Object, Object>> out = Maps.newHashMapWithExpectedSize(mutations.size());
+
+		int i = 0;
+		for (IMutation mutation : mutations) {
+			if (mutation.isSecret()) continue;
+
+			out.put(++i, context.makePartialChild(mutation).getMeta());
+		}
+
+		return new Object[] { out };
 	}
 }

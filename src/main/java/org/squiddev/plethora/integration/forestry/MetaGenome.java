@@ -32,7 +32,7 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 		return out;
 	}
 
-	private Object getAllele(IAllele allele) {
+	public static Object getAllele(IAllele allele) {
 		if (allele == null) {
 			return "missing";
 		} else if (allele instanceof IAlleleArea) {
@@ -62,6 +62,7 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 			data.put("complexity", species.getComplexity());
 			data.put("humidity", species.getHumidity().getName());
 			data.put("temperature", species.getTemperature().getName());
+
 			return data;
 		} else if (allele instanceof IAlleleTolerance) {
 			return ((IAlleleTolerance) allele).getValue().toString().toLowerCase(Locale.ENGLISH);
