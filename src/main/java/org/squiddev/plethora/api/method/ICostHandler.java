@@ -42,7 +42,9 @@ public interface ICostHandler {
 	 * @return The method result
 	 * @throws LuaException If there will never be sufficient energy.
 	 */
-	MethodResult await(double amount, MethodResult next) throws LuaException;
+	default MethodResult await(double amount, MethodResult next) throws LuaException {
+		return await(amount, () -> next);
+	}
 
 	/**
 	 * Start a method once this cost handler has sufficient energy to consume it.
