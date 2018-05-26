@@ -1,8 +1,10 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
 import dan200.computercraft.api.lua.LuaException;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.set.hash.TIntHashSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.ConstantReference;
@@ -18,10 +20,10 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;
 
-	private final TIntObjectHashMap<BaseObject> objects = new TIntObjectHashMap<>();
+	private final Int2ObjectMap<BaseObject> objects = new Int2ObjectOpenHashMap<>();
 	private int lastId = 0;
 
-	private final TIntHashSet removed = new TIntHashSet();
+	private final IntSet removed = new IntOpenHashSet();
 
 	public CanvasServer(int canvasId, @Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
 		this.canvasId = canvasId;
@@ -45,7 +47,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 
 	@Nonnull
 	public synchronized MessageCanvasAdd getAddMessage() {
-		return new MessageCanvasAdd(canvasId, objects.values(new BaseObject[objects.size()]));
+		return new MessageCanvasAdd(canvasId, objects.values().toArray(new BaseObject[objects.size()]));
 	}
 
 	@Nonnull
@@ -56,7 +58,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 	@Nullable
 	public synchronized MessageCanvasUpdate getUpdateMessage() {
 		List<BaseObject> changed = null;
-		for (BaseObject object : objects.valueCollection()) {
+		for (BaseObject object : objects.values()) {
 			if (object.pollDirty()) {
 				if (changed == null) changed = new ArrayList<>();
 				changed.add(object);
@@ -67,7 +69,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 
 		if (changed == null) changed = Collections.emptyList();
 		MessageCanvasUpdate message = new MessageCanvasUpdate(
-			canvasId, changed, removed.toArray()
+			canvasId, changed, removed.toIntArray()
 		);
 
 		removed.clear();
@@ -94,7 +96,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 	}
 
 	public synchronized void clear() {
-		for (BaseObject object : objects.valueCollection()) {
+		for (BaseObject object : objects.values()) {
 			removed.add(object.id);
 		}
 		objects.clear();
