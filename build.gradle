@@ -80,6 +80,9 @@ repositories {
 
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
+
+	// Forestry
+	maven { url "http://maven.ic2.player.to/" }
 }
 
 def curseMod(String mod, int id, String version) {
@@ -104,7 +107,7 @@ def curseMod(String mod, int id, String version) {
 
 dependencies {
 	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
-	compile "mezz.jei:jei_1.12:4.7.0.68"
+	compile "mezz.jei:jei_1.12.2:4.9.1.192"
 
 	compileOnly "org.squiddev:cc-tweaked:1.80pr1.6"
 
@@ -123,9 +126,11 @@ dependencies {
 	compileOnly("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
 	compileOnly "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 
+	compileOnly "net.sengir.forestry:forestry_1.12.2:5.8.0.250:api"
+	compileOnly "net.sengir.forestry:forestry_1.12.2:5.8.0.250"
+
 	// All the Curse mods
 	compileOnly curseMod("botania", 2524591, "r1.10-353")
-	compileOnly curseMod("forestry", 2532388, "1.12.2-5.8.0.250")
 	compileOnly curseMod("baubles", 2518667, "1.12-1.5.2")
 	compileOnly curseMod("storage-drawers", 2536306, "1.12.2-5.3.5")
 	compileOnly curseMod("chameleon", 2450900, "1.12-4.1.3")
