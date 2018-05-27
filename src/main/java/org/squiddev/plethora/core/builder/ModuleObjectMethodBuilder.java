@@ -6,6 +6,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.MethodBuilder;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.ModuleObjectMethod;
 
 import javax.annotation.Nonnull;
@@ -21,7 +22,7 @@ public class ModuleObjectMethodBuilder extends MethodBuilder<ModuleObjectMethod.
 
 	@Override
 	public Class<?> getTarget(@Nonnull Method method, @Nonnull ModuleObjectMethod.Inject annotation) {
-		return annotation.value();
+		return IModuleContainer.class;
 	}
 
 	@Override

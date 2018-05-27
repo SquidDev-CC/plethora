@@ -88,13 +88,6 @@ public abstract class ModuleObjectMethod<T> extends BasicObjectMethod<T> impleme
 		String[] module();
 
 		/**
-		 * The class this method targets.
-		 *
-		 * @return The target class.
-		 */
-		Class<?> value();
-
-		/**
 		 * The priority of the method.
 		 *
 		 * {@link Integer#MIN_VALUE} is the lowest priority and {@link Integer#MAX_VALUE} is the highest. Methods
