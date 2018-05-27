@@ -122,7 +122,7 @@ public class ConverterRegistry implements IConverterRegistry {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
 					if (converted == null) continue;
 
-					int existing = positions.get(converted);
+					int existing = positions.getInt(converted);
 					if (existing == positions.defaultReturnValue() || requiresInsertion(keys, values, existing, keys.get(i), converted)) {
 						positions.put(converted, keys.size());
 						keys.add(keys.get(i));
