@@ -64,7 +64,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		assertAttached();
 		if (result.isFinal()) return Futures.immediateFuture(result.getResult());
 
-		FutureTask task = new FutureTask(result.getCallback(), result.getResolver());
+		AsyncTask task = new AsyncTask(result.getCallback(), result.getResolver());
 		boolean ok = runner.submit(task);
 		if (!ok) {
 			task.getFuture().cancel(true);
@@ -108,6 +108,10 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		@Override
 		protected void finish(@Nonnull LuaException e) {
 			this.error = e;
+			try {
+				access.queueEvent(EVENT_NAME, null);
+			} catch (RuntimeException ignored) {
+			}
 		}
 
 		@Override
@@ -126,8 +130,8 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		}
 	}
 
-	private class FutureTask extends org.squiddev.plethora.core.executor.FutureTask {
-		FutureTask(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
+	private class AsyncTask extends FutureTask {
+		AsyncTask(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
 			super(callback, resolver);
 		}
 

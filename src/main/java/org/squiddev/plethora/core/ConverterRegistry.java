@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import gnu.trove.impl.Constants;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.converter.IConverter;
@@ -55,7 +55,8 @@ public class ConverterRegistry implements IConverterRegistry {
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 		if (keys.size() != references.size()) throw new IllegalStateException("lists must be of the same size");
 
-		TObjectIntHashMap<Object> positions = new TObjectIntHashMap<Object>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+		Object2IntMap<Object> positions = new Object2IntOpenHashMap<>();
+		positions.defaultReturnValue(-1);
 		for (int i = 0; i < values.size(); i++) positions.put(values.get(i), i);
 
 		for (int i = startPoint; i < values.size(); i++) {
@@ -67,8 +68,8 @@ public class ConverterRegistry implements IConverterRegistry {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
 					if (converted == null) continue;
 
-					int existing = positions.get(converted);
-					if (existing == positions.getNoEntryValue()) {
+					int existing = positions.getInt(converted);
+					if (existing == positions.defaultReturnValue()) {
 						positions.put(converted, keys.size());
 						keys.add(keys.get(i));
 						values.add(converted);
@@ -108,7 +109,8 @@ public class ConverterRegistry implements IConverterRegistry {
 
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 
-		TObjectIntHashMap<Object> positions = new TObjectIntHashMap<Object>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+		Object2IntMap<Object> positions = new Object2IntOpenHashMap<>();
+		positions.defaultReturnValue(-1);
 		for (int i = 0; i < values.size(); i++) positions.put(values.get(i), i);
 
 		for (int i = startPoint; i < values.size(); i++) {
@@ -120,8 +122,8 @@ public class ConverterRegistry implements IConverterRegistry {
 					Object converted = ((IConverter<Object, Object>) converter).convert(target);
 					if (converted == null) continue;
 
-					int existing = positions.get(converted);
-					if (existing == positions.getNoEntryValue() || requiresInsertion(keys, values, existing, keys.get(i), converted)) {
+					int existing = positions.getInt(converted);
+					if (existing == positions.defaultReturnValue() || requiresInsertion(keys, values, existing, keys.get(i), converted)) {
 						positions.put(converted, keys.size());
 						keys.add(keys.get(i));
 						values.add(converted);

@@ -53,7 +53,7 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	@SuppressWarnings("deprecation") // Use AttachCapabilities<T> in the future
+	@SuppressWarnings("deprecation")
 	public void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
 		Item item = event.getObject().getItem();
 		if (item == Items.CLOCK) {
@@ -71,8 +71,6 @@ public class IntegrationVanilla {
 	@SubscribeEvent
 	@SuppressWarnings("deprecation")
 	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
-		// We're meant to use AttachCapabilitiesEvent<TileEntity>, but leaving this for compat
-
 		TileEntity entity = event.getObject();
 		if (entity instanceof TileEntityNote) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);

@@ -1,7 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
 import com.google.common.collect.Sets;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,7 +31,7 @@ public class CanvasHandler {
 	private static AtomicInteger id = new AtomicInteger(0);
 	private static final HashSet<CanvasServer> server = Sets.newHashSet();
 
-	private static final TIntObjectHashMap<CanvasClient> client = new TIntObjectHashMap<CanvasClient>();
+	private static final Int2ObjectMap<CanvasClient> client = new Int2ObjectOpenHashMap<>();
 
 	public static int nextId() {
 		return id.getAndIncrement();
