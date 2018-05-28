@@ -7,7 +7,7 @@ import forestry.api.genetics.ISpeciesRoot;
 import forestry.core.config.Constants;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleObjectMethod;
+import org.squiddev.plethora.api.module.ModuleContainerObjectMethod;
 import org.squiddev.plethora.utils.LuaList;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Map;
 import static forestry.api.genetics.AlleleManager.alleleRegistry;
 
 public class MethodsAnalyzer {
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function():table -- Get a list of all species roots"
 	)
@@ -29,7 +29,7 @@ public class MethodsAnalyzer {
 		return root;
 	}
 
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function(root:string):table -- Get a list of all species in the given species root"
 	)
@@ -47,7 +47,7 @@ public class MethodsAnalyzer {
 		return new Object[]{species.asMap()};
 	}
 
-	@ModuleObjectMethod.Inject(
+	@ModuleContainerObjectMethod.Inject(
 			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function(root:string):table -- Get a list of all mutations in the given species root"
 	)
