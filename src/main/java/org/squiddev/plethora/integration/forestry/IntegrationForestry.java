@@ -16,7 +16,7 @@ import org.squiddev.plethora.core.PlethoraCore;
 import java.util.function.Supplier;
 
 public class IntegrationForestry {
-	public static final String analyzer = "forestry:analyzer";
+	public static final String analyzerMod = "forestry:analyzer";
 
 	public static void setup() {
 		MinecraftForge.EVENT_BUS.register(new IntegrationForestry());
@@ -38,6 +38,6 @@ public class IntegrationForestry {
 
 	// lazily evaluated to prevent runtime crashes because the item hasn't been registered yet
 	private static final Supplier<BasicModuleHandler> analyzerCapProvider = Suppliers.memoize(() -> new BasicModuleHandler(
-			new ResourceLocation(analyzer), ModuleCore.getItems().portableAlyzer
+			new ResourceLocation(analyzerMod), ModuleCore.getItems().portableAlyzer
 	));
 }

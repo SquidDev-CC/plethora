@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ArgumentHelper;
 import forestry.api.genetics.IAlleleSpecies;
 import forestry.api.genetics.ISpeciesRoot;
+import forestry.core.config.Constants;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.ModuleObjectMethod;
@@ -15,7 +16,7 @@ import static forestry.api.genetics.AlleleManager.alleleRegistry;
 
 public class MethodsAnalyzer {
 	@ModuleObjectMethod.Inject(
-			module = IntegrationForestry.analyzer, worldThread = false,
+			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function():table -- Get a list of all species roots"
 	)
 	public static Object[] getSpeciesRoots(IContext<IModuleContainer> context, Object[] args) {
@@ -29,7 +30,7 @@ public class MethodsAnalyzer {
 	}
 
 	@ModuleObjectMethod.Inject(
-			module = IntegrationForestry.analyzer, worldThread = false,
+			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function(root:string):table -- Get a list of all species in the given species root"
 	)
 	public static Object[] getSpeciesList(IContext<IModuleContainer> context, Object[] args) throws LuaException {
@@ -47,7 +48,7 @@ public class MethodsAnalyzer {
 	}
 
 	@ModuleObjectMethod.Inject(
-			module = IntegrationForestry.analyzer, worldThread = false,
+			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 			doc = "function(root:string):table -- Get a list of all mutations in the given species root"
 	)
 	public static Object[] getMutationsList(IContext<IModuleContainer> context, Object[] args) throws LuaException {
