@@ -9,16 +9,10 @@
 		" GM"
 	],
 	"key": {
-		"P": {
-			"item": "computercraft:pocket_computer",
-			"data": 1
-		},
+		"P": { "item": "computercraft:pocket_computer", "data": 1 },
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
 		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
-		"M": {
-			"item": "computercraft:cable",
-			"data": 1
-		}
+		"M": { "item": "computercraft:cable", "data": 1 }
 	}
 }

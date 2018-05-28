@@ -9,14 +9,8 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"E": {
-			"item": "minecraft:ender_pearl"
-		},
-		"I": {
-			"item": "minecraft:iron_ingot"
-		}
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"E": { "type": "forge:ore_dict", "ore": "enderpearl" },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
 	}
 }
