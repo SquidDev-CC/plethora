@@ -3,7 +3,9 @@ package org.squiddev.plethora.integration.forestry;
 import com.google.common.base.Suppliers;
 import forestry.core.ModuleCore;
 import forestry.core.items.ItemAlyzer;
+import forestry.core.tiles.TileAnalyzer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -27,6 +29,14 @@ public class IntegrationForestry {
 		}
 	}
 
+	@SubscribeEvent
+	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
+		if (event.getObject() instanceof TileAnalyzer) {
+			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, analyzerCapProvider.get());
+		}
+	}
+
+	// lazily evaluated to prevent runtime crashes because the item hasn't been registered yet
 	private static final Supplier<BasicModuleHandler> analyzerCapProvider = Suppliers.memoize(() -> new BasicModuleHandler(
 			new ResourceLocation(analyzer), ModuleCore.getItems().portableAlyzer
 	));
