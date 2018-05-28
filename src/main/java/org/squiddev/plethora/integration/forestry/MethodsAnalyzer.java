@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.forestry;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ArgumentHelper;
 import forestry.api.genetics.IAlleleSpecies;
@@ -11,7 +10,6 @@ import org.squiddev.plethora.api.module.ModuleObjectMethod;
 import org.squiddev.plethora.utils.LuaList;
 
 import java.util.Map;
-import java.util.Set;
 
 import static forestry.api.genetics.AlleleManager.alleleRegistry;
 
@@ -21,15 +19,7 @@ public class MethodsAnalyzer {
 			doc = "function():table -- Get a list of all species roots"
 	)
 	public static Object[] getSpeciesRoots(IContext<IModuleContainer> context, Object[] args) {
-		Set<String> roots = alleleRegistry.getSpeciesRoot().keySet();
-		Map<Integer, String> out = Maps.newHashMapWithExpectedSize(roots.size());
-
-		int i = 0;
-		for (String root : roots) {
-			out.put(++i, root);
-		}
-
-		return new Object[] { out };
+		return new Object[]{new LuaList<>(alleleRegistry.getSpeciesRoot().keySet()).asMap()};
 	}
 
 	private static ISpeciesRoot getSpeciesRoot(String uid) throws LuaException {
@@ -46,13 +36,14 @@ public class MethodsAnalyzer {
 		String uid = ArgumentHelper.getString(args, 0);
 		ISpeciesRoot root = getSpeciesRoot(uid);
 
+		// please don't hurt me squid
 		LuaList<Object> species = alleleRegistry.getRegisteredAlleles(root.getSpeciesChromosomeType()).stream()
 				.map(IAlleleSpecies.class::cast)
 				.filter(s -> !s.isSecret())
 				.map(MetaGenome::getAlleleMeta)
 				.collect(LuaList.toLuaList());
 
-		return new Object[] { species.asMap() };
+		return new Object[]{species.asMap()};
 	}
 
 	@ModuleObjectMethod.Inject(
@@ -68,6 +59,6 @@ public class MethodsAnalyzer {
 				.map(m -> context.makePartialChild(m).getMeta())
 				.collect(LuaList.toLuaList());
 
-		return new Object[] { mutations.asMap() };
+		return new Object[]{mutations.asMap()};
 	}
 }
