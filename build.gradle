@@ -58,7 +58,7 @@ repositories {
 	// ConfigGen
 	maven { url = "https://dl.bintray.com/squiddev/maven" }
 
-	// IC2 API
+	// IC2 + Forestry
 	maven { url = "http://maven.ic2.player.to/" }
 
 	// Buildcraft
@@ -80,9 +80,6 @@ repositories {
 
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
-
-	// Forestry
-	maven { url "http://maven.ic2.player.to/" }
 }
 
 def curseMod(String mod, int id, String version) {

@@ -24,15 +24,15 @@ public class IntegrationForestry {
 		}
 	}
 
-	private static BasicModuleHandler _analyzerCap;
+	private static BasicModuleHandler analyzerCap;
 
 	@Optional.Method(modid = Constants.MOD_ID)
 	private static BasicModuleHandler getAnalyzerCap() {
-		if (_analyzerCap == null) {
-			_analyzerCap = new BasicModuleHandler(new ResourceLocation(analyzerMod), ModuleCore.getItems().portableAlyzer);
+		if (analyzerCap == null) {
+			analyzerCap = new BasicModuleHandler(new ResourceLocation(analyzerMod), ModuleCore.getItems().portableAlyzer);
 		}
 
-		return _analyzerCap;
+		return analyzerCap;
 	}
 
 	@SubscribeEvent
