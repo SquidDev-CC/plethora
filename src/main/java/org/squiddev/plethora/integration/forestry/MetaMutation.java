@@ -28,7 +28,7 @@ public class MetaMutation extends BasicMetaProvider<IMutation> {
 		for (IChromosomeType chromosome : karyotype) {
 			for (IAllele allele : mutation.getTemplate()) {
 				if (chromosome.getAlleleClass().isInstance(allele)) {
-					results.put(chromosome.getName(), MetaGenome.getAllele(allele));
+					results.put(chromosome.getName(), MetaGenome.getAlleleMeta(allele));
 				}
 			}
 		}
