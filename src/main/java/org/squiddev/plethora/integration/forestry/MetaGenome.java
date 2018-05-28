@@ -22,8 +22,8 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 		Map<String, Object> inactive = Maps.newHashMapWithExpectedSize(types.length);
 
 		for (IChromosomeType type : types) {
-			active.put(type.getName(), getAllele(genome.getActiveAllele(type)));
-			inactive.put(type.getName(), getAllele(genome.getInactiveAllele(type)));
+			active.put(type.getName(), getAlleleMeta(genome.getActiveAllele(type)));
+			inactive.put(type.getName(), getAlleleMeta(genome.getInactiveAllele(type)));
 		}
 
 		Map<Object, Object> out = Maps.newHashMap();
@@ -32,9 +32,9 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 		return out;
 	}
 
-	private Object getAllele(IAllele allele) {
+	public static Object getAlleleMeta(IAllele allele) {
 		if (allele == null) {
-			return "missing";
+			return null;
 		} else if (allele instanceof IAlleleArea) {
 			Vec3i vec = ((IAlleleArea) allele).getValue();
 
@@ -62,6 +62,7 @@ public class MetaGenome extends BasicMetaProvider<IGenome> {
 			data.put("complexity", species.getComplexity());
 			data.put("humidity", species.getHumidity().getName());
 			data.put("temperature", species.getTemperature().getName());
+
 			return data;
 		} else if (allele instanceof IAlleleTolerance) {
 			return ((IAlleleTolerance) allele).getValue().toString().toLowerCase(Locale.ENGLISH);

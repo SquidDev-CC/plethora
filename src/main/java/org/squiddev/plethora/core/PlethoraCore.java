@@ -25,6 +25,7 @@ import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
+import org.squiddev.plethora.integration.forestry.IntegrationForestry;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
@@ -61,6 +62,7 @@ public class PlethoraCore {
 		// Integration modules. Generally just listen to capability events
 		IntegrationComputerCraft.setup();
 		IntegrationVanilla.setup();
+		IntegrationForestry.setup();
 	}
 
 	@Mod.EventHandler
