@@ -10,17 +10,9 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"D": {
-			"item": "minecraft:diamond"
-		},
-		"G": {
-			"item": "minecraft:glass"
-		},
-		"I": {
-			"item": "minecraft:iron_ingot"
-		}
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"D": { "type": "forge:ore_dict", "ore": "gemDiamond" },
+		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
 	}
 }

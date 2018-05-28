@@ -10,14 +10,8 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"C": {
-			"item": "minecraft:ender_chest"
-		},
-		"G": {
-			"item": "minecraft:gold_ingot"
-		},
-		"H": {
-			"item": "minecraft:diamond_helmet"
-		}
+		"C": { "type": "forge:ore_dict", "ore": "chestEnder" },
+		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
+		"H": { "item": "minecraft:diamond_helmet" }
 	}
 }

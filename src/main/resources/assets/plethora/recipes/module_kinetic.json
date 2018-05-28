@@ -10,17 +10,9 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"P": {
-			"item": "minecraft:piston"
-		},
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"B": {
-			"item": "minecraft:redstone_block"
-		},
-		"G": {
-			"item": "minecraft:gold_ingot"
-		}
+		"P": { "item": "minecraft:piston" },
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"B": { "type": "forge:ore_dict", "ore": "blockRedstone" },
+		"G": { "type": "forge:ore_dict", "ore": "ingotGold" }
 	}
 }

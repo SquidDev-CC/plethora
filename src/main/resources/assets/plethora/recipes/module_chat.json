@@ -10,22 +10,10 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"S": {
-			"item": "minecraft:stone",
-			"data": 0
-		},
-		"W": {
-			"item": "minecraft:wool",
-			"data": 0
-		},
-		"I": {
-			"item": "minecraft:iron_ingot"
-		},
-		"N": {
-			"item": "minecraft:noteblock"
-		}
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"S": { "type": "forge:ore_dict", "ore": "stone" },
+		"W": { "item": "minecraft:wool", "data": 32767 },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"N": { "item": "minecraft:noteblock" }
 	}
 }

@@ -10,18 +10,9 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"M": {
-			"item": "computercraft:peripheral",
-			"data": 1
-		},
-		"I": {
-			"item": "minecraft:iron_ingot"
-		},
-		"G": {
-			"item": "minecraft:glass"
-		},
-		"A": {
-			"item": "minecraft:iron_helmet"
-		}
+		"M": { "item": "computercraft:peripheral", "data": 1 },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
+		"A": { "item": "minecraft:iron_helmet" }
 	}
 }

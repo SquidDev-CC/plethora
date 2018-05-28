@@ -10,21 +10,10 @@
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"C": {
-			"item": "minecraft:gold_ingot"
-		},
-		"G": {
-			"item": "minecraft:glass"
-		},
-		"I": {
-			"item": "minecraft:iron_ingot"
-		},
-		"M": {
-			"item": "computercraft:cable",
-			"data": 1
-		}
+		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+		"C": { "type": "forge:ore_dict", "ore": "ingotGold" },
+		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
+		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"M": { "item": "computercraft:cable", "data": 1 }
 	}
 }

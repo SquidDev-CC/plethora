@@ -23,7 +23,7 @@ public class MethodDocumentation extends BasicMethod<IMethodCollection> {
 	@Override
 	public MethodResult apply(@Nonnull IUnbakedContext<IMethodCollection> context, @Nonnull Object[] args) throws LuaException {
 		String name = optString(args, 0, null);
-		List<IMethod<?>> methods = context.bake().getTarget().methods();
+		List<IMethod<?>> methods = context.safeBake().getTarget().methods();
 		if (name == null) {
 			Map<String, String> out = Maps.newHashMap();
 			for (IMethod method : methods) {

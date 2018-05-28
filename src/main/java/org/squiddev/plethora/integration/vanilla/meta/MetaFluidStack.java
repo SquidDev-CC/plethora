@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -23,6 +24,7 @@ public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 		Fluid fluid = fluidStack.getFluid();
 		if (fluid != null) {
 			data.put("name", fluid.getName());
+			data.put("id", FluidRegistry.getDefaultFluidName(fluid));
 			data.put("rawName", fluid.getUnlocalizedName(fluidStack));
 			data.put("displayName", fluid.getLocalizedName(fluidStack));
 		}

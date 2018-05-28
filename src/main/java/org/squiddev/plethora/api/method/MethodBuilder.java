@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.objectweb.asm.ClassWriter;
@@ -9,6 +10,7 @@ import org.objectweb.asm.Type;
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -95,6 +97,12 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 	protected void writeApply(@Nonnull Method method, @Nonnull T annotation, @Nonnull String className, @Nonnull MethodVisitor mv) {
 		Class<?>[] parameterTypes = getMethod().getParameterTypes();
 		Class<?>[] childParamTypes = method.getParameterTypes();
+
+		if (parameterTypes.length != childParamTypes.length) {
+			throw new IllegalStateException(String.format("Expected %d arguments, got %d (expected signature of (%s))",
+				parameterTypes.length, childParamTypes.length, Joiner.on(", ").join(Arrays.stream(parameterTypes).map(Class::getTypeName).iterator())));
+		}
+
 		for (int i = 0; i < parameterTypes.length; i++) {
 			Class<?> arg = parameterTypes[i];
 			if (arg.isPrimitive()) {

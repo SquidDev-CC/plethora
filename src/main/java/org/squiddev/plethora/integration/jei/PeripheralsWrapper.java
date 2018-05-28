@@ -39,7 +39,7 @@ public class PeripheralsWrapper extends UseInRecipeWrapper {
 		IGuiHelper helper = registry.getJeiHelpers().getGuiHelper();
 
 		List<PeripheralsWrapper> wrappers = Lists.newArrayList();
-		for (ItemStack stack : registry.getIngredientRegistry().getIngredients(ItemStack.class)) {
+		for (ItemStack stack : registry.getIngredientRegistry().getAllIngredients(ItemStack.class)) {
 			if (isValid(stack)) wrappers.add(new PeripheralsWrapper(stack, helper));
 		}
 
