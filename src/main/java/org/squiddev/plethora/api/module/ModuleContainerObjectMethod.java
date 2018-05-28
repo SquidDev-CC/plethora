@@ -57,7 +57,7 @@ public abstract class ModuleContainerObjectMethod extends BasicObjectMethod<IMod
 	}
 
 	/**
-	 * Delegate to a normal method from a {@link ModuleMethod}.
+	 * Delegate to a normal method from a {@link ModuleContainerObjectMethod}.
 	 *
 	 * The method should be a public and static with the same signature as {@link ModuleContainerObjectMethod#apply(IContext, Object[])}.
 	 * This does not allow fine grain control over whether a method can be applied or not. If you require
