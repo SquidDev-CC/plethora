@@ -4,15 +4,15 @@
 		"data": 4
 	},
 	"pattern": [
-		"RGR",
+		"RSR",
 		"PBP",
-		"RGR"
+		"RSR"
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
 		"P": { "item": "minecraft:piston" },
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
-		"B": { "type": "forge:ore_dict", "ore": "blockRedstone" },
-		"G": { "type": "forge:ore_dict", "ore": "ingotGold" }
+		"B": { "type": "plethora:brew", "potion": "minecraft:leaping", "effect": "minecraft:jump_boost" },
+		"S": { "item": "minecraft:shulker_shell" }
 	}
 }
