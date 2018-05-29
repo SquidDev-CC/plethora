@@ -27,7 +27,7 @@ public class IngredientEnchanted extends Ingredient {
 	private final ItemStack[] basicStacks;
 	private IntList packed;
 
-	public IngredientEnchanted(Enchantment enchantment, int minLevel) {
+	IngredientEnchanted(Enchantment enchantment, int minLevel) {
 		this.enchantment = enchantment;
 		this.minLevel = minLevel;
 
@@ -59,7 +59,7 @@ public class IngredientEnchanted extends Ingredient {
 
 	@Override
 	public boolean apply(@Nullable ItemStack target) {
-		return EnchantmentHelper.getEnchantmentLevel(enchantment, target) >= minLevel;
+		return target != null && EnchantmentHelper.getEnchantmentLevel(enchantment, target) >= minLevel;
 	}
 
 	@Override

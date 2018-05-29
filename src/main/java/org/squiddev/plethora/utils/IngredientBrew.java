@@ -28,7 +28,7 @@ public class IngredientBrew extends Ingredient {
 	private final ItemStack[] basicStacks;
 	private IntList packed;
 
-	public IngredientBrew(Potion potion, PotionType potionType) {
+	IngredientBrew(Potion potion, PotionType potionType) {
 		this.potion = potion;
 		this.potionType = potionType;
 
