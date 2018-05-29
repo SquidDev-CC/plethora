@@ -12,7 +12,7 @@
 	"key": {
 		"M": { "item": "computercraft:peripheral", "data": 1 },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
-		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
+		"G": { "item": "computercraft:peripheral", "data": 4 },
 		"A": { "item": "minecraft:iron_helmet" }
 	}
 }

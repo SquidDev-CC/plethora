@@ -1,5 +1,9 @@
 {
 	"recipes": {
 		"neural_interface": "org.squiddev.plethora.gameplay.neural.CraftingNeuralInterface$Factory"
+	},
+	"ingredients": {
+		"enchanted": "org.squiddev.plethora.utils.IngredientEnchanted$Factory",
+		"brew": "org.squiddev.plethora.utils.IngredientBrew$Factory"
 	}
 }

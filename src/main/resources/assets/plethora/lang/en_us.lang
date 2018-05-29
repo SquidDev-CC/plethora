@@ -38,6 +38,8 @@ item.plethora.module.module_glasses.desc=Renders an overlay over the world.
 item.plethora.module.module_unknown.name=Unknown module
 item.plethora.module.module_unknown.desc=What did you break this time?
 
+ingredient.plethora.enchanted.desc=Accepts any item
+
 # Manipulator
 tile.plethora.manipulator.name=Manipulator
 tile.plethora.manipulator.mark_1.name=Manipulator Mk I

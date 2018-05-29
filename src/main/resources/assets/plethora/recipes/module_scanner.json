@@ -5,14 +5,14 @@
 	},
 	"pattern": [
 		"EDE",
-		"IGI",
+		"IOI",
 		"III"
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {
 		"D": { "type": "forge:ore_dict", "ore": "dirt" },
-		"E": { "type": "forge:ore_dict", "ore": "enderpearl" },
-		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
+		"E": { "item": "minecraft:ender_eye" },
+		"O": { "item": "minecraft:observer" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
 	}
 }

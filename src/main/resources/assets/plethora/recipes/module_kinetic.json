@@ -12,7 +12,7 @@
 	"key": {
 		"P": { "item": "minecraft:piston" },
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
-		"B": { "type": "forge:ore_dict", "ore": "blockRedstone" },
+		"B": { "type": "plethora:brew", "potion": "minecraft:leaping", "effect": "minecraft:jump_boost" },
 		"G": { "type": "forge:ore_dict", "ore": "ingotGold" }
 	}
 }
