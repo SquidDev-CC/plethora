@@ -22,7 +22,8 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 		IBlockState state = context.getTarget();
 		Block block = state.getBlock();
 
-		Map<Object, Object> data = getBasicMeta(state);
+		Map<Object, Object> data = new HashMap<>();
+		fillBasicMeta(data, state);
 
 		Material material = state.getMaterial();
 		data.put("material", PlethoraAPI.instance().metaRegistry().getMeta(context.makePartialChild(material)));
@@ -34,10 +35,8 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 		return data;
 	}
 
-	public static Map<Object, Object> getBasicMeta(@Nonnull IBlockState state) {
+	public static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull IBlockState state) {
 		Block block = state.getBlock();
-
-		HashMap<Object, Object> data = Maps.newHashMap();
 
 		data.put("metadata", block.getMetaFromState(state));
 
@@ -50,7 +49,5 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 			}
 			stateProperties.put(item.getKey().getName(), value);
 		}
-
-		return data;
 	}
 }

@@ -44,7 +44,7 @@ public class NullableItemStack {
 
 	@Nonnull
 	public HashMap<Object, Object> getBasicProperties() {
-		HashMap<Object, Object> result = MetaItemBasic.getBasicProperties(filledStack);
+		HashMap<Object, Object> result = MetaItemBasic.getBasicMeta(filledStack);
 		result.put("count", count);
 		return result;
 	}

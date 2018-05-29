@@ -68,13 +68,13 @@ public class MethodsNetworkNode {
 		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
 		for (ItemStack stack : items) {
 			seen.add(new ItemIdentity(stack));
-			output.put(++i, MetaItemBasic.getBasicProperties(stack));
+			output.put(++i, MetaItemBasic.getBasicMeta(stack));
 		}
 
 		for (ICraftingPattern pattern : network.getCraftingManager().getPatterns()) {
 			for (ItemStack stack : pattern.getOutputs()) {
 				if (stack != null && seen.add(new ItemIdentity(stack))) {
-					Map<Object, Object> result = MetaItemBasic.getBasicProperties(stack);
+					Map<Object, Object> result = MetaItemBasic.getBasicMeta(stack);
 					result.put("count", 0);
 					output.put(++i, result);
 				}

@@ -20,12 +20,12 @@ public class MetaTileEditableBlock extends BasicMetaProvider<TileEditableBlock> 
 	public Map<Object, Object> getMeta(@Nonnull TileEditableBlock object) {
 		Map<Object, Object> result = new HashMap<>();
 		if (!object.stack.isEmpty()) {
-			result.put("stack", MetaItemBasic.getBasicProperties(object.stack));
+			result.put("stack", MetaItemBasic.getBasicMeta(object.stack));
 		}
 
 		if (object.state.getBlock() != Blocks.AIR) {
 			Map<Object, Object> blockData = MetaBlock.getBasicMeta(object.state.getBlock());
-			blockData.putAll(MetaBlockState.getBasicMeta(object.state));
+			MetaBlockState.fillBasicMeta(blockData, object.state);
 			result.put("block", blockData);
 		}
 

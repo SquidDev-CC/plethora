@@ -23,7 +23,7 @@ public class MetaAEItemStack extends BasicMetaProvider<IAEItemStack> {
 	@Nonnull
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull IAEItemStack stack) {
 		HashMap<Object, Object> data = Maps.newHashMap();
-		data.putAll(MetaItemBasic.getBasicProperties(stack.getDefinition()));
+		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
 		data.put("count", stack.getStackSize());
 		return data;
 	}

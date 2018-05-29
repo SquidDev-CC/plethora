@@ -33,7 +33,8 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		if (stack.isEmpty()) return Collections.emptyMap();
 
-		HashMap<Object, Object> data = getBasicProperties(stack);
+		HashMap<Object, Object> data = new HashMap<>();
+		fillBasicMeta(data, stack);
 
 		String display = stack.getDisplayName();
 		data.put("displayName", display == null || display.length() == 0 ? stack.getUnlocalizedName() : display);
@@ -50,15 +51,17 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	}
 
 	@Nonnull
-	public static HashMap<Object, Object> getBasicProperties(@Nonnull ItemStack stack) {
+	public static HashMap<Object, Object> getBasicMeta(@Nonnull ItemStack stack) {
 		HashMap<Object, Object> data = Maps.newHashMap();
+		fillBasicMeta(data, stack);
+		return data;
+	}
 
+	public static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull ItemStack stack) {
 		data.put("name", stack.getItem().getRegistryName().toString());
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.getCount());
 		data.put("nbtHash", getNBTHash(stack));
-
-		return data;
 	}
 
 	@Nullable

@@ -17,9 +17,9 @@ import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.vanilla.meta.MetaBlockState;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +32,6 @@ public final class MethodsScanner {
 		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class, worldThread = true,
 		doc = "function():table -- Scan all blocks in the vicinity"
 	)
-	@Nullable
 	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
@@ -46,12 +45,15 @@ public final class MethodsScanner {
 					BlockPos newPos = new BlockPos(oX, oY, oZ);
 					IBlockState block = world.getBlockState(newPos);
 
-					HashMap<String, Object> data = Maps.newHashMap();
+					HashMap<Object, Object> data = new HashMap<>();
 					data.put("x", oX - x);
 					data.put("y", oY - y);
 					data.put("z", oZ - z);
+
 					ResourceLocation name = block.getBlock().getRegistryName();
 					data.put("name", name == null ? "unknown" : name.toString());
+
+					MetaBlockState.fillBasicMeta(data, block);
 
 					map.put(++i, data);
 				}

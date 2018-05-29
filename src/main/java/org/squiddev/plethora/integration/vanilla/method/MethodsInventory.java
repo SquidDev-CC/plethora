@@ -26,7 +26,7 @@ public final class MethodsInventory {
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				items.put(i + 1, MetaItemBasic.getBasicProperties(stack));
+				items.put(i + 1, MetaItemBasic.getBasicMeta(stack));
 			}
 		}
 
