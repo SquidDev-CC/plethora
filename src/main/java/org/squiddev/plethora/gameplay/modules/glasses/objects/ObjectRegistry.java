@@ -50,8 +50,8 @@ public final class ObjectRegistry {
 	}
 
 	public static void write(ByteBuf buf, BaseObject object) {
-		buf.writeInt(object.id);
-		buf.writeByte(object.getType());
+		buf.writeInt(object.id());
+		buf.writeByte(object.type());
 		object.writeInital(buf);
 	}
 }

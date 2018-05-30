@@ -8,14 +8,10 @@ import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
-import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.GlassesInstance;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
-
 public class MethodsCanvas {
-
 	@BasicMethod.Inject(value = CanvasServer.class, doc = "function() -- Clear this canvas.")
 	public static MethodResult clear(IUnbakedContext<CanvasServer> context, Object[] args) throws LuaException {
 		context.safeBake().getTarget().clear();
@@ -30,16 +26,5 @@ public class MethodsCanvas {
 		IContext<IModuleContainer> baked = context.safeBake();
 		GlassesInstance server = baked.getContext(PlethoraModules.GLASSES_S, GlassesInstance.class);
 		return MethodResult.result(baked.makeChild(server.getCanvas()).getObject());
-	}
-
-	@BasicMethod.Inject(value = CanvasServer.class, doc = "function(int:id) -- Remove this given object from the canvas.")
-	public static MethodResult removeObject(IUnbakedContext<CanvasServer> context, Object[] args) throws LuaException {
-		CanvasServer canvas = context.safeBake().getTarget();
-
-		BaseObject object = canvas.getObject(getInt(args, 0));
-		if (object == null) throw new LuaException("No such object");
-		canvas.remove(object);
-
-		return MethodResult.result();
 	}
 }

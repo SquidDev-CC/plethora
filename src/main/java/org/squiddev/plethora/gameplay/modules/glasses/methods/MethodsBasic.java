@@ -16,11 +16,6 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class MethodsBasic {
-	@BasicMethod.Inject(value = BaseObject.class, doc = "function():int -- Get the id for this object.")
-	public static MethodResult getID(IUnbakedContext<BaseObject> context, Object[] args) throws LuaException {
-		return MethodResult.result(context.safeBake().getTarget().id);
-	}
-
 	@BasicMethod.Inject(value = BaseObject.class, doc = "function() -- Remove this object from the canvas.")
 	public static MethodResult remove(IUnbakedContext<BaseObject> context, Object[] args) throws LuaException {
 		IContext<BaseObject> baked = context.safeBake();

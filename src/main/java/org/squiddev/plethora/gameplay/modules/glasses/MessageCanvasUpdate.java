@@ -62,7 +62,7 @@ public class MessageCanvasUpdate implements IMessage {
 			if (canvas == null) return null;
 
 			synchronized (canvas.objects) {
-				for (BaseObject obj : message.changed) canvas.objects.put(obj.id, obj);
+				for (BaseObject obj : message.changed) canvas.objects.put(obj.id(), obj);
 				for (int id : message.removed) canvas.objects.remove(id);
 			}
 

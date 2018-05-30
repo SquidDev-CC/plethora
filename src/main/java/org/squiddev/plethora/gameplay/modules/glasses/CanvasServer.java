@@ -78,17 +78,17 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 	}
 
 	public synchronized void add(BaseObject object) {
-		if (objects.put(object.id, object) != null) {
+		if (objects.put(object.id(), object) != null) {
 			throw new IllegalStateException("An object already exists with that key");
 		}
 	}
 
 	public synchronized void remove(BaseObject object) {
-		if (objects.remove(object.id) == null) {
+		if (objects.remove(object.id()) == null) {
 			throw new IllegalStateException("No such object with this key");
 		}
 
-		removed.add(object.id);
+		removed.add(object.id());
 	}
 
 	public synchronized BaseObject getObject(int id) {
@@ -97,7 +97,7 @@ public class CanvasServer extends ConstantReference<CanvasServer> {
 
 	public synchronized void clear() {
 		for (BaseObject object : objects.values()) {
-			removed.add(object.id);
+			removed.add(object.id());
 		}
 		objects.clear();
 	}

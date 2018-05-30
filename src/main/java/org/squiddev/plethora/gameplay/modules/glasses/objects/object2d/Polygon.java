@@ -6,16 +6,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
 import java.util.ArrayList;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.POLYGON_2D;
 
 public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
 	protected final ArrayList<Point2D> points = new ArrayList<Point2D>();
 
+	protected Polygon(int id, byte type) {
+		super(id, type);
+	}
+
 	public Polygon(int id) {
-		super(id);
+		super(id, ObjectRegistry.POLYGON_2D);
 	}
 
 	@Override
@@ -51,11 +54,6 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 		}
 
 		setDirty();
-	}
-
-	@Override
-	public byte getType() {
-		return POLYGON_2D;
 	}
 
 	@Override

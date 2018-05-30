@@ -6,9 +6,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.LINE_2D;
 
 public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	private Point2D start = new Point2D();
@@ -16,12 +15,7 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	private float thickness = 1;
 
 	public Line(int id) {
-		super(id);
-	}
-
-	@Override
-	public byte getType() {
-		return LINE_2D;
+		super(id, ObjectRegistry.LINE_2D);
 	}
 
 	@Override

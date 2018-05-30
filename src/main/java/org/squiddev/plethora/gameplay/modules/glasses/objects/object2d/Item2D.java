@@ -24,7 +24,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	private Item item;
 
 	public Item2D(int id) {
-		super(id);
+		super(id, ObjectRegistry.ITEM_2D);
 	}
 
 
@@ -74,11 +74,6 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 			this.item = item;
 			setDirty();
 		}
-	}
-
-	@Override
-	public byte getType() {
-		return ObjectRegistry.ITEM_2D;
 	}
 
 	@Override

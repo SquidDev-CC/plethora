@@ -6,21 +6,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.DOT_2D;
 
 public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	private Point2D position = new Point2D();
 	private float scale = 1;
 
 	public Dot(int id) {
-		super(id);
-	}
-
-	@Override
-	public byte getType() {
-		return DOT_2D;
+		super(id, ObjectRegistry.DOT_2D);
 	}
 
 	@Override
@@ -35,7 +29,6 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 			setDirty();
 		}
 	}
-
 
 	@Override
 	public float getScale() {

@@ -11,12 +11,23 @@ import org.squiddev.plethora.api.reference.IReference;
 import javax.annotation.Nonnull;
 
 public abstract class BaseObject {
-	public final int id;
+	private final int id;
+	private final byte type;
 
 	private boolean dirty = false;
 
-	public BaseObject(int id) {
+	public BaseObject(int id, byte type) {
 		this.id = id;
+		this.type = type;
+	}
+
+	/**
+	 * Get the unique ID for this object
+	 *
+	 * @return This object's ID
+	 */
+	public final int id() {
+		return id;
 	}
 
 	/**
@@ -24,7 +35,9 @@ public abstract class BaseObject {
 	 *
 	 * @return The object's type
 	 */
-	public abstract byte getType();
+	public final byte type() {
+		return type;
+	}
 
 	boolean pollDirty() {
 		boolean value = dirty;

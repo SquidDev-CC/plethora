@@ -4,22 +4,15 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.LINE_LOOP_2D;
 
 public class LineLoop extends Polygon implements Scalable {
 	private float scale = 1;
 
 	public LineLoop(int id) {
-		super(id);
+		super(id, ObjectRegistry.LINE_LOOP_2D);
 	}
-
-	@Override
-	public byte getType() {
-		return LINE_LOOP_2D;
-	}
-
 
 	@Override
 	public float getScale() {

@@ -7,14 +7,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.TRIANGLE_2D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
 public class Triangle extends ColourableObject implements MultiPoint2D {
 	private Point2D[] points = new Point2D[3];
 
 	public Triangle(int id) {
-		super(id);
+		super(id, ObjectRegistry.TRIANGLE_2D);
 		for (int i = 0; i < points.length; i++) points[i] = new Point2D();
 	}
 
@@ -34,11 +33,6 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 	@Override
 	public int getVertices() {
 		return 3;
-	}
-
-	@Override
-	public byte getType() {
-		return TRIANGLE_2D;
 	}
 
 	@Override

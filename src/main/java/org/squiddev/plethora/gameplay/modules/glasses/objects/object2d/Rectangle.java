@@ -6,8 +6,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.RECTANGLE_2D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
 	private Point2D position = new Point2D();
@@ -15,12 +14,7 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	private float height;
 
 	public Rectangle(int id) {
-		super(id);
-	}
-
-	@Override
-	public byte getType() {
-		return RECTANGLE_2D;
+		super(id, ObjectRegistry.RECTANGLE_2D);
 	}
 
 	@Override

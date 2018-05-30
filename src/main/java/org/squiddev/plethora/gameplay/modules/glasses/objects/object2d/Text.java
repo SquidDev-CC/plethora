@@ -9,13 +9,12 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry.TEXT_2D;
 
 public class Text extends ColourableObject implements Positionable2D, Scalable, Textable {
 	/**
@@ -44,12 +43,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	private String[][] lines = EMPTY_LINES;
 
 	public Text(int id) {
-		super(id);
-	}
-
-	@Override
-	public byte getType() {
-		return TEXT_2D;
+		super(id, ObjectRegistry.TEXT_2D);
 	}
 
 	@Override
