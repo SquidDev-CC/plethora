@@ -12,7 +12,7 @@
 	"key": {
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
 		"S": { "type": "forge:ore_dict", "ore": "stone" },
-		"W": { "item": "minecraft:wool", "data": 32767 },
+		"W": { "item": "#WOOL" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
 		"N": { "item": "minecraft:noteblock" }
 	}
