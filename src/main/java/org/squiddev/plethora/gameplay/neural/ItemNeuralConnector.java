@@ -44,7 +44,12 @@ public class ItemNeuralConnector extends ItemBase {
 				ServerComputer computer = ItemComputerHandler.getServer(neuralStack.getStack(), player, neuralStack);
 				if (computer != null) {
 					computer.turnOn();
-					GuiHandler.openNeuralPlayer(player, world);
+
+					// We prevent the neural connector from opening when they're already using an interface. This
+					// prevents the GUI becoming unusable when one gets in a right-click loop due to a broken program.
+					if (!(player.openContainer instanceof ContainerNeuralInterface)) {
+						GuiHandler.openNeuralPlayer(player, world);
+					}
 				}
 			}
 		}
@@ -59,7 +64,9 @@ public class ItemNeuralConnector extends ItemBase {
 		ItemStack armor = NeuralHelpers.getStack(entity);
 		if (!armor.isEmpty()) {
 			if (!player.getEntityWorld().isRemote) {
-				GuiHandler.openNeuralEntity(player, player.getEntityWorld(), entity);
+				if (!(player.openContainer instanceof ContainerNeuralInterface)) {
+					GuiHandler.openNeuralEntity(player, player.getEntityWorld(), entity);
+				}
 			}
 			return true;
 		} else {

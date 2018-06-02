@@ -26,7 +26,8 @@ import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 public class MethodsKineticTurtle {
 	@SubtargetedModuleMethod.Inject(
 		module = PlethoraModules.KINETIC_S, target = ITurtleAccess.class,
-		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item."
+		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item. The duration is in " +
+			"ticks, or 1/20th of a second."
 	)
 	public static MethodResult use(@Nonnull IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final int duration = optInt(args, 0, 0);
