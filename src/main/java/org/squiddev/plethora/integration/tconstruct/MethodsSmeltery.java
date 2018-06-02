@@ -10,13 +10,16 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.reference.DynamicReference;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.ISmelteryTankHandler;
 import slimeknights.tconstruct.smeltery.tileentity.TileHeatingStructureFuelTank;
+import slimeknights.tconstruct.smeltery.tileentity.TileMultiblock;
 import slimeknights.tconstruct.smeltery.tileentity.TileSmelteryComponent;
 import slimeknights.tconstruct.smeltery.tileentity.TileTank;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +29,14 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 public class MethodsSmeltery {
 	@BasicMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID,
+		value = ISmelteryTankHandler.class, modId = TConstruct.modID,
 		doc = "function(fluid: number|string) -- Select which fluid will be extracted by drains in the smeltery. One can specify a fluid name or an index in list of molten fluids."
 	)
-	public static MethodResult selectMolten(IUnbakedContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
+	public static MethodResult selectMolten(IUnbakedContext<ISmelteryTankHandler> context, Object[] args) throws LuaException {
 		if (args.length >= 1 && args[0] instanceof String) {
 			String fluid = (String) args[0];
 			return MethodResult.nextTick(() -> {
-				ISmelteryTankHandler smeltery = getSmeltery(context.bake());
+				ISmelteryTankHandler smeltery = context.bake().getTarget();
 
 				List<FluidStack> fluids = smeltery.getTank().getFluids();
 				for (int i = 0; i < fluids.size(); i++) {
@@ -50,7 +53,7 @@ public class MethodsSmeltery {
 		} else {
 			int fluid = getInt(args, 0);
 			return MethodResult.nextTick(() -> {
-				ISmelteryTankHandler smeltery = getSmeltery(context.bake());
+				ISmelteryTankHandler smeltery = context.bake().getTarget();
 				List<FluidStack> fluids = smeltery.getTank().getFluids();
 				assertBetween(fluid, 1, fluids.size(), "Fluid out of range (%s)");
 
@@ -63,11 +66,11 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID, worldThread = true,
+		value = ISmelteryTankHandler.class, modId = TConstruct.modID, worldThread = true,
 		doc = "function():table -- Get a list of all molten fluids within the smeltery."
 	)
-	public static Object[] getMolten(IContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
-		ISmelteryTankHandler smeltery = getSmeltery(context);
+	public static Object[] getMolten(IContext<ISmelteryTankHandler> context, Object[] args) throws LuaException {
+		ISmelteryTankHandler smeltery = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
 		int i = 0;
@@ -79,11 +82,11 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID, worldThread = true,
+		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID, worldThread = true,
 		doc = "function():table -- Get a list of all fuels currently used by the seared-bricks multiblock."
 	)
-	public static Object[] getFuels(IContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
-		TileHeatingStructureFuelTank<?> structure = getHeatingStructure(context);
+	public static Object[] getFuels(IContext<TileHeatingStructureFuelTank> context, Object[] args) throws LuaException {
+		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
 		int i = 0;
@@ -101,32 +104,52 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID, worldThread = true,
+		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID, worldThread = true,
 		doc = "function():number -- Get the internal temperature of this structure."
 	)
-	public static Object[] getTemperature(IContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
-		TileHeatingStructureFuelTank<?> structure = getHeatingStructure(context);
+	public static Object[] getTemperature(IContext<TileHeatingStructureFuelTank> context, Object[] args) throws LuaException {
+		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 		return new Object[]{structure.getTemperature()};
 	}
 
-	private static TileHeatingStructureFuelTank<?> getHeatingStructure(IContext<TileSmelteryComponent> context) throws LuaException {
+	@BasicObjectMethod.Inject(
+		value = TileSmelteryComponent.class, modId = TConstruct.modID, worldThread = true,
+		doc = "function():table|nil -- Get the controller for this smeltery component."
+	)
+	public static Object[] getController(IContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
 		TileSmelteryComponent component = context.getTarget();
-		if (!component.getHasMaster()) throw new LuaException("Cannot find a controller");
+		if (!component.getHasMaster()) return null;
 
 		TileEntity te = getRelatedTile(component, component.getMasterPosition());
-		if (!(te instanceof TileHeatingStructureFuelTank)) throw new LuaException("Cannot find a controller");
+		if (!(te instanceof TileMultiblock)) return null;
 
-		return (TileHeatingStructureFuelTank) te;
+		return new Object[]{context.makeChild((TileMultiblock) te, new ControllerReference(component, (TileMultiblock) te)).getObject()};
 	}
 
-	private static ISmelteryTankHandler getSmeltery(IContext<TileSmelteryComponent> context) throws LuaException {
-		TileSmelteryComponent component = context.getTarget();
-		if (!component.getHasMaster()) throw new LuaException("Not part of a smeltery");
+	private static class ControllerReference extends DynamicReference<TileMultiblock> {
+		private final TileSmelteryComponent origin;
+		private final TileMultiblock<?> expected;
 
-		TileEntity te = getRelatedTile(component, component.getMasterPosition());
-		if (!(te instanceof ISmelteryTankHandler)) throw new LuaException("Not part of a smeltery");
+		private ControllerReference(TileSmelteryComponent origin, TileMultiblock<?> expected) {
+			this.origin = origin;
+			this.expected = expected;
+		}
 
-		return (ISmelteryTankHandler) te;
+		@Nonnull
+		@Override
+		public TileMultiblock get() throws LuaException {
+			if (!origin.getHasMaster() || getRelatedTile(origin, origin.getMasterPosition()) != expected) {
+				throw new LuaException("The controller has changed");
+			}
+
+			return expected;
+		}
+
+		@Nonnull
+		@Override
+		public TileMultiblock safeGet() throws LuaException {
+			return expected;
+		}
 	}
 
 	@Nullable
