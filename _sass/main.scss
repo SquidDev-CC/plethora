@@ -248,6 +248,8 @@ code.class {
 	justify-content: space-between;
 
 	.module-data {
+		flex-grow: 1;
+
 		th, td { padding: 10px; }
 		th {
 			width: 100px;
@@ -261,15 +263,22 @@ code.class {
 	}
 
 	.module-image {
-		flex-grow: 1;
+		$width: 200px;
+		max-width: $width;
+		flex-shrink: 0;
 
+		margin: 0px 0px 0px 5px; // Left
+
+		img { width: 100%; }
 	}
-}
 
-.module-image {
-	$width: 200px;
-	max-width: $width;
-	min-width: $width;
+	@media(max-width: 800px) {
+		flex-direction: column;
 
-	img { width: 100%; }
+		.module-data { order: 2; }
+		.module-image {
+			align-self: center;
+			margin: 0px 0px 5px 0px; // Bottom
+		}
+	}
 }

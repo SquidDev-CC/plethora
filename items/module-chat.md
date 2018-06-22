@@ -75,7 +75,7 @@ players, operating on the entire server. Consequently:
  - `.say` will not be bound to any player, printing a raw string instead.
  - `.capture` will capture the messages of _all_ players.
 
-<img src="{{ "images/items/module-chat-creative.png" | relative_url }}" class="module-image" />
+![The creative chat module]({{ "images/items/module-chat-creative.png" | relative_url }} "The creative chat module")
 
 It is recommended that you [blacklist the `plethora:chat_creative` module][blacklist] if you operate a creative server.
 
