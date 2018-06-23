@@ -15,7 +15,7 @@ image: module-kinetic.png
 ---
 
 ### Basic usage
-Whilst the kinetic augment has a wide range of functions, the best place to start is the most fun: `.launch()`. This
+While the kinetic augment has a wide range of functions, the best place to start is the most fun: `.launch()`. This
 functions very similarly to a laser's `.fire()` method: taking a yaw and pitch (horizontal and vertical angle) and a
 power. When called, this will catapult the current entity in the supplied direction, the resulting velocity depending on
 the provided power.
@@ -30,9 +30,9 @@ while true do
 end
 ```
 
-Combined with other modules, the kinetic augment can be used to great effect: firing oneself in the direction you're
-currently looking, slowing your descent if you're falling to fast, etc... Take a look at some of the examples to get
-some ideas.
+Combined with other modules, the kinetic augment can be used in great number of ways. One can fire yourself in the
+direction you're currently looking, slow your descent if you're falling to fast, etc… Take a look at some of the
+examples to get some ideas.
 
 ### Other functionality
 If you're a low-tech kind of person, you can always experience the joys of `.launch()` by hand. First, hold carefully
@@ -46,7 +46,7 @@ The kinetic augment can be configured with the `kinetic` section of the `plethor
  - `launchMax=4`: The maximum power that can be used to launch an entity.
 
  - `launchCost=4`: The cost per power level to launch an entity. By default a computer will gain 10 energy points each
-   tick (see [here][cost_system] for more information).
+   tick ([read about the cost system][cost_system] for more information).
 
  - `launchYScale=0.5`: The amount the y velocity is scaled when launching an entity. The Y axis does not experience
    friction in the same way other axis do, and so small changes in veloctity have a marge larger effect.

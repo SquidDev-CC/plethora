@@ -79,12 +79,6 @@ $link: darken($base0D, 20%);
 		}
 	}
 
-	// This is awful, but it works.
-	* {
-		overflow-wrap: break-word;
-		word-wrap: break-word;
-		word-break: break-word;
-	}
 
 	@media(max-width: 800px) {
 		.main-content {
@@ -263,8 +257,7 @@ code.class {
 	}
 
 	.module-image {
-		$width: 200px;
-		max-width: $width;
+		max-width: 280px;
 		flex-shrink: 0;
 
 		margin: 0px 0px 0px 5px; // Left

@@ -4,7 +4,7 @@ title: Introspection module
 
 summary: >-
            The introspection module allows accessing the inventory of a player, also providing the ability to get basic
-           information about said player.
+           information about yourself.
 
 module: plethora:introspection
 usable:
@@ -39,8 +39,8 @@ inventory as players.
 > If you're unfamiliar with Plethora's item transfer system, I suggest [you read the introduction first][item_transfer].
 
 The introspection module also provides access to the player's ender chest and, if installed, the Baubles
-inventory. Whilst there are methods to access them (`.getEnder()` and `.getBaubles()` respectively), you can also use
-the item transfer system to move items between them.
+inventory. While there are methods to access them (`.getEnder()` and `.getBaubles()` respectively), you can also use the
+item transfer system to move things between them.
 
 ```lua
 local inv = introspection.getInventory()

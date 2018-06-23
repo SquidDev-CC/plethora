@@ -29,11 +29,11 @@ One can now use the keyboard anywhere in the world to type at this computer: sim
 you have finished typing, press escape to resume normal play.
 
 ### Using with the neural interface
-Whilst the neural interface is a fantastic piece of technology, it is rather frustrating having to dig out your neural
+While the neural interface is a fantastic piece of technology, it is rather frustrating having to dig out your neural
 connector every time you want to use it. Thankfully this is no longer the case: you only have to dig out a keyboard
 instead! As long as your keyboard is not bound to any computer, using it whilst wearing a neural interface will type on
 your headpiece instead. In conjunction with the overlay glasses, you can create all sorts of convenient interfaces.
 
 One can also place the keyboard in a _module slot_ of a neural interface. Doing so will mean key presses are continually
 relayed to the interface, even when not in in the keyboard's GUI. Consequently you can add your own keybindings,
-triggering all sorts of actions using the interface.
+triggering all sorts of actions.

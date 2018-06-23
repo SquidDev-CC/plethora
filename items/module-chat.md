@@ -3,8 +3,9 @@ layout: module
 title: Chat recorder
 
 summary: >-
-         The chat recorder acts as a proxy between you and your server's chat, listening in to what people say and
-         sending messages on your behalf.
+           The chat recorder acts as a proxy between you and your server's chat, listening in to what people say and
+           sending messages on your behalf.
+
 module: plethora:chat
 usable:
  - Manipulator
@@ -16,7 +17,7 @@ image: module-chat.png
 ---
 
 ### Basic usage
-Once one has equipped a chat recorder, you should notice `chat_message` events beginning to appear. These will include
+Once you have equipped a chat recorder, you should notice `chat_message` events beginning to appear. These will include
 the player name, their message and the entity UUID:
 
 ```lua
@@ -47,9 +48,10 @@ end
 ```
 
 One thing to note here is that the chat recorder speaks _as the player_ rather than a separate object. Whilst this does
-introduce some restrictions, it does grant some interesting abilities. One of these comes in the form of "captures". One
-can specify a Lua pattern which will filter chat. If a message matches the provided pattern, it will not be displayed to
-other players, instead queuing an event on a computer.
+introduce some restrictions, it does grant some interesting abilities.
+
+One of these comes in the form of "captures". We can specify a Lua pattern which will filter chat. If a message matches
+the provided pattern, it will not be displayed to other players, instead queuing an event on a computer.
 
 ```lua
 local chat = peripheral.wrap(-- [[whatever ]])
@@ -64,7 +66,7 @@ while true do
 end
 ```
 
-In order to use player specific features inside a manipulator, you will need to bind the chat recorder to yourself. This
+In order to use player-specific features inside a manipulator, you will need to bind the chat recorder to yourself. This
 is done by shift + right-clicking it.
 
 
@@ -80,7 +82,7 @@ players, operating on the entire server. Consequently:
 It is recommended that you [blacklist the `plethora:chat_creative` module][blacklist] if you operate a creative server.
 
 ### Configuring
-The chat recorder can be configured within the `chat` category of the `plethora.cfg` file:
+The chat recorder can be configured using the `chat` category of the `plethora.cfg` file:
 
  - `maxLength=100`: The maximum length a chat message can be. Set to 0 to allow any length.
 

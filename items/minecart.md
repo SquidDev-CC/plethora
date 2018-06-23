@@ -10,7 +10,7 @@ layout: text
 			Have you ever been working really hard on your rail-road and felt lonely? Or perhaps you've had one too many
 			issues with furnace minecarts and are looking for something more inteligent? Then have we a solution for
 			you! By placing a computer inside an empty minecart, you can combine the power of a computer with the
-			utility of a minecart.
+			joy of the rails.
 		</p>
 	</div>
 	<div class="module-image">
@@ -19,8 +19,8 @@ layout: text
 </div>
 
 ### Basic usage
-Simply right-click an empty minecart with any computer (normal, advanced or command), placing it inside it. Clicking the
-computer screen will turn it on and open the terminal - you can now use it like a normal computer.
+Simply right-click an empty minecart with any computer, placing it inside. Clicking the computer screen will turn it on
+and open the terminal - you can now use it like just like any other computer.
 
 Of course, a computer only so much use on its own: we need a way to interact with the world, and for that we need
 peripherals. Thankfully, minecart computers also have the ability to equip peripherals. Simply hover over any face of

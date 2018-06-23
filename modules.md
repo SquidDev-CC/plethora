@@ -66,8 +66,8 @@ This is useful if your program requires the presence of particular modules and y
 installed.
 
 Finally we have `.filterModules()`. This filters the method list to those provided by the specified modules. This isn't
-really useful for us as we only have one module, but when you have multiple modules installed, it is really useful to
-prevent two modules having the methods of the same name.
+really useful for us as we only have one module, but when you have multiple modules installed, it is really useful if
+you only want to use one module's methods.
 
 ### Using modules
 Well, now that we know a little bit about the modules we have installed, let's get cracking with them! Most modules will

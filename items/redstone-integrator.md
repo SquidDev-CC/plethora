@@ -27,4 +27,4 @@ integrator.setOutput("north", true)
 
 You'll note in the above example that we use `north`, whilst the `redstone` API uses `front` (or similar). As the
 integrator has no sense of which way it's facing, one uses cardinal directions instead. Be aware that `up` and `down`
-are used instead of `top` and `bottom` as well.
+are used instead of `top` and `bottom`.
