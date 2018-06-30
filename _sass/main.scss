@@ -79,6 +79,12 @@ $link: darken($base0D, 20%);
 		}
 	}
 
+	// Bodge to prevent really long words making pages rather wide on mobile
+	* {
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-word;
+	}
 
 	@media(max-width: 800px) {
 		.main-content {
