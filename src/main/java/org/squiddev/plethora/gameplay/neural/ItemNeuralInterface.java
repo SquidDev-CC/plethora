@@ -246,6 +246,11 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return ComputerFamily.Advanced;
 	}
 
+	public ItemStack withFamily(@Nonnull ItemStack stack, @Nonnull ComputerFamily family) {
+		// For CC:T's IComputerItem
+		return stack;
+	}
+
 	@Override
 	@Optional.Method(modid = Baubles.MODID)
 	public BaubleType getBaubleType(ItemStack stack) {

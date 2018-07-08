@@ -103,10 +103,10 @@ def curseMod(String mod, int id, String version) {
 }
 
 dependencies {
-	compile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
+	deobfCompile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	compile "mezz.jei:jei_1.12.2:4.9.1.192"
 
-	compileOnly "org.squiddev:cc-tweaked:1.80pr1.6"
+	deobfCompile "org.squiddev:cc-tweaked:1.80pr1.7"
 
 	compileOnly "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
 	compileOnly "net.industrial-craft:industrialcraft-2:2.8.9-ex112:dev"

@@ -52,13 +52,6 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
-	@Nonnull
-	@Override
-	@Optional.Method(modid = "This mod should never exist: just a hack to remove this method")
-	public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
-		return new TileRedstoneIntegrator();
-	}
-
 	@Override
 	protected IBlockState getDefaultBlockState(int meta, EnumFacing direction) {
 		return blockState.getBaseState();
