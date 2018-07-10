@@ -20,9 +20,7 @@ import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Wraps tile entities as a peripherals.
@@ -65,30 +63,22 @@ public class PeripheralProvider implements IPeripheralProvider {
 		return null;
 	}
 
-	private static final Set<String> blacklist = new HashSet<>();
+	private static final Map<Class, Boolean> blacklistCache = new HashMap<>();
+	private static final Set<String> blacklistedNames = new HashSet<>();
 
-	public static void addToBlacklist(String klass) {
-		blacklist.add(klass);
+	static void addToBlacklist(String klass) {
+		blacklistedNames.add(klass);
 	}
 
-	public static boolean isBlacklisted(Class<?> klass) {
+	private static boolean isBlacklisted(Class<?> klass) {
+		Boolean cached = blacklistCache.get(klass);
+		if (cached != null) return cached;
+
 		String name = klass.getName();
+		boolean blacklisted = blacklistedNames.contains(name)
+			|| Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, name);
 
-		if (blacklist.contains(name)) return true;
-		if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, name)) {
-			blacklist.add(name);
-			return true;
-		}
-
-		try {
-			klass.getField("PLETHORA_IGNORE");
-			blacklist.add(name);
-			return true;
-		} catch (NoSuchFieldException ignored) {
-		} catch (Throwable t) {
-			DebugLogger.warn("Cannot get ignored field from " + name, t);
-		}
-
-		return false;
+		blacklistCache.put(klass, blacklisted);
+		return blacklisted;
 	}
 }
