@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
@@ -36,6 +35,7 @@ import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
 import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.utils.LoadedCache;
 import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
@@ -72,7 +72,7 @@ public final class NeuralHelpers {
 			}
 		}
 
-		if (Loader.isModLoaded(Baubles.MODID) && entity instanceof EntityPlayer) {
+		if (LoadedCache.hasBaubles() && entity instanceof EntityPlayer) {
 			TinySlot slot = getBauble((EntityPlayer) entity);
 			if (slot != null) return slot;
 		}

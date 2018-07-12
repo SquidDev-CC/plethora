@@ -36,7 +36,6 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,6 +47,7 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.LoadedCache;
 import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.TinySlot;
 import vazkii.botania.api.item.ICosmeticAttachable;
@@ -114,7 +114,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			}
 		}
 
-		if (Loader.isModLoaded(Baubles.MODID)) {
+		if (LoadedCache.hasBaubles()) {
 			IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
 			for (int slot : NeuralHelpers.getBaubleType().getValidSlots()) {
 				if (handler.getStackInSlot(slot).isEmpty()) {
@@ -373,9 +373,9 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 			}
 		}
 
-		if (Loader.isModLoaded(LibMisc.MOD_ID)) {
+		if (LoadedCache.hasBotania()) {
 			ItemStack cosmetic = getCosmeticItem(stack);
-			if (cosmetic != null) {
+			if (!cosmetic.isEmpty()) {
 				out.add(Helpers
 					.translateToLocalFormatted("botaniamisc.hasCosmetic", cosmetic.getDisplayName())
 					.replaceAll("&", "\u00a7"));

@@ -30,7 +30,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		 *
 		 * See {@link RenderManager} for entity to model mappings
 		 *
-		 * @see net.minecraft.client.model.
+		 * @see net.minecraft.client.model
 		 */
 
 		/**
