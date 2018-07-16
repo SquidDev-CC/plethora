@@ -7,11 +7,14 @@ import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.IIngredientFactory;
@@ -19,51 +22,70 @@ import net.minecraftforge.common.crafting.JsonContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class IngredientEnchanted extends Ingredient {
 	private final Enchantment enchantment;
 	private final int minLevel;
 
-	private final ItemStack[] basicStacks;
+	private ItemStack[] stacks;
 	private IntList packed;
 
 	IngredientEnchanted(Enchantment enchantment, int minLevel) {
 		this.enchantment = enchantment;
 		this.minLevel = minLevel;
-
-		this.basicStacks = new ItemStack[enchantment.getMaxLevel() - minLevel + 1];
-
-		int i = 0;
-		for (int level = minLevel; level <= enchantment.getMaxLevel(); level++) {
-			basicStacks[i++] = ItemEnchantedBook.getEnchantedItemStack(new EnchantmentData(enchantment, level));
-		}
 	}
 
 	@Override
 	@Nonnull
 	public ItemStack[] getMatchingStacks() {
-		return basicStacks;
+		if (stacks != null) return stacks;
+		if (enchantment.type == null) return stacks = new ItemStack[0];
+
+		// Find any item which matches this predicate
+		ArrayList<ItemStack> stacks = new ArrayList<>();
+		for (Item item : Item.REGISTRY) {
+			if (enchantment.type != null && enchantment.type.canEnchantItem(item)) {
+				for (int level = minLevel; level <= enchantment.getMaxLevel(); level++) {
+					ItemStack stack = new ItemStack(item);
+					EnchantmentHelper.setEnchantments(Collections.singletonMap(enchantment, level), stack);
+					stacks.add(stack);
+				}
+			}
+		}
+		return this.stacks = stacks.toArray(new ItemStack[stacks.size()]);
 	}
 
 	@Override
 	@Nonnull
 	public IntList getValidItemStacksPacked() {
-		if (packed == null) {
-			packed = new IntArrayList();
-			for (ItemStack stack : basicStacks) packed.add(RecipeItemHelper.pack(stack));
-			packed.sort(IntComparators.NATURAL_COMPARATOR);
-		}
+		if (packed != null) return packed;
+
+		packed = new IntArrayList();
+		for (ItemStack stack : getMatchingStacks()) packed.add(RecipeItemHelper.pack(stack));
+		packed.sort(IntComparators.NATURAL_COMPARATOR);
 
 		return packed;
 	}
 
 	@Override
 	public boolean apply(@Nullable ItemStack target) {
-		return target != null && EnchantmentHelper.getEnchantmentLevel(enchantment, target) >= minLevel;
+		if (target == null || target.isEmpty()) return false;
+
+		NBTTagList enchantments = target.getItem() == Items.ENCHANTED_BOOK ? ItemEnchantedBook.getEnchantments(target) : target.getEnchantmentTagList();
+		for (int i = 0; i < enchantments.tagCount(); ++i) {
+			NBTTagCompound tag = enchantments.getCompoundTagAt(i);
+			Enchantment itemEnchant = Enchantment.getEnchantmentByID(tag.getShort("id"));
+			if (itemEnchant == enchantment) return (int) tag.getShort("lvl") >= minLevel;
+		}
+
+		return false;
 	}
 
 	@Override
 	protected void invalidate() {
+		stacks = null;
 		packed = null;
 	}
 

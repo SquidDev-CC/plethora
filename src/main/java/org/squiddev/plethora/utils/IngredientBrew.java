@@ -58,7 +58,7 @@ public class IngredientBrew extends Ingredient {
 
 	@Override
 	public boolean apply(@Nullable ItemStack target) {
-		if (target == null) return false;
+		if (target == null || target.isEmpty()) return false;
 
 		for (PotionEffect effect : PotionUtils.getEffectsFromStack(target)) {
 			if (effect.getPotion() == potion) return true;
