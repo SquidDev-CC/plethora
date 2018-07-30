@@ -377,7 +377,7 @@ public final class ItemModule extends ItemBase {
 		}
 	}
 
-	private static GameProfile getProfile(ItemStack stack) {
+	public static GameProfile getProfile(ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("id_lower", 99)) {
 			return new GameProfile(new UUID(tag.getLong("id_upper"), tag.getLong("id_lower")), tag.getString("bound_name"));
