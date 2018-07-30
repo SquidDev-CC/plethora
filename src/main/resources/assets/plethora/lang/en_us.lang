@@ -3,6 +3,10 @@ item.plethora.module.module_introspection.name=Introspection module
 item.plethora.module.module_introspection.adjective=Introspective
 item.plethora.module.module_introspection.desc=Wraps your inventory as a peripheral. Shift+Use to bind to player.
 
+item.plethora.module.module_introspection.bound=Bound to %s
+item.plethora.module.module_introspection.cleared=Binding cleared
+item.plethora.module.module_introspection.binding=Bound to %s
+
 item.plethora.module.module_laser.name=Frickin' laser beam
 item.plethora.module.module_laser.adjective=Firing
 item.plethora.module.module_laser.desc=It fires lasers. 'nough said
@@ -27,6 +31,10 @@ item.plethora.module.module_kinetic.desc=Allows controlling your body via the ne
 item.plethora.module.module_chat.name=Chat recorder
 item.plethora.module.module_chat.adjective=Listening
 item.plethora.module.module_chat.desc=Allows listening and intercepting chat events
+
+item.plethora.module.module_chat.bound=Bound to %s
+item.plethora.module.module_chat.cleared=Binding cleared
+item.plethora.module.module_chat.binding=Bound to %s
 
 item.plethora.module.module_chat_creative.name=Creative chat recorder
 item.plethora.module.module_chat_creative.adjective=Snooping

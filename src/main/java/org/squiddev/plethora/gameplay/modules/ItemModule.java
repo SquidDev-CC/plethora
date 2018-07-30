@@ -17,6 +17,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -110,13 +111,30 @@ public final class ItemModule extends ItemBase {
 			case INTROSPECTION_ID:
 			case CHAT_ID:
 				if (!world.isRemote) {
-					if (player.isSneaking() && !player.getGameProfile().getName().startsWith("[")) {
-						UUID id = player.getGameProfile().getId();
-						if (id != null) {
-							NBTTagCompound compound = getTag(stack);
-							compound.setLong("id_lower", id.getLeastSignificantBits());
-							compound.setLong("id_upper", id.getMostSignificantBits());
-							compound.setString("bound_name", player.getName());
+					if (player.isSneaking() && !player.getGameProfile().getName().startsWith("[") && player.getGameProfile().getId() != null) {
+						NBTTagCompound tag = getTag(stack);
+
+						if (player.getGameProfile().equals(getProfile(stack))) {
+							// Remove the binding if we're already bound
+							tag.removeTag("id_lower");
+							tag.removeTag("id_upper");
+							tag.removeTag("bound_name");
+							player.sendStatusMessage(
+								new TextComponentTranslation("item.plethora.module.module_" + getName(stack.getItemDamage()) + ".cleared", player.getName()),
+								true
+							);
+
+						} else {
+							// Otherwise bind to the current player
+							UUID id = player.getGameProfile().getId();
+							tag.setLong("id_lower", id.getLeastSignificantBits());
+							tag.setLong("id_upper", id.getMostSignificantBits());
+							tag.setString("bound_name", player.getName());
+
+							player.sendStatusMessage(
+								new TextComponentTranslation("item.plethora.module.module_" + getName(stack.getItemDamage()) + ".bound", player.getName()),
+								true
+							);
 						}
 					} else {
 						if (stack.getItemDamage() == INTROSPECTION_ID) {
@@ -189,7 +207,7 @@ public final class ItemModule extends ItemBase {
 
 		String entity = getEntityName(stack);
 		if (entity != null) {
-			out.add("Bound to " + entity);
+			out.add(Helpers.translateToLocalFormatted("item.plethora.module.module_" + getName(stack.getItemDamage()) + ".binding", entity));
 		}
 	}
 

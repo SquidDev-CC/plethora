@@ -85,16 +85,16 @@ public class ItemKeyboard extends ItemBase {
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
 
-				player.sendMessage(new TextComponentTranslation("item.plethora.keyboard.bound"));
+				player.sendStatusMessage(new TextComponentTranslation("item.plethora.keyboard.bound"), true);
 			} else if (tag != null && tag.hasKey("x")) {
-				player.sendMessage(new TextComponentTranslation("item.plethora.keyboard.cleared"));
-
 				tag.removeTag("x");
 				tag.removeTag("y");
 				tag.removeTag("z");
 				tag.removeTag("dim");
 				tag.removeTag(SESSION_ID);
 				tag.removeTag(INSTANCE_ID);
+
+				player.sendStatusMessage(new TextComponentTranslation("item.plethora.keyboard.cleared"), true);
 			}
 
 			// Clear the tag compound: pocket upgrades check this when determining if something can be stacked
