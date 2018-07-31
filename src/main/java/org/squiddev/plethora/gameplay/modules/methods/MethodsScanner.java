@@ -42,8 +42,8 @@ public final class MethodsScanner {
 		for (int oX = x - radius; oX <= x + radius; oX++) {
 			for (int oY = y - radius; oY <= y + radius; oY++) {
 				for (int oZ = z - radius; oZ <= z + radius; oZ++) {
-					BlockPos newPos = new BlockPos(oX, oY, oZ);
-					IBlockState block = world.getBlockState(newPos);
+					BlockPos subPos = new BlockPos(oX, oY, oZ);
+					IBlockState block = world.getBlockState(subPos).getActualState(world, subPos);
 
 					HashMap<Object, Object> data = new HashMap<>();
 					data.put("x", oX - x);

@@ -27,7 +27,11 @@ public class BlockReference extends ConstantReference<BlockReference> {
 	}
 
 	public BlockReference(@Nonnull IWorldLocation location) {
-		this(location, location.getWorld().getBlockState(location.getPos()), location.getWorld().getTileEntity(location.getPos()));
+		this(
+			location,
+			location.getWorld().getBlockState(location.getPos()).getActualState(location.getWorld(), location.getPos()),
+			location.getWorld().getTileEntity(location.getPos())
+		);
 	}
 
 	@Nonnull
@@ -62,7 +66,7 @@ public class BlockReference extends ConstantReference<BlockReference> {
 		}
 
 		// Update the block state if everything is OK
-		state = newState;
+		state = newState.getActualState(world, pos);
 
 		valid = true;
 		return this;
