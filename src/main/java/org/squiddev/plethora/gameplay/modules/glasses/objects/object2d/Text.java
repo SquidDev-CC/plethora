@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
@@ -42,8 +43,8 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	private String text = "";
 	private String[][] lines = EMPTY_LINES;
 
-	public Text(int id) {
-		super(id, ObjectRegistry.TEXT_2D);
+	public Text(int id, int parent) {
+		super(id, parent, ObjectRegistry.TEXT_2D);
 	}
 
 	@Override
@@ -113,8 +114,8 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		position.write(buf);
 		buf.writeFloat(size);
 		buf.writeBoolean(dropShadow);
@@ -135,7 +136,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		int colour = getColour();
 
 		// If the alpha channel doesn't match a 0xFC, then the font renderer

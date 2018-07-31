@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -134,9 +135,11 @@ public class CanvasHandler {
 		ScaledResolution resolution = event.getResolution();
 		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 2);
 
-		synchronized (canvas.objects) {
-			for (BaseObject object : canvas.objects.values()) {
-				object.draw2D();
+		synchronized (canvas) {
+			for (IntIterator iterator = canvas.getChildren(0).iterator(); iterator.hasNext(); ) {
+				int id = iterator.nextInt();
+				BaseObject object = canvas.getObject(id);
+				if (object != null) object.draw2D(canvas);
 			}
 		}
 

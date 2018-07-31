@@ -13,11 +13,13 @@ import javax.annotation.Nonnull;
 public abstract class BaseObject {
 	private final int id;
 	private final byte type;
+	private final int parent;
 
 	private boolean dirty = false;
 
-	public BaseObject(int id, byte type) {
+	public BaseObject(int id, int parent, byte type) {
 		this.id = id;
+		this.parent = parent;
 		this.type = type;
 	}
 
@@ -28,6 +30,15 @@ public abstract class BaseObject {
 	 */
 	public final int id() {
 		return id;
+	}
+
+	/**
+	 * Get the unique ID of this object's parent
+	 *
+	 * @return This object's parent's ID
+	 */
+	public final int parent() {
+		return parent;
 	}
 
 	/**
@@ -54,7 +65,7 @@ public abstract class BaseObject {
 	 *
 	 * @param buf The buffer to write to.
 	 */
-	public abstract void writeInital(ByteBuf buf);
+	public abstract void writeInitial(ByteBuf buf);
 
 	/**
 	 * Read the initial data for this object.
@@ -69,7 +80,7 @@ public abstract class BaseObject {
 	 * @param buf The buffer to write to.
 	 */
 	public void writeUpdate(ByteBuf buf) {
-		writeInital(buf);
+		writeInitial(buf);
 	}
 
 	/**
@@ -83,9 +94,11 @@ public abstract class BaseObject {
 
 	/**
 	 * Draw this object in the 2D context.
+	 *
+	 * @param canvas The canvas context we are drawing within
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract void draw2D();
+	public abstract void draw2D(CanvasClient canvas);
 
 	/**
 	 * Get a reference to this object
@@ -105,7 +118,6 @@ public abstract class BaseObject {
 			this.canvas = canvas;
 			this.id = object.id;
 		}
-
 
 		@Nonnull
 		@Override

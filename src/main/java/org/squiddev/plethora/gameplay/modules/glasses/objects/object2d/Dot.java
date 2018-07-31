@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
@@ -13,8 +14,8 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	private Point2D position = new Point2D();
 	private float scale = 1;
 
-	public Dot(int id) {
-		super(id, ObjectRegistry.DOT_2D);
+	public Dot(int id, int parent) {
+		super(id, parent, ObjectRegistry.DOT_2D);
 	}
 
 	@Override
@@ -44,8 +45,8 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		position.write(buf);
 		buf.writeFloat(scale);
 	}
@@ -59,7 +60,7 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		setupFlat();
 
 		float x = position.x, y = position.y, delta = scale / 2;

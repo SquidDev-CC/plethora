@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
@@ -13,12 +14,12 @@ import java.util.ArrayList;
 public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
 	protected final ArrayList<Point2D> points = new ArrayList<Point2D>();
 
-	protected Polygon(int id, byte type) {
-		super(id, type);
+	protected Polygon(int id, int parent, byte type) {
+		super(id, parent, type);
 	}
 
-	public Polygon(int id) {
-		super(id, ObjectRegistry.POLYGON_2D);
+	public Polygon(int id, int parent) {
+		super(id, parent, ObjectRegistry.POLYGON_2D);
 	}
 
 	@Override
@@ -57,8 +58,8 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		buf.writeByte(points.size());
 
 		for (Point2D point : points) point.write(buf);
@@ -87,7 +88,7 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		if (points.size() < 3) return;
 
 		setupFlat();

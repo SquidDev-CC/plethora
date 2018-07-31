@@ -4,13 +4,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
 public class LineLoop extends Polygon implements Scalable {
 	private float scale = 1;
 
-	public LineLoop(int id) {
+	public LineLoop(int id, int parent) {
 		super(id, ObjectRegistry.LINE_LOOP_2D);
 	}
 
@@ -28,8 +29,8 @@ public class LineLoop extends Polygon implements Scalable {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		buf.writeFloat(scale);
 	}
 
@@ -41,7 +42,7 @@ public class LineLoop extends Polygon implements Scalable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		if (points.size() < 2) return;
 
 		setupFlat();

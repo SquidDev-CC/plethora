@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 
@@ -23,10 +24,9 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	private int damage;
 	private Item item;
 
-	public Item2D(int id) {
-		super(id, ObjectRegistry.ITEM_2D);
+	public Item2D(int id, int parent) {
+		super(id, parent, ObjectRegistry.ITEM_2D);
 	}
-
 
 	@Override
 	public float getScale() {
@@ -77,7 +77,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
+	public void writeInitial(ByteBuf buf) {
 		position.write(buf);
 		buf.writeFloat(scale);
 		ByteBufUtils.writeUTF8String(buf, item.getRegistryName().toString());
@@ -97,7 +97,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		GlStateManager.pushMatrix();
 
 		GlStateManager.translate(position.x, position.y, 0);

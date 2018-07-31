@@ -9,8 +9,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 public abstract class ColourableObject extends BaseObject implements Colourable {
 	private int colour = DEFAULT_COLOUR;
 
-	public ColourableObject(int id, byte type) {
-		super(id, type);
+	public ColourableObject(int id, int parent, byte type) {
+		super(id, parent, type);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public abstract class ColourableObject extends BaseObject implements Colourable 
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
+	public void writeInitial(ByteBuf buf) {
 		buf.writeInt(colour);
 	}
 

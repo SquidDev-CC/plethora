@@ -45,7 +45,7 @@ public class MessageCanvasAdd implements IMessage {
 		public IMessage onMessage(MessageCanvasAdd message, MessageContext context) {
 			CanvasClient canvas = new CanvasClient(message.canvasId);
 
-			for (BaseObject obj : message.objects) canvas.objects.put(obj.id(), obj);
+			for (BaseObject obj : message.objects) canvas.updateObject(obj);
 			CanvasHandler.addClient(canvas);
 			return null;
 		}

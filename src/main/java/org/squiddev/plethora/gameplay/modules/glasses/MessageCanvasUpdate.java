@@ -61,9 +61,9 @@ public class MessageCanvasUpdate implements IMessage {
 			CanvasClient canvas = CanvasHandler.getClient(message.canvasId);
 			if (canvas == null) return null;
 
-			synchronized (canvas.objects) {
-				for (BaseObject obj : message.changed) canvas.objects.put(obj.id(), obj);
-				for (int id : message.removed) canvas.objects.remove(id);
+			synchronized (canvas) {
+				for (BaseObject obj : message.changed) canvas.updateObject(obj);
+				for (int id : message.removed) canvas.remove(id);
 			}
 
 			return null;

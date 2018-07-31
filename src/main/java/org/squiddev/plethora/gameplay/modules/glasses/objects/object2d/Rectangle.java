@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
@@ -13,8 +14,8 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	private float width;
 	private float height;
 
-	public Rectangle(int id) {
-		super(id, ObjectRegistry.RECTANGLE_2D);
+	public Rectangle(int id, int parent) {
+		super(id, parent, ObjectRegistry.RECTANGLE_2D);
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		position.write(buf);
 		buf.writeFloat(width);
 		buf.writeFloat(height);
@@ -64,7 +65,7 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		setupFlat();
 
 		float x = position.x, y = position.y;

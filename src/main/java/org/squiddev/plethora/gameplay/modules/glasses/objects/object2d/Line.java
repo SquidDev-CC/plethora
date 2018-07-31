@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
@@ -14,8 +15,8 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	private Point2D end = new Point2D();
 	private float thickness = 1;
 
-	public Line(int id) {
-		super(id, ObjectRegistry.LINE_2D);
+	public Line(int id, int parent) {
+		super(id, parent, ObjectRegistry.LINE_2D);
 	}
 
 	@Override
@@ -57,8 +58,8 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		start.write(buf);
 		end.write(buf);
 		buf.writeFloat(thickness);
@@ -74,7 +75,7 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		setupFlat();
 		GL11.glLineWidth(thickness);
 

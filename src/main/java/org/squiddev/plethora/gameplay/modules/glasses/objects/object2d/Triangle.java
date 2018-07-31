@@ -6,14 +6,15 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
 public class Triangle extends ColourableObject implements MultiPoint2D {
 	private Point2D[] points = new Point2D[3];
 
-	public Triangle(int id) {
-		super(id, ObjectRegistry.TRIANGLE_2D);
+	public Triangle(int id, int parent) {
+		super(id, parent, ObjectRegistry.TRIANGLE_2D);
 		for (int i = 0; i < points.length; i++) points[i] = new Point2D();
 	}
 
@@ -36,8 +37,8 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 	}
 
 	@Override
-	public void writeInital(ByteBuf buf) {
-		super.writeInital(buf);
+	public void writeInitial(ByteBuf buf) {
+		super.writeInitial(buf);
 		for (Point2D point : points) {
 			point.write(buf);
 		}
@@ -53,7 +54,7 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D() {
+	public void draw2D(CanvasClient canvas) {
 		GlStateManager.disableCull();
 
 		GL11.glBegin(GL11.GL_TRIANGLES);
