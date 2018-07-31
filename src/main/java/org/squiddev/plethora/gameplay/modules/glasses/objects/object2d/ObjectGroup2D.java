@@ -7,10 +7,10 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.renderer.GlStateManager;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
-import org.squiddev.plethora.gameplay.modules.glasses.IObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
-public class ObjectGroup2D extends BaseObject implements IObjectGroup, Positionable2D {
+public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Positionable2D {
 	private Point2D position = new Point2D();
 
 	public ObjectGroup2D(int id, int parent) {

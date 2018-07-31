@@ -7,7 +7,7 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
-import org.squiddev.plethora.gameplay.modules.glasses.IObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
@@ -17,9 +17,9 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class MethodsBasic {
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function() -- Remove all objects.")
-	public static MethodResult clear(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
-		IContext<IObjectGroup> baked = context.safeBake();
+	@BasicMethod.Inject(value = ObjectGroup.class, doc = "function() -- Remove all objects.")
+	public static MethodResult clear(IUnbakedContext<ObjectGroup> context, Object[] args) throws LuaException {
+		IContext<ObjectGroup> baked = context.safeBake();
 		baked.getContext(CanvasServer.class).clear(baked.getTarget());
 		return MethodResult.empty();
 	}

@@ -26,6 +26,8 @@ import static net.minecraftforge.common.util.Constants.NBT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_DATA;
 
 public class CanvasHandler {
+	public static final int ID_2D = 0;
+
 	public static final int WIDTH = 512;
 	public static final int HEIGHT = 512 / 16 * 9;
 
@@ -136,7 +138,7 @@ public class CanvasHandler {
 		GlStateManager.scale(resolution.getScaledWidth_double() / WIDTH, resolution.getScaledHeight_double() / HEIGHT, 2);
 
 		synchronized (canvas) {
-			for (IntIterator iterator = canvas.getChildren(0).iterator(); iterator.hasNext(); ) {
+			for (IntIterator iterator = canvas.getChildren(ID_2D).iterator(); iterator.hasNext(); ) {
 				int id = iterator.nextInt();
 				BaseObject object = canvas.getObject(id);
 				if (object != null) object.draw2D(canvas);

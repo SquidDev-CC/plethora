@@ -9,7 +9,7 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
-import org.squiddev.plethora.gameplay.modules.glasses.IObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup.Group2D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
@@ -20,16 +20,16 @@ import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPoi
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
 public class MethodsCanvas2D {
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(x:number, y:number, width:number, height:number[, color:number]):table -- Create a new rectangle.")
-	public static MethodResult addRectangle(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(x:number, y:number, width:number, height:number[, color:number]):table -- Create a new rectangle.")
+	public static MethodResult addRectangle(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		float x = getFloat(args, 0);
 		float y = getFloat(args, 1);
 		float width = getFloat(args, 2);
 		float height = getFloat(args, 3);
 		int colour = optInt(args, 4, DEFAULT_COLOUR);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 		Rectangle rectangle = new Rectangle(canvas.newObjectId(), group.id());
 		rectangle.setPosition(new Point2D(x, y));
@@ -41,15 +41,15 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(rectangle, rectangle.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(start:table, end:table[, color:number][, thickness:number]):table -- Create a new line.")
-	public static MethodResult addLine(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(start:table, end:table[, color:number][, thickness:number]):table -- Create a new line.")
+	public static MethodResult addLine(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D start = getPoint2D(args, 0);
 		Point2D end = getPoint2D(args, 1);
 		int colour = optInt(args, 2, DEFAULT_COLOUR);
 		float thickness = optFloat(args, 3, 1);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Line line = new Line(canvas.newObjectId(), group.id());
@@ -63,14 +63,14 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(line, line.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.")
-	public static MethodResult addDot(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.")
+	public static MethodResult addDot(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D position = getPoint2D(args, 0);
 		int colour = optInt(args, 1, DEFAULT_COLOUR);
 		float size = optFloat(args, 2, 1);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Dot dot = new Dot(canvas.newObjectId(), group.id());
@@ -82,15 +82,15 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(dot, dot.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(position:table, text:string, [, color:number][, size:number]):table -- Create a new text object.")
-	public static MethodResult addText(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, text:string, [, color:number][, size:number]):table -- Create a new text object.")
+	public static MethodResult addText(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D point = getPoint2D(args, 0);
 		String contents = getString(args, 1);
 		int colour = optInt(args, 2, DEFAULT_COLOUR);
 		float size = optFloat(args, 3, 1);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Text text = new Text(canvas.newObjectId(), group.id());
@@ -104,16 +104,16 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(text, text.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(p1:table, p2:table, p3:table, [, color:number]):table -- Create a new triangle, composed of three points.")
-	public static MethodResult addTriangle(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(p1:table, p2:table, p3:table, [, color:number]):table -- Create a new triangle, composed of three points.")
+	public static MethodResult addTriangle(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D a = getPoint2D(args, 0);
 		Point2D b = getPoint2D(args, 1);
 		Point2D c = getPoint2D(args, 2);
 
 		int colour = optInt(args, 3, DEFAULT_COLOUR);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Triangle triangle = new Triangle(canvas.newObjectId(), group.id());
@@ -127,10 +127,10 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(triangle, triangle.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(points...:table, [, color:number]):table -- Create a new polygon, composed of many points.")
-	public static MethodResult addPolygon(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(points...:table, [, color:number]):table -- Create a new polygon, composed of many points.")
+	public static MethodResult addPolygon(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Polygon polygon = new Polygon(canvas.newObjectId(), group.id());
@@ -147,10 +147,10 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(polygon, polygon.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(points...:table, [, color:number][, thickness:number]):table -- Create a new line loop, composed of many points.")
-	public static MethodResult addLines(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(points...:table, [, color:number][, thickness:number]):table -- Create a new line loop, composed of many points.")
+	public static MethodResult addLines(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		LineLoop lines = new LineLoop(canvas.newObjectId(), group.id());
@@ -169,8 +169,8 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(lines, lines.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(position:table, id:string[, damage:number][, scale:number]):table -- Create a item icon.")
-	public static MethodResult addItem(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, id:string[, damage:number][, scale:number]):table -- Create a item icon.")
+	public static MethodResult addItem(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D position = getPoint2D(args, 0);
 		ResourceLocation name = new ResourceLocation(getString(args, 1));
 		int damage = optInt(args, 2, 0);
@@ -179,8 +179,8 @@ public class MethodsCanvas2D {
 		Item item = Item.REGISTRY.getObject(name);
 		if (item == null) throw new LuaException("Unknown item '" + name + "'");
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Item2D model = new Item2D(canvas.newObjectId(), group.id());
@@ -193,12 +193,12 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(model, model.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = IObjectGroup.class, doc = "function(position:table):table -- Create a new object group.")
-	public static MethodResult addGroup(IUnbakedContext<IObjectGroup> context, Object[] args) throws LuaException {
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table):table -- Create a new object group.")
+	public static MethodResult addGroup(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		Point2D position = getPoint2D(args, 0);
 
-		IContext<IObjectGroup> baked = context.safeBake();
-		IObjectGroup group = baked.getTarget();
+		IContext<Group2D> baked = context.safeBake();
+		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		ObjectGroup2D newGroup = new ObjectGroup2D(canvas.newObjectId(), group.id());

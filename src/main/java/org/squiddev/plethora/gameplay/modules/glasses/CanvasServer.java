@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 
 import it.unimi.dsi.fastutil.ints.*;
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.ConstantReference;
 
@@ -12,7 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class CanvasServer extends ConstantReference<CanvasServer> implements IObjectGroup {
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
+
+public final class CanvasServer extends ConstantReference<CanvasServer> implements IAttachable {
+
 	private final int canvasId;
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;
@@ -20,24 +24,30 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 	private final Int2ObjectMap<BaseObject> objects = new Int2ObjectOpenHashMap<>();
 	private final Int2ObjectMap<IntSet> childrenOf = new Int2ObjectOpenHashMap<>();
 
-	private AtomicInteger lastId = new AtomicInteger(0);
-
 	private final IntSet removed = new IntOpenHashSet();
 
-	public CanvasServer(int canvasId, @Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
-		this.canvasId = canvasId;
+	private AtomicInteger lastId = new AtomicInteger(ID_2D);
+
+	private final ObjectGroup.Group2D group2D = () -> ID_2D;
+
+	public CanvasServer(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
+		this.canvasId = CanvasHandler.nextId();
 		this.access = access;
 		this.player = player;
 
-		this.childrenOf.put(0, new IntOpenHashSet());
+		this.childrenOf.put(ID_2D, new IntOpenHashSet());
 	}
 
+	@Override
 	public void attach() {
 		access.getData().setInteger("id", canvasId);
 		access.markDataDirty();
+		CanvasHandler.addServer(this);
 	}
 
+	@Override
 	public void detach() {
+		CanvasHandler.removeServer(this);
 		access.getData().removeTag("id");
 		access.markDataDirty();
 	}
@@ -46,18 +56,22 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		return lastId.incrementAndGet();
 	}
 
+	public ObjectGroup.Group2D canvas2d() {
+		return group2D;
+	}
+
 	@Nonnull
-	public synchronized MessageCanvasAdd getAddMessage() {
+	synchronized MessageCanvasAdd getAddMessage() {
 		return new MessageCanvasAdd(canvasId, objects.values().toArray(new BaseObject[objects.size()]));
 	}
 
 	@Nonnull
-	public MessageCanvasRemove getRemoveMessage() {
+	MessageCanvasRemove getRemoveMessage() {
 		return new MessageCanvasRemove(canvasId);
 	}
 
 	@Nullable
-	public synchronized MessageCanvasUpdate getUpdateMessage() {
+	synchronized MessageCanvasUpdate getUpdateMessage() {
 		List<BaseObject> changed = null;
 		for (BaseObject object : objects.values()) {
 			if (object.pollDirty()) {
@@ -78,11 +92,6 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		return message;
 	}
 
-	@Override
-	public int id() {
-		return 0;
-	}
-
 	public synchronized void add(@Nonnull BaseObject object) {
 		IntSet parent = childrenOf.get(object.parent());
 		if (parent == null) throw new IllegalArgumentException("No such parent");
@@ -92,7 +101,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		}
 
 		parent.add(object.id());
-		if (object instanceof IObjectGroup) childrenOf.put(object.id(), new IntOpenHashSet());
+		if (object instanceof ObjectGroup) childrenOf.put(object.id(), new IntOpenHashSet());
 	}
 
 	public synchronized void remove(BaseObject object) {
@@ -105,7 +114,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		return objects.get(id);
 	}
 
-	public synchronized void clear(IObjectGroup object) {
+	public synchronized void clear(ObjectGroup object) {
 		IntSet children = this.childrenOf.get(object.id());
 		if (children == null) throw new IllegalStateException("Object has no children");
 

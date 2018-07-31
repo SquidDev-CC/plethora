@@ -24,7 +24,7 @@ public class CanvasClient {
 		if (objects.put(object.id(), object) == null) {
 			// If this is a new instance then setup the children
 			parent.add(object.id());
-			if (object instanceof IObjectGroup) childrenOf.put(object.id(), new IntAVLTreeSet());
+			if (object instanceof ObjectGroup) childrenOf.put(object.id(), new IntAVLTreeSet());
 		}
 	}
 

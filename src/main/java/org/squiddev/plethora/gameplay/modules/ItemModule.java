@@ -345,7 +345,7 @@ public final class ItemModule extends ItemBase {
 				EntityPlayerMP ownerEntity = owner instanceof EntityPlayerMP ? (EntityPlayerMP) owner : null;
 
 				if (ownerEntity != null && !(ownerEntity instanceof FakePlayer)) {
-					GlassesInstance glasses = new GlassesInstance(access, ownerEntity);
+					CanvasServer glasses = new CanvasServer(access, ownerEntity);
 					builder.addContext(moduleKey, glasses);
 					builder.addAttachable(glasses);
 				}
