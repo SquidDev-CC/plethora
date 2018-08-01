@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.renderer.GlStateManager;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
@@ -50,11 +49,7 @@ public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Po
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(position.x, position.y, 0);
 
-		for (IntIterator iterator = children.iterator(); iterator.hasNext(); ) {
-			int id = iterator.nextInt();
-			BaseObject object = canvas.getObject(id);
-			if (object != null) object.draw(canvas);
-		}
+		canvas.drawChildren(children.iterator());
 
 		GlStateManager.popMatrix();
 	}

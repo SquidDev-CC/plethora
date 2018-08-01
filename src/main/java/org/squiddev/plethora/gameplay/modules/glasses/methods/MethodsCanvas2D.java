@@ -32,6 +32,7 @@ public class MethodsCanvas2D {
 		IContext<Group2D> baked = context.safeBake();
 		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
+
 		Rectangle rectangle = new Rectangle(canvas.newObjectId(), group.id());
 		rectangle.setPosition(new Vec2d(x, y));
 		rectangle.setSize(width, height);

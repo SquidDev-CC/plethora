@@ -1,15 +1,21 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
+import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
+
+import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
 	private Vec2d position = Vec2d.ZERO;
@@ -81,5 +87,18 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 		GL11.glVertex3f(x + width, y + height, 0);
 		GL11.glVertex3f(x + width, y + 0, 0);
 		GL11.glEnd();
+	}
+
+	@BasicMethod.Inject(value = Rectangle.class, doc = "function():number, number -- Get the size of this rectangle.")
+	public static MethodResult getSize(IUnbakedContext<Rectangle> context, Object[] arguments) throws LuaException {
+		Rectangle rect = context.safeBake().getTarget();
+		return MethodResult.result(rect.getWidth(), rect.getHeight());
+	}
+
+	@BasicMethod.Inject(value = Rectangle.class, doc = "function(width:number, height:number) -- Set the size of this rectangle.")
+	public static MethodResult setSize(IUnbakedContext<Rectangle> context, Object[] arguments) throws LuaException {
+		Rectangle rect = context.safeBake().getTarget();
+		rect.setSize(getFloat(arguments, 0), getFloat(arguments, 1));
+		return MethodResult.empty();
 	}
 }

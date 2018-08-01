@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
+import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
@@ -17,6 +21,9 @@ import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 
 public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	private float scale;
@@ -118,5 +125,28 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 			.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().player, stack, 0, 0);
 
 		GlStateManager.popMatrix();
+	}
+
+	@BasicMethod.Inject(value = Item2D.class, doc = "function(): string, number -- Get the item and damage value for this object.")
+	public static MethodResult getItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
+		Item2D object = context.safeBake().getTarget();
+
+		return MethodResult.result(object.getItem().getRegistryName().toString(), object.getDamage());
+	}
+
+	@BasicMethod.Inject(value = Item2D.class, doc = "function(item:string[, damage:number]) -- Set the item and damage value for this object.")
+	public static MethodResult setItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
+		Item2D object = context.safeBake().getTarget();
+
+		ResourceLocation name = new ResourceLocation(getString(args, 0));
+		int damage = optInt(args, 1, 0);
+
+		Item item = Item.REGISTRY.getObject(name);
+		if (item == null) throw new LuaException("Unknown item '" + name + "'");
+
+		object.setItem(item);
+		object.setDamage(damage);
+
+		return MethodResult.empty();
 	}
 }

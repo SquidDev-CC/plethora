@@ -1,7 +1,11 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
 import it.unimi.dsi.fastutil.ints.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.utils.DebugLogger;
+
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
 
 public class CanvasClient {
 	public final int id;
@@ -11,7 +15,7 @@ public class CanvasClient {
 
 	public CanvasClient(int id) {
 		this.id = id;
-		this.childrenOf.put(0, new IntAVLTreeSet());
+		this.childrenOf.put(ID_2D, new IntAVLTreeSet());
 	}
 
 	public void updateObject(BaseObject object) {
@@ -45,5 +49,14 @@ public class CanvasClient {
 
 	public IntSet getChildren(int id) {
 		return childrenOf.get(id);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void drawChildren(IntIterator children) {
+		while (children.hasNext()) {
+			int id = children.nextInt();
+			BaseObject object = getObject(id);
+			if (object != null) object.draw(this);
+		}
 	}
 }
