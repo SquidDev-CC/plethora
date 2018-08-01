@@ -143,7 +143,6 @@ public abstract class BaseObject {
 		GlStateManager.disableAlpha();
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();
-		GlStateManager.disableCull();
 	}
 
 	public interface Factory {

@@ -150,7 +150,6 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		GlStateManager.enableBlend();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableLighting();
-		GlStateManager.disableCull();
 
 		FontRenderer fontrenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 

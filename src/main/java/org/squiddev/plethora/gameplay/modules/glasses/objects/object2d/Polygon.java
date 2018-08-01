@@ -2,9 +2,12 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
@@ -13,6 +16,8 @@ import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
 public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
 	protected final ArrayList<Vec2d> points = new ArrayList<Vec2d>();
@@ -93,18 +98,25 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 		if (points.size() < 3) return;
 
 		setupFlat();
+		GlStateManager.disableCull();
+		GlStateManager.color(1, 1, 1);
 
 		int size = points.size();
 		Vec2d a = points.get(0);
 
-		GL11.glBegin(GL11.GL_TRIANGLES);
-		setupColour();
+		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();
+
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBuffer();
+		buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+
 		for (int i = 1; i < size - 1; i++) {
 			Vec2d b = points.get(i), c = points.get(i + 1);
-			GL11.glVertex3d(a.x, a.y, 0);
-			GL11.glVertex3d(b.x, b.y, 0);
-			GL11.glVertex3d(c.x, c.y, 0);
+			buffer.pos(a.x, a.y, 0).color(red, green, blue, alpha).endVertex();
+			buffer.pos(b.x, b.y, 0).color(red, green, blue, alpha).endVertex();
+			buffer.pos(c.x, c.y, 0).color(red, green, blue, alpha).endVertex();
 		}
-		GL11.glEnd();
+
+		tessellator.draw();
 	}
 }
