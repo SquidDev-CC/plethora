@@ -4,12 +4,16 @@ import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
+
+import javax.annotation.Nonnull;
 
 public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Positionable2D {
 	private Vec2d position = Vec2d.ZERO;
@@ -18,13 +22,14 @@ public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Po
 		super(id, parent, ObjectRegistry.GROUP_2D);
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Vec2d position) {
+	public void setPosition(@Nonnull Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
@@ -42,6 +47,7 @@ public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Po
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		IntSet children = canvas.getChildren(id());
 		if (children == null) return;

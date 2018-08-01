@@ -15,6 +15,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
@@ -26,13 +28,14 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 		super(id, parent, ObjectRegistry.RECTANGLE_2D);
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Vec2d position) {
+	public void setPosition(@Nonnull Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();

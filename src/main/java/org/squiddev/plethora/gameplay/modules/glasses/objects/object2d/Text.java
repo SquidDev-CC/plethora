@@ -48,13 +48,14 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		super(id, parent, ObjectRegistry.TEXT_2D);
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Vec2d position) {
+	public void setPosition(@Nonnull Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
@@ -146,7 +147,10 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		if (alpha == 0) return;
 		if ((alpha & 0xFC) == 0) colour |= 0x4;
 
+		GlStateManager.enableBlend();
 		GlStateManager.enableTexture2D();
+		GlStateManager.disableLighting();
+		GlStateManager.disableCull();
 
 		FontRenderer fontrenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 

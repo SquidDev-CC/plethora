@@ -12,6 +12,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 public class Triangle extends ColourableObject implements MultiPoint2D {
 	private Vec2d[] points = new Vec2d[3];
 
@@ -20,13 +22,14 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 		for (int i = 0; i < points.length; i++) points[i] = Vec2d.ZERO;
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPoint(int idx) {
 		return points[idx];
 	}
 
 	@Override
-	public void setVertex(int idx, Vec2d point) {
+	public void setVertex(int idx, @Nonnull Vec2d point) {
 		if (!Objects.equal(points[idx], point)) {
 			points[idx] = point;
 			setDirty();
@@ -53,7 +56,7 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
-		GlStateManager.disableCull();
+		setupFlat();
 
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		setupColour();

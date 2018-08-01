@@ -11,6 +11,7 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
@@ -24,13 +25,14 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 		super(id, parent, ObjectRegistry.POLYGON_2D);
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPoint(int idx) {
 		return points.get(idx);
 	}
 
 	@Override
-	public void setVertex(int idx, Vec2d point) {
+	public void setVertex(int idx, @Nonnull Vec2d point) {
 		if (!Objects.equal(points.get(idx), point)) {
 			points.set(idx, point);
 			setDirty();
@@ -49,7 +51,7 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 	}
 
 	@Override
-	public void addPoint(int idx, Vec2d point) {
+	public void addPoint(int idx, @Nonnull Vec2d point) {
 		if (idx == points.size()) {
 			points.add(point);
 		} else {

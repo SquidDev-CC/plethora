@@ -6,15 +6,18 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 /**
  * An object which can be positioned in 2D.
  */
 public interface Positionable2D {
+	@Nonnull
 	Vec2d getPosition();
 
-	void setPosition(Vec2d position);
+	void setPosition(@Nonnull Vec2d position);
 
 	@BasicMethod.Inject(value = Positionable2D.class, doc = "function():number, number -- Get the position for this object.")
 	static MethodResult getPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {

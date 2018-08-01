@@ -12,6 +12,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	private Vec2d start = Vec2d.ZERO;
 	private Vec2d end = Vec2d.ZERO;
@@ -34,13 +36,14 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPoint(int idx) {
 		return idx == 0 ? start : end;
 	}
 
 	@Override
-	public void setVertex(int idx, Vec2d point) {
+	public void setVertex(int idx, @Nonnull Vec2d point) {
 		if (idx == 0) {
 			if (!Objects.equal(start, point)) {
 				start = point;

@@ -49,13 +49,14 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Vec2d position) {
+	public void setPosition(@Nonnull Vec2d position) {
 		if (!this.position.equals(position)) {
 			this.position = position;
 			setDirty();

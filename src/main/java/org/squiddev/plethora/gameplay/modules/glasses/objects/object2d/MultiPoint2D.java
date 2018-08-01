@@ -6,6 +6,8 @@ import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
@@ -14,9 +16,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
  * A polygon for which you can set multiple points.
  */
 public interface MultiPoint2D {
+	@Nonnull
 	Vec2d getPoint(int idx);
 
-	void setVertex(int idx, Vec2d point);
+	void setVertex(int idx, @Nonnull Vec2d point);
 
 	int getVertices();
 

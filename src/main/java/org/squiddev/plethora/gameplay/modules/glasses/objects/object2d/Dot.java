@@ -12,6 +12,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
+import javax.annotation.Nonnull;
+
 public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	private Vec2d position = Vec2d.ZERO;
 	private float scale = 1;
@@ -20,13 +22,14 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 		super(id, parent, ObjectRegistry.DOT_2D);
 	}
 
+	@Nonnull
 	@Override
 	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Vec2d position) {
+	public void setPosition(@Nonnull Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
