@@ -2,9 +2,12 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
@@ -13,6 +16,8 @@ import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
+
+import static org.lwjgl.opengl.GL11.GL_LINES;
 
 public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	private Vec2d start = Vec2d.ZERO;
@@ -82,14 +87,21 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
-		GL11.glLineWidth(thickness);
+		GlStateManager.disableCull();
+		GlStateManager.color(1, 1, 1);
+		GlStateManager.glLineWidth(thickness);
 
-		GL11.glBegin(GL11.GL_LINES);
-		setupColour();
-		GL11.glVertex3f((float) start.x, (float) start.y, 0);
-		GL11.glVertex3f((float) end.x, (float) end.y, 0);
-		GL11.glEnd();
+		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();
 
-		GL11.glLineWidth(1);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBuffer();
+		buffer.begin(GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+
+		buffer.pos((float) start.x, (float) start.y, 0).color(red, green, blue, alpha).endVertex();
+		buffer.pos((float) end.x, (float) end.y, 0).color(red, green, blue, alpha).endVertex();
+
+		tessellator.draw();
+
+		GlStateManager.glLineWidth(1);
 	}
 }
