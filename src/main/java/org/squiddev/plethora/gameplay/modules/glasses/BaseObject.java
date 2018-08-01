@@ -98,7 +98,7 @@ public abstract class BaseObject {
 	 * @param canvas The canvas context we are drawing within
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract void draw2D(CanvasClient canvas);
+	public abstract void draw(CanvasClient canvas);
 
 	/**
 	 * Get a reference to this object
@@ -144,5 +144,9 @@ public abstract class BaseObject {
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();
 		GlStateManager.disableCull();
+	}
+
+	public interface Factory {
+		BaseObject create(int id, int parent);
 	}
 }

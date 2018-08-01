@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
@@ -13,6 +12,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
+import org.squiddev.plethora.utils.ByteBufUtils;
+import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 
 	private static final Pattern SPLIT_PATTERN = Pattern.compile("\r\n|\n|\r");
 
-	private Point2D position = new Point2D();
+	private Vec2d position = Vec2d.ZERO;
 	private float size = 1;
 	private short lineHeight = 9;
 	private boolean dropShadow = false;
@@ -48,12 +49,12 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	}
 
 	@Override
-	public Point2D getPosition() {
+	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Point2D position) {
+	public void setPosition(Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
@@ -116,7 +117,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	@Override
 	public void writeInitial(ByteBuf buf) {
 		super.writeInitial(buf);
-		position.write(buf);
+		ByteBufUtils.writeVec2d(buf, position);
 		buf.writeFloat(size);
 		buf.writeBoolean(dropShadow);
 		buf.writeShort(lineHeight);
@@ -126,7 +127,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		super.readInitial(buf);
-		position.read(buf);
+		position = ByteBufUtils.readVec2d(buf);
 		size = buf.readFloat();
 		dropShadow = buf.readBoolean();
 		lineHeight = buf.readShort();
@@ -136,7 +137,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		int colour = getColour();
 
 		// If the alpha channel doesn't match a 0xFC, then the font renderer

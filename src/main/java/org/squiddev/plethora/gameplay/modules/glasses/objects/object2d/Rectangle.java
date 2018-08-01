@@ -8,9 +8,11 @@ import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
+import org.squiddev.plethora.utils.ByteBufUtils;
+import org.squiddev.plethora.utils.Vec2d;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
-	private Point2D position = new Point2D();
+	private Vec2d position = Vec2d.ZERO;
 	private float width;
 	private float height;
 
@@ -19,12 +21,12 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	}
 
 	@Override
-	public Point2D getPosition() {
+	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Point2D position) {
+	public void setPosition(Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
@@ -50,7 +52,7 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	@Override
 	public void writeInitial(ByteBuf buf) {
 		super.writeInitial(buf);
-		position.write(buf);
+		ByteBufUtils.writeVec2d(buf, position);
 		buf.writeFloat(width);
 		buf.writeFloat(height);
 	}
@@ -58,17 +60,17 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	@Override
 	public void readInitial(ByteBuf buf) {
 		super.readInitial(buf);
-		position.read(buf);
+		position = ByteBufUtils.readVec2d(buf);
 		width = buf.readFloat();
 		height = buf.readFloat();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		setupFlat();
 
-		float x = position.x, y = position.y;
+		float x = (float) position.x, y = (float) position.y;
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		setupColour();
 		GL11.glVertex3f(x, y, 0);

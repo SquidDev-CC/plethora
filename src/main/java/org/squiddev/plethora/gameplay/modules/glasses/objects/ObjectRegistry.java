@@ -16,32 +16,24 @@ public final class ObjectRegistry {
 	public static final byte ITEM_2D = 7;
 	public static final byte GROUP_2D = 8;
 
+	private static final BaseObject.Factory[] FACTORIES = {
+		Rectangle::new,
+		Line::new,
+		Dot::new,
+		Text::new,
+		Triangle::new,
+		Polygon::new,
+		LineLoop::new,
+		Item2D::new,
+		ObjectGroup2D::new
+	};
+
 	private ObjectRegistry() {
 	}
 
 	public static BaseObject create(int id, int parent, byte type) {
-		switch (type) {
-			case RECTANGLE_2D:
-				return new Rectangle(id, parent);
-			case LINE_2D:
-				return new Line(id, parent);
-			case DOT_2D:
-				return new Dot(id, parent);
-			case TEXT_2D:
-				return new Text(id, parent);
-			case TRIANGLE_2D:
-				return new Triangle(id, parent);
-			case POLYGON_2D:
-				return new Polygon(id, parent);
-			case LINE_LOOP_2D:
-				return new LineLoop(id, parent);
-			case ITEM_2D:
-				return new Item2D(id, parent);
-			case GROUP_2D:
-				return new ObjectGroup2D(id, parent);
-			default:
-				throw new IllegalStateException("Unknown type " + type);
-		}
+		if (type < 0 || type >= FACTORIES.length) throw new IllegalStateException("Unknown type " + type);
+		return FACTORIES[type].create(id, parent);
 	}
 
 	public static BaseObject read(ByteBuf buf) {

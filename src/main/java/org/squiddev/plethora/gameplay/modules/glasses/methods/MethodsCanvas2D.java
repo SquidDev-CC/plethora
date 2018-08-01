@@ -11,12 +11,13 @@ import org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup.Group2D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
+import org.squiddev.plethora.utils.Vec2d;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optFloat;
-import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.getPoint2D;
+import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.getVec2d;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
 public class MethodsCanvas2D {
@@ -32,7 +33,7 @@ public class MethodsCanvas2D {
 		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 		Rectangle rectangle = new Rectangle(canvas.newObjectId(), group.id());
-		rectangle.setPosition(new Point2D(x, y));
+		rectangle.setPosition(new Vec2d(x, y));
 		rectangle.setSize(width, height);
 		rectangle.setColour(colour);
 
@@ -43,8 +44,8 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(start:table, end:table[, color:number][, thickness:number]):table -- Create a new line.")
 	public static MethodResult addLine(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D start = getPoint2D(args, 0);
-		Point2D end = getPoint2D(args, 1);
+		Vec2d start = getVec2d(args, 0);
+		Vec2d end = getVec2d(args, 1);
 		int colour = optInt(args, 2, DEFAULT_COLOUR);
 		float thickness = optFloat(args, 3, 1);
 
@@ -65,7 +66,7 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.")
 	public static MethodResult addDot(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D position = getPoint2D(args, 0);
+		Vec2d position = getVec2d(args, 0);
 		int colour = optInt(args, 1, DEFAULT_COLOUR);
 		float size = optFloat(args, 2, 1);
 
@@ -84,7 +85,7 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, text:string, [, color:number][, size:number]):table -- Create a new text object.")
 	public static MethodResult addText(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D point = getPoint2D(args, 0);
+		Vec2d point = getVec2d(args, 0);
 		String contents = getString(args, 1);
 		int colour = optInt(args, 2, DEFAULT_COLOUR);
 		float size = optFloat(args, 3, 1);
@@ -106,9 +107,9 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(p1:table, p2:table, p3:table, [, color:number]):table -- Create a new triangle, composed of three points.")
 	public static MethodResult addTriangle(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D a = getPoint2D(args, 0);
-		Point2D b = getPoint2D(args, 1);
-		Point2D c = getPoint2D(args, 2);
+		Vec2d a = getVec2d(args, 0);
+		Vec2d b = getVec2d(args, 1);
+		Vec2d c = getVec2d(args, 2);
 
 		int colour = optInt(args, 3, DEFAULT_COLOUR);
 
@@ -139,7 +140,7 @@ public class MethodsCanvas2D {
 			if (i == args.length - 1 && arg instanceof Number) {
 				polygon.setColour(((Number) arg).intValue());
 			} else {
-				polygon.addPoint(i, getPoint2D(args, i));
+				polygon.addPoint(i, getVec2d(args, i));
 			}
 		}
 
@@ -161,7 +162,7 @@ public class MethodsCanvas2D {
 			} else if (i == args.length - 1 && arg instanceof Number) {
 				lines.setScale(((Number) arg).floatValue());
 			} else {
-				lines.addPoint(i, getPoint2D(args, i));
+				lines.addPoint(i, getVec2d(args, i));
 			}
 		}
 
@@ -171,7 +172,7 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table, id:string[, damage:number][, scale:number]):table -- Create a item icon.")
 	public static MethodResult addItem(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D position = getPoint2D(args, 0);
+		Vec2d position = getVec2d(args, 0);
 		ResourceLocation name = new ResourceLocation(getString(args, 1));
 		int damage = optInt(args, 2, 0);
 		float scale = optFloat(args, 3, 1);
@@ -195,7 +196,7 @@ public class MethodsCanvas2D {
 
 	@BasicMethod.Inject(value = Group2D.class, doc = "function(position:table):table -- Create a new object group.")
 	public static MethodResult addGroup(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
-		Point2D position = getPoint2D(args, 0);
+		Vec2d position = getVec2d(args, 0);
 
 		IContext<Group2D> baked = context.safeBake();
 		Group2D group = baked.getTarget();

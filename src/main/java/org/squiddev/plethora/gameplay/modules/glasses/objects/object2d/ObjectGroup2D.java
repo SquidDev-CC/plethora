@@ -9,21 +9,23 @@ import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
+import org.squiddev.plethora.utils.ByteBufUtils;
+import org.squiddev.plethora.utils.Vec2d;
 
 public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Positionable2D {
-	private Point2D position = new Point2D();
+	private Vec2d position = Vec2d.ZERO;
 
 	public ObjectGroup2D(int id, int parent) {
 		super(id, parent, ObjectRegistry.GROUP_2D);
 	}
 
 	@Override
-	public Point2D getPosition() {
+	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Point2D position) {
+	public void setPosition(Vec2d position) {
 		if (!Objects.equal(this.position, position)) {
 			this.position = position;
 			setDirty();
@@ -32,16 +34,16 @@ public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Po
 
 	@Override
 	public void writeInitial(ByteBuf buf) {
-		position.write(buf);
+		ByteBufUtils.writeVec2d(buf, position);
 	}
 
 	@Override
 	public void readInitial(ByteBuf buf) {
-		position.read(buf);
+		position = ByteBufUtils.readVec2d(buf);
 	}
 
 	@Override
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		IntSet children = canvas.getChildren(id());
 		if (children == null) return;
 
@@ -51,7 +53,7 @@ public class ObjectGroup2D extends BaseObject implements ObjectGroup.Group2D, Po
 		for (IntIterator iterator = children.iterator(); iterator.hasNext(); ) {
 			int id = iterator.nextInt();
 			BaseObject object = canvas.getObject(id);
-			if (object != null) object.draw2D(canvas);
+			if (object != null) object.draw(canvas);
 		}
 
 		GlStateManager.popMatrix();

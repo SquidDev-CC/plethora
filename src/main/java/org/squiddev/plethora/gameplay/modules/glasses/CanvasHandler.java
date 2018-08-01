@@ -141,7 +141,7 @@ public class CanvasHandler {
 			for (IntIterator iterator = canvas.getChildren(ID_2D).iterator(); iterator.hasNext(); ) {
 				int id = iterator.nextInt();
 				BaseObject object = canvas.getObject(id);
-				if (object != null) object.draw2D(canvas);
+				if (object != null) object.draw(canvas);
 			}
 		}
 

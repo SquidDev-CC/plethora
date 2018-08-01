@@ -7,19 +7,20 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
+import org.squiddev.plethora.utils.ByteBufUtils;
+import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 
 public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	private float scale;
-	private Point2D position = new Point2D();
+	private Vec2d position = Vec2d.ZERO;
 
 	private int damage;
 	private Item item;
@@ -42,12 +43,12 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	}
 
 	@Override
-	public Point2D getPosition() {
+	public Vec2d getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(Point2D position) {
+	public void setPosition(Vec2d position) {
 		if (!this.position.equals(position)) {
 			this.position = position;
 			setDirty();
@@ -78,7 +79,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 
 	@Override
 	public void writeInitial(ByteBuf buf) {
-		position.write(buf);
+		ByteBufUtils.writeVec2d(buf, position);
 		buf.writeFloat(scale);
 		ByteBufUtils.writeUTF8String(buf, item.getRegistryName().toString());
 		buf.writeInt(damage);
@@ -86,7 +87,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 
 	@Override
 	public void readInitial(ByteBuf buf) {
-		position.read(buf);
+		position = ByteBufUtils.readVec2d(buf);
 		scale = buf.readFloat();
 
 		ResourceLocation name = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
@@ -97,7 +98,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		GlStateManager.pushMatrix();
 
 		GlStateManager.translate(position.x, position.y, 0);

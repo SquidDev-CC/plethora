@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
+import org.squiddev.plethora.utils.Vec2d;
 
 public class LineLoop extends Polygon implements Scalable {
 	private float scale = 1;
@@ -42,7 +43,7 @@ public class LineLoop extends Polygon implements Scalable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		if (points.size() < 2) return;
 
 		setupFlat();
@@ -50,7 +51,7 @@ public class LineLoop extends Polygon implements Scalable {
 
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		setupColour();
-		for (Point2D point : points) GL11.glVertex3f(point.x, point.y, 0);
+		for (Vec2d point : points) GL11.glVertex3d(point.x, point.y, 0);
 		GL11.glEnd();
 
 		GL11.glLineWidth(1);

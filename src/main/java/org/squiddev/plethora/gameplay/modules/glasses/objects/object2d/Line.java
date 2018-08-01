@@ -9,10 +9,12 @@ import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
+import org.squiddev.plethora.utils.ByteBufUtils;
+import org.squiddev.plethora.utils.Vec2d;
 
 public class Line extends ColourableObject implements Scalable, MultiPoint2D {
-	private Point2D start = new Point2D();
-	private Point2D end = new Point2D();
+	private Vec2d start = Vec2d.ZERO;
+	private Vec2d end = Vec2d.ZERO;
 	private float thickness = 1;
 
 	public Line(int id, int parent) {
@@ -33,12 +35,12 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	}
 
 	@Override
-	public Point2D getPoint(int idx) {
+	public Vec2d getPoint(int idx) {
 		return idx == 0 ? start : end;
 	}
 
 	@Override
-	public void setVertex(int idx, Point2D point) {
+	public void setVertex(int idx, Vec2d point) {
 		if (idx == 0) {
 			if (!Objects.equal(start, point)) {
 				start = point;
@@ -60,29 +62,29 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	@Override
 	public void writeInitial(ByteBuf buf) {
 		super.writeInitial(buf);
-		start.write(buf);
-		end.write(buf);
+		ByteBufUtils.writeVec2d(buf, start);
+		ByteBufUtils.writeVec2d(buf, end);
 		buf.writeFloat(thickness);
 	}
 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		super.readInitial(buf);
-		start.read(buf);
-		end.read(buf);
+		start = ByteBufUtils.readVec2d(buf);
+		end = ByteBufUtils.readVec2d(buf);
 		thickness = buf.readFloat();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw2D(CanvasClient canvas) {
+	public void draw(CanvasClient canvas) {
 		setupFlat();
 		GL11.glLineWidth(thickness);
 
 		GL11.glBegin(GL11.GL_LINES);
 		setupColour();
-		GL11.glVertex3f(start.x, start.y, 0);
-		GL11.glVertex3f(end.x, end.y, 0);
+		GL11.glVertex3f((float) start.x, (float) start.y, 0);
+		GL11.glVertex3f((float) end.x, (float) end.y, 0);
 		GL11.glEnd();
 
 		GL11.glLineWidth(1);

@@ -7,6 +7,7 @@ import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
+import org.squiddev.plethora.utils.Vec2d;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -16,14 +17,14 @@ public class Methods2D {
 	@BasicMethod.Inject(value = Positionable2D.class, doc = "function():number, number -- Get the position for this object.")
 	public static MethodResult getPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
 		Positionable2D object = context.safeBake().getTarget();
-		Point2D pos = object.getPosition();
+		Vec2d pos = object.getPosition();
 		return MethodResult.result(pos.x, pos.y);
 	}
 
 	@BasicMethod.Inject(value = Positionable2D.class, doc = "function(x:number, y:number) -- Set the position for this object.")
 	public static MethodResult setPosition(IUnbakedContext<Positionable2D> context, Object[] args) throws LuaException {
 		Positionable2D object = context.safeBake().getTarget();
-		object.setPosition(new Point2D(getFloat(args, 0), getFloat(args, 1)));
+		object.setPosition(new Vec2d(getFloat(args, 0), getFloat(args, 1)));
 		return MethodResult.empty();
 	}
 
@@ -47,7 +48,7 @@ public class Methods2D {
 		int idx = getInt(args, 0);
 		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
-		Point2D point = object.getPoint(idx - 1);
+		Vec2d point = object.getPoint(idx - 1);
 		return MethodResult.result(point.x, point.y);
 	}
 
@@ -58,7 +59,7 @@ public class Methods2D {
 		int idx = getInt(args, 0);
 		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
-		object.setVertex(idx - 1, new Point2D(getFloat(args, 1), getFloat(args, 2)));
+		object.setVertex(idx - 1, new Vec2d(getFloat(args, 1), getFloat(args, 2)));
 		return MethodResult.empty();
 	}
 
@@ -103,7 +104,7 @@ public class Methods2D {
 			y = getFloat(args, 1);
 		}
 
-		object.addPoint(idx - 1, new Point2D(x, y));
+		object.addPoint(idx - 1, new Vec2d(x, y));
 		return MethodResult.empty();
 	}
 
