@@ -19,7 +19,8 @@ public interface Colourable {
 
 	@BasicMethod.Inject(value = Colourable.class, doc = "function():int -- Get the colour for this object.")
 	static MethodResult getColour(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		return MethodResult.result(context.safeBake().getTarget().getColour());
+		int colour = context.safeBake().getTarget().getColour();
+		return MethodResult.result(colour & 0xffffffffL);
 	}
 
 	@BasicMethod.Inject(value = Colourable.class, doc = "function():int -- Get the color for this object.")
