@@ -25,9 +25,9 @@ public interface Scalable {
 	static MethodResult setScale(IUnbakedContext<Scalable> context, Object[] args) throws LuaException {
 		Scalable object = context.safeBake().getTarget();
 
-		float thickness = getFloat(args, 0);
-		if (thickness <= 0) throw new LuaException("Scale must be > 0");
-		object.setScale(thickness);
+		float scale = getFloat(args, 0);
+		if (scale <= 0) throw new LuaException("Scale must be > 0");
+		object.setScale(scale);
 		return MethodResult.empty();
 	}
 }

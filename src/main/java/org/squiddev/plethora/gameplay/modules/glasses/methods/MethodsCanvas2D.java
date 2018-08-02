@@ -136,36 +136,41 @@ public class MethodsCanvas2D {
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		Polygon polygon = new Polygon(canvas.newObjectId(), group.id());
-		for (int i = 0; i < args.length; i++) {
+		int i;
+		for (i = 0; i < args.length; i++) {
 			Object arg = args[i];
-			if (i == args.length - 1 && arg instanceof Number) {
-				polygon.setColour(((Number) arg).intValue());
+			if (i >= args.length - 1 && arg instanceof Number) {
+				break;
 			} else {
 				polygon.addPoint(i, getVec2d(args, i));
 			}
 		}
 
+		polygon.setColour(optInt(args, i, DEFAULT_COLOUR));
+
 		canvas.add(polygon);
 		return MethodResult.result(baked.makeChild(polygon, polygon.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = Group2D.class, doc = "function(points...:table, [, color:number][, thickness:number]):table -- Create a new line loop, composed of many points.")
+	@BasicMethod.Inject(value = Group2D.class, doc = "function(points...:table, [, color:number[, thickness:number]]):table -- Create a new line loop, composed of many points.")
 	public static MethodResult addLines(IUnbakedContext<Group2D> context, Object[] args) throws LuaException {
 		IContext<Group2D> baked = context.safeBake();
 		Group2D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
 
 		LineLoop lines = new LineLoop(canvas.newObjectId(), group.id());
-		for (int i = 0; i < args.length; i++) {
+		int i;
+		for (i = 0; i < args.length; i++) {
 			Object arg = args[i];
-			if (i == args.length - 2 && arg instanceof Number) {
-				lines.setColour(((Number) arg).intValue());
-			} else if (i == args.length - 1 && arg instanceof Number) {
-				lines.setScale(((Number) arg).floatValue());
+			if (i >= args.length - 2 && arg instanceof Number) {
+				break;
 			} else {
 				lines.addPoint(i, getVec2d(args, i));
 			}
 		}
+
+		lines.setColour(optInt(args, i, DEFAULT_COLOUR));
+		lines.setScale(optFloat(args, i + 1, 1));
 
 		canvas.add(lines);
 		return MethodResult.result(baked.makeChild(lines, lines.reference(canvas)).getObject());

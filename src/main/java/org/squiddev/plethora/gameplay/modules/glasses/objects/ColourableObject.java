@@ -39,11 +39,6 @@ public abstract class ColourableObject extends BaseObject implements Colourable 
 		return (colour) & 0xFF;
 	}
 
-//	@SideOnly(Side.CLIENT)
-//	protected final void setupColour() {
-//		GlStateManager.color(((colour >> 24) & 0xFF) / 255.0f, ((colour >> 16) & 0xFF) / 255.0f, ((colour >> 8) & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f);
-//	}
-
 	@Override
 	public void writeInitial(ByteBuf buf) {
 		buf.writeInt(colour);

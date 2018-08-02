@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
@@ -72,6 +74,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		IntSet children = canvas.getChildren(id());
 		if (children == null) return;
