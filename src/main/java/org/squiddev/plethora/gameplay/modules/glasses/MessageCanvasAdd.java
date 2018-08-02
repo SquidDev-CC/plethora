@@ -6,6 +6,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 
+import java.util.Arrays;
+
 public class MessageCanvasAdd implements IMessage {
 	private int canvasId;
 	private BaseObject[] objects;
@@ -23,10 +25,13 @@ public class MessageCanvasAdd implements IMessage {
 		canvasId = buf.readInt();
 
 		int size = buf.readInt();
-		objects = new BaseObject[size];
+		BaseObject[] objects = this.objects = new BaseObject[size];
 		for (int i = 0; i < size; i++) {
 			objects[i] = ObjectRegistry.read(buf);
 		}
+
+		// We sort on ID in order to guarantee parents are loaded before their children
+		Arrays.sort(objects, BaseObject.SORTING_ORDER);
 	}
 
 	@Override

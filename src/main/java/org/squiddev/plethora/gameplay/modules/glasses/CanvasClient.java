@@ -23,7 +23,7 @@ public class CanvasClient {
 	public void updateObject(BaseObject object) {
 		IntSet parent = childrenOf.get(object.parent());
 		if (parent == null) {
-			DebugLogger.error("No children for " + object + " (" + object.parent() + ")");
+			DebugLogger.error("Trying to add " + object.id() + " to group " + object.parent() + " (" + object + ")");
 			return; // Should never happen but...
 		}
 

@@ -9,8 +9,11 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
+import java.util.Comparator;
 
 public abstract class BaseObject {
+	public static final Comparator<BaseObject> SORTING_ORDER = (a, b) -> Integer.compare(a.id, b.id);
+
 	private final int id;
 	private final byte type;
 	private final int parent;

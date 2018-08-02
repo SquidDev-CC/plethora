@@ -28,13 +28,16 @@ public class MessageCanvasUpdate implements IMessage {
 		canvasId = buf.readInt();
 
 		int changedLength = buf.readInt();
-		changed = new ArrayList<>(changedLength);
+		List<BaseObject> changed = this.changed = new ArrayList<>(changedLength);
 		for (int i = 0; i < changedLength; i++) {
 			changed.add(ObjectRegistry.read(buf));
 		}
 
+		// We sort on ID in order to guarantee parents are loaded before their children
+		changed.sort(BaseObject.SORTING_ORDER);
+
 		int removedLength = buf.readInt();
-		removed = new int[removedLength];
+		int[] removed = this.removed = new int[removedLength];
 		for (int i = 0; i < removedLength; i++) {
 			removed[i] = buf.readInt();
 		}
