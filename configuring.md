@@ -45,6 +45,8 @@ add a blacklisted module into a manipulator or neural interface, but it will not
 will it show up in `.listModules()` or `.hasModule()`. Note, this is only applied once the peripheral is reloaded (such
 as block updates).
 
+Some modules will also cease to function in item-form when disabled via this option, namely lasers and kinetic augments.
+
 ### Cost system
 These options control various aspects of the default cost handler. You may wish
 to [read about the cost system](cost-system.html) first. The options here are relatively self-explanatory:
@@ -57,6 +59,7 @@ to [read about the cost system](cost-system.html) first. The options here are re
    wait between calling methods.
  - `allowNegative` allows the handler to fall in to negative energies, falling back to a more traditional rate limiting
    system. This is explained in more detail in the cost system documentation.
+ - `awaitRegen` means mthods will wait for the system to get sufficient energy instead of throwing an error.
 
 ### Base method costs
 It is possible to set the cost that will be consumed every time a method is called. This can be used to restrict the
