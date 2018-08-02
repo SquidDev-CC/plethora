@@ -87,8 +87,6 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 		GlStateManager.glLineWidth(thickness);
 
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();

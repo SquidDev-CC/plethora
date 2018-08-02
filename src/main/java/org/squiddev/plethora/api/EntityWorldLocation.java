@@ -48,6 +48,6 @@ public class EntityWorldLocation extends ConstantReference<IWorldLocation> imple
 	@Nonnull
 	@Override
 	public IWorldLocation safeGet() throws LuaException {
-		return new WorldLocation(entity.getEntityWorld(), entity.getPositionVector());
+		return new WorldLocation(getWorld(), getLoc());
 	}
 }

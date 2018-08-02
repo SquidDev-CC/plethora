@@ -14,4 +14,16 @@ public interface ObjectGroup {
 	 */
 	interface Group2D extends ObjectGroup {
 	}
+
+	/**
+	 * A group for 3D objects
+	 */
+	interface Group3D extends ObjectGroup {
+	}
+
+	/**
+	 * The "origin" for all 3D objects
+	 */
+	interface Origin3D extends ObjectGroup {
+	}
 }

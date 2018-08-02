@@ -147,6 +147,8 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 		if (alpha == 0) return;
 		if ((alpha & 0xFC) == 0) colour |= 0x4;
 
+		// TODO: Try to have some common method on BasicObject
+		GlStateManager.disableCull();
 		GlStateManager.enableBlend();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableLighting();

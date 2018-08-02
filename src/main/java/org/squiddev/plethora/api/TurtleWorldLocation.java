@@ -49,6 +49,6 @@ public class TurtleWorldLocation extends ConstantReference<IWorldLocation> imple
 	@Nonnull
 	@Override
 	public IWorldLocation safeGet() throws LuaException {
-		return new WorldLocation(turtle.getWorld(), turtle.getPosition());
+		return new WorldLocation(getWorld(), getLoc());
 	}
 }

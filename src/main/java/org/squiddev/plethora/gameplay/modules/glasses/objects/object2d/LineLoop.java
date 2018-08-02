@@ -52,8 +52,6 @@ public class LineLoop extends Polygon implements Scalable {
 		if (points.size() < 2) return;
 
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 		GlStateManager.glLineWidth(scale);
 
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();

@@ -15,7 +15,7 @@ public abstract class BaseObject {
 	private final byte type;
 	private final int parent;
 
-	private boolean dirty = false;
+	private boolean dirty = true;
 
 	public BaseObject(int id, int parent, byte type) {
 		this.id = id;
@@ -93,7 +93,7 @@ public abstract class BaseObject {
 	}
 
 	/**
-	 * Draw this object in the 2D context.
+	 * Draw this object
 	 *
 	 * @param canvas The canvas context we are drawing within
 	 */
@@ -139,6 +139,8 @@ public abstract class BaseObject {
 	 */
 	@SideOnly(Side.CLIENT)
 	protected static void setupFlat() {
+		GlStateManager.color(1, 1, 1);
+		GlStateManager.disableCull();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
 		GlStateManager.disableTexture2D();

@@ -61,8 +61,6 @@ public class Triangle extends ColourableObject implements MultiPoint2D {
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();
 

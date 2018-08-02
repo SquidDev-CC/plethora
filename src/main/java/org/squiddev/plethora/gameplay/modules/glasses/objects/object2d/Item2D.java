@@ -117,7 +117,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlpha();
-		GlStateManager.enableCull();
+
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderHelper.enableGUIStandardItemLighting();
 

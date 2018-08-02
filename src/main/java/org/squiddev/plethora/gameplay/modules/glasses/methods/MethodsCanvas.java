@@ -23,6 +23,16 @@ public class MethodsCanvas {
 		return MethodResult.result(baked.makeChildId(server.canvas2d()).getObject());
 	}
 
+	@SubtargetedModuleMethod.Inject(
+		target = CanvasServer.class, module = PlethoraModules.GLASSES_S,
+		doc = "function():table -- Get the 3D canvas for these glasses."
+	)
+	public static MethodResult canvas3d(IUnbakedContext<IModuleContainer> context, Object[] args) throws LuaException {
+		IContext<IModuleContainer> baked = context.safeBake();
+		CanvasServer server = baked.getContext(PlethoraModules.GLASSES_S, CanvasServer.class);
+		return MethodResult.result(baked.makeChildId(server.canvas3d()).getObject());
+	}
+
 	@BasicMethod.Inject(value = ObjectGroup.class, doc = "function() -- Remove all objects.")
 	public static MethodResult clear(IUnbakedContext<ObjectGroup> context, Object[] args) throws LuaException {
 		IContext<ObjectGroup> baked = context.safeBake();

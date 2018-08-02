@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
@@ -82,8 +81,6 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 
 		float x = (float) position.x, y = (float) position.y;
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();

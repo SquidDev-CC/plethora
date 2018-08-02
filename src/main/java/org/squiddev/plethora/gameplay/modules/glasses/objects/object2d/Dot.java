@@ -3,7 +3,6 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
@@ -72,8 +71,6 @@ public class Dot extends ColourableObject implements Positionable2D, Scalable {
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 
 		float x = (float) position.x, y = (float) position.y, delta = scale / 2;
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();

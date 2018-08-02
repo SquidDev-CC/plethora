@@ -3,7 +3,6 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
@@ -98,8 +97,6 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 		if (points.size() < 3) return;
 
 		setupFlat();
-		GlStateManager.disableCull();
-		GlStateManager.color(1, 1, 1);
 
 		int size = points.size();
 		Vec2d a = points.get(0);
