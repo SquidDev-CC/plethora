@@ -28,7 +28,7 @@ import java.util.Objects;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
-public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Positionable3D, Rotatable3D {
+public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Positionable3D, Rotatable3D, DepthTestable {
 	private static final float SCALE = 1 / 64.0f;
 
 	@SideOnly(Side.CLIENT)
@@ -40,6 +40,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 
 	private Vec3d position = Vec3d.ZERO;
 	private Vec3d rotation = null;
+	private boolean depthTest = true;
 
 	public ObjectFrame(int id, int parent) {
 		super(id, parent, ObjectRegistry.FRAME_3D);
@@ -74,6 +75,19 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 	}
 
 	@Override
+	public boolean hasDepthTest() {
+		return depthTest;
+	}
+
+	@Override
+	public void setDepthTest(boolean depthTest) {
+		if (this.depthTest != depthTest) {
+			this.depthTest = depthTest;
+			setDirty();
+		}
+	}
+
+	@Override
 	public void writeInitial(ByteBuf buf) {
 		ByteBufUtils.writeVec3d(buf, position);
 		if (rotation == null) {
@@ -82,12 +96,14 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			buf.writeBoolean(true);
 			ByteBufUtils.writeVec3d(buf, rotation);
 		}
+		buf.writeBoolean(depthTest);
 	}
 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		position = ByteBufUtils.readVec3d(buf);
 		rotation = buf.readBoolean() ? ByteBufUtils.readVec3d(buf) : null;
+		depthTest = buf.readBoolean();
 	}
 
 	@Override
@@ -153,6 +169,14 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			GlStateManager.enableTexture2D();
 			GlStateManager.disableCull();
 			GlStateManager.enableBlend();
+
+			// Note this is not applied if there are no frame buffers, but as this wil be so buggy anyway
+			// I do not see it as a great loss.
+			if (depthTest) {
+				GlStateManager.enableDepth();
+			} else {
+				GlStateManager.disableDepth();
+			}
 
 			// We need to discard any transparent pixels in the framebuffer
 			GlStateManager.enableAlpha();

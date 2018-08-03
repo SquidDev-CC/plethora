@@ -163,5 +163,6 @@ public class CanvasHandler {
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableCull();
 		GlStateManager.enableDepth();
+		GlStateManager.disableAlpha();
 	}
 }

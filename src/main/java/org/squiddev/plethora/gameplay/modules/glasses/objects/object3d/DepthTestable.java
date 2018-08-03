@@ -5,7 +5,7 @@ import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 
-import static java.lang.reflect.Array.getBoolean;
+import static dan200.computercraft.core.apis.ArgumentHelper.getBoolean;
 
 public interface DepthTestable {
 	boolean hasDepthTest();

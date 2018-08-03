@@ -19,7 +19,7 @@ import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
@@ -82,20 +82,18 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 	public void draw(CanvasClient canvas) {
 		setupFlat();
 
-		float x = (float) position.x, y = (float) position.y;
+		double minX = position.x, minY = position.y;
+		double maxX = minX + width, maxY = minY + height;
 		int red = getRed(), green = getGreen(), blue = getBlue(), alpha = getAlpha();
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+		buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-		buffer.pos(x, y, 0).color(red, green, blue, alpha).endVertex();
-		buffer.pos(x, y + height, 0).color(red, green, blue, alpha).endVertex();
-		buffer.pos(x + width, y + height, 0).color(red, green, blue, alpha).endVertex();
-
-		buffer.pos(x, y, 0).color(red, green, blue, alpha).endVertex();
-		buffer.pos(x + width, y + height, 0).color(red, green, blue, alpha).endVertex();
-		buffer.pos(x + width, y + 0, 0).color(red, green, blue, alpha).endVertex();
+		buffer.pos(minX, minY, 0).color(red, green, blue, alpha).endVertex();
+		buffer.pos(minX, maxY, 0).color(red, green, blue, alpha).endVertex();
+		buffer.pos(maxX, maxY, 0).color(red, green, blue, alpha).endVertex();
+		buffer.pos(maxX, minY, 0).color(red, green, blue, alpha).endVertex();
 
 		tessellator.draw();
 	}

@@ -215,10 +215,11 @@ public final class ConfigGameplay {
 
 	public static class Glasses {
 		/**
-		 * The dimensiosn with which to scale the framebuffer texture. Higher scales result in cleaner
-		 * renders, with the cost of (potentially) lower framerate
+		 * The dimensions with which to scale the framebuffer texture.
+		 * Higher scales result in cleaner renders, with the cost of
+		 * a (potentially) lower framerate.
 		 */
-		@DefaultInt(2)
+		@DefaultInt(1)
 		@Range(min = 1)
 		public static int framebufferScale;
 	}
