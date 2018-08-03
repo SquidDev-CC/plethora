@@ -11,6 +11,9 @@ consider the kinetic augment, which provides methods to control the wearer.
 To get started, craft a neural interface and a neural connector. You can place the neural interface in your helmet slot
 or right click another entity to place it in theirs.
 
+
+![A neural interface on a player](images/neural-player.png "A neural interface on a player")
+
 > **Note:** You can't place a neural interface on child mobs: that is just cruel. You should also be warned that once
 > placed on a mob, the neural interface cannot be removed. Their brains are not as resilient to tampering as human
 > brains are.
@@ -30,6 +33,10 @@ All modules which can be placed in a manipulator can also be placed in a neural 
 function as before. There are some modules which require the neural interface, or function best with it. Modules can be
 found mounted on the "back" slot of a computer, bundled together in a manipulator-like peripheral. Wrapping this
 peripheral will provide you with the same methods as an equivalent manipulator.
+
+![The peripheral view of a neural interface](images/neural-peripherals.png "The peripheral view of a neural interface")
+
+![The module view of a neural interface](images/neural-modules.png "The module view of a neural interface")
 
 ### The introspection module
 The introspection module provides access to the inventory of the wearing entity, as well as useful information such as

@@ -28,7 +28,7 @@ recharge (note these values are configurable).
 local laser = peripheral.wrap(--[[ whatever ]])
 
 for yaw = 0, 360, 10 do
-	laser.fire(yaw, 0, 2) -- Fire a laser on the horizontal with potency 2
+  laser.fire(yaw, 0, 2) -- Fire a laser on the horizontal with potency 2
 end
 ```
 
@@ -36,6 +36,8 @@ end
 If you are rather paranoid about the singularity, you may want to avoid giving computers access to these high energy
 weapons. Instead, you can elect to fire the laser by hand. It functions a little like a bow, charging it for longer will
 result in a more powerful (and more deadly) projectile.
+
+![The damage wrought by the laser]({{ "images/items/module-laser-usage.png" | relative_url }} "The damage wrought by the laser")
 
 ### Configuring
 The laser can be configured using the `laser` category of the `plethora.cfg` file:

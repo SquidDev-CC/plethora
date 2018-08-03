@@ -48,6 +48,8 @@ end
 Holding the entity sensor will display an orb on every nearby entity. This provides a nice way of hunting down those
 pesky zombies!
 
+![Observing nearby entities]({{ "images/items/module-sensor-usage.png" | relative_url }} "Observing nearby entities")
+
 ### Configuring
 The entity sensor can be configured using the `sensor` category of the `plethora.cfg` file:
 

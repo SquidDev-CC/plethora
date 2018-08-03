@@ -55,6 +55,9 @@ print(textutils.serialise(meta))
 The block scanner can also be held in your hand to reveal all ores within the scanner's radius. It doesn't serve much
 use, but looks kinda pretty.
 
+
+![Hunting for blue shiny rocks with the block scanner]({{ "images/items/module-scanner-usage.png" | relative_url }} "Hunting for blue shiny rocks with the block scanner")
+
 ### Configuring
 The block scanner can be configured using the `scanner` category of the `plethora.cfg` file:
 
