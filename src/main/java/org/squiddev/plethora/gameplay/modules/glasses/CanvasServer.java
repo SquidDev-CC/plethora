@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.ConstantReference;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +29,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 
 	private AtomicInteger lastId = new AtomicInteger(ID_3D);
 
-	private final ObjectGroup.Group2D group2D = () -> ID_2D;
+	private final ObjectGroup.Frame2D group2D = () -> ID_2D;
 	private final ObjectGroup.Origin3D origin3D = () -> ID_3D;
 
 	public CanvasServer(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
@@ -58,7 +59,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 		return lastId.incrementAndGet();
 	}
 
-	public ObjectGroup.Group2D canvas2d() {
+	public ObjectGroup.Frame2D canvas2d() {
 		return group2D;
 	}
 

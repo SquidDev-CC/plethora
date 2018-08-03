@@ -1,11 +1,15 @@
 package org.squiddev.plethora.gameplay.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
+import org.squiddev.plethora.utils.DebugLogger;
+
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
+import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
 /**
  * A wrapper for constructing and manipulating framebuffers
@@ -13,8 +17,8 @@ import org.lwjgl.opengl.GL14;
  * This is very similar to Minecraft's {@link net.minecraft.client.shader.Framebuffer}, it just avoids
  * some of the Minecraft specific things (such as config options).
  */
-public class Framebuffer {
-	public static final Framebuffer INSTANCE = new Framebuffer();
+public class FramebufferGlasses {
+	public static final FramebufferGlasses INSTANCE = new FramebufferGlasses();
 
 	private int buffer = -1;
 	private int texture;
@@ -33,15 +37,16 @@ public class Framebuffer {
 	}
 
 	private void createBuffer() {
-		Minecraft mc = Minecraft.getMinecraft();
+		int scale = Math.max(1, ConfigGameplay.Glasses.framebufferScale);
+		int textureWidth = WIDTH * scale, textureHeight = HEIGHT * scale;
 
 		// If we have a buffer and the dimensions are the same then just use that.
-		if (buffer != -1 && textureWidth == mc.displayWidth && textureHeight == mc.displayHeight) return;
+		if (buffer != -1 && textureWidth == this.textureWidth && textureHeight == this.textureHeight) return;
 
 		dispose();
 
-		textureWidth = mc.displayWidth;
-		textureHeight = mc.displayHeight;
+		this.textureWidth = textureWidth;
+		this.textureHeight = textureHeight;
 
 		// Bind framebuffer
 		buffer = OpenGlHelper.glGenFramebuffers();
@@ -52,8 +57,8 @@ public class Framebuffer {
 
 		GlStateManager.bindTexture(texture);
 		GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, textureWidth, textureHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null);
-		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		GlStateManager.bindTexture(0);
 
 		OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
@@ -86,6 +91,11 @@ public class Framebuffer {
 	public void bindBuffer() {
 		createBuffer();
 		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, buffer);
+	}
+
+	public void setupViewport() {
+		if (buffer == -1) throw new IllegalStateException("Buffer has been disposed");
+		GlStateManager.viewport(0, 0, textureWidth, textureHeight);
 	}
 
 	public void bindTexture() {

@@ -12,11 +12,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.gameplay.client.Framebuffer;
+import org.squiddev.plethora.gameplay.client.FramebufferGlasses;
 import org.squiddev.plethora.gameplay.client.OpenGlHelper;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
-import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 
@@ -28,7 +28,7 @@ import java.util.Objects;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
-public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Positionable3D, Rotatable3D {
+public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Positionable3D, Rotatable3D {
 	private static final float SCALE = 1 / 64.0f;
 
 	@SideOnly(Side.CLIENT)
@@ -103,7 +103,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 		GlStateManager.translate(position.x, position.y, position.z);
 		GlStateManager.scale(SCALE, -SCALE, SCALE);
 		if (rotation == null) {
-			GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
+			GlStateManager.rotate(180 - renderManager.playerViewY, 0, 1, 0);
 			GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
 		} else {
 			GlStateManager.rotate((float) rotation.x, 1, 0, 0);
@@ -120,7 +120,8 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 			projection = OpenGlHelper.getProjectionMatrix();
 			modelView = OpenGlHelper.getModelViewMatrix();
 
-			Framebuffer.INSTANCE.bindBuffer();
+			FramebufferGlasses.INSTANCE.bindBuffer();
+			FramebufferGlasses.INSTANCE.setupViewport();
 
 			// Reset the buffer
 			GlStateManager.colorMask(true, true, true, true);
@@ -138,7 +139,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 
 		canvas.drawChildren(children.iterator());
 
-		if (net.minecraft.client.renderer.OpenGlHelper.framebufferSupported) {
+		if (OpenGlHelper.framebufferSupported) {
 			// Restore matrices
 			GlStateManager.matrixMode(GL11.GL_PROJECTION);
 			GL11.glLoadMatrix(projection);
@@ -146,7 +147,8 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 			GL11.glLoadMatrix(modelView);
 
 			// And restore framebuffer
-			OpenGlHelper.glBindFramebuffer(net.minecraft.client.renderer.OpenGlHelper.GL_FRAMEBUFFER, currentBuffer);
+			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentBuffer);
+			GlStateManager.viewport(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
 
 			GlStateManager.enableTexture2D();
 			GlStateManager.disableCull();
@@ -156,7 +158,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Group2D, Posi
 			GlStateManager.enableAlpha();
 			GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
 
-			Framebuffer.INSTANCE.bindTexture();
+			FramebufferGlasses.INSTANCE.bindTexture();
 
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder buffer = tessellator.getBuffer();

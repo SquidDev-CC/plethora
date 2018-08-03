@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
-import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;

@@ -213,6 +213,16 @@ public final class ConfigGameplay {
 		public static boolean allowMobs;
 	}
 
+	public static class Glasses {
+		/**
+		 * The dimensiosn with which to scale the framebuffer texture. Higher scales result in cleaner
+		 * renders, with the cost of (potentially) lower framerate
+		 */
+		@DefaultInt(2)
+		@Range(min = 1)
+		public static int framebufferScale;
+	}
+
 	/**
 	 * Various options that don't belong to anything
 	 */

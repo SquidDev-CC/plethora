@@ -149,6 +149,9 @@ gui.config.plethora.chat.allowFormatting=Allow format codes
 gui.config.plethora.chat.allowOffline=Allow offline players in chat
 gui.config.plethora.chat.allowMobs=Allow mobs in chat
 
+gui.config.plethora.glasses=Overlay glasses
+gui.config.plethora.glasses.framebufferScale=Framebuffer scale
+
 gui.config.plethora.miscellaneous=Miscellaneous
 gui.config.plethora.miscellaneous.funRender=Fun rendering
 

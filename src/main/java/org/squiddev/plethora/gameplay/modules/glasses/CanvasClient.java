@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 import it.unimi.dsi.fastutil.ints.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;

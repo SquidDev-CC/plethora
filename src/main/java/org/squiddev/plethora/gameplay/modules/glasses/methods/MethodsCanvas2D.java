@@ -7,9 +7,9 @@ import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
-import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup.Group2D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Frame2D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group2D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 import org.squiddev.plethora.utils.Vec2d;
 
@@ -215,9 +215,9 @@ public class MethodsCanvas2D {
 		return MethodResult.result(baked.makeChild(newGroup, newGroup.reference(canvas)).getObject());
 	}
 
-	@BasicMethod.Inject(value = CanvasServer.class, doc = "function():number, number -- Get the size of this canvas.")
-	public static MethodResult getSize(IUnbakedContext<CanvasServer> context, Object[] args) throws LuaException {
-		context.safeBake();
-		return MethodResult.result(CanvasHandler.WIDTH, CanvasHandler.HEIGHT);
+	@BasicMethod.Inject(value = Frame2D.class, doc = "function():number, number -- Get the size of this canvas.")
+	public static MethodResult getSize(IUnbakedContext<Frame2D> context, Object[] args) throws LuaException {
+		Frame2D target = context.safeBake().getTarget();
+		return MethodResult.result(target.getWidth(), target.getHeight());
 	}
 }

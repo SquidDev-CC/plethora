@@ -10,7 +10,7 @@ import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
-import org.squiddev.plethora.gameplay.modules.glasses.ObjectGroup;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 
 public class MethodsCanvas {
 	@SubtargetedModuleMethod.Inject(
