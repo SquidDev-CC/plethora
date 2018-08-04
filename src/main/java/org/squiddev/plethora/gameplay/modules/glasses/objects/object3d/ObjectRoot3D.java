@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -17,6 +18,8 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 
+import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.optVec3d;
+
 public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 	private Vec3d origin;
 	private int dimension;
@@ -25,9 +28,8 @@ public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 		super(id, parent, ObjectRegistry.ORIGIN_3D);
 	}
 
-	public void recentre(IWorldLocation location) {
-		Vec3d origin = location.getLoc();
-		int dimension = location.getWorld().provider.getDimension();
+	public void recentre(World world, Vec3d origin) {
+		int dimension = world.provider.getDimension();
 
 		if (!origin.equals(this.origin) || dimension != this.dimension) {
 			this.origin = origin;
@@ -75,13 +77,15 @@ public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 		GlStateManager.popMatrix();
 	}
 
-	@BasicMethod.Inject(value = ObjectRoot3D.class, doc = "function():table -- Recenter this canvas to the current position.")
+	@BasicMethod.Inject(value = ObjectRoot3D.class, doc = "function([offset:table]):table -- Recenter this canvas relative to the current position.")
 	public static MethodResult recenter(IUnbakedContext<ObjectRoot3D> context, Object[] args) throws LuaException {
+		Vec3d offset = optVec3d(args, 0, Vec3d.ZERO);
+
 		IContext<ObjectRoot3D> baked = context.safeBake();
 		IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-		if (location == null) throw new LuaException("Cannot determine a location");
+		if (location == null) throw new LuaException("Cannot find a location");
 
-		baked.getTarget().recentre(location);
+		baked.getTarget().recentre(location.getWorld(), location.getLoc().add(offset));
 		return MethodResult.empty();
 	}
 }

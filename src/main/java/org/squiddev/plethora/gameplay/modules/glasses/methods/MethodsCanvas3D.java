@@ -14,11 +14,14 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoo
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.getVec3d;
+import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.optVec3d;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
 public class MethodsCanvas3D {
-	@BasicMethod.Inject(value = Origin3D.class, doc = "function():table -- Create a new 3D canvas centred on the current position.")
+	@BasicMethod.Inject(value = Origin3D.class, doc = "function([pos:table]):table -- Create a new 3D canvas centred relative to the current position.")
 	public static MethodResult create(IUnbakedContext<Origin3D> context, Object[] args) throws LuaException {
+		Vec3d offset = optVec3d(args, 0, Vec3d.ZERO);
+
 		IContext<Origin3D> baked = context.safeBake();
 		Origin3D group = baked.getTarget();
 		CanvasServer canvas = baked.getContext(CanvasServer.class);
@@ -27,7 +30,7 @@ public class MethodsCanvas3D {
 		if (location == null) throw new LuaException("Cannot determine a location");
 
 		ObjectRoot3D root = new ObjectRoot3D(canvas.newObjectId(), group.id());
-		root.recentre(location);
+		root.recentre(location.getWorld(), location.getLoc().add(offset));
 
 		canvas.add(root);
 		return MethodResult.result(baked.makeChild(root, root.reference(canvas)).getObject());

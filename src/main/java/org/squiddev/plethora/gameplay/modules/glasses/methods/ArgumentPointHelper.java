@@ -8,10 +8,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getTable;
-import static dan200.computercraft.core.apis.ArgumentHelper.getType;
+import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 public class ArgumentPointHelper {
+	public static Vec2d optVec2d(@Nonnull Object[] args, int index, Vec2d def) throws LuaException {
+		Map<?, ?> table = optTable(args, index, null);
+		return table == null ? def : getVec2d(table);
+	}
+
 	public static Vec2d getVec2d(@Nonnull Object[] args, int index) throws LuaException {
 		return getVec2d(getTable(args, index));
 	}
@@ -33,6 +37,11 @@ public class ArgumentPointHelper {
 		}
 
 		return new Vec2d(((Number) xObj).doubleValue(), ((Number) yObj).doubleValue());
+	}
+
+	public static Vec3d optVec3d(@Nonnull Object[] args, int index, Vec3d def) throws LuaException {
+		Map<?, ?> table = optTable(args, index, null);
+		return table == null ? def : getVec3d(table);
 	}
 
 	public static Vec3d getVec3d(@Nonnull Object[] args, int index) throws LuaException {
