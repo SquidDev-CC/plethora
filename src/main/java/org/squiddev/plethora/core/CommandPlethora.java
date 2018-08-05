@@ -1,7 +1,6 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -15,8 +14,6 @@ import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 public class CommandPlethora extends CommandBase {
 	@Nonnull
@@ -28,7 +25,7 @@ public class CommandPlethora extends CommandBase {
 	@Nonnull
 	@Override
 	public String getUsage(@Nonnull ICommandSender sender) {
-		return "dump|reload";
+		return getUsage("");
 	}
 
 	private String getUsage(String type) {
@@ -38,13 +35,13 @@ public class CommandPlethora extends CommandBase {
 			case "reload":
 				return "reload";
 			default:
-				return "dump|reload";
+				return "dump | reload";
 		}
 	}
 
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
-		if (args.length < 1 || Strings.isNullOrEmpty(args[0])) throw new CommandException(getUsage(sender));
+		if (args.length < 1) throw new CommandException(getUsage(sender));
 
 		String type = args[0];
 		if (type.equals("dump")) {
@@ -52,37 +49,35 @@ public class CommandPlethora extends CommandBase {
 
 			String name = args[1];
 			try {
-				String extension = Files.getFileExtension(name);
+				IDocWriter initialWriter;
+				if (name.endsWith(".json")) {
+					initialWriter = new JSONWriter(new FileOutputStream(name));
+				} else if (name.endsWith(".raw.html") || name.endsWith(".raw.htm")) {
+					initialWriter = new HTMLWriter(false, new FileOutputStream(name));
+				} else if (name.endsWith(".html") || name.endsWith(".htm")) {
+					initialWriter = new HTMLWriter(true, new FileOutputStream(name));
+				} else {
+					throw new CommandException("Cannot generate documentation for '" + name + "'. The file must be suffixed with '.json', '.html' or '.raw.html'");
+				}
 
-				try (OutputStream file = new FileOutputStream(name)) {
-					PrintStream writer = new PrintStream(file);
-
-					IDocWriter docs;
-					switch (extension) {
-						case "json":
-							docs = new JSONWriter(writer);
-							break;
-						case "html":
-						case "htm":
-							docs = new HTMLWriter(writer);
-							break;
-						default:
-							throw new CommandException("Unknown extension '" + extension + "'. Please use html or json");
-					}
-
-					docs.writeHeader();
-					docs.write(PlethoraAPI.instance().methodRegistry().getMethods());
-					docs.writeFooter();
+				try (IDocWriter writer = initialWriter) {
+					writer.writeHeader();
+					writer.write(PlethoraAPI.instance().methodRegistry().getMethods());
+					writer.writeFooter();
 				}
 
 				sender.sendMessage(new TextComponentString("Documentation written to " + name));
-			} catch (Throwable e) {
+			} catch (CommandException e) {
+				throw e;
+			} catch (Exception e) {
 				DebugLogger.error("Cannot handle " + name, e);
 				throw new CommandException(e.toString());
 			}
 		} else if (type.equals("reload")) {
 			ConfigCore.configuration.load();
 			ConfigCore.sync();
+		} else {
+			throw new CommandException(getUsage(""));
 		}
 	}
 

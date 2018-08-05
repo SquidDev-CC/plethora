@@ -1,63 +1,47 @@
 package org.squiddev.plethora.core.docdump;
 
 import com.google.common.base.Strings;
-import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.module.IModuleMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- * Details about a method
- */
-public class DocData implements Comparable<DocData> {
-	private static final Pattern docString = Pattern.compile("^function(\\([^)]*\\).*?)--(.*)$");
+public class DocData<T> implements Comparable<MethodData> {
 	private static final char[] terminators = new char[]{'!', '.', '?', '\r', '\n'};
 
-
 	@Nonnull
-	public final String target;
+	public final T value;
 
+	/**
+	 * The unique identifier for this value
+	 */
 	@Nonnull
-	public final String method;
+	public final String id;
 
+	/**
+	 * The "friendly" display name for this object
+	 */
 	@Nonnull
 	public final String name;
 
+	/**
+	 * A brief summary of the object
+	 */
 	@Nullable
 	public final String synopsis;
 
+	/**
+	 * The remaining description after the synopsis
+	 */
 	@Nullable
 	public final String detail;
 
-	@Nullable
-	public final String args;
+	public DocData(@Nonnull T value, @Nonnull String id, @Nonnull String name, @Nullable String doc) {
+		this.value = value;
+		this.id = id;
+		this.name = name;
 
-	@Nullable
-	public final String subtarget;
-
-	@Nullable
-	public final String[] modules;
-
-	public DocData(@Nonnull Class<?> target, @Nonnull IMethod<?> method) {
-		this.target = target.getName();
-		this.method = method.getClass().getName();
-		this.name = method.getName();
-
-		String doc = method.getDocString();
 		if (doc != null) {
-			String synopsis, detail = null, args = null;
-			Matcher match = docString.matcher(doc);
-			if (match.find()) {
-				args = match.group(1).trim();
-				doc = match.group(2);
-			}
+			String synopsis, detail = null;
 
 			// Get minimum position
 			int position = -1;
@@ -77,38 +61,16 @@ public class DocData implements Comparable<DocData> {
 			}
 
 			this.synopsis = Strings.isNullOrEmpty(synopsis) ? null : synopsis;
-			this.args = Strings.isNullOrEmpty(args) ? null : args;
 			this.detail = Strings.isNullOrEmpty(detail) ? null : detail;
 
 		} else {
 			this.synopsis = null;
 			this.detail = null;
-			this.args = null;
-		}
-
-		if (method instanceof ISubTargetedMethod) {
-			subtarget = ((ISubTargetedMethod<?, ?>) method).getSubTarget().getName();
-		} else {
-			subtarget = null;
-		}
-
-		if (method instanceof IModuleMethod) {
-			Set<ResourceLocation> modules = ((IModuleMethod<?>) method).getModules();
-			this.modules = new String[modules.size()];
-
-			int i = 0;
-			for (ResourceLocation module : modules) {
-				this.modules[i++] = module.toString();
-			}
-
-			Arrays.sort(this.modules);
-		} else {
-			modules = null;
 		}
 	}
 
 	@Override
-	public int compareTo(@Nonnull DocData o) {
+	public int compareTo(@Nonnull MethodData o) {
 		return name.compareTo(o.name);
 	}
 }
