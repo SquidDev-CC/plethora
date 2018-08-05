@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -40,14 +39,6 @@ public interface IMethodRegistry {
 	 */
 	@Nonnull
 	List<IMethod<?>> getMethods(@Nonnull Class<?> target);
-
-	/**
-	 * Group of all methods available
-	 *
-	 * @return All methods, grouped by their target class
-	 */
-	@Nonnull
-	Multimap<Class<?>, IMethod<?>> getMethods();
 
 	/**
 	 * Get the cost handler for this object

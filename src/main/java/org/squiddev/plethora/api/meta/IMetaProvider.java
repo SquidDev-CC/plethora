@@ -3,6 +3,7 @@ package org.squiddev.plethora.api.meta;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -31,7 +32,29 @@ public interface IMetaProvider<T> {
 	 *
 	 * @return The provider's priority
 	 */
-	int getPriority();
+	default int getPriority() {
+		return 0;
+	}
+
+	/**
+	 * Get a basic description of this meta provider
+	 *
+	 * @return This provider's description, or {@code null} if none is available.
+	 */
+	@Nullable
+	default String getDescription() {
+		return null;
+	}
+
+	/**
+	 * Get an example input for this meta provider
+	 *
+	 * @return An example input for this meta provider, or {@code null} if none is available.
+	 */
+	@Nullable
+	default T getExample() {
+		return null;
+	}
 
 	/**
 	 * Automatically register a meta provider.

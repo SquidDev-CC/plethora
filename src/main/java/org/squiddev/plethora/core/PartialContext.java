@@ -23,7 +23,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 	protected final ICostHandler handler;
 	protected final IModuleContainer modules;
 
-	PartialContext(int target, String[] keys, @Nonnull Object[] values, @Nonnull ICostHandler handler, @Nonnull IModuleContainer modules) {
+	public PartialContext(int target, String[] keys, @Nonnull Object[] values, @Nonnull ICostHandler handler, @Nonnull IModuleContainer modules) {
 		this.target = target;
 		this.keys = keys;
 		this.handler = handler;

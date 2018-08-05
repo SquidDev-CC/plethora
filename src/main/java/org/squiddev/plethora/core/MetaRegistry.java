@@ -25,7 +25,7 @@ import java.util.Map;
 public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
-	private final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create((o1, o2) -> {
+	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create((o1, o2) -> {
 		int p1 = o1.getPriority();
 		int p2 = o2.getPriority();
 		return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);

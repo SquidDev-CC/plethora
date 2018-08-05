@@ -26,7 +26,7 @@ import java.util.*;
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
 
-	private final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
+	final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
 	@Override
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
@@ -85,12 +85,6 @@ public final class MethodRegistry implements IMethodRegistry {
 		}
 
 		return Collections.unmodifiableList(result);
-	}
-
-	@Nonnull
-	@Override
-	public Multimap<Class<?>, IMethod<?>> getMethods() {
-		return MultimapBuilder.hashKeys().arrayListValues().build(providers);
 	}
 
 	@Nonnull
