@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Provider for computer items;
  */
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "computer", modId = "computercraft")
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "computer", modId = ComputerCraft.MOD_ID)
 public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

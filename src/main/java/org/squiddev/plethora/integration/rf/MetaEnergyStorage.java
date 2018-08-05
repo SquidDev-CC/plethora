@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.rf;
 
+import cofh.redstoneflux.RedstoneFlux;
 import cofh.redstoneflux.api.IEnergyStorage;
 import com.google.common.collect.Maps;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -8,7 +9,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IEnergyStorage.class, namespace = "rf", modId = "CoFHAPI|energy")
+@IMetaProvider.Inject(value = IEnergyStorage.class, namespace = "rf", modId = RedstoneFlux.MOD_ID)
 public class MetaEnergyStorage extends BasicMetaProvider<IEnergyStorage> {
 	@Nonnull
 	@Override

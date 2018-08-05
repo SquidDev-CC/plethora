@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.baubles;
 
 import baubles.api.BaublesApi;
+import baubles.common.Baubles;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.IItemHandler;
@@ -17,7 +18,7 @@ import java.util.Collections;
 /**
  * Allows getting the player's baubles inventory
  */
-@IMethod.Inject(value = IModuleContainer.class, modId = "Baubles")
+@IMethod.Inject(value = IModuleContainer.class, modId = Baubles.MODID)
 public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityPlayer> {
 	public MethodIntrospectionBaublesInventory() {
 		super(

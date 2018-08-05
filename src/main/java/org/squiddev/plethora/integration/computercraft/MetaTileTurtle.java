@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.collect.Maps;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 import static org.squiddev.plethora.integration.computercraft.MetaItemTurtle.getUpgrade;
 
-@IMetaProvider.Inject(value = ITurtleTile.class, modId = "computercraft", namespace = "turtle")
+@IMetaProvider.Inject(value = ITurtleTile.class, modId = ComputerCraft.MOD_ID, namespace = "turtle")
 public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 	@Nonnull
 	@Override

@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.collect.Maps;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.items.ITurtleItem;
@@ -13,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = "computercraft", namespace = "turtle")
+@IMetaProvider.Inject(value = ItemStack.class, modId = ComputerCraft.MOD_ID, namespace = "turtle")
 public class MetaItemTurtle extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

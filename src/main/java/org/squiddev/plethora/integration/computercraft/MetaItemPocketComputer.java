@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.collect.Maps;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import net.minecraft.item.Item;
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = "ComputerCraft", namespace = "turtle")
+@IMetaProvider.Inject(value = ItemStack.class, modId = ComputerCraft.MOD_ID, namespace = "turtle")
 public class MetaItemPocketComputer extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

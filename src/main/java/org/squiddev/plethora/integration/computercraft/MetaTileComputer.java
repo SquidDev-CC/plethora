@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.IComputer;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
@@ -10,7 +11,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IComputerTile.class, modId = "computercraft", namespace = "computer")
+@IMetaProvider.Inject(value = IComputerTile.class, modId = ComputerCraft.MOD_ID, namespace = "computer")
 public class MetaTileComputer extends BasicMetaProvider<IComputerTile> {
 	@Nonnull
 	@Override

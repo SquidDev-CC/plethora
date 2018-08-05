@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Meta provider for printed outs: printed page(s) and books.
  */
-@IMetaProvider.Inject(value = ItemStack.class, modId = "computercraft", namespace = "printout")
+@IMetaProvider.Inject(value = ItemStack.class, modId = ComputerCraft.MOD_ID, namespace = "printout")
 public class MetaItemPrintout extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
