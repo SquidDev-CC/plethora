@@ -3,13 +3,17 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.reference.BlockReference;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 @IMetaProvider.Inject(BlockReference.class)
@@ -33,5 +37,13 @@ public class MetaBlockReference extends BasicMetaProvider<BlockReference> {
 		}
 
 		return data;
+	}
+
+	@Nullable
+	@Override
+	public BlockReference getExample() {
+		World world = WorldDummy.INSTANCE;
+		world.setBlockState(BlockPos.ORIGIN, Blocks.DIRT.getDefaultState());
+		return new BlockReference(new WorldLocation(world, BlockPos.ORIGIN));
 	}
 }

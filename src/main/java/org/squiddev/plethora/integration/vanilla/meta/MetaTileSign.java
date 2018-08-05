@@ -3,10 +3,12 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 @IMetaProvider.Inject(value = TileEntitySign.class, namespace = "sign")
@@ -26,5 +28,15 @@ public class MetaTileSign extends BasicMetaProvider<TileEntitySign> {
 		}
 
 		return text;
+	}
+
+	@Nullable
+	@Override
+	public TileEntitySign getExample() {
+		TileEntitySign sign = new TileEntitySign();
+		sign.signText[0] = new TextComponentString("This is");
+		sign.signText[1] = new TextComponentString("my rather fancy");
+		sign.signText[2] = new TextComponentString("sign.");
+		return sign;
 	}
 }

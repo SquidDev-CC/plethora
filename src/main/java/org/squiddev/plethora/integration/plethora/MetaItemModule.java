@@ -9,6 +9,7 @@ import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,5 +33,11 @@ public class MetaItemModule extends BasicMetaProvider<ItemStack> {
 		}
 
 		return result;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(Registry.itemModule);
 	}
 }

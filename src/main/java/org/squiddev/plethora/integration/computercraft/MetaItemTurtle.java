@@ -4,13 +4,16 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
+import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.turtle.items.ITurtleItem;
+import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -47,5 +50,14 @@ public class MetaItemTurtle extends BasicMetaProvider<ItemStack> {
 		out.put("type", upgrade.getType().toString());
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return TurtleItemFactory.create(
+			3, "My turtle", 0x00FF00, ComputerFamily.Normal,
+			ComputerCraft.Upgrades.advancedModem, null, 3000, null
+		);
 	}
 }

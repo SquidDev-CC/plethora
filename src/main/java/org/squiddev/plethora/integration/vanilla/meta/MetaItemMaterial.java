@@ -1,10 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -33,5 +35,11 @@ public class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 		} else {
 			return null;
 		}
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(Items.DIAMOND_PICKAXE);
 	}
 }

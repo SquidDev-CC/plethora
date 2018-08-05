@@ -60,6 +60,10 @@ public class NullableItemStack {
 
 	@IMetaProvider.Inject(value = NullableItemStack.class)
 	public static class MetaNullableItemStack extends BasicMetaProvider<NullableItemStack> {
+		public MetaNullableItemStack() {
+			super("Simply wraps an item stack with additional information. Refer to the documentation on those instead for more information.");
+		}
+
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull NullableItemStack object) {

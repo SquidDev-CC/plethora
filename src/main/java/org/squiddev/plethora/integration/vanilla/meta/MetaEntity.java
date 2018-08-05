@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
@@ -10,6 +11,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +20,10 @@ import java.util.Map;
 
 @IMetaProvider.Inject(Entity.class)
 public class MetaEntity extends BaseMetaProvider<Entity> {
+	public MetaEntity() {
+		super("Provides some basic information about an entity, such as their their UUID and name.");
+	}
+
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<Entity> context) {
@@ -63,4 +69,14 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 		return result;
 	}
 
+	@Nullable
+	@Override
+	public Entity getExample() {
+		EntityXPOrb entity = new EntityXPOrb(WorldDummy.INSTANCE);
+		entity.setPositionAndRotation(12, 0, 0, 30, 73);
+		entity.motionX = 0.5;
+		entity.motionY = 0;
+		entity.motionZ = 0;
+		return entity;
+	}
 }

@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -62,6 +63,12 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.getCount());
 		data.put("nbtHash", getNBTHash(stack));
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(Items.STICK, 5);
 	}
 
 	@Nullable

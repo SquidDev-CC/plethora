@@ -8,6 +8,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,5 +35,14 @@ public class MetaItemPrintout extends BasicMetaProvider<ItemStack> {
 		out.put("lines", lines);
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return ItemPrintout.createSingleFromTitleAndText("My page",
+			new String[]{"This is the first line"},
+			new String[]{"FFFFFFFFFFFFFFFFFFFFFF"}
+		);
 	}
 }

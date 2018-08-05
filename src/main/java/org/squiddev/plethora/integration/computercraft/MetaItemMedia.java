@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.computercraft;
 import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.media.IMedia;
+import dan200.computercraft.shared.media.items.ItemDiskExpanded;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -10,6 +11,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,5 +36,11 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 		}
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return ItemDiskExpanded.createFromIDAndColour(3, "My disk", 0xFF0000);
 	}
 }

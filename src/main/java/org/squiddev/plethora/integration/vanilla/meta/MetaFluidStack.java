@@ -8,6 +8,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -15,6 +16,10 @@ import java.util.Map;
  */
 @IMetaProvider.Inject(value = FluidStack.class)
 public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
+	public MetaFluidStack() {
+		super("Provides information about a fluid, as well as how much is currently stored.");
+	}
+
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull FluidStack fluidStack) {
@@ -30,5 +35,11 @@ public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 		}
 
 		return data;
+	}
+
+	@Nullable
+	@Override
+	public FluidStack getExample() {
+		return FluidRegistry.getFluidStack("water", 525);
 	}
 }

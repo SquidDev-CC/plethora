@@ -41,6 +41,10 @@ public class MetaWrapper<T> extends ConstantReference<MetaWrapper<T>> {
 
 	@IMetaProvider.Inject(MetaWrapper.class)
 	public static class MetaProvider extends BaseMetaProvider<MetaWrapper> {
+		public MetaProvider() {
+			super("Simply wraps an object and exposes metadata for that. You can happily ignore this.");
+		}
+
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull IPartialContext<MetaWrapper> context) {

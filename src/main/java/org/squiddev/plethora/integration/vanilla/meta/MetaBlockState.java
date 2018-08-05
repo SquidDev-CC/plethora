@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -16,6 +17,10 @@ import java.util.Map;
 
 @IMetaProvider.Inject(value = IBlockState.class)
 public class MetaBlockState extends BaseMetaProvider<IBlockState> {
+	public MetaBlockState() {
+		super("Provides some very basic information about a block and its associated state.");
+	}
+
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IBlockState> context) {
@@ -49,5 +54,10 @@ public class MetaBlockState extends BaseMetaProvider<IBlockState> {
 			}
 			stateProperties.put(item.getKey().getName(), value);
 		}
+	}
+
+	@Override
+	public IBlockState getExample() {
+		return Blocks.STONE.getDefaultState();
 	}
 }

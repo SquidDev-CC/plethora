@@ -1,12 +1,14 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,5 +34,11 @@ public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 		} else {
 			return Collections.emptyMap();
 		}
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(Items.DIAMOND_PICKAXE);
 	}
 }

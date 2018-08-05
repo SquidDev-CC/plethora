@@ -6,6 +6,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 @IMetaProvider.Inject(Material.class)
@@ -25,5 +26,11 @@ public class MetaMaterial extends BasicMetaProvider<Material> {
 		data.put("burns", material.getCanBurn());
 
 		return data;
+	}
+
+	@Nullable
+	@Override
+	public Material getExample() {
+		return Material.ROCK;
 	}
 }

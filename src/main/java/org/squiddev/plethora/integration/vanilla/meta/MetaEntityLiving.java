@@ -2,7 +2,10 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -13,8 +16,10 @@ import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.ContextFactory;
 import org.squiddev.plethora.core.executor.BasicExecutor;
 import org.squiddev.plethora.integration.MetaWrapper;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -70,6 +75,16 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		map.put("isElytraFlying", target.isElytraFlying());
 
 		return map;
+	}
+
+	@Nullable
+	@Override
+	public EntityLiving getExample() {
+		EntityZombie entity = new EntityZombie(WorldDummy.INSTANCE);
+		entity.setPositionAndRotation(12, 0, 0, 30, 73);
+		entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
+		entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_HELMET));
+		return entity;
 	}
 
 	private static ILuaObject wrapStack(IPartialContext<?> context, ItemStack object) {

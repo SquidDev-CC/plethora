@@ -6,8 +6,11 @@ import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.util.FoodStats;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.utils.EntityPlayerDummy;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,5 +35,11 @@ public class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 		result.put("flySpeed", capabilities.getFlySpeed());
 
 		return result;
+	}
+
+	@Nullable
+	@Override
+	public EntityPlayer getExample() {
+		return new EntityPlayerDummy(WorldDummy.INSTANCE);
 	}
 }

@@ -3,6 +3,8 @@ package org.squiddev.plethora.integration.computercraft;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.computer.core.ComputerFamily;
+import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +12,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -35,5 +38,11 @@ public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
 		data.put("family", cItem.getFamily(stack).toString());
 
 		return data;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return ComputerItemFactory.create(3, "My computer", ComputerFamily.Normal);
 	}
 }

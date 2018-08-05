@@ -1,12 +1,14 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
 import com.google.common.collect.Maps;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,5 +33,11 @@ public class MetaItemOreDict extends BasicMetaProvider<ItemStack> {
 		}
 
 		return list;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(Blocks.GLASS);
 	}
 }
