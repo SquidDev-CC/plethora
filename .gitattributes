@@ -1,0 +1,3 @@
+# Ignore generated files
+_includes/methods.html linguist-generated
+docs.html              linguist-generated

@@ -55,5 +55,5 @@ end
 ### Other functionality
 Right-clicking with the introspection module will open the current player's ender chest.
 
-[item_handler]: {{ "methods.html#target-net-minecraftforge-items-iitemhandler" | relative_url }}
+[item_handler]: {{ "methods.html#targeted-methods-net.minecraftforge.items.IItemHandler" | relative_url }}
 [item_transfer]: {{ "item-transfer.html" | relative_url }}

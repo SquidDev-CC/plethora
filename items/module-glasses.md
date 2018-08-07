@@ -120,4 +120,4 @@ While that was rather dense code, for which I apologise, I hope you can apprecia
 our clock around on screen without issue, we've recreated a screensaver from the days of old.
 
 
-[group_2d]: {{ "methods.html#target-org-squiddev-plethora-gameplay-modules-glasses-objects-objectgroup-group2d" | relative_url }}
+[group_2d]: {{ "methods.html#targeted-methods-org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup$Group2D" | relative_url }}

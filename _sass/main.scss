@@ -110,47 +110,52 @@ code.class {
 }
 
 .method-list {
+	.target-name, .doc-name {
+		font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+		font-weight: normal;
+	}
+
+	// Individual sections/types of value
+	h2 {
+		font-size: 1.6em;
+		margin-top: 1em;
+	}
+	// Targets (modules/classes)
 	h3 {
-		font-size: 1.7em;
-		margin-bottom: 0.5em;
+		font-size: 1.4em;
+		margin: 1.4em 0 0.3em;
 	}
 
-	h4 {
-		margin-top: 2em;
-		margin-bottom: 0.7em;
-		font-size: 1.3em;
-		font-family: "Consolas", monospace;
+	table { width: 100%; box-sizing: border-box; }
+	table, tr, td, th {
+		border: 1px solid #aaa; border-collapse: collapse;
+		min-width: 100px; padding: 3px;
+		text-align: left;
 	}
-}
-.method {
-	background: $grey08;
-	margin-top: 10px;
+	th { font-weight: bold; }
 
-	h5 {
-		font-size: 1em;
-		font-family: "Consolas", monospace;
-		background: #EEEEEE;
-		display: block;
-		margin-bottom: 0px;
-		font-weight: 600;
+	// The main doc "item" (method). We do some weird stuff with padding
+	// in order to make the header span the whole top
+	.doc-item {
+		background: #fafafa;
+		margin-top: 10px; padding: 0px 8px 8px 8px;
 	}
-
-	h5, .content {
-		width: 100%;
-		padding: 6px;
-		box-sizing: border-box;
+	.doc-item h4 {
+		background: #eee;
+		width: 100%; padding: 4px 8px; margin-left: -8px;
+		font-size: 1.1em; font-weight: bold;
 	}
 
-	table {
-		width: 100%;
-	}
+	// We try to make the synopsis the most prominent, followed by
+	// description and then table.
+	.doc-item p.synopsis { font-style: oblique; font-weight: normal; }
+	.doc-item p { margin: 0.2em 0em; font-weight: lighter; }
+	.doc-details { font-size: 0.8em; }
 
-	tr, td, th {
-		border: 1px solid $grey04;
-		min-width: 100px;
-		padding: 3px;
-		font-size: 14px;
-	}
+	// Make the method listing smaller and stripey
+	.doc-list { font-size: 0.8em; }
+	.doc-list tr:nth-child(odd) { background-color: #f9f9f9; }
+	.doc-list tr:nth-child(even) { background-color: #fff; }
 }
 
 .desc {
