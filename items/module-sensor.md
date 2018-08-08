@@ -9,10 +9,10 @@ summary: >-
 module: plethora:sensor
 usable:
  - Manipulator
+ - Minecart computer
  - Neural interface
  - Pocket computer
  - Turtle
- - Minecart computer
 image: module-sensor.png
 ---
 

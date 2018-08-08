@@ -9,10 +9,10 @@ summary: >-
 module: plethora:laser
 usable:
  - Manipulator
+ - Minecart computer
  - Neural interface
  - Pocket computer
  - Turtle
- - Minecart computer
 image: module-laser.png
 ---
 

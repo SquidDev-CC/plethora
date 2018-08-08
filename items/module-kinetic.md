@@ -8,9 +8,10 @@ summary: >-
 
 module: plethora:kinetic
 usable:
+ - Minecart computer
  - Neural interface
  - Pocket computer
- - Minecart computer
+ - Turtle
 image: module-kinetic.png
 ---
 
@@ -33,6 +34,14 @@ end
 Combined with other modules, the kinetic augment can be used in great number of ways. One can fire yourself in the
 direction you're currently looking, slow your descent if you're falling to fast, etc… Take a look at some of the
 examples to get some ideas.
+
+### With turtles
+Kinetic augments can also be used as a turtle upgrade. When equipped, it acts as both a tool _and_
+peripheral. `turtle.dig()` or `turtle.attack()` will use the currently selected item in the inventory to break blocks or
+attack.
+
+Beware, turtles do not use these tools with their normal finesse. Durability will be consumed, and blocks may take
+multiple swings to break.
 
 ### Other functionality
 If you're a low-tech kind of person, you can always experience the joys of `.launch()` by hand. First, hold carefully
