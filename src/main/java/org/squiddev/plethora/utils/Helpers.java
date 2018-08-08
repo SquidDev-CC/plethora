@@ -19,7 +19,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -371,7 +370,7 @@ public class Helpers {
 		return hash;
 	}
 
-	public static int hashStacks(NonNullList<ItemStack> stacks) {
+	public static int hashStacks(Iterable<ItemStack> stacks) {
 		int hash = 0;
 		for (ItemStack stack : stacks) {
 			hash *= 31;

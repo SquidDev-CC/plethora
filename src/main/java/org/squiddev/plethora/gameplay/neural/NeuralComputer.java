@@ -28,7 +28,7 @@ public class NeuralComputer extends ServerComputer {
 	private WeakReference<EntityLivingBase> entity;
 
 	private final NonNullList<ItemStack> stacks = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
-	private int stackHash;
+	private int moduleHash;
 
 	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 	private boolean moduleDataDirty = false;
@@ -59,8 +59,8 @@ public class NeuralComputer extends ServerComputer {
 		moduleDataDirty = true;
 	}
 
-	public int getStackHash() {
-		return stackHash;
+	public int getModuleHash() {
+		return moduleHash;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class NeuralComputer extends ServerComputer {
 				}
 			}
 
-			stackHash = Helpers.hashStacks(stacks);
+			moduleHash = Helpers.hashStacks(stacks.subList(PERIPHERAL_SIZE, PERIPHERAL_SIZE + MODULE_SIZE));
 		}
 
 		// Update peripherals

@@ -122,7 +122,7 @@ public final class NeuralHelpers {
 		final NonNullList<ItemStack> stacks = NonNullList.withSize(MODULE_SIZE, ItemStack.EMPTY);
 		Set<ResourceLocation> modules = Sets.newHashSet();
 		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
-		final int stackHash = computer.getStackHash();
+		final int moduleHash = computer.getModuleHash();
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
 			ItemStack stack = inventory.get(PERIPHERAL_SIZE + i);
@@ -164,7 +164,7 @@ public final class NeuralHelpers {
 			@Nonnull
 			@Override
 			public IModuleContainer safeGet() throws LuaException {
-				if (stackHash != computer.getStackHash()) {
+				if (moduleHash != computer.getModuleHash()) {
 					throw new LuaException("A module has changed");
 				}
 
@@ -190,7 +190,7 @@ public final class NeuralHelpers {
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(builder.getBaked());
 		if (paired.getLeft().size() > 0) {
-			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), stackHash);
+			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), moduleHash);
 			for (NeuralAccess access : accessMap.values()) {
 				access.wrapper = peripheral;
 			}
