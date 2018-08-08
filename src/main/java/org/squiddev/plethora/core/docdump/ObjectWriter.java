@@ -20,7 +20,7 @@ public class ObjectWriter {
 	}
 
 	public void write(Object value) throws IOException {
-		write(value, "  ");
+		write(value, "");
 	}
 
 	private void write(Object value, String indent) throws IOException {

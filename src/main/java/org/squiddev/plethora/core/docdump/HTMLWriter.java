@@ -52,7 +52,7 @@ public class HTMLWriter implements IDocWriter {
 			IMethod<?> method = entry.getValue();
 			DocumentedMethod data = new DocumentedMethod(entry.getKey(), method);
 
-			if (data.getModules().isEmpty() || data.getTarget().isAssignableFrom(IModuleContainer.class)) {
+			if (data.getModules().isEmpty() || !data.getTarget().isAssignableFrom(IModuleContainer.class)) {
 				this.methodLookup.put(data.getTarget().getName(), data);
 			} else {
 				moduleMethodLookup.put(Strings.join(data.getModules(), ", "), data);
@@ -108,7 +108,7 @@ public class HTMLWriter implements IDocWriter {
 
 		// Emit a link to all children
 		writer.println("<ul>");
-		for (String target : lookup.keySet()) writer.printf("<li>%s</li>", linkToTarget(groupId, target));
+		for (String target : lookup.keySet()) writer.printf("<li>%s</li>\n", linkToTarget(groupId, target));
 		writer.println("</ul>");
 	}
 
@@ -147,7 +147,7 @@ public class HTMLWriter implements IDocWriter {
 		writer.printf("<h4 id=\"%s\" class=\"doc-name\">%s</h4>\n", uniqueIdent(doc), doc.getFriendlyName() + doc.getArgs());
 
 		if (doc.getSynopsis() != null) writer.printf("<p class=\"synopsis\">%s</p>\n", doc.getSynopsis());
-		if (doc.getDetail() != null) writer.printf("<p>%s</p>", doc.getDetail().replace("\n", "</p>\n<p>"));
+		if (doc.getDetail() != null) writer.printf("<p>%s</p>\n", doc.getDetail().replace("\n", "</p>\n<p>"));
 
 		writer.println("<table class=\"doc-details\">");
 		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", doc.getObject().getClass().getName());
@@ -204,7 +204,7 @@ public class HTMLWriter implements IDocWriter {
 		writer.printf("<h4 id=\"%s\" class=\"doc-name\">%s</h4>\n", uniqueIdent(doc), doc.getFriendlyName());
 
 		if (doc.getSynopsis() != null) writer.printf("<p class=\"synopsis\">%s</p>\n", doc.getSynopsis());
-		if (doc.getDetail() != null) writer.printf("<p>%s</p>", doc.getDetail().replace("\n", "</p>\n<p>"));
+		if (doc.getDetail() != null) writer.printf("<p>%s</p>\n", doc.getDetail().replace("\n", "</p>\n<p>"));
 
 		IMetaProvider provider = doc.getObject();
 		Object example = provider.getExample();
