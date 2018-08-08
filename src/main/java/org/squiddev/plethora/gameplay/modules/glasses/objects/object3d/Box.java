@@ -27,7 +27,7 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 	private double height;
 	private double depth;
 
-	private boolean depthTest;
+	private boolean depthTest = true;
 
 	public Box(int id, int parent) {
 		super(id, parent, ObjectRegistry.BOX_3D);

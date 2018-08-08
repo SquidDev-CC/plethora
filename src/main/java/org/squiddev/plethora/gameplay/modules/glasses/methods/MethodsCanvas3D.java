@@ -59,16 +59,16 @@ public class MethodsCanvas3D {
 
 		int colour;
 		double width, height, depth;
-		if (args.length > 3) {
-			width = getFloat(args, 3);
-			height = getFloat(args, 4);
-			depth = getFloat(args, 5);
-			colour = optInt(args, 6, DEFAULT_COLOUR);
-		} else {
+		if (args.length <= 4) {
 			width = 1;
 			height = 1;
 			depth = 1;
 			colour = optInt(args, 3, DEFAULT_COLOUR);
+		} else {
+			width = getFloat(args, 3);
+			height = getFloat(args, 4);
+			depth = getFloat(args, 5);
+			colour = optInt(args, 6, DEFAULT_COLOUR);
 		}
 
 		IContext<Group3D> baked = context.safeBake();
