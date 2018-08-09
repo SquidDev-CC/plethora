@@ -7,15 +7,12 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.SaveHandlerMP;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("NullableProblems")
-@SideOnly(Side.CLIENT)
 public class WorldDummy extends World {
 	public static final WorldDummy INSTANCE = new WorldDummy();
 
@@ -49,7 +46,7 @@ public class WorldDummy extends World {
 	}
 
 	private final class ChunkProvider implements IChunkProvider {
-		public final Map<ChunkPos, Chunk> chunks = new HashMap<>();
+		private final Map<ChunkPos, Chunk> chunks = new HashMap<>();
 
 		@Nullable
 		@Override
