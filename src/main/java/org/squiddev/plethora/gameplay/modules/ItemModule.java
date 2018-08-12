@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules;
 
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,13 +32,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
-import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.EntityReference;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.ConfigCore;
@@ -49,10 +46,10 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
 import org.squiddev.plethora.gameplay.modules.glasses.*;
+import org.squiddev.plethora.integration.EntityIdentifier;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import java.util.Arrays;
@@ -329,7 +326,7 @@ public final class ItemModule extends ItemBase {
 			if (entity != null) builder.addContext(moduleKey, entity, new EntityReference<>(entity));
 
 			GameProfile profile = getProfile(stack);
-			if (profile != null) builder.addContext(moduleKey, new ConstantOwnable(profile));
+			if (profile != null) builder.addContext(moduleKey, new EntityIdentifier.Player(profile));
 
 			if (stack.getItemDamage() == CHAT_ID) {
 				// Add a chat listener if we've got an entity (and are a chat module).
@@ -441,47 +438,6 @@ public final class ItemModule extends ItemBase {
 			} catch (RuntimeException ignored) {
 				// This'll be logged by FML, so we'll ignore it for now.
 			}
-		}
-	}
-
-	private static class ConstantOwnable extends ConstantReference<ConstantOwnable> implements IPlayerOwnable {
-		private final GameProfile profile;
-
-		private ConstantOwnable(GameProfile profile) {
-			this.profile = profile;
-		}
-
-		@Nullable
-		@Override
-		public GameProfile getOwningProfile() {
-			return profile;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-
-			ConstantOwnable that = (ConstantOwnable) o;
-
-			return profile != null ? profile.equals(that.profile) : that.profile == null;
-		}
-
-		@Override
-		public int hashCode() {
-			return profile != null ? profile.hashCode() : 0;
-		}
-
-		@Nonnull
-		@Override
-		public ConstantOwnable get() throws LuaException {
-			return this;
-		}
-
-		@Nonnull
-		@Override
-		public ConstantOwnable safeGet() throws LuaException {
-			return this;
 		}
 	}
 }

@@ -2,44 +2,38 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleContainerObjectMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.EntityIdentifier;
 
 import javax.annotation.Nonnull;
 
-import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
-
 public final class MethodsIntrospection {
-	@ModuleContainerObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, worldThread = false,
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class, worldThread = false,
 		doc = "function():string -- Get this entity's UUID."
 	)
-	public static Object[] getID(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		Entity entity = getOriginOr(context, PlethoraModules.INTROSPECTION_S, Entity.class);
-		if (entity == null) throw new LuaException("Entity not found");
-
-		return new Object[]{entity.getUniqueID().toString()};
+	public static Object[] getID(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		return new Object[]{identifier.getId().toString()};
 	}
 
-	@ModuleContainerObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, worldThread = false,
-		doc = "function():string -- Get this entity's name"
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class, worldThread = false,
+		doc = "function():string -- Get this entity's UUID."
 	)
-	public static Object[] getName(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		Entity entity = getOriginOr(context, PlethoraModules.INTROSPECTION_S, Entity.class);
-		if (entity == null) throw new LuaException("Entity not found");
-
-		return new Object[]{entity.getName()};
+	public static Object[] getName(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		return new Object[]{identifier.getName()};
 	}
 
-	@ModuleContainerObjectMethod.Inject(
-		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S}, worldThread = true,
-		doc = "function():string -- Get this entity's metadata."
+	@SubtargetedModuleObjectMethod.Inject(
+		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class, worldThread = false,
+		doc = "function():string -- Get this entity's UUID."
 	)
-	public static Object[] getMetaOwner(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		Entity entity = getOriginOr(context, PlethoraModules.INTROSPECTION_S, Entity.class);
+	public static Object[] getMetaOwner(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+		Entity entity = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityFromUuid(identifier.getId());
 		if (entity == null) throw new LuaException("Entity not found");
 
 		return new Object[]{context.makePartialChild(entity).getMeta()};
