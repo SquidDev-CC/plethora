@@ -20,7 +20,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -48,7 +47,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 		super(Material.ROCK);
 
 		setHardness(2);
-		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + NAME);
+		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + NAME);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 

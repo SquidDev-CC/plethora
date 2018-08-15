@@ -23,7 +23,7 @@ public abstract class ItemBase extends Item implements IClientModule {
 	public ItemBase(String itemName, int stackSize) {
 		name = itemName;
 
-		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + name);
+		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + name);
 
 		setCreativeTab(Plethora.getCreativeTab());
 		setMaxStackSize(stackSize);
@@ -43,7 +43,7 @@ public abstract class ItemBase extends Item implements IClientModule {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag flag) {
 		super.addInformation(stack, world, out, flag);
-		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));
+		out.add(Helpers.translateToLocal(getTranslationKey(stack) + ".desc"));
 	}
 
 	@Override

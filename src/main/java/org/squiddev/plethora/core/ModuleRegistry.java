@@ -33,7 +33,7 @@ final class ModuleRegistry implements IModuleRegistry {
 	@Override
 	public void registerTurtleUpgrade(@Nonnull ItemStack stack) {
 		Preconditions.checkNotNull(stack, "stack cannot be null");
-		registerTurtleUpgrade(stack, stack.getUnlocalizedName() + ".adjective");
+		registerTurtleUpgrade(stack, stack.getTranslationKey() + ".adjective");
 	}
 
 	@Override
@@ -61,7 +61,7 @@ final class ModuleRegistry implements IModuleRegistry {
 	@Override
 	public void registerPocketUpgrade(@Nonnull ItemStack stack) {
 		Preconditions.checkNotNull(stack, "stack cannot be null");
-		registerPocketUpgrade(stack, stack.getUnlocalizedName() + ".adjective");
+		registerPocketUpgrade(stack, stack.getTranslationKey() + ".adjective");
 	}
 
 	@Override

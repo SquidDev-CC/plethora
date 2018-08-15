@@ -309,7 +309,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 
 						TileEntity te = world.getTileEntity(position);
 						if (block.removedByPlayer(blockState, world, position, player, true)) {
-							block.onBlockDestroyedByPlayer(world, position, blockState);
+							block.onPlayerDestroy(world, position, blockState);
 							block.harvestBlock(world, player, position, blockState, te, ItemStack.EMPTY);
 						}
 					} else {

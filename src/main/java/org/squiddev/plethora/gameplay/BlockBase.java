@@ -45,7 +45,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 		name = blockName;
 
 		setHardness(2);
-		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + blockName);
+		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + blockName);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
@@ -71,6 +71,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 
 	@Nonnull
 	@Override
+	@Deprecated
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
@@ -116,7 +117,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag advanced) {
 		super.addInformation(stack, world, out, advanced);
-		out.add(Helpers.translateToLocal(getUnlocalizedName(stack.getItemDamage()) + ".desc"));
+		out.add(Helpers.translateToLocal(getTranslationKey(stack.getItemDamage()) + ".desc"));
 	}
 
 	@Override
@@ -140,8 +141,8 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 		event.getRegistry().register(new ItemBlockBase(this).setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, name)));
 	}
 
-	public String getUnlocalizedName(int meta) {
-		return getUnlocalizedName();
+	public String getTranslationKey(int meta) {
+		return getTranslationKey();
 	}
 
 	@Override

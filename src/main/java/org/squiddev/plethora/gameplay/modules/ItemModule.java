@@ -81,8 +81,8 @@ public final class ItemModule extends ItemBase {
 
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		return super.getUnlocalizedName() + ".module_" + getName(stack.getItemDamage());
+	public String getTranslationKey(ItemStack stack) {
+		return super.getTranslationKey() + ".module_" + getName(stack.getItemDamage());
 	}
 
 	private boolean isBlacklisted(ItemStack stack) {
@@ -241,7 +241,7 @@ public final class ItemModule extends ItemBase {
 			ComputerCraftAPI.registerTurtleUpgrade(new TurtleUpgradeKinetic(
 				stack,
 				stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null),
-				stack.getUnlocalizedName() + ".adjective")
+				stack.getTranslationKey() + ".adjective")
 			);
 		}
 

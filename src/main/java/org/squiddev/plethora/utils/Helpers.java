@@ -223,7 +223,7 @@ public class Helpers {
 	}
 
 	public static String getName(ItemStack stack) {
-		String name = stack.getUnlocalizedName();
+		String name = stack.getTranslationKey();
 
 		if (!Strings.isNullOrEmpty(name)) {
 			name = StringUtils.removeStart(name, "tile.");

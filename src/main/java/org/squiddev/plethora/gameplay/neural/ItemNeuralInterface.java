@@ -72,7 +72,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public ItemNeuralInterface() {
 		super(FAKE_ARMOUR, 0, ARMOR_SLOT);
 
-		setUnlocalizedName(Plethora.RESOURCE_DOMAIN + "." + NAME);
+		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + NAME);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
@@ -364,7 +364,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> out, ITooltipFlag flag) {
 		super.addInformation(stack, world, out, flag);
-		out.add(Helpers.translateToLocal(getUnlocalizedName(stack) + ".desc"));
+		out.add(Helpers.translateToLocal(getTranslationKey(stack) + ".desc"));
 
 		NBTTagCompound tag = stack.getTagCompound();
 		if (flag.isAdvanced()) {

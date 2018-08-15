@@ -99,7 +99,7 @@ public class ItemKeyboard extends ItemBase {
 
 			// Clear the tag compound: pocket upgrades check this when determining if something can be stacked
 			// so we want the default to be null.
-			if (tag != null && tag.hasNoTags()) stack.setTagCompound(null);
+			if (tag != null && tag.isEmpty()) stack.setTagCompound(null);
 
 			player.inventory.markDirty();
 

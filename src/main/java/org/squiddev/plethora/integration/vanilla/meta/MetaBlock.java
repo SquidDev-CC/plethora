@@ -30,7 +30,7 @@ public class MetaBlock extends BasicMetaProvider<Block> {
 		data.put("name", name == null ? "unknown" : name.toString());
 
 		data.put("displayName", block.getLocalizedName());
-		data.put("unlocalizedName", block.getUnlocalizedName());
+		data.put("TranslationKey", block.getTranslationKey());
 
 		return data;
 	}

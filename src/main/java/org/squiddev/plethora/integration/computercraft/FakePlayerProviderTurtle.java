@@ -43,9 +43,9 @@ public final class FakePlayerProviderTurtle {
 
 		BlockPos position = turtle.getPosition();
 		player.setPositionAndRotation(
-			position.getX() + 0.5 + 0.51 * direction.getFrontOffsetX(),
-			position.getY() + 0.5 + 0.51 * direction.getFrontOffsetY(),
-			position.getZ() + 0.5 + 0.51 * direction.getFrontOffsetZ(),
+			position.getX() + 0.5 + 0.51 * direction.getXOffset(),
+			position.getY() + 0.5 + 0.51 * direction.getYOffset(),
+			position.getZ() + 0.5 + 0.51 * direction.getZOffset(),
 			direction.getAxis() != EnumFacing.Axis.Y ? DirectionUtil.toYawAngle(direction) : DirectionUtil.toYawAngle(turtle.getDirection()),
 			direction.getAxis() != EnumFacing.Axis.Y ? 0 : DirectionUtil.toPitchAngle(direction)
 		);

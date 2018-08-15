@@ -38,8 +38,8 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 		fillBasicMeta(data, stack);
 
 		String display = stack.getDisplayName();
-		data.put("displayName", display == null || display.length() == 0 ? stack.getUnlocalizedName() : display);
-		data.put("rawName", stack.getUnlocalizedName());
+		data.put("displayName", display == null || display.length() == 0 ? stack.getTranslationKey() : display);
+		data.put("rawName", stack.getTranslationKey());
 
 		data.put("maxCount", stack.getMaxStackSize());
 		data.put("maxDamage", stack.getMaxDamage());
@@ -78,7 +78,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 
 	@Nullable
 	public static String getNBTHash(@Nullable NBTTagCompound tag) {
-		if (tag == null || tag.hasNoTags()) return null;
+		if (tag == null || tag.isEmpty()) return null;
 
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");

@@ -119,7 +119,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			}
 		}
 
-		return result == null ? null : new RayTraceResult(result.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), result.sideHit, pos);
+		return result == null ? null : new RayTraceResult(result.hitVec.add(pos.getX(), pos.getY(), pos.getZ()), result.sideHit, pos);
 	}
 
 	@Override
@@ -166,8 +166,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	public String getUnlocalizedName(int meta) {
-		return getUnlocalizedName() + "." + VALUES[meta & 1].getName();
+	public String getTranslationKey(int meta) {
+		return getTranslationKey() + "." + VALUES[meta & 1].getName();
 	}
 
 	@Nonnull

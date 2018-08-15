@@ -91,7 +91,7 @@ public final class MethodsChat {
 			ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
 			if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
 
-			player.mcServer.getPlayerList().sendMessage(event.getComponent(), false);
+			player.server.getPlayerList().sendMessage(event.getComponent(), false);
 			return MethodResult.empty();
 		});
 	}

@@ -21,11 +21,11 @@ public class ItemBlockBase extends ItemBlock {
 
 	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
+	public String getTranslationKey(ItemStack stack) {
 		if (block instanceof BlockBase) {
-			return ((BlockBase) block).getUnlocalizedName(stack.getItemDamage());
+			return ((BlockBase) block).getTranslationKey(stack.getItemDamage());
 		} else {
-			return block.getUnlocalizedName();
+			return block.getTranslationKey();
 		}
 	}
 }

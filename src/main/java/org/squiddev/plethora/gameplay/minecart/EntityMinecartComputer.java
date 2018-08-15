@@ -449,7 +449,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		if (getFamily() == ComputerFamily.Command) {
 			if (getEntityWorld().isRemote) return true;
 
-			MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).mcServer : null;
+			MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).server : null;
 			if (server == null || !server.isCommandBlockEnabled()) {
 				player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
 				return false;
@@ -505,9 +505,9 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 			x = offsetPos.x;
 			y = (posOff.y + negOff.y) / 2.0D;
 			z = offsetPos.z;
-			Vec3d invoff = negOff.addVector(-posOff.x, -posOff.y, -posOff.z);
+			Vec3d invoff = negOff.add(-posOff.x, -posOff.y, -posOff.z);
 
-			if (invoff.lengthVector() != 0.0D) {
+			if (invoff.lengthSquared() != 0.0D) {
 				invoff = invoff.normalize();
 				yaw = (float) (Math.atan2(invoff.z, invoff.x) * 180.0D / Math.PI);
 				pitch = (float) (Math.atan(invoff.y) * 73.0D);

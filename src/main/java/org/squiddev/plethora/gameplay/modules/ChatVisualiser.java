@@ -31,7 +31,7 @@ public class ChatVisualiser extends Module implements IMessageHandler<ChatVisual
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onServerChat(ServerChatEvent event) {
-		PlayerList players = event.getPlayer().mcServer.getPlayerList();
+		PlayerList players = event.getPlayer().server.getPlayerList();
 		int distance = (players.getViewDistance() * 16);
 		distance *= distance;
 
