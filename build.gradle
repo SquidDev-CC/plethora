@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-	id 'com.matthewprenger.cursegradle' version '1.0.9'
+	id 'com.matthewprenger.cursegradle' version '1.0.10'
 }
 
 buildDir = "build-${mc_version}"
@@ -119,7 +119,7 @@ dependencies {
 
 	compileOnly "MCMultiPart2:MCMultiPart:2.2.2:deobf"
 	compileOnly "refinedstorage:refinedstorage:1.5.35-16:deobf"
-	compileOnly("appeng:appliedenergistics2:rv5-stable-8") { exclude group: "mezz.jei" }
+	compileOnly("appeng:appliedenergistics2:rv6-stable-3") { exclude group: "mezz.jei" }
 	compileOnly("codechicken:ForgeMultipart:1.12-2.3.0.46:deobf") { exclude group: "codechicken" }
 	compileOnly "codechicken:CodeChickenLib:1.12-3.1.5.330:deobf"
 
@@ -177,8 +177,8 @@ curseforge {
 		releaseType = 'release'
 		changelog = ''
 
-		relations {
-			requiredLibrary 'computercraft'
-		}
+		// relations {
+			// requiredLibrary 'computercraft'
+		// }
 	}
 }

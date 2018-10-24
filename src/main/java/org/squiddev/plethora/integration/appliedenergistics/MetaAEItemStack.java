@@ -25,6 +25,7 @@ public class MetaAEItemStack extends BasicMetaProvider<IAEItemStack> {
 		HashMap<Object, Object> data = Maps.newHashMap();
 		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
 		data.put("count", stack.getStackSize());
+		data.put("isCraftable", stack.isCraftable());
 		return data;
 	}
 }

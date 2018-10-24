@@ -62,22 +62,28 @@ public class MethodsNetworkNode {
 		if (network == null) return new Object[]{Collections.emptyMap()};
 
 		Collection<ItemStack> items = network.getItemStorageCache().getList().getStacks();
-		Set<ItemIdentity> seen = new HashSet<>();
+		HashMap<ItemIdentity, Map<Object, Object>> seen = new HashMap<>();
+		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
 
 		int i = 0;
-		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
 		for (ItemStack stack : items) {
-			seen.add(new ItemIdentity(stack));
-			output.put(++i, MetaItemBasic.getBasicMeta(stack));
+			Map<Object, Object> basic = MetaItemBasic.getBasicMeta(stack);
+			seen.put(new ItemIdentity(stack), basic);
+			output.put(++i, basic);
 		}
 
 		for (ICraftingPattern pattern : network.getCraftingManager().getPatterns()) {
 			for (ItemStack stack : pattern.getOutputs()) {
-				if (stack != null && seen.add(new ItemIdentity(stack))) {
-					Map<Object, Object> result = MetaItemBasic.getBasicMeta(stack);
-					result.put("count", 0);
-					output.put(++i, result);
+				if (stack == null || stack.isEmpty()) continue;
+				ItemIdentity key = new ItemIdentity(stack);
+				Map<Object, Object> basic = seen.get(key);
+				if (basic == null) {
+					basic = MetaItemBasic.getBasicMeta(stack);
+					basic.put("count", 0);
+					output.put(++i, basic);
 				}
+
+				basic.put("isCraftable", true);
 			}
 		}
 
