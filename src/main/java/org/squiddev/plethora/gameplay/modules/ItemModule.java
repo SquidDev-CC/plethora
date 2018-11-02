@@ -229,6 +229,16 @@ public final class ItemModule extends ItemBase {
 		super.preInit();
 		EntityRegistry.registerModEntity(new ResourceLocation(Plethora.ID, "laser"), EntityLaser.class, Plethora.ID + ":laser", 0, Plethora.instance, 64, 10, true);
 
+		MinecraftForge.EVENT_BUS.register(new CanvasHandler());
+
+		Plethora.network.registerMessage(new MessageCanvasAdd.Handler(), MessageCanvasAdd.class, CANVAS_ADD_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new MessageCanvasRemove.Handler(), MessageCanvasRemove.class, CANVAS_REMOVE_MESSAGE, Side.CLIENT);
+		Plethora.network.registerMessage(new MessageCanvasUpdate.Handler(), MessageCanvasUpdate.class, CANVAS_UPDATE_MESSAGE, Side.CLIENT);
+	}
+
+	@Override
+	public void init() {
+		super.init();
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
 		for (int id : TURTLE_MODULES) {
@@ -249,13 +259,6 @@ public final class ItemModule extends ItemBase {
 			ItemStack stack = new ItemStack(this, 1, id);
 			registry.registerPocketUpgrade(stack);
 		}
-
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new CanvasHandler());
-
-		Plethora.network.registerMessage(new MessageCanvasAdd.Handler(), MessageCanvasAdd.class, CANVAS_ADD_MESSAGE, Side.CLIENT);
-		Plethora.network.registerMessage(new MessageCanvasRemove.Handler(), MessageCanvasRemove.class, CANVAS_REMOVE_MESSAGE, Side.CLIENT);
-		Plethora.network.registerMessage(new MessageCanvasUpdate.Handler(), MessageCanvasUpdate.class, CANVAS_UPDATE_MESSAGE, Side.CLIENT);
 	}
 
 	//endregion

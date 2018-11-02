@@ -211,7 +211,11 @@ public class ItemKeyboard extends ItemBase {
 		MinecraftForge.EVENT_BUS.register(listener);
 		Plethora.network.registerMessage(listener, ListenMessage.class, Packets.LISTEN_MESSAGE, Side.CLIENT);
 		Plethora.network.registerMessage(new ServerKeyListener(), KeyMessage.class, Packets.KEY_MESSAGE, Side.SERVER);
+	}
 
+	@Override
+	public void init() {
+		super.init();
 		PlethoraAPI.instance().moduleRegistry().registerPocketUpgrade(new ItemStack(this));
 	}
 
