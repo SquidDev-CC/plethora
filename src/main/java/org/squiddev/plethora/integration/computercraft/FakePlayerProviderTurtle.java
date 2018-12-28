@@ -46,7 +46,7 @@ public final class FakePlayerProviderTurtle {
 			position.getX() + 0.5 + 0.51 * direction.getXOffset(),
 			position.getY() + 0.5 + 0.51 * direction.getYOffset(),
 			position.getZ() + 0.5 + 0.51 * direction.getZOffset(),
-			direction.getAxis() != EnumFacing.Axis.Y ? DirectionUtil.toYawAngle(direction) : DirectionUtil.toYawAngle(turtle.getDirection()),
+			direction.getAxis() != EnumFacing.Axis.Y ? direction.getHorizontalAngle() : turtle.getDirection().getHorizontalAngle(),
 			direction.getAxis() != EnumFacing.Axis.Y ? 0 : DirectionUtil.toPitchAngle(direction)
 		);
 

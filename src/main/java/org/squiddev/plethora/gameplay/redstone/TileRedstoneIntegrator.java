@@ -37,8 +37,8 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private final Set<IComputerAccess> computers = Sets.newConcurrentHashSet();
 
 	private void updateInput() {
-		World worldObj = getWorld();
-		if (worldObj == null || worldObj.isRemote || isInvalid() || !worldObj.isBlockLoaded(pos)) return;
+		World world = getWorld();
+		if (world == null || world.isRemote || isInvalid() || !world.isBlockLoaded(pos)) return;
 
 		boolean changed = false;
 		for (EnumFacing dir : EnumFacing.VALUES) {
@@ -46,13 +46,13 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 			EnumFacing offsetSide = dir.getOpposite();
 			int dirIdx = dir.ordinal();
 
-			byte newInput = (byte) RedstoneUtil.getRedstoneOutput(worldObj, offset, offsetSide);
+			byte newInput = (byte) world.getRedstonePower(offset, offsetSide);
 			if (newInput != inputs[dirIdx]) {
 				inputs[dirIdx] = newInput;
 				changed = true;
 			}
 
-			short newBundled = (short) RedstoneUtil.getBundledRedstoneOutput(worldObj, offset, offsetSide);
+			short newBundled = (short) RedstoneUtil.getBundledRedstoneOutput(world, offset, offsetSide);
 			if (bundledInputs[dirIdx] != newBundled) {
 				bundledInputs[dirIdx] = newBundled;
 				changed = true;
@@ -77,12 +77,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	void updateOnce() {
-		World worldObj = getWorld();
-		if (worldObj == null || worldObj.isRemote || isInvalid() || !worldObj.isBlockLoaded(pos)) return;
+		World world = getWorld();
+		if (world == null || world.isRemote || isInvalid() || !world.isBlockLoaded(pos)) return;
 
 		if (outputDirty) {
 			for (EnumFacing dir : EnumFacing.VALUES) {
-				RedstoneUtil.propagateRedstoneOutput(worldObj, pos, dir);
+				RedstoneUtil.propagateRedstoneOutput(world, pos, dir);
 			}
 			outputDirty = false;
 		}
@@ -115,7 +115,6 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		updateInput();
 	}
 
-	@Override
 	public ItemStack getPickedItem() {
 		return new ItemStack(Registry.blockRedstoneIntegrator);
 	}
@@ -167,7 +166,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	@Override
-	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException {
 		switch (method) {
 			case 0: { // getSides
 				Map<Integer, String> result = Maps.newHashMap();

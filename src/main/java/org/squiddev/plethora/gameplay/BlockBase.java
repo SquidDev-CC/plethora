@@ -128,7 +128,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@Override
 	public void preInit() {
 		MinecraftForge.EVENT_BUS.register(this);
-		GameRegistry.registerTileEntity(klass, Plethora.RESOURCE_DOMAIN + ":" + name);
+		GameRegistry.registerTileEntity(klass, new ResourceLocation(Plethora.RESOURCE_DOMAIN, name));
 	}
 
 	@SubscribeEvent

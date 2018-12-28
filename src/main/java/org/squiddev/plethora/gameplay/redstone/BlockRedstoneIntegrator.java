@@ -80,7 +80,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 
 	@Override
 	public void preInit() {
-		GameRegistry.registerTileEntity(TileRedstoneIntegrator.class, Plethora.RESOURCE_DOMAIN + ":" + NAME);
+		GameRegistry.registerTileEntity(TileRedstoneIntegrator.class, new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME));
 
 		MinecraftForge.EVENT_BUS.register(this);
 		ComputerCraftAPI.registerPeripheralProvider(this);

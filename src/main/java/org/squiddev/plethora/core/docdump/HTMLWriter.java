@@ -199,6 +199,7 @@ public class HTMLWriter implements IDocWriter {
 		writer.println("</div>");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void writeMeta(DocumentedMetaProvider doc) throws IOException {
 		writer.println("<div class=\"doc-item\">");
 		writer.printf("<h4 id=\"%s\" class=\"doc-name\">%s</h4>\n", uniqueIdent(doc), doc.getFriendlyName());
@@ -206,7 +207,7 @@ public class HTMLWriter implements IDocWriter {
 		if (doc.getSynopsis() != null) writer.printf("<p class=\"synopsis\">%s</p>\n", doc.getSynopsis());
 		if (doc.getDetail() != null) writer.printf("<p>%s</p>\n", doc.getDetail().replace("\n", "</p>\n<p>"));
 
-		IMetaProvider provider = doc.getObject();
+		IMetaProvider<?> provider = doc.getObject();
 		Object example = provider.getExample();
 		if (example != null) {
 			Map<?, ?> meta = provider.getMeta(new PartialContext(1,

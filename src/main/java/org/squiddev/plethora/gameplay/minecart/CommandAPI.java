@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
-import dan200.computercraft.shared.util.WorldUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -153,7 +152,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 					BlockPos min = new BlockPos(Math.min(minx, maxx), Math.min(miny, maxy), Math.min(minz, maxz));
 
 					BlockPos max = new BlockPos(Math.max(minx, maxx), Math.max(miny, maxy), Math.max(minz, maxz));
-					if (!WorldUtil.isBlockInWorld(world, min) || !WorldUtil.isBlockInWorld(world, max)) {
+					if (!world.isValid(min) || !world.isValid(max)) {
 						throw new LuaException("Co-ordinates out or range");
 					}
 					if ((max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1) * (max.getZ() - min.getZ() + 1) > 4096) {
@@ -181,7 +180,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				context.executeMainThreadTask(() -> {
 					World world = entity.getEntityWorld();
 					BlockPos position = new BlockPos(x, y, z);
-					if (WorldUtil.isBlockInWorld(world, position)) {
+					if (world.isValid(position)) {
 						return new Object[]{getBlockInfo(world, position)};
 					}
 					throw new LuaException("Co-ordinates out or range");

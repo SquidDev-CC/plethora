@@ -7,6 +7,7 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import com.google.common.base.Objects;
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
@@ -217,7 +218,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public IMount createDataMount(@Nonnull ItemStack stack, @Nonnull World world) {
 		int id = getComputerID(stack);
 		if (id >= 0) {
-			return ComputerCraft.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit);
+			return ComputerCraftAPI.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit);
 		}
 
 		return null;
