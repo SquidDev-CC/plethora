@@ -79,6 +79,7 @@ import static org.squiddev.plethora.gameplay.Plethora.ID;
 
 public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwnable {
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
+	private static final ComputerState[] STATES = ComputerState.values();
 
 	private static final int[] PERIPHERAL_MAPPINGS = new int[]{1, 5, 4, 2};
 
@@ -95,6 +96,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	private static final DataParameter<Integer> INSTANCE_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> SESSION_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.VARINT);
 	private static final DataParameter<Byte> FAMILY_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.BYTE);
+	private static final DataParameter<Byte> STATE_SLOT = EntityDataManager.createKey(EntityMinecartComputer.class, DataSerializers.BYTE);
 
 	private static final int SLOTS = 4;
 
@@ -158,6 +160,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		dataManager.register(INSTANCE_SLOT, -1);
 		dataManager.register(SESSION_SLOT, -1);
 		dataManager.register(FAMILY_SLOT, (byte) 0);
+		dataManager.register(STATE_SLOT, (byte) 0);
 	}
 
 	private int getInstanceId() {
@@ -180,6 +183,14 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		return accesses[slot];
 	}
 
+	private ComputerState getState() {
+		return STATES[dataManager.get(STATE_SLOT)];
+	}
+
+	private void setState(ComputerState state) {
+		dataManager.set(STATE_SLOT, (byte) state.ordinal());
+	}
+
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
@@ -200,6 +211,14 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		setCustomNameTag(label == null ? "" : label);
 
 		on = computer.isOn();
+
+		ComputerState state = ComputerState.Off;
+		if (computer.isCursorDisplayed()) {
+			state = ComputerState.Blinking;
+		} else if (computer.isOn()) {
+			state = ComputerState.On;
+		}
+		setState(state);
 
 		WorldServer server = (WorldServer) getEntityWorld();
 
@@ -387,38 +406,20 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 
 	@Nonnull
 	@Override
-	@SuppressWarnings("unchecked")
 	public IBlockState getDisplayTile() {
-		ComputerFamily family = getFamily();
-		IComputer computer = getEntityWorld().isRemote ? getClientComputer() : getServerComputer();
-
-		ComputerState state = ComputerState.Off;
-		if (computer != null) {
-			if (computer.isCursorDisplayed()) {
-				state = ComputerState.Blinking;
-			} else if (computer.isOn()) {
-				state = ComputerState.On;
-			}
-		}
-
-		IBlockState blockState;
-		switch (family) {
+		switch (getFamily()) {
 			case Advanced:
 			case Normal:
 			default:
-				blockState = ComputerCraft.Blocks.computer
+				return ComputerCraft.Blocks.computer
 					.getDefaultState()
-					.withProperty(BlockComputer.Properties.ADVANCED, family == ComputerFamily.Advanced)
-					.withProperty(BlockComputer.Properties.STATE, state);
-				break;
+					.withProperty(BlockComputer.Properties.ADVANCED, getFamily() == ComputerFamily.Advanced)
+					.withProperty(BlockComputer.Properties.STATE, getState());
 			case Command:
-				blockState = ComputerCraft.Blocks.commandComputer
+				return ComputerCraft.Blocks.commandComputer
 					.getDefaultState()
-					.withProperty(BlockCommandComputer.Properties.STATE, state);
-				break;
+					.withProperty(BlockCommandComputer.Properties.STATE, getState());
 		}
-
-		return blockState;
 	}
 
 	@Override

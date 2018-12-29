@@ -2,7 +2,7 @@ package org.squiddev.plethora.gameplay.keyboard;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.common.TileGeneric;
-import dan200.computercraft.shared.computer.blocks.IComputerTile;
+import dan200.computercraft.shared.computer.blocks.TileComputerBase;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerRegistry;
 import dan200.computercraft.shared.computer.core.IComputer;
@@ -69,10 +69,8 @@ public class ItemKeyboard extends ItemBase {
 			TileEntity tile = world.getTileEntity(pos);
 			ItemStack stack = player.getHeldItem(hand);
 			NBTTagCompound tag = stack.getTagCompound();
-			if (tile instanceof IComputerTile) {
-				if (tile instanceof TileGeneric && !((TileGeneric) tile).isUsable(player, true)) {
-					return EnumActionResult.FAIL;
-				}
+			if (tile instanceof TileComputerBase) {
+				if (!((TileGeneric) tile).isUsable(player, true)) return EnumActionResult.FAIL;
 
 				if (tag == null) stack.setTagCompound(tag = new NBTTagCompound());
 
@@ -129,8 +127,8 @@ public class ItemKeyboard extends ItemBase {
 				BlockPos pos = new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
 				if (remote != null && remote.isBlockLoaded(pos)) {
 					TileEntity tile = remote.getTileEntity(pos);
-					if (tile instanceof IComputerTile) {
-						IComputer computer = ((IComputerTile) tile).getComputer();
+					if (tile instanceof TileComputerBase) {
+						ServerComputer computer = ((TileComputerBase) tile).getServerComputer();
 						if (computer != null) {
 							tag.setInteger(INSTANCE_ID, computer.getInstanceID());
 							dirty = true;
