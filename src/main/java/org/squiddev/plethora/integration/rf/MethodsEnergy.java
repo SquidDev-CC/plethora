@@ -1,6 +1,6 @@
 package org.squiddev.plethora.integration.rf;
 
-import cofh.redstoneflux.RedstoneFlux;
+import cofh.redstoneflux.RedstoneFluxProps;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import cofh.redstoneflux.api.IEnergyHandler;
 import cofh.redstoneflux.api.IEnergyStorage;
@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFlux.MOD_ID, worldThread = true, name = "getRFStored",
+		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, worldThread = true, name = "getRFStored",
 		doc = "function():int -- The amount of RF currently stored"
 	)
 	public static Object[] getRFStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
@@ -22,7 +22,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFlux.MOD_ID, worldThread = true, name = "getRFCapacity",
+		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, worldThread = true, name = "getRFCapacity",
 		doc = "function():int -- The maximum amount of RF that can be stored"
 	)
 	public static Object[] getRFCapacityStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
@@ -30,7 +30,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicMethod.Inject(
-		value = IEnergyHandler.class, modId = RedstoneFlux.MOD_ID, name = "getRFStored",
+		value = IEnergyHandler.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFStored",
 		doc = "function([side:string]):int -- The amount of RF currently stored"
 	)
 	public static MethodResult getRFStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
@@ -40,7 +40,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicMethod.Inject(
-		value = IEnergyHandler.class, modId = RedstoneFlux.MOD_ID, name = "getRFCapacity",
+		value = IEnergyHandler.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFCapacity",
 		doc = "function([side:string]):int -- The maximum amount of RF that can be stored"
 	)
 	public static MethodResult getRFCapacityHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
@@ -49,7 +49,7 @@ public class MethodsEnergy {
 		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing)));
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFlux.MOD_ID)
+	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
 	public static final class MethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MethodEnergyStoredItem() {
 			super("getRFStored", true, "function([side:string]):int -- The amount of RF currently stored");
@@ -74,7 +74,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFlux.MOD_ID)
+	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
 	public static final class MaxMethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MaxMethodEnergyStoredItem() {
 			super("getRFCapacity", true, "function([side:string]):int -- The maximum amount of RF that can be stored");

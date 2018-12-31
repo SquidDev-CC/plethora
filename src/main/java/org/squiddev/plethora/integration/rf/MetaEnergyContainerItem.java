@@ -1,6 +1,6 @@
 package org.squiddev.plethora.integration.rf;
 
-import cofh.redstoneflux.RedstoneFlux;
+import cofh.redstoneflux.RedstoneFluxProps;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.google.common.collect.Maps;
 import net.minecraft.item.Item;
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "rf", modId = RedstoneFlux.MOD_ID)
+@IMetaProvider.Inject(value = ItemStack.class, namespace = "rf", modId = RedstoneFluxProps.MOD_ID)
 public class MetaEnergyContainerItem extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override

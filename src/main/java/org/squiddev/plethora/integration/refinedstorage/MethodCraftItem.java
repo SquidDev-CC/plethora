@@ -2,8 +2,8 @@ package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingManager;
-import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPatternChain;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
+import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTaskError;
 import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import dan200.computercraft.api.lua.LuaException;
@@ -41,18 +41,30 @@ public final class MethodCraftItem extends BasicMethod<NullableItemStack> {
 
 			ICraftingManager manager = network.getCraftingManager();
 
-			ICraftingPatternChain chain = manager.getPatternChain(stack);
-			if (chain == null) throw new LuaException("No matching patterns");
+			ICraftingTask task = manager.create(stack, quantity);
+			if (task == null) throw new LuaException("No matching patterns");
 
-			ICraftingTask task = manager.create(stack, chain, quantity, true);
-			task.calculate();
-
-			boolean success = task.isValid() && task.getMissing().getStacks().isEmpty();
-			if (success) {
+			ICraftingTaskError error = task.calculate();
+			if (error != null) {
+				String errorMessage;
+				switch (error.getType()) {
+					case RECURSIVE:
+						errorMessage = "Encountered a recursive pattern";
+						break;
+					case TOO_COMPLEX:
+						errorMessage = "Recipe is too complex";
+						break;
+					default:
+						errorMessage = null;
+						break;
+				}
+				return MethodResult.result(false, errorMessage);
+			} else if (task.hasMissing()) {
+				return MethodResult.result(false, "Missing requirements");
+			} else {
 				manager.add(task);
+				return MethodResult.result(true, baked.makeChildId(task).getObject());
 			}
-
-			return MethodResult.result(success, baked.makeChildId(task).getObject());
 		});
 	}
 }

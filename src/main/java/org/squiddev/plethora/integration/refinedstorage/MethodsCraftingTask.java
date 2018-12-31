@@ -1,13 +1,11 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
-import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingStep;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 
 import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
-import static org.squiddev.plethora.api.method.ContextHelpers.getObjectList;
 
 public final class MethodsCraftingTask {
 	@BasicObjectMethod.Inject(
@@ -20,10 +18,10 @@ public final class MethodsCraftingTask {
 
 	@BasicObjectMethod.Inject(
 		modId = RS.ID, value = ICraftingTask.class, worldThread = true,
-		doc = "function():table -- Get the steps for this task."
+		doc = "function():table -- Get the fludis which are missing for this task."
 	)
-	public static Object[] getSteps(IContext<ICraftingTask> context, Object[] args) {
-		return new Object[]{getObjectList(context, context.getTarget().getSteps())};
+	public static Object[] getMissingFluids(IContext<ICraftingTask> context, Object[] args) {
+		return new Object[]{getMetaList(context, context.getTarget().getMissingFluids().getStacks())};
 	}
 
 	@BasicObjectMethod.Inject(
@@ -47,10 +45,6 @@ public final class MethodsCraftingTask {
 		doc = "function():boolean -- Check if this task has finished."
 	)
 	public static Object[] isFinished(IContext<ICraftingTask> context, Object[] args) {
-		for (ICraftingStep step : context.getTarget().getSteps()) {
-			if (!step.hasReceivedOutputs()) return new Object[]{false};
-		}
-
-		return new Object[]{true};
+		return new Object[]{context.getTarget().getCompletionPercentage() >= 100};
 	}
 }

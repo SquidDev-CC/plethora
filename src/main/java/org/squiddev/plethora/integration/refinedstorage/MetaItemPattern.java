@@ -13,7 +13,9 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
@@ -35,12 +37,28 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 			Map<Object, Object> out = Maps.newHashMap();
 
 			out.put("id", "normal");
-			out.put("outputs", getMetaList(context, ItemPattern.getOutputs(stack)));
+			out.put("outputs", getMetaItems(context, stack, ItemPattern::getOutputSlot));
+			out.put("fluidOutputs", getMetaItems(context, stack, ItemPattern::getFluidOutputSlot));
+			out.put("inputs", getMetaItems(context, stack, ItemPattern::getInputSlot));
+			out.put("fluidInputs", getMetaItems(context, stack, ItemPattern::getFluidInputSlot));
 			out.put("oredict", ItemPattern.isOredict(stack));
 			out.put("processing", ItemPattern.isProcessing(stack));
 
 			return out;
 		}
 
+	}
+
+	private static <T> Map<Integer, Map<Object, Object>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
+		List<T> out = new ArrayList<>(9);
+		for (int i = 0; i < 9; i++) {
+			T result = func.apply(stack, i);
+			if (result != null) out.add(result);
+		}
+		return getMetaList(context, out);
+	}
+
+	public interface IntStackFunction<T> {
+		public T apply(ItemStack stack, int slot);
 	}
 }

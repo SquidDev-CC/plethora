@@ -22,7 +22,9 @@ public class MetaCraftingPattern extends BaseMetaProvider<ICraftingPattern> {
 
 		out.put("id", pattern.getId());
 		out.put("outputs", getMetaList(context, pattern.getOutputs()));
+		out.put("fluidOutputs", getMetaList(context, pattern.getFluidOutputs()));
 		out.put("inputs", getMetaList(context, pattern.getInputs()));
+		out.put("fluidInputs", getMetaList(context, pattern.getFluidInputs()));
 		out.put("byproducts", getMetaList(context, pattern.getByproducts()));
 		out.put("oredict", pattern.isOredict());
 		out.put("processing", pattern.isProcessing());

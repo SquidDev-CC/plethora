@@ -6,7 +6,6 @@ import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
-import com.raoulvdberge.refinedstorage.tile.TileController;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.*;
@@ -46,11 +45,7 @@ public class MethodsNetworkNode {
 	public static Object[] getNetworkEnergyStored(IContext<INetworkNode> context, Object[] args) {
 		INetworkNode node = context.getTarget();
 		INetwork network = node.getNetwork();
-		return new Object[]{
-			network instanceof TileController
-				? ((TileController) network).getEnergy().getEnergyStored()
-				: 0
-		};
+		return new Object[]{network == null ? 0 : network.getEnergy().getStored()};
 	}
 
 	@BasicObjectMethod.Inject(
@@ -169,7 +164,7 @@ public class MethodsNetworkNode {
 		INetwork network = context.getTarget().getNetwork();
 		if (network == null) return new Object[]{Collections.emptyMap()};
 
-		List<ICraftingTask> tasks = network.getCraftingManager().getTasks();
+		Collection<ICraftingTask> tasks = network.getCraftingManager().getTasks();
 
 		int i = 0;
 		Map<Integer, Object> output = Maps.newHashMapWithExpectedSize(tasks.size());
