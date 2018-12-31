@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;

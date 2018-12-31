@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class MethodsNetworkNode {
 	@BasicObjectMethod.Inject(
-		value = INetworkNode.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function():int -- Get the energy usage of this RefinedStorage node"
 	)
 	public static Object[] getNodeEnergyUsage(IContext<INetworkNode> context, Object[] args) {
@@ -29,7 +29,7 @@ public class MethodsNetworkNode {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkNode.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function():int -- Get the energy usage of this RefinedStorage network"
 	)
 	public static Object[] getNetworkEnergyUsage(IContext<INetworkNode> context, Object[] args) {
@@ -39,7 +39,7 @@ public class MethodsNetworkNode {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkNode.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function():int -- Get the energy stored usage in this RefinedStorage network"
 	)
 	public static Object[] getNetworkEnergyStored(IContext<INetworkNode> context, Object[] args) {
@@ -49,7 +49,7 @@ public class MethodsNetworkNode {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkNode.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function():table -- List all items which are stored in the network"
 	)
 	public static Object[] listAvailableItems(IContext<INetworkNode> context, Object[] args) {
@@ -157,7 +157,7 @@ public class MethodsNetworkNode {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = INetworkNode.class, modId = RS.ID, worldThread = true,
+		value = INetworkNode.class, modId = RS.ID,
 		doc = "function():table -- List all crafting tasks in the network"
 	)
 	public static Object[] getCraftingTasks(IContext<INetworkNode> context, Object[] args) {

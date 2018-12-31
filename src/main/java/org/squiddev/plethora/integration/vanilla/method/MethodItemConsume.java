@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 	}
 
 	@Override
-	public Object[] apply(@Nonnull IContext<ItemSlot> context, @Nonnull Object[] args) throws LuaException {
+	public Object[] apply(@Nonnull IContext<ItemSlot> context, @Nonnull Object[] args) {
 		ItemSlot slot = context.getTarget();
 		ItemStack stack = slot.getStack();
 		EntityPlayer player = context.getContext(EntityPlayer.class);

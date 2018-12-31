@@ -15,7 +15,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.getEnum;
 
 public class MethodsMultipart {
 	@BasicObjectMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe", worldThread = true,
+		value = TileMultipart.class, modId = "forgemultipartcbe",
 		doc = "function():table -- Get a list of all parts in the multipart."
 	)
 	public static Object[] listParts(IContext<TileMultipart> context, Object[] args) {
@@ -31,7 +31,7 @@ public class MethodsMultipart {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe", worldThread = true,
+		value = TileMultipart.class, modId = "forgemultipartcbe",
 		doc = "function():table -- Get a lookup of slot to parts."
 	)
 	public static Object[] listSlottedParts(IContext<TileMultipart> context, Object[] args) {

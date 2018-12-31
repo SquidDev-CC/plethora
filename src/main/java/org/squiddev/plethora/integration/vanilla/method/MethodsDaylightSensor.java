@@ -25,7 +25,7 @@ public class MethodsDaylightSensor {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from the sun"
 	)
 	public static Object[] getSkyLight(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) throws LuaException {
@@ -39,7 +39,7 @@ public class MethodsDaylightSensor {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class, worldThread = true,
+		module = IntegrationVanilla.daylightSensor, target = IWorldLocation.class,
 		doc = "function():int -- The light level from surrounding blocks"
 	)
 	public static Object[] getBlockLight(IWorldLocation location, IContext<IModuleContainer> context, Object[] args) {

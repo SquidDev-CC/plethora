@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.Entity;
@@ -83,7 +82,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
 			@Override
-			public IModuleContainer get() throws LuaException {
+			public IModuleContainer get() {
 				// if (turtle.getUpgrade(side) != TurtleUpgradeModule.this) throw new LuaException("The upgrade is gone");
 				// TODO: Correctly invalidate this peripheral when it is detached.
 				return container;
@@ -91,7 +90,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 
 			@Nonnull
 			@Override
-			public IModuleContainer safeGet() throws LuaException {
+			public IModuleContainer safeGet() {
 				return get();
 			}
 		};

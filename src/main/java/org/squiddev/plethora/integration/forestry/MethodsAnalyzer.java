@@ -16,8 +16,8 @@ import static forestry.api.genetics.AlleleManager.alleleRegistry;
 
 public class MethodsAnalyzer {
 	@ModuleContainerObjectMethod.Inject(
-			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
-			doc = "function():table -- Get a list of all species roots"
+		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
+		doc = "function():table -- Get a list of all species roots"
 	)
 	public static Object[] getSpeciesRoots(IContext<IModuleContainer> context, Object[] args) {
 		return new Object[]{new LuaList<>(alleleRegistry.getSpeciesRoot().keySet()).asMap()};
@@ -30,8 +30,8 @@ public class MethodsAnalyzer {
 	}
 
 	@ModuleContainerObjectMethod.Inject(
-			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
-			doc = "function(root:string):table -- Get a list of all species in the given species root"
+		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
+		doc = "function(root:string):table -- Get a list of all species in the given species root"
 	)
 	public static Object[] getSpeciesList(IContext<IModuleContainer> context, Object[] args) throws LuaException {
 		String uid = ArgumentHelper.getString(args, 0);
@@ -39,26 +39,26 @@ public class MethodsAnalyzer {
 
 		// please don't hurt me squid
 		LuaList<Object> species = alleleRegistry.getRegisteredAlleles(root.getSpeciesChromosomeType()).stream()
-				.map(IAlleleSpecies.class::cast)
-				.filter(s -> !s.isSecret())
-				.map(MetaGenome::getAlleleMeta)
-				.collect(LuaList.toLuaList());
+			.map(IAlleleSpecies.class::cast)
+			.filter(s -> !s.isSecret())
+			.map(MetaGenome::getAlleleMeta)
+			.collect(LuaList.toLuaList());
 
 		return new Object[]{species.asMap()};
 	}
 
 	@ModuleContainerObjectMethod.Inject(
-			module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
-			doc = "function(root:string):table -- Get a list of all mutations in the given species root"
+		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
+		doc = "function(root:string):table -- Get a list of all mutations in the given species root"
 	)
 	public static Object[] getMutationsList(IContext<IModuleContainer> context, Object[] args) throws LuaException {
 		String uid = ArgumentHelper.getString(args, 0);
 		ISpeciesRoot root = getSpeciesRoot(uid);
 
 		LuaList<Map<Object, Object>> mutations = root.getMutations(false).stream()
-				.filter(s -> !s.isSecret())
-				.map(m -> context.makePartialChild(m).getMeta())
-				.collect(LuaList.toLuaList());
+			.filter(s -> !s.isSecret())
+			.map(m -> context.makePartialChild(m).getMeta())
+			.collect(LuaList.toLuaList());
 
 		return new Object[]{mutations.asMap()};
 	}

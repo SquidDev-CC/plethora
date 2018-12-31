@@ -46,7 +46,7 @@ public final class MethodsKinetic {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityLiving.class, worldThread = true,
+		module = PlethoraModules.KINETIC_S, target = EntityLiving.class,
 		doc = "function() -- Disable the AI of this entity. Be warned: this permanently scars them - they'll never be the same again!"
 	)
 	@Nullable
@@ -105,11 +105,11 @@ public final class MethodsKinetic {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityLiving.class, worldThread = true,
+		module = PlethoraModules.KINETIC_S, target = EntityLiving.class,
 		doc = "function():boolean -- Whether the entity is currently walking somewhere"
 	)
 	@Nullable
-	public static Object[] isWalking(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] isWalking(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		return new Object[]{!target.getNavigator().noPath()};
 	}
 }

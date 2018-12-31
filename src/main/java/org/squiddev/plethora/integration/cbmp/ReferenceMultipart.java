@@ -36,7 +36,7 @@ public class ReferenceMultipart extends DynamicReference<TMultiPart> {
 
 	@Nonnull
 	@Override
-	public TMultiPart safeGet() throws LuaException {
+	public TMultiPart safeGet() {
 		return part;
 	}
 }

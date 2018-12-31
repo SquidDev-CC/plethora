@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  */
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyStorage.class, modId = IC2.MODID,
 		doc = "function():integer -- The amount of EU currently stored"
 	)
 	public static Object[] getEUStored(IContext<IEnergyStorage> target, Object[] args) {
@@ -30,7 +30,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyStorage.class, modId = IC2.MODID,
 		doc = "function():integer -- The maximum amount of EU that can be stored"
 	)
 	public static Object[] getEUCapacity(IContext<IEnergyStorage> target, Object[] args) {
@@ -38,7 +38,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyStorage.class, modId = IC2.MODID,
 		doc = "function():integer -- The maximum EU output per tick"
 	)
 	public static Object[] getEUOutput(IContext<IEnergyStorage> target, Object[] args) {
@@ -46,7 +46,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergySink.class, modId = IC2.MODID,
 		doc = "function():integer -- The maximum amount of EU that can be received"
 	)
 	public static Object[] getDemandedEnergy(IContext<IEnergySink> target, Object[] args) {
@@ -54,7 +54,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergySink.class, modId = IC2.MODID,
 		doc = "function():integer -- The tier of this EU sink. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
 	)
 	public static Object[] getSinkTier(IContext<IEnergySink> target, Object[] args) {
@@ -62,7 +62,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyConductor.class, modId = IC2.MODID,
 		doc = "function():integer -- The EU loss for this conductor"
 	)
 	public static Object[] getConductionLoss(IContext<IEnergyConductor> target, Object[] args) {
@@ -70,7 +70,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyConductor.class, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the insulation can handle before shocking players"
 	)
 	public static Object[] getInsulationEnergyAbsorption(IContext<IEnergyConductor> target, Object[] args) {
@@ -78,7 +78,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyConductor.class, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the insulation will handle before it is destroyed"
 	)
 	public static Object[] getInsulationBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
@@ -86,7 +86,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergyConductor.class, modId = IC2.MODID,
 		doc = "function():integer -- Amount of EU the the conductor will handle before it melts"
 	)
 	public static Object[] getConductorBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
@@ -94,7 +94,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergySource.class, modId = IC2.MODID,
 		doc = "function():integer -- EU output provided per tick"
 	)
 	public static Object[] getOfferedEnergy(IContext<IEnergySource> target, Object[] args) {
@@ -102,7 +102,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, worldThread = true, modId = IC2.MODID,
+		value = IEnergySource.class, modId = IC2.MODID,
 		doc = "function():integer -- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
 	)
 	public static Object[] getSourceTier(IContext<IEnergySource> target, Object[] args) {

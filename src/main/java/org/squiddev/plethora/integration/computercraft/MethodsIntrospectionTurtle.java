@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.computercraft;
 
-import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.method.IContext;
@@ -18,7 +17,7 @@ public class MethodsIntrospectionTurtle {
 		module = PlethoraModules.INTROSPECTION_S, target = ITurtleAccess.class, worldThread = false,
 		doc = "function():table -- Get this turtle's inventory"
 	)
-	public static Object[] getInventory(ITurtleAccess turtle, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] getInventory(ITurtleAccess turtle, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		IItemHandler inventory = turtle.getItemHandler();
 		return new Object[]{context.makeChildId(inventory).getObject()};
 	}

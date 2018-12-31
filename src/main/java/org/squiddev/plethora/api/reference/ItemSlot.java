@@ -78,7 +78,7 @@ public class ItemSlot extends ConstantReference<ItemSlot> {
 					// Or the damage level has changed (ignored for swords).
 					(!stack.isItemStackDamageable() && meta != newStack.getItemDamage())
 				)
-			) {
+		) {
 			valid = false;
 			throw new LuaException("The stack is no longer there");
 		}

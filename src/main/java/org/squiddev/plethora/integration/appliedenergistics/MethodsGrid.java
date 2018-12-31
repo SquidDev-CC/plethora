@@ -21,7 +21,7 @@ import static org.squiddev.plethora.integration.appliedenergistics.MetaAEItemSta
 
 public class MethodsGrid {
 	@BasicObjectMethod.Inject(
-		value = IGridBlock.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = IGridBlock.class, modId = AppEng.MOD_ID,
 		doc = "function():int -- Get the energy usage of this AE node"
 	)
 	public static Object[] getNodeEnergyUsage(IContext<IGridBlock> context, Object[] args) {
@@ -29,7 +29,7 @@ public class MethodsGrid {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IGrid.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = IGrid.class, modId = AppEng.MOD_ID,
 		doc = "function():int -- Get the energy usage of this AE network"
 	)
 	public static Object[] getNetworkEnergyUsage(IContext<IGrid> context, Object[] args) {
@@ -38,7 +38,7 @@ public class MethodsGrid {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IGrid.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = IGrid.class, modId = AppEng.MOD_ID,
 		doc = "function():int -- Get the energy stored usage in this AE network"
 	)
 	public static Object[] getNetworkEnergyStored(IContext<IGrid> context, Object[] args) {
@@ -47,7 +47,7 @@ public class MethodsGrid {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IGrid.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = IGrid.class, modId = AppEng.MOD_ID,
 		doc = "function():table -- List all items which are stored in the network"
 	)
 	public static Object[] listAvailableItems(IContext<IGrid> context, Object[] args) {
@@ -111,7 +111,7 @@ public class MethodsGrid {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IGrid.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = IGrid.class, modId = AppEng.MOD_ID,
 		doc = "function():table -- List all crafting cpus in the network"
 	)
 	public static Object[] getCraftingCPUs(IContext<IGrid> context, Object[] args) {

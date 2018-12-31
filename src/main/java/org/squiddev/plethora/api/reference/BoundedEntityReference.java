@@ -15,7 +15,7 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 	private final int radius;
 	private boolean valid = true;
 
-	public BoundedEntityReference(T entity, IWorldLocation location, int radius) {
+	BoundedEntityReference(T entity, IWorldLocation location, int radius) {
 		super(entity);
 		this.location = location;
 		this.radius = radius;
@@ -33,7 +33,7 @@ public class BoundedEntityReference<T extends Entity> extends EntityReference<T>
 			pos.x < -radius || pos.x > radius ||
 				pos.y < -radius || pos.y > radius ||
 				pos.z < -radius || pos.z > radius
-			) {
+		) {
 			valid = false;
 			throw new LuaException("The entity is out of range");
 		}

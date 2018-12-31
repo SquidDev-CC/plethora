@@ -18,7 +18,7 @@ import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
 public class MethodsMultipart {
 	@BasicObjectMethod.Inject(
-		value = IMultipartContainer.class, modId = MCMultiPart.MODID, worldThread = true,
+		value = IMultipartContainer.class, modId = MCMultiPart.MODID,
 		doc = "function():table -- Get a list of all parts in the multipart."
 	)
 	public static Object[] listParts(IContext<IMultipartContainer> context, Object[] args) {
@@ -34,7 +34,7 @@ public class MethodsMultipart {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IMultipartContainer.class, modId = MCMultiPart.MODID, worldThread = true,
+		value = IMultipartContainer.class, modId = MCMultiPart.MODID,
 		doc = "function():table -- Get a lookup of slot to parts."
 	)
 	public static Object[] listSlottedParts(IContext<IMultipartContainer> context, Object[] args) {

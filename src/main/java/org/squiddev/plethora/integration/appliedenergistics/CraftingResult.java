@@ -123,7 +123,7 @@ public class CraftingResult {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = CraftingResult.class, modId = AppEng.MOD_ID,
 		doc = "function():boolean -- Check if this crafting task has finished."
 	)
 	public static Object[] isFinished(IContext<CraftingResult> context, Object[] args) {
@@ -137,7 +137,7 @@ public class CraftingResult {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = CraftingResult.class, modId = AppEng.MOD_ID,
 		doc = "function():boolean -- Check if this crafting task has been canceled."
 	)
 	public static Object[] isCanceled(IContext<CraftingResult> context, Object[] args) {
@@ -148,7 +148,7 @@ public class CraftingResult {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = CraftingResult.class, modId = AppEng.MOD_ID,
 		doc = "function():string -- Get the status for this crafting task."
 	)
 	public static Object[] status(IContext<CraftingResult> context, Object[] args) {
@@ -156,7 +156,7 @@ public class CraftingResult {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = CraftingResult.class, modId = AppEng.MOD_ID,
 		doc = "function():int|nil -- Get the ID for this crafting task."
 	)
 	public static Object[] getId(IContext<CraftingResult> context, Object[] args) {
@@ -167,7 +167,7 @@ public class CraftingResult {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID, worldThread = true,
+		value = CraftingResult.class, modId = AppEng.MOD_ID,
 		doc = "function():table -- Get the various items required for this task."
 	)
 	public static Object[] getComponents(IContext<CraftingResult> context, Object[] args) throws LuaException {

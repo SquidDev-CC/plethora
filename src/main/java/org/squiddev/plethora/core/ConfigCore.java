@@ -39,7 +39,7 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
-		@RequiresRestart(mc = false, world = true)
+		@RequiresRestart(mc = false)
 		public static double initial;
 
 		/**
@@ -47,7 +47,7 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(10)
 		@Range(min = 0)
-		@RequiresRestart(mc = false, world = true)
+		@RequiresRestart(mc = false)
 		public static double regen;
 
 		/**
@@ -55,7 +55,7 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
-		@RequiresRestart(mc = false, world = true)
+		@RequiresRestart(mc = false)
 		public static double limit;
 
 		/**
@@ -65,7 +65,7 @@ public final class ConfigCore {
 		 * buffer and so have a more traditional rate-limiting system.
 		 */
 		@DefaultBoolean(false)
-		@RequiresRestart(mc = false, world = true)
+		@RequiresRestart(mc = false)
 		public static boolean allowNegative;
 
 		/**
@@ -73,7 +73,7 @@ public final class ConfigCore {
 		 * an error.
 		 */
 		@DefaultBoolean(true)
-		@RequiresRestart(mc = false, world = true)
+		@RequiresRestart(mc = false)
 		public static boolean awaitRegen;
 	}
 

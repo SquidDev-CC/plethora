@@ -3,7 +3,6 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;

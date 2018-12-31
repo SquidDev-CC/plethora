@@ -29,10 +29,10 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class, worldThread = true,
+		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class,
 		doc = "function():table -- Scan all blocks in the vicinity"
 	)
-	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();

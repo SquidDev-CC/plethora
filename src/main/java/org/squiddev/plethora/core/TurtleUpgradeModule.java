@@ -257,13 +257,13 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 
 		@Nonnull
 		@Override
-		public TurtlePlayerOwnable get() throws LuaException {
+		public TurtlePlayerOwnable get() {
 			return this;
 		}
 
 		@Nonnull
 		@Override
-		public TurtlePlayerOwnable safeGet() throws LuaException {
+		public TurtlePlayerOwnable safeGet() {
 			return this;
 		}
 	}

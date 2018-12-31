@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 public final class IdentityReference<T> extends ConstantReference<T> {
 	private final T object;
 
-	public IdentityReference(@Nonnull T object) {
+	IdentityReference(@Nonnull T object) {
 		this.object = object;
 	}
 

@@ -10,7 +10,7 @@ public interface IDocWriter extends Closeable {
 	default void writeHeader() throws IOException {
 	}
 
-	default void writeFooter() throws IOException {
+	default void writeFooter() {
 	}
 
 	void write() throws IOException;

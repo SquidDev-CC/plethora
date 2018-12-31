@@ -10,7 +10,7 @@ import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
 public class MethodsIDrawerGroup {
 	@BasicObjectMethod.Inject(
-		value = IDrawerGroup.class, modId = StorageDrawers.MOD_ID, worldThread = true,
+		value = IDrawerGroup.class, modId = StorageDrawers.MOD_ID,
 		doc = "function():int -- Return the number of drawers inside this draw group"
 	)
 	public static Object[] getDrawerCount(IContext<IDrawerGroup> context, Object[] arguments) {

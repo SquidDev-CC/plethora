@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.method.IContext;
 
 public class MethodsBeeHousing {
 	@BasicObjectMethod.Inject(
-		value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = true,
+		value = IBeeHousing.class, modId = Constants.MOD_ID,
 		doc = "function():table -- Get the current queen for this bee housing."
 	)
 	public static Object[] getQueen(IContext<IBeeHousing> context, Object[] arg) {
@@ -21,7 +21,7 @@ public class MethodsBeeHousing {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = true,
+		value = IBeeHousing.class, modId = Constants.MOD_ID,
 		doc = "function():table -- Get the current drone for this bee housing."
 	)
 	public static Object[] getDrone(IContext<IBeeHousing> context, Object[] arg) {
@@ -34,7 +34,7 @@ public class MethodsBeeHousing {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = true,
+		value = IBeeHousing.class, modId = Constants.MOD_ID,
 		doc = "function():string -- Get the temperature of this bee housing."
 	)
 	public static Object[] getTemperature(IContext<IBeeHousing> context, Object[] arg) {
@@ -42,7 +42,7 @@ public class MethodsBeeHousing {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IBeeHousing.class, modId = Constants.MOD_ID, worldThread = true,
+		value = IBeeHousing.class, modId = Constants.MOD_ID,
 		doc = "function():string -- Get the temperature of this bee housing."
 	)
 	public static Object[] getHumidity(IContext<IBeeHousing> context, Object[] arg) {

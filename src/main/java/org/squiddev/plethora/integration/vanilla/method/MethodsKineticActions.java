@@ -85,7 +85,7 @@ public final class MethodsKineticActions {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityLivingBase.class, worldThread = true,
+		module = PlethoraModules.KINETIC_S, target = EntityLivingBase.class,
 		doc = "function():boolean, string|nil -- Left click with this item. Returns the action taken."
 	)
 	public static Object[] swing(EntityLivingBase entity, IContext<IModuleContainer> context, Object[] args) throws LuaException {

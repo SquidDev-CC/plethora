@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration;
 
-import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
 import org.squiddev.plethora.api.method.*;
@@ -29,7 +28,7 @@ public class MethodMeta extends BasicObjectMethod<Object> implements IConverterE
 	}
 
 	@Override
-	public Object[] apply(@Nonnull IContext<Object> context, @Nonnull Object[] args) throws LuaException {
+	public Object[] apply(@Nonnull IContext<Object> context, @Nonnull Object[] args) {
 		return new Object[]{context.getMeta()};
 	}
 }

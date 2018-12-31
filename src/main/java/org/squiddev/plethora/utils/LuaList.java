@@ -13,15 +13,15 @@ public class LuaList<T> {
 	/**
 	 * Creates a {@link Collector} that produces a LuaList
 	 */
-	public static <T>Collector<T, ?, LuaList<T>> toLuaList() {
+	public static <T> Collector<T, ?, LuaList<T>> toLuaList() {
 		return Collector.of(
-				LuaList::new,
-				LuaList::add,
-				(a, b) -> {
-					b.map.values().forEach(a::add);
-					return a;
-				},
-				Collector.Characteristics.IDENTITY_FINISH
+			LuaList::new,
+			LuaList::add,
+			(a, b) -> {
+				b.map.values().forEach(a::add);
+				return a;
+			},
+			Collector.Characteristics.IDENTITY_FINISH
 		);
 	}
 
@@ -37,6 +37,7 @@ public class LuaList<T> {
 
 	/**
 	 * Creates a new, empty list
+	 *
 	 * @param expectedSize The expected size of this list
 	 */
 	public LuaList(int expectedSize) {

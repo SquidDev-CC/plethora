@@ -16,10 +16,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 public final class MethodsInventory {
 	@BasicObjectMethod.Inject(
-		value = IItemHandler.class, worldThread = true,
+		value = IItemHandler.class,
 		doc = "function():table -- List all items in this inventory"
 	)
-	public static Object[] list(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] list(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) {
 		HashMap<Integer, Object> items = Maps.newHashMap();
 		IItemHandler inventory = context.getTarget();
 		int size = inventory.getSlots();
@@ -57,10 +57,10 @@ public final class MethodsInventory {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IItemHandler.class, worldThread = true,
+		value = IItemHandler.class,
 		doc = "function():integer -- The size of the inventory"
 	)
-	public static Object[] size(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] size(@Nonnull IContext<IItemHandler> context, @Nonnull Object[] args) {
 		return new Object[]{context.getTarget().getSlots()};
 	}
 

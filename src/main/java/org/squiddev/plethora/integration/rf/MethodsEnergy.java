@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, worldThread = true, name = "getRFStored",
+		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFStored",
 		doc = "function():int -- The amount of RF currently stored"
 	)
 	public static Object[] getRFStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
@@ -22,7 +22,7 @@ public class MethodsEnergy {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, worldThread = true, name = "getRFCapacity",
+		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFCapacity",
 		doc = "function():int -- The maximum amount of RF that can be stored"
 	)
 	public static Object[] getRFCapacityStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
@@ -62,7 +62,7 @@ public class MethodsEnergy {
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
 			return new Object[]{((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack)};
 		}
@@ -87,7 +87,7 @@ public class MethodsEnergy {
 
 		@Nullable
 		@Override
-		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
+		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
 			return new Object[]{((IEnergyContainerItem) stack.getItem()).getMaxEnergyStored(stack)};
 		}

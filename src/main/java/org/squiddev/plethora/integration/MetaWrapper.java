@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration;
 
 import com.google.common.base.Preconditions;
-import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
@@ -29,13 +28,13 @@ public class MetaWrapper<T> extends ConstantReference<MetaWrapper<T>> {
 
 	@Nonnull
 	@Override
-	public MetaWrapper<T> get() throws LuaException {
+	public MetaWrapper<T> get() {
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public MetaWrapper<T> safeGet() throws LuaException {
+	public MetaWrapper<T> safeGet() {
 		return this;
 	}
 

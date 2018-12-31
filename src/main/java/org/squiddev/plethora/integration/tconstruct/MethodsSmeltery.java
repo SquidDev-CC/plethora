@@ -66,10 +66,10 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = ISmelteryTankHandler.class, modId = TConstruct.modID, worldThread = true,
+		value = ISmelteryTankHandler.class, modId = TConstruct.modID,
 		doc = "function():table -- Get a list of all molten fluids within the smeltery."
 	)
-	public static Object[] getMolten(IContext<ISmelteryTankHandler> context, Object[] args) throws LuaException {
+	public static Object[] getMolten(IContext<ISmelteryTankHandler> context, Object[] args) {
 		ISmelteryTankHandler smeltery = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
@@ -82,10 +82,10 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID, worldThread = true,
+		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID,
 		doc = "function():table -- Get a list of all fuels currently used by the seared-bricks multiblock."
 	)
-	public static Object[] getFuels(IContext<TileHeatingStructureFuelTank> context, Object[] args) throws LuaException {
+	public static Object[] getFuels(IContext<TileHeatingStructureFuelTank> context, Object[] args) {
 		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
@@ -104,19 +104,19 @@ public class MethodsSmeltery {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID, worldThread = true,
+		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID,
 		doc = "function():number -- Get the internal temperature of this structure."
 	)
-	public static Object[] getTemperature(IContext<TileHeatingStructureFuelTank> context, Object[] args) throws LuaException {
+	public static Object[] getTemperature(IContext<TileHeatingStructureFuelTank> context, Object[] args) {
 		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 		return new Object[]{structure.getTemperature()};
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID, worldThread = true,
+		value = TileSmelteryComponent.class, modId = TConstruct.modID,
 		doc = "function():table|nil -- Get the controller for this smeltery component."
 	)
-	public static Object[] getController(IContext<TileSmelteryComponent> context, Object[] args) throws LuaException {
+	public static Object[] getController(IContext<TileSmelteryComponent> context, Object[] args) {
 		TileSmelteryComponent component = context.getTarget();
 		if (!component.getHasMaster()) return null;
 
@@ -147,7 +147,7 @@ public class MethodsSmeltery {
 
 		@Nonnull
 		@Override
-		public TileMultiblock safeGet() throws LuaException {
+		public TileMultiblock safeGet() {
 			return expected;
 		}
 	}

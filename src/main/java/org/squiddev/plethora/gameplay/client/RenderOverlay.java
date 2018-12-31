@@ -36,8 +36,8 @@ import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;

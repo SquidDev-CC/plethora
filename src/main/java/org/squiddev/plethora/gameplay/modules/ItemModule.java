@@ -37,7 +37,7 @@ import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleRegistry;
-import org.squiddev.plethora.api.reference.EntityReference;
+import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
@@ -325,8 +325,9 @@ public final class ItemModule extends ItemBase {
 		@Override
 		public void getAdditionalContext(@Nonnull IModuleAccess access, @Nonnull IContextBuilder builder) {
 			String moduleKey = moduleId.toString();
+
 			Entity entity = getEntity(stack);
-			if (entity != null) builder.addContext(moduleKey, entity, new EntityReference<>(entity));
+			if (entity != null) builder.addContext(moduleKey, entity, Reference.entity(entity));
 
 			GameProfile profile = getProfile(stack);
 			if (profile != null) builder.addContext(moduleKey, new EntityIdentifier.Player(profile));
@@ -334,10 +335,17 @@ public final class ItemModule extends ItemBase {
 			if (stack.getItemDamage() == CHAT_ID) {
 				// Add a chat listener if we've got an entity (and are a chat module).
 				Object owner = access.getOwner();
-				Entity ownerEntity = owner instanceof Entity ? (Entity) owner : entity;
+				UUID ownerId;
+				if (owner instanceof Entity) {
+					ownerId = ((Entity) owner).getUniqueID();
+				} else if (profile != null) {
+					ownerId = profile.getId();
+				} else {
+					ownerId = null;
+				}
 
-				ChatListener.Listener listener = new ChatListener.Listener(access, ownerEntity);
-				if (ownerEntity != null) builder.addContext(moduleKey, listener);
+				ChatListener.Listener listener = new ChatListener.Listener(access, ownerId);
+				if (ownerId != null) builder.addContext(moduleKey, listener);
 				builder.addAttachable(listener);
 			} else if (stack.getItemDamage() == GLASSES_ID) {
 				// Add a chat listener if we've got an entity (and are a chat module).

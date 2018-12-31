@@ -18,10 +18,10 @@ import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
 public class MethodsModules {
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class,
 		doc = "function():table -- Lists all modules available"
 	)
-	public static Object[] listModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static Object[] listModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		Map<Integer, String> modules = Maps.newHashMap();
 		int i = 0;
 		for (ResourceLocation module : context.getTarget().getModules()) {
@@ -31,7 +31,7 @@ public class MethodsModules {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class,
 		doc = "function(name:string):boolean -- Checks whether a module is available"
 	)
 	public static Object[] hasModule(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
@@ -40,7 +40,7 @@ public class MethodsModules {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = IModuleContainer.class, worldThread = true,
+		value = IModuleContainer.class,
 		doc = "function(names:string...):table|nil -- Gets the methods which require these modules"
 	)
 	public static Object[] filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {

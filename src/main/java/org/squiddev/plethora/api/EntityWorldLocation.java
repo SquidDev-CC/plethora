@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api;
 
 import com.google.common.base.Preconditions;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -41,13 +40,13 @@ public class EntityWorldLocation extends ConstantReference<IWorldLocation> imple
 
 	@Nonnull
 	@Override
-	public IWorldLocation get() throws LuaException {
+	public IWorldLocation get() {
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IWorldLocation safeGet() throws LuaException {
+	public IWorldLocation safeGet() {
 		return new WorldLocation(getWorld(), getLoc());
 	}
 }

@@ -52,7 +52,7 @@ public class MethodsVanillaTileEntities {
 	}
 
 	@BasicObjectMethod.Inject(
-		value = TileEntitySign.class, worldThread = true,
+		value = TileEntitySign.class,
 		doc = "function():table -- Each line of text on this sign"
 	)
 	public static Object[] getSignText(final IContext<TileEntitySign> context, Object[] args) {

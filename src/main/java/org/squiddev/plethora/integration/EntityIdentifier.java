@@ -43,13 +43,13 @@ public class EntityIdentifier extends ConstantReference<EntityIdentifier> {
 
 	@Nonnull
 	@Override
-	public EntityIdentifier get() throws LuaException {
+	public EntityIdentifier get() {
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public EntityIdentifier safeGet() throws LuaException {
+	public EntityIdentifier safeGet() {
 		return this;
 	}
 

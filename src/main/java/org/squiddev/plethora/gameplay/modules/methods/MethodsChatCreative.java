@@ -83,7 +83,7 @@ public final class MethodsChatCreative {
 		doc = "function() -- Remove all listeners added by capture()."
 	)
 	@Nullable
-	public static Object[] clearCaptures(Listener listener, @Nonnull final IContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
+	public static Object[] clearCaptures(Listener listener, @Nonnull final IContext<IModuleContainer> unbaked, @Nonnull Object[] args) {
 		listener.clearPatterns();
 		return null;
 	}

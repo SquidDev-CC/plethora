@@ -113,7 +113,7 @@ public abstract class BasicObjectMethod<T> extends BasicMethod<T> {
 		 * @return Whether this method should be run on the world thread
 		 * @see BasicObjectMethod#BasicObjectMethod(String, boolean)
 		 */
-		boolean worldThread();
+		boolean worldThread() default true;
 
 		/**
 		 * Set if this method depends on a mod

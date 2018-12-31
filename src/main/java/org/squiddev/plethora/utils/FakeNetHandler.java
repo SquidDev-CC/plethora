@@ -20,7 +20,7 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 		}
 
 		@Override
-		public void channelActive(ChannelHandlerContext context) throws Exception {
+		public void channelActive(ChannelHandlerContext context) {
 		}
 
 		@Override

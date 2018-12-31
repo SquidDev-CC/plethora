@@ -281,13 +281,13 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		@Nonnull
 		@Override
-		public PocketPlayerOwnable get() throws LuaException {
+		public PocketPlayerOwnable get() {
 			return this;
 		}
 
 		@Nonnull
 		@Override
-		public PocketPlayerOwnable safeGet() throws LuaException {
+		public PocketPlayerOwnable safeGet() {
 			return this;
 		}
 	}

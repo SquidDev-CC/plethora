@@ -61,7 +61,7 @@ public final class MethodsKineticEntity {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityCreeper.class, worldThread = true,
+		module = PlethoraModules.KINETIC_S, target = EntityCreeper.class,
 		doc = "function() -- Explode this creeper"
 	)
 	public static Object[] explode(@Nonnull EntityCreeper target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {

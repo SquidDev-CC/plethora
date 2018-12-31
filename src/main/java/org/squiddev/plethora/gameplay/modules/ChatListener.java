@@ -1,7 +1,6 @@
 package org.squiddev.plethora.gameplay.modules;
 
 import com.google.common.collect.Sets;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -17,10 +16,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatListener extends Module {
-	private static Set<Listener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<Listener, Boolean>());
+	private static Set<Listener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	@Override
 	public void preInit() {
@@ -51,16 +51,16 @@ public class ChatListener extends Module {
 
 	public static class Listener extends ConstantReference<Listener> implements IAttachable {
 		private final IModuleAccess access;
-		private final Entity owner;
+		private final UUID owner;
 		private final Set<String> patterns = Sets.newHashSet();
 
-		public Listener(@Nonnull IModuleAccess access, @Nullable Entity owner) {
+		public Listener(@Nonnull IModuleAccess access, @Nullable UUID owner) {
 			this.access = access;
 			this.owner = owner;
 		}
 
 		public boolean handles(Entity sender) {
-			return owner != null && owner == sender;
+			return owner != null && owner.equals(sender.getUniqueID());
 		}
 
 		public synchronized void addPattern(String pattern) {
@@ -102,13 +102,13 @@ public class ChatListener extends Module {
 
 		@Nonnull
 		@Override
-		public Listener get() throws LuaException {
+		public Listener get() {
 			return this;
 		}
 
 		@Nonnull
 		@Override
-		public Listener safeGet() throws LuaException {
+		public Listener safeGet() {
 			return this;
 		}
 	}

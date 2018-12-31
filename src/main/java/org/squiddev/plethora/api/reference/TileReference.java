@@ -17,7 +17,7 @@ public class TileReference<T extends TileEntity> extends ConstantReference<T> {
 	private final World world;
 	private boolean valid = true;
 
-	public TileReference(@Nonnull T tile) {
+	TileReference(@Nonnull T tile) {
 		this.tile = new WeakReference<>(tile);
 		pos = tile.getPos();
 		world = tile.getWorld();

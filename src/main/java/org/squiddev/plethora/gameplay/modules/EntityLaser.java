@@ -192,7 +192,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 						if (
 							other instanceof EntityPlayer && shooter instanceof EntityPlayer &&
 								!((EntityPlayer) shooter).canAttackPlayer((EntityPlayer) other)
-							) {
+						) {
 							continue;
 						}
 

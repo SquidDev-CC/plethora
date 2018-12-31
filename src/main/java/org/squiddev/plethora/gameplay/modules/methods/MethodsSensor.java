@@ -34,7 +34,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class, worldThread = true,
+		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class,
 		doc = "function():table -- Scan for entities in the vicinity"
 	)
 	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {

@@ -33,18 +33,18 @@ public class MethodsReactor {
 
 		@Nonnull
 		@Override
-		public IReactor safeGet() throws LuaException {
+		public IReactor safeGet() {
 			return core;
 		}
 	}
 
 	@BasicObjectMethod.Inject(
-			value = IReactorChamber.class, worldThread = true, modId = IC2.MODID,
-			doc = "function():table -- Get a reference to the reactor's core"
+		value = IReactorChamber.class, modId = IC2.MODID,
+		doc = "function():table -- Get a reference to the reactor's core"
 	)
 	public static Object[] getReactorCore(IContext<IReactorChamber> context, Object[] args) {
 		IReactor core = context.getTarget().getReactorInstance();
-		return new Object[] { context.makeChild(core, new ReactorReference(core)).getObject() };
+		return new Object[]{context.makeChild(core, new ReactorReference(core)).getObject()};
 	}
 
 }

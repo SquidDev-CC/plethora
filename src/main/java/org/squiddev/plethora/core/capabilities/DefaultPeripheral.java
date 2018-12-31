@@ -1,7 +1,6 @@
 package org.squiddev.plethora.core.capabilities;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +29,7 @@ public final class DefaultPeripheral implements IPeripheral, IPeripheralHandler 
 	}
 
 	@Override
-	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull IComputerAccess access, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) {
 		return null;
 	}
 
