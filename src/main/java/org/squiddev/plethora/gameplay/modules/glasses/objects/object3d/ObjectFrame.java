@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.client.FramebufferGlasses;
 import org.squiddev.plethora.gameplay.client.OpenGlHelper;
+import org.squiddev.plethora.gameplay.client.RenderState;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
@@ -30,13 +31,6 @@ import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH
 
 public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Positionable3D, Rotatable3D, DepthTestable {
 	private static final float SCALE = 1 / 64.0f;
-
-	@SideOnly(Side.CLIENT)
-	private static int framebufferBuffer;
-	@SideOnly(Side.CLIENT)
-	private static int framebufferTexture;
-	@SideOnly(Side.CLIENT)
-	private static int framebufferDepth;
 
 	private Vec3d position = Vec3d.ZERO;
 	private Vec3d rotation = null;
@@ -127,22 +121,11 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			GlStateManager.rotate((float) rotation.z, 0, 0, 1);
 		}
 
-		int currentBuffer = 0;
-		FloatBuffer projection = null, modelView = null;
+		RenderState state = RenderState.get();
 		if (OpenGlHelper.framebufferSupported) {
-			// Get the current framebuffer and restore back to that.
-			// Is it grim? Yes. Is it needed? Probably.
-			currentBuffer = OpenGlHelper.getCurrentBuffer();
-			projection = OpenGlHelper.getProjectionMatrix();
-			modelView = OpenGlHelper.getModelViewMatrix();
-
-			FramebufferGlasses.INSTANCE.bindBuffer();
-			FramebufferGlasses.INSTANCE.setupViewport();
-
-			// Reset the buffer
-			GlStateManager.colorMask(true, true, true, true);
-			GlStateManager.clearColor(0, 0, 0, 0);
-			GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			FramebufferGlasses.FRAME_3D.bindBuffer();
+			FramebufferGlasses.FRAME_3D.setupViewport();
+			FramebufferGlasses.FRAME_3D.clear();
 
 			// Setup the projection matrix (seeEntityRenderer.setupOverlayRendering)
 			GlStateManager.matrixMode(GL11.GL_PROJECTION);
@@ -156,15 +139,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 		canvas.drawChildren(children.iterator());
 
 		if (OpenGlHelper.framebufferSupported) {
-			// Restore matrices
-			GlStateManager.matrixMode(GL11.GL_PROJECTION);
-			GL11.glLoadMatrix(projection);
-			GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-			GL11.glLoadMatrix(modelView);
-
-			// And restore framebuffer
-			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, currentBuffer);
-			GlStateManager.viewport(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+			state.restore();
 
 			GlStateManager.enableTexture2D();
 			GlStateManager.disableCull();
@@ -182,7 +157,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			GlStateManager.enableAlpha();
 			GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
 
-			FramebufferGlasses.INSTANCE.bindTexture();
+			FramebufferGlasses.FRAME_3D.bindTexture();
 
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder buffer = tessellator.getBuffer();

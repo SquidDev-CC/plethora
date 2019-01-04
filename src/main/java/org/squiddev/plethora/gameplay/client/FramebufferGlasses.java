@@ -17,7 +17,8 @@ import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH
  * some of the Minecraft specific things (such as config options).
  */
 public class FramebufferGlasses {
-	public static final FramebufferGlasses INSTANCE = new FramebufferGlasses();
+	public static final FramebufferGlasses FRAME_3D = new FramebufferGlasses();
+	public static final FramebufferGlasses ITEM_2D = new FramebufferGlasses();
 
 	private int buffer = -1;
 	private int texture;
@@ -90,6 +91,12 @@ public class FramebufferGlasses {
 	public void bindBuffer() {
 		createBuffer();
 		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, buffer);
+	}
+
+	public void clear() {
+		GlStateManager.colorMask(true, true, true, true);
+		GlStateManager.clearColor(255.0f, 0, 0, 0);
+		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
 
 	public void setupViewport() {
