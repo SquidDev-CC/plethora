@@ -4,18 +4,24 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
@@ -93,11 +99,11 @@ public final class MethodsKineticEntity {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = AbstractSkeleton.class,
+		module = PlethoraModules.KINETIC_S, target = AbstractSkeleton.class, name = "shoot",
 		doc = "function(potency:number) -- Fire an arrow in the direction the skeleton is looking"
 	)
 	@Nonnull
-	public static MethodResult shoot(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+	public static MethodResult shootSkeleton(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
 		final double potency = getReal(args, 0);
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
@@ -133,6 +139,69 @@ public final class MethodsKineticEntity {
 			skeleton.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (skeleton.getRNG().nextFloat() * 0.4F + 0.8F));
 
 			location.getWorld().spawnEntity(arrow);
+			return MethodResult.empty();
+		}));
+	}
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityBlaze.class, name = "shoot",
+		doc = "function(yaw:number, pitch:number) -- Fire a fireball in the specified direction."
+	)
+	@Nonnull
+	public static MethodResult shootBlaze(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+		final double yaw = getReal(args, 0) % 360;
+		double pitch = getReal(args, 1) % 360;
+
+		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
+		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
+		final double motionY = -Math.sin(pitch / 180.0f * (float) Math.PI);
+
+		return unbaked.getCostHandler().await(Kinetic.shootCost, MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			EntityBlaze blaze = context.getContext(ContextKeys.ORIGIN, EntityBlaze.class);
+			World world = blaze.getEntityWorld();
+
+			world.playEvent(null, 1018, new BlockPos((int) blaze.posX, (int) blaze.posY, (int) blaze.posZ), 0); // ENTITY_BLAZE_SHOOT
+			EntitySmallFireball fireball = new EntitySmallFireball(world, blaze, motionX, motionY, motionZ);
+			fireball.posY = blaze.posY + (blaze.height / 2.0F) + 0.5D;
+			world.spawnEntity(fireball);
+
+			return MethodResult.empty();
+		}));
+	}
+
+	private static final PotionType[] WITCH_POTIONS = {
+		PotionTypes.HARMING,
+		PotionTypes.SLOWNESS,
+		PotionTypes.POISON,
+		PotionTypes.WEAKNESS
+	};
+
+	@SubtargetedModuleMethod.Inject(
+		module = PlethoraModules.KINETIC_S, target = EntityWitch.class, name = "shoot",
+		doc = "function(potency:number) -- Throw a potion in the direction the witch is looking"
+	)
+	@Nonnull
+	public static MethodResult shootWitch(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+		final double potency = getReal(args, 0);
+
+		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
+
+		return unbaked.getCostHandler().await(Kinetic.shootCost * potency, MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
+			EntityWitch witch = context.getContext(ContextKeys.ORIGIN, EntityWitch.class);
+			if (witch.isDrinkingPotion()) throw new LuaException("Currently drinking a potion");
+
+			World world = witch.getEntityWorld();
+			Vec3d motion = witch.getLookVec();
+
+			PotionType potionType = WITCH_POTIONS[witch.getRNG().nextInt(WITCH_POTIONS.length)];
+			EntityPotion potion = new EntityPotion(world, witch, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType));
+			potion.rotationPitch -= -20.0F;
+			potion.shoot(motion.x, 0.2 + potency * 1.4, motion.y, 0.75F, 8.0F);
+			world.playSound(null, witch.posX, witch.posY, witch.posZ, SoundEvents.ENTITY_WITCH_THROW, witch.getSoundCategory(), 1.0F, 0.8F + witch.getRNG().nextFloat() * 0.4F);
+			world.spawnEntity(potion);
+
 			return MethodResult.empty();
 		}));
 	}

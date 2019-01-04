@@ -106,7 +106,7 @@ dependencies {
 	deobfCompile "dan200.computercraft:ComputerCraft:${project.cc_version}-${project.cc_build}"
 	compile "mezz.jei:jei_1.12.2:4.14.3.242"
 
-	deobfProvided "org.squiddev:cc-tweaked:1.80pr1.12"
+	deobfProvided "org.squiddev:cc-tweaked:1.80pr1.8"
 
 	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.6:deobf"
 	compileOnly "net.industrial-craft:industrialcraft-2:2.8.99-ex112:dev"
