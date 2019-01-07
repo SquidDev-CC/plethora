@@ -59,6 +59,8 @@ public class MethodExportItem extends BasicMethod<NullableItemStack> implements 
 			int extractLimit = Math.min(limit, toExtract.getFilledStack().getMaxStackSize());
 			ItemStack toInsert = network.extractItem(toExtract.getFilledStack(), extractLimit, Action.PERFORM);
 
+			if (toInsert == null || toInsert.isEmpty()) return MethodResult.result(0);
+
 			// Attempt to insert into the appropriate inventory
 			ItemStack remainder = toSlot <= 0
 				? ItemHandlerHelper.insertItem(to, toInsert, false)
