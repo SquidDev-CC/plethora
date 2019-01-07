@@ -90,7 +90,7 @@ public final class ConfigCore {
 		 * method builders.
 		 *
 		 * Valid forms:
-		 * - "foo.bar." - All classes in package (note trailing period).
+		 * - "foo.bar" - All classes in package (note trailing period).
 		 * - "foo.bar.Provider" - This class, all its members and nested classes
 		 * - "foo.bar.Provider#method" - A particular method with a name
 		 */

@@ -183,14 +183,20 @@ public class Helpers {
 		return file;
 	}
 
-	public static boolean classBlacklisted(Iterable<String> blacklist, String name) {
+	public static boolean blacklisted(Iterable<String> blacklist, String name) {
 		for (String prefix : blacklist) {
-			if (prefix.endsWith(".")) {
-				if (name.startsWith(prefix)) return true;
-			} else if (name.equals(prefix) || name.startsWith(prefix + "$") || name.startsWith(prefix + "#")) {
-				// Include exact classes, child classes (trailing $) or child methods (trailing #).
-				return true;
-			}
+			if (!name.startsWith(prefix)) continue;
+
+			// If they're equal, then it definitely matches.
+			if (name.length() == prefix.length()) return true;
+
+			// Match prefixes of "pkg.", "pkg.Class#" or "pkg.Class$"
+			char last = prefix.charAt(prefix.length() - 1);
+			if (last == '.' || last == '#' || last == '$') return true;
+
+			// Determine if the next character is a separator, thus it definitely matches.
+			char next = name.charAt(prefix.length());
+			if (next == '.' || next == '#' || next == '$' || next == '(') return true;
 		}
 
 		return false;

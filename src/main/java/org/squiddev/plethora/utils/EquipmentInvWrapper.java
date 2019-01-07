@@ -1,4 +1,4 @@
-package org.squiddev.plethora;
+package org.squiddev.plethora.utils;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

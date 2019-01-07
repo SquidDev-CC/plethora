@@ -4,12 +4,12 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
-import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;
+import org.squiddev.plethora.utils.EquipmentInvWrapper;
 
 import javax.annotation.Nonnull;
 

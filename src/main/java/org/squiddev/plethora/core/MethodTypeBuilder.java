@@ -134,12 +134,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 			String methodWhole = asmData.getObjectName();
 
 			try {
-				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistProviders, className)) {
-					DebugLogger.debug("Ignoring " + className + "#" + methodWhole);
-					continue;
-				}
-
-				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistProviders, className + "#" + methodWhole)) {
+				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, className + "#" + methodWhole)) {
 					DebugLogger.debug("Ignoring " + className + "#" + methodWhole);
 					continue;
 				}

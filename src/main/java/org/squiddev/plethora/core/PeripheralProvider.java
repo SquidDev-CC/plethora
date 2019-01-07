@@ -76,7 +76,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 		String name = klass.getName();
 		boolean blacklisted = blacklistedNames.contains(name)
-			|| Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistTileEntities, name);
+			|| Helpers.blacklisted(ConfigCore.Blacklist.blacklistTileEntities, name);
 
 		blacklistCache.put(klass, blacklisted);
 		return blacklisted;

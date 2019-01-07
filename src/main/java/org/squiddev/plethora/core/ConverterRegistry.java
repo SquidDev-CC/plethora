@@ -147,7 +147,7 @@ public class ConverterRegistry implements IConverterRegistry {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IConverter.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
-				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
+				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
 					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
 					continue;
 				}

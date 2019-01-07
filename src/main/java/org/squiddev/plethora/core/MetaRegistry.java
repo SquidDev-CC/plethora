@@ -93,7 +93,7 @@ public final class MetaRegistry implements IMetaRegistry {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
-				if (Helpers.classBlacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
+				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
 					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
 					continue;
 				}

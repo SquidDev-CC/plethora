@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.items.IItemHandler;
-import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
+import org.squiddev.plethora.utils.EquipmentInvWrapper;
 
 import java.util.WeakHashMap;
 

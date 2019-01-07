@@ -1,8 +1,8 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
 import net.minecraft.entity.EntityLivingBase;
-import org.squiddev.plethora.EquipmentInvWrapper;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
+import org.squiddev.plethora.utils.EquipmentInvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
