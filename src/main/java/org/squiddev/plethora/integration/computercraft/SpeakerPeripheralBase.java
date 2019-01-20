@@ -41,6 +41,15 @@ public class SpeakerPeripheralBase extends SpeakerPeripheral {
 		return new BlockPos(position);
 	}
 
+	public Vec3d getPosition() {
+		return position;
+	}
+
+	@Override
+	public boolean equals(IPeripheral other) {
+		return other != null && getClass() == other.getClass();
+	}
+
 	public static final class PeripheralHandler extends SpeakerPeripheralBase implements IPeripheralHandler {
 		private final ItemStack stack;
 
