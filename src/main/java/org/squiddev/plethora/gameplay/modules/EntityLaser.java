@@ -395,7 +395,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 					syncFromPos(fakePlayer, replace, shooterPos.getPos(), rotationYaw, rotationPitch);
 				}
 			} else {
-				syncFromPos(fakePlayer, shooterPos.getWorld(), shooterPos.getPos(), rotationYaw, rotationPitch);
+				syncFromPos(fakePlayer, current, shooterPos.getPos(), rotationYaw, rotationPitch);
 			}
 		} else {
 			syncFromEntity(fakePlayer, this);
@@ -407,7 +407,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 		player.setPositionAndRotation(from.posX, from.posY, from.posZ, from.rotationYaw, from.rotationPitch);
 	}
 
-	private static void syncFromPos(EntityPlayer player, World world, Vec3d pos, float yaw, float pitch) {
+	private static void syncFromPos(EntityPlayer player, @Nonnull World world, Vec3d pos, float yaw, float pitch) {
 		player.setWorld(world);
 		player.setPositionAndRotation(pos.x, pos.y, pos.z, yaw, pitch);
 	}
