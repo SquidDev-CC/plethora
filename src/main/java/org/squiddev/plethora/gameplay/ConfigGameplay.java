@@ -193,6 +193,14 @@ public final class ConfigGameplay {
 		public static int maxLength;
 
 		/**
+		 * Whether binding a chat recorder allows players to send
+		 * and capture messages. You may want to disable this if you
+		 * are experiencing abuse.
+		 */
+		@DefaultBoolean(true)
+		public static boolean allowBinding;
+
+		/**
 		 * Whether formatting codes are allowed in chat messages.
 		 */
 		@DefaultBoolean(false)

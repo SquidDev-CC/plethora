@@ -338,7 +338,7 @@ public final class ItemModule extends ItemBase {
 				UUID ownerId;
 				if (owner instanceof Entity) {
 					ownerId = ((Entity) owner).getUniqueID();
-				} else if (profile != null) {
+				} else if (profile != null && ConfigGameplay.Chat.allowBinding) {
 					ownerId = profile.getId();
 				} else {
 					ownerId = null;

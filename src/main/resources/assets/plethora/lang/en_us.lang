@@ -145,6 +145,7 @@ gui.config.plethora.sensor.radius=Sense radius
 
 gui.config.plethora.chat=Chat recorder
 gui.config.plethora.chat.maxLength=Maximum length
+gui.config.plethora.chat.allowBinding=Allow binding
 gui.config.plethora.chat.allowFormatting=Allow format codes
 gui.config.plethora.chat.allowOffline=Allow offline players in chat
 gui.config.plethora.chat.allowMobs=Allow mobs in chat

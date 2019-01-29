@@ -2,8 +2,8 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -24,6 +24,7 @@ import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.EntityIdentifier;
 import org.squiddev.plethora.integration.vanilla.FakePlayerProviderEntity;
 import org.squiddev.plethora.integration.vanilla.FakePlayerProviderLocation;
 
@@ -49,12 +50,23 @@ public final class MethodsChat {
 
 			// If we've got an entity, just use that
 			@Nullable
-			Entity entity = getOriginOr(context, PlethoraModules.CHAT_S, Entity.class);
+			Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
 			@Nullable
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 
-			IPlayerOwnable moduleOwner = context.getContext(PlethoraModules.CHAT_S, IPlayerOwnable.class);
-			GameProfile moduleProfile = moduleOwner == null ? null : moduleOwner.getOwningProfile();
+			@Nullable
+			GameProfile moduleProfile = null;
+
+			if (ConfigGameplay.Chat.allowBinding) {
+				// If we allow binding the neural interface, fetch the entity info from the module location instead.
+				if (entity == null) entity = context.getContext(PlethoraModules.CHAT_S, Entity.class);
+
+				IPlayerOwnable moduleOwner = context.getContext(PlethoraModules.CHAT_S, IPlayerOwnable.class);
+				if (ConfigGameplay.Chat.allowOffline && moduleOwner != null) {
+					moduleProfile = moduleOwner.getOwningProfile();
+				}
+			}
+
 
 			EntityPlayerMP player;
 			ITextComponent name;
@@ -74,7 +86,7 @@ public final class MethodsChat {
 				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
 				FakePlayerProviderEntity.load(fakePlayer, entity);
 				player = fakePlayer;
-			} else if (ConfigGameplay.Chat.allowOffline && moduleProfile != null && location != null && location.getWorld() instanceof WorldServer) {
+			} else if (moduleProfile != null && location != null && location.getWorld() instanceof WorldServer) {
 				// If we've got a location and a game profile _associated with this module_ then we use that
 				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) location.getWorld(), null, moduleProfile);
 				fakePlayer.setCustomNameTag(moduleProfile.getName());
@@ -97,7 +109,7 @@ public final class MethodsChat {
 	}
 
 	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = ICommandSender.class,
+		module = PlethoraModules.CHAT_S, target = EntityIdentifier.class,
 		doc = "function(message:string) -- Send a message to yourself"
 	)
 	@Nonnull
@@ -107,7 +119,7 @@ public final class MethodsChat {
 
 		return MethodResult.nextTick(() -> {
 			IContext<IModuleContainer> context = unbaked.bake();
-			ICommandSender sender = getOriginOr(context, PlethoraModules.CHAT_S, ICommandSender.class);
+			EntityLivingBase sender = getOriginOr(context, PlethoraModules.CHAT_S, EntityIdentifier.class).getEntity();
 			sender.sendMessage(ForgeHooks.newChatWithLinks(message));
 			return MethodResult.empty();
 		});

@@ -79,7 +79,7 @@ public final class MethodsChatCreative {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
+		module = PlethoraModules.CHAT_CREATIVE_S, target = Listener.class, worldThread = false,
 		doc = "function() -- Remove all listeners added by capture()."
 	)
 	@Nullable
