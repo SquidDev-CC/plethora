@@ -26,16 +26,14 @@ local offsetX = 75
 local offsetY = 75
 ```
 
-We end our on figuration section by defining the ores we're interested in and what colour we'll draw them as. We
+We end our configuration section by defining the ores we're interested in and what colour we'll draw them as. We
 define some ores as having a higher priority, so large ore veins don't mask smaller veins of more precious ores.
 
 ```lua
 local ores = {
 	["minecraft:diamond_ore"] = 10,
 	["minecraft:emerald_ore"] = 10,
-
 	["minecraft:gold_ore"] = 8,
-
 	["minecraft:redstone_ore"] = 5,
 	["minecraft:lapis_ore"] = 5,
 	["minecraft:iron_ore"] = 2,
@@ -159,7 +157,7 @@ use north as up.
 
 ```lua
 		local meta = modules.getMetaOwner and modules.getMetaOwner()
-		local angle = meta and math.rad(-meta.yaw % 360) or 0
+		local angle = meta and math.rad(-meta.yaw % 360) or math.rad(180)
 ```
 
 Like before, loop over every nearby block and update something. Though this time we're updating objects on

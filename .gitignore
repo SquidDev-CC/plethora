@@ -56,3 +56,4 @@ $RECYCLE.BIN/
 /classes
 /.gradle
 /.jekyll-metadata
+/lib-*

@@ -58,7 +58,7 @@ local chat = peripheral.wrap(-- [[whatever ]])
 chat.capture("^!") -- Capture any messages starting with "!"
 
 while true do
-	local _, pattern, message, player, uuid = os.pullEvent("chat_capture")
+	local _, message, pattern, player, uuid = os.pullEvent("chat_capture")
 	if pattern == "^!" then
 		-- Run the provided command in the shell. So "!ls" will execute "ls".
 		shell.run(command:sub(2))
