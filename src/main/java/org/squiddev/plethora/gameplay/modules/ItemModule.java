@@ -116,6 +116,10 @@ public final class ItemModule extends ItemBase {
 							tag.removeTag("id_lower");
 							tag.removeTag("id_upper");
 							tag.removeTag("bound_name");
+							// If our tag is now empty, clear it - turtle/pocket upgrades require NBT to be exactly the
+							// same as the template item.
+							if (tag.isEmpty()) stack.setTagCompound(null);
+
 							player.sendStatusMessage(
 								new TextComponentTranslation("item.plethora.module.module_" + getName(stack.getItemDamage()) + ".cleared", player.getName()),
 								true
