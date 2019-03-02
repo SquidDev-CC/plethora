@@ -28,7 +28,7 @@ public final class MethodsIntrospection {
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class,
+		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S}, target = EntityIdentifier.class,
 		doc = "function():string -- Get this entity's UUID."
 	)
 	public static Object[] getMetaOwner(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
