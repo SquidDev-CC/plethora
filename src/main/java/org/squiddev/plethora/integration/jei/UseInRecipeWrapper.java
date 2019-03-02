@@ -5,6 +5,7 @@ import dan200.computercraft.ComputerCraft;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public abstract class UseInRecipeWrapper implements IRecipeWrapper {
 
 	@Override
 	public void getIngredients(@Nonnull IIngredients ingredients) {
-		ingredients.setInput(ItemStack.class, stack);
+		ingredients.setInput(VanillaTypes.ITEM, stack);
 	}
 
 	public abstract boolean isValid();

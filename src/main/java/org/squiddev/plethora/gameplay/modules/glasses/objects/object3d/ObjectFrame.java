@@ -23,7 +23,6 @@ import org.squiddev.plethora.utils.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.nio.FloatBuffer;
 import java.util.Objects;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;

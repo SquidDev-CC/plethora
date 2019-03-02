@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.jei;
 import com.google.common.collect.Lists;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Constants;
@@ -40,7 +41,7 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 		IGuiHelper helper = registry.getJeiHelpers().getGuiHelper();
 
 		List<ModulesWrapper> wrappers = Lists.newArrayList();
-		for (ItemStack stack : registry.getIngredientRegistry().getAllIngredients(ItemStack.class)) {
+		for (ItemStack stack : registry.getIngredientRegistry().getAllIngredients(VanillaTypes.ITEM)) {
 			if (isValid(stack)) wrappers.add(new ModulesWrapper(stack, helper));
 		}
 
