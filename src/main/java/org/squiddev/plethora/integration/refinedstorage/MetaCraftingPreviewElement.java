@@ -3,14 +3,14 @@ package org.squiddev.plethora.integration.refinedstorage;
 import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.preview.ICraftingPreviewElement;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ICraftingPreviewElement.class, modId = RS.ID)
+@Injects(RS.ID)
 public class MetaCraftingPreviewElement extends BaseMetaProvider<ICraftingPreviewElement> {
 	@Nonnull
 	@Override

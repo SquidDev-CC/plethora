@@ -10,10 +10,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodBuilder;
-import org.squiddev.plethora.api.method.IMethodRegistry;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -127,7 +125,6 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 	@SuppressWarnings("unchecked")
 	private <T extends Annotation> void loadAsm(ASMDataTable asmDataTable, Class<T> annotation, IMethodBuilder<T> builder) {
-		IMethodRegistry methodRegistry = PlethoraAPI.instance().methodRegistry();
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(annotation.getName())) {
 			String className = asmData.getClassName();
 			String methodWhole = asmData.getObjectName();
@@ -156,7 +153,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 				T meta = method.getAnnotation(annotation);
 				Class<? extends IMethod> builtClass = loadMethod(method, meta, builder);
-				methodRegistry.registerMethod(builder.getTarget(method, meta), (IMethod) builtClass.newInstance());
+				MethodRegistry.instance.registerMethod(builder.getTarget(method, meta), (IMethod) builtClass.newInstance());
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + className + "#" + methodWhole, e);
@@ -167,7 +164,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 		}
 	}
 
-	public <T extends Annotation> void addBuilder(Class<T> klass, IMethodBuilder<T> builder) {
+	<T extends Annotation> void addBuilder(Class<T> klass, IMethodBuilder<T> builder) {
 		IMethodBuilder<?> other = annotations.get(klass);
 		if (other != null) {
 			throw new IllegalArgumentException("Duplicate builder for " + klass.getName() + ": trying to replace " + other + " with " + builder);
@@ -178,27 +175,6 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 	@SuppressWarnings("unchecked")
 	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMethodBuilder.Inject.class.getName())) {
-			String name = asmData.getClassName();
-			try {
-				PlethoraCore.LOG.debug("Registering " + name);
-
-				Class<?> asmClass = Class.forName(name);
-				IMethodBuilder instance = asmClass.asSubclass(IMethodBuilder.class).newInstance();
-
-				Map<String, Object> info = asmData.getAnnotationInfo();
-				Class<? extends Annotation> target = Class.forName(((Type) info.get("value")).getClassName()).asSubclass(Annotation.class);
-				Helpers.assertTarget(asmClass, target, IMethodBuilder.class);
-				addBuilder(target, instance);
-			} catch (Throwable e) {
-				if (ConfigCore.Testing.strict) {
-					throw new IllegalStateException("Failed to load: " + name, e);
-				} else {
-					PlethoraCore.LOG.error("Failed to load: " + name, e);
-				}
-			}
-		}
-
 		for (Map.Entry<Class<? extends Annotation>, IMethodBuilder> builder : annotations.entrySet()) {
 			loadAsm(asmDataTable, builder.getKey(), builder.getValue());
 		}

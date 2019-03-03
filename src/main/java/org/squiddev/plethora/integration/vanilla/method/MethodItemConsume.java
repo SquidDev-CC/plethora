@@ -3,9 +3,9 @@ package org.squiddev.plethora.integration.vanilla.method;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
@@ -16,8 +16,8 @@ import javax.annotation.Nonnull;
  *
  * This enables consuming it: Eating/Drinking it
  */
-@IMethod.Inject(ItemSlot.class)
-public class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
+@Injects
+public final class MethodItemConsume extends BasicObjectMethod<ItemSlot> {
 	public MethodItemConsume() {
 		super("consume", true, "function() -- Consume one item from this stack");
 	}

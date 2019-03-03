@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
-import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
@@ -100,8 +100,8 @@ public class EntityIdentifier extends ConstantReference<EntityIdentifier> {
 		}
 	}
 
-	@IConverter.Inject(Entity.class)
-	public static class Converter extends ConstantConverter<Entity, EntityIdentifier> {
+	@Injects
+	public static final class Converter extends ConstantConverter<Entity, EntityIdentifier> {
 		@Nullable
 		@Override
 		public EntityIdentifier convert(@Nonnull Entity from) {

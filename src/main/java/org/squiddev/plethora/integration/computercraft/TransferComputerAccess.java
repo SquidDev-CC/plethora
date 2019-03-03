@@ -3,8 +3,8 @@ package org.squiddev.plethora.integration.computercraft;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
-import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
@@ -17,8 +17,8 @@ import java.util.Set;
 /**
  * Transfer providers for CC: Tweaked's (and hopefully CC's) wired networks.
  */
-@ITransferProvider.Inject(value = IComputerAccess.class, modId = ComputerCraft.MOD_ID)
-public class TransferComputerAccess implements ITransferProvider<IComputerAccess> {
+@Injects(ComputerCraft.MOD_ID)
+public final class TransferComputerAccess implements ITransferProvider<IComputerAccess> {
 	private boolean fetched;
 	private Method getAvailablePeripheral;
 	private Method getAvailablePeripherals;

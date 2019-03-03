@@ -16,32 +16,21 @@ import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
-	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create((o1, o2) -> {
-		int p1 = o1.getPriority();
-		int p2 = o2.getPriority();
-		return (p1 < p2) ? -1 : ((p1 == p2) ? 0 : 1);
-	});
+	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(Comparator.comparingInt(IMetaProvider::getPriority));
 
-	@Override
-	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {
+	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(provider, "provider cannot be null");
 
 		providers.put(target, provider);
-
-		// TODO: Can we walk .getGenericSubclass/.getGenericInterface to check that target type is correct?
 	}
 
-	@Override
-	public <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider) {
+	private <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider) {
 		registerMetaProvider(target, new NamespacedMetaProvider<>(namespace, provider));
 	}
 

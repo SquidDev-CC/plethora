@@ -1,33 +1,31 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.apache.commons.lang3.tuple.Pair;
-import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
-import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
 
 	final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
-	@Override
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
@@ -169,40 +167,5 @@ public final class MethodRegistry implements IMethodRegistry {
 		}
 
 		return Pair.of(methods, contexts);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMethod.Inject.class.getName())) {
-			String name = asmData.getClassName();
-			try {
-				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
-					continue;
-				}
-
-				Map<String, Object> info = asmData.getAnnotationInfo();
-				String modId = (String) info.get("modId");
-				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
-					continue;
-				}
-
-				PlethoraCore.LOG.debug("Registering " + name);
-
-				Class<?> asmClass = Class.forName(name);
-				IMethod instance = asmClass.asSubclass(IMethod.class).newInstance();
-
-				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
-				Helpers.assertTarget(asmClass, target, IMethod.class);
-				registerMethod(target, instance);
-			} catch (Throwable e) {
-				if (ConfigCore.Testing.strict) {
-					throw new IllegalStateException("Failed to load: " + name, e);
-				} else {
-					PlethoraCore.LOG.error("Failed to load: " + name, e);
-				}
-			}
-		}
 	}
 }

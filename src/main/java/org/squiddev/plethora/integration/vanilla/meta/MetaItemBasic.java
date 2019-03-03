@@ -9,7 +9,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;

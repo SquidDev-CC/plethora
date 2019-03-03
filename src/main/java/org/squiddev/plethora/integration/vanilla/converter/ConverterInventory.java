@@ -5,8 +5,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
-import org.squiddev.plethora.api.converter.IConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,8 +16,8 @@ import javax.annotation.Nullable;
  *
  * This is mostly for legacy {@link net.minecraft.tileentity.TileEntity}s which don't provide capabilities.
  */
-@IConverter.Inject(IInventory.class)
-public class ConverterInventory extends ConstantConverter<IInventory, IItemHandler> {
+@Injects
+public final class ConverterInventory extends ConstantConverter<IInventory, IItemHandler> {
 	@Nullable
 	@Override
 	public IItemHandler convert(@Nonnull IInventory from) {

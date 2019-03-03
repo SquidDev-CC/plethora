@@ -4,15 +4,15 @@ import com.google.common.collect.Maps;
 import forestry.api.genetics.IChromosomeType;
 import forestry.api.genetics.IIndividual;
 import forestry.core.config.Constants;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IIndividual.class, modId = Constants.MOD_ID)
+@Injects(Constants.MOD_ID)
 public class MetaIndividual extends BaseMetaProvider<IIndividual> {
 	@Nonnull
 	@Override

@@ -60,8 +60,6 @@ public interface IMetaProvider<T> {
 	 * Automatically register a meta provider.
 	 *
 	 * The class must have a public constructor and implement {@link IMetaProvider}.
-	 *
-	 * @see IMetaRegistry#registerMetaProvider(Class, IMetaProvider)
 	 */
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.CLASS)

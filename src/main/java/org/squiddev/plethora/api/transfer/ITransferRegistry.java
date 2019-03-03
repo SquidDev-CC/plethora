@@ -2,48 +2,12 @@ package org.squiddev.plethora.api.transfer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.Set;
 
 /**
  * The primary registry for transfer providers
  */
 public interface ITransferRegistry {
-
-	/**
-	 * Register a primary transfer provider
-	 *
-	 * @param klass    The class this provider targets
-	 * @param provider The provider instance
-	 */
-	<T> void registerPrimary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider);
-
-	/**
-	 * Register a secondary transfer provider
-	 *
-	 * @param klass    The class this provider targets
-	 * @param provider The provider instance
-	 */
-	<T> void registerSecondary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider);
-
-	/**
-	 * Get all primary providers for a class
-	 *
-	 * @param klass The class to get them f or
-	 * @return All primary providers
-	 */
-	@Nonnull
-	<T> Collection<ITransferProvider<? super T>> getPrimaryProviders(@Nonnull Class<T> klass);
-
-	/**
-	 * Get all secondary providers for a class
-	 *
-	 * @param klass The class to get them f or
-	 * @return All secondary providers
-	 */
-	@Nonnull
-	<T> Collection<ITransferProvider<? super T>> getSecondaryProviders(Class<T> klass);
-
 	/**
 	 * Get the transfer location for an object.
 	 *

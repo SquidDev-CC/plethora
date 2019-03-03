@@ -3,8 +3,8 @@ package org.squiddev.plethora.integration.appliedenergistics;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import com.google.common.collect.Maps;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IAEItemStack.class, modId = AppEng.MOD_ID)
+@Injects(AppEng.MOD_ID)
 public class MetaAEItemStack extends BasicMetaProvider<IAEItemStack> {
 	@Nonnull
 	@Override

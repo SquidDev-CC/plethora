@@ -1,13 +1,7 @@
 package org.squiddev.plethora.api.transfer;
 
-import org.squiddev.plethora.api.converter.IConverter;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.Set;
 
 /**
@@ -18,6 +12,11 @@ import java.util.Set;
  *
  * Transfer locations can also be chained together: each item is separated by ".". For instance "inventory.2" would
  * look-up "inventory" then lookup "2" on the resulting inventory object.
+ *
+ * The first entry is known as a "primary" location, the others as secondary. You can use {@link #primary()} and
+ * {@link #secondary()} to mark this provider as only applying in one case. This may be useful if you want to hide
+ * locations showing up without {@code "self."}, or if you do not want people to use it multiple times
+ * (say {@code "north.north.north"} to allow indexing arbitrary positions).
  */
 public interface ITransferProvider<T> {
 	/**
@@ -38,44 +37,20 @@ public interface ITransferProvider<T> {
 	Set<String> getTransferLocations(@Nonnull T object);
 
 	/**
-	 * Automatically register a transfer provider.
+	 * Whether this converter is a primary converter
 	 *
-	 * The class must have a public constructor and implement {@link IConverter}.
-	 *
-	 * @see ITransferRegistry#registerPrimary(Class, ITransferProvider)
-	 * @see ITransferRegistry#registerSecondary(Class, ITransferProvider)
+	 * @return If this is a primary converter
 	 */
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.CLASS)
-	@interface Inject {
-		/**
-		 * The target class
-		 *
-		 * @return The target class
-		 */
-		Class<?> value();
+	default boolean primary() {
+		return true;
+	}
 
-		/**
-		 * Set if this converter depends on a mod
-		 *
-		 * @return The mod's id
-		 * @see net.minecraftforge.fml.common.Optional.Method
-		 * @see net.minecraftforge.fml.common.Optional.Interface
-		 */
-		String modId() default "";
-
-		/**
-		 * Whether this converter is a primary converter
-		 *
-		 * @return If this is a primary converter
-		 */
-		boolean primary() default true;
-
-		/**
-		 * Whether this converter is a secondary converter
-		 *
-		 * @return If this is a secondary converter
-		 */
-		boolean secondary() default true;
+	/**
+	 * Whether this converter is a secondary converter
+	 *
+	 * @return If this is a secondary converter
+	 */
+	default boolean secondary() {
+		return true;
 	}
 }

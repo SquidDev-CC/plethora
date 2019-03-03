@@ -9,13 +9,14 @@ import appeng.core.AppEng;
 import appeng.me.helpers.MachineSource;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
-@IMethod.Inject(value = IAEItemStack.class, modId = AppEng.MOD_ID)
+@Injects(AppEng.MOD_ID)
 public class MethodCraftItem extends BasicMethod<IAEItemStack> {
 	public MethodCraftItem() {
 		super("craft", "(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +

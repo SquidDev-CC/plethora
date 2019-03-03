@@ -1,15 +1,15 @@
 package org.squiddev.plethora.integration.tconstruct;
 
 import com.google.common.collect.Maps;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IMaterialStats.class, modId = TConstruct.modID)
+@Injects(TConstruct.modID)
 public class MetaMaterialStats extends BasicMetaProvider<IMaterialStats> {
 	@Nonnull
 	@Override

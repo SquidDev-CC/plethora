@@ -1,13 +1,17 @@
 package org.squiddev.plethora.integration;
 
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IConverterExcludeMethod;
+import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 
-@IMethod.Inject(Object.class)
-public class MethodMeta extends BasicObjectMethod<Object> implements IConverterExcludeMethod {
+@Injects
+public final class MethodMeta extends BasicObjectMethod<Object> implements IConverterExcludeMethod {
 	public MethodMeta() {
 		super("getMetadata", true, Integer.MIN_VALUE, "function():table -- Get metadata about this object");
 	}

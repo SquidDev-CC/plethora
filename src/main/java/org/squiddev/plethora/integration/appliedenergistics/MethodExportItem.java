@@ -13,6 +13,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
@@ -22,7 +23,7 @@ import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer.extractHandler;
 
-@IMethod.Inject(value = IAEItemStack.class, modId = AppEng.MOD_ID)
+@Injects(AppEng.MOD_ID)
 public class MethodExportItem extends BasicMethod<IAEItemStack> implements ITransferMethod {
 	public MethodExportItem() {
 		super("export", "function(to:string, [, limit:int][, toSlot:int]):int -- Export this item from the AE network to an inventory. Returns the amount transferred.");

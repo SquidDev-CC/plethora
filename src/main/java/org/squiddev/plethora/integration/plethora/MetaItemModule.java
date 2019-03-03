@@ -2,8 +2,8 @@ package org.squiddev.plethora.integration.plethora;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.registry.Registry;
@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = Plethora.ID)
-public class MetaItemModule extends BasicMetaProvider<ItemStack> {
+@Injects(Plethora.ID)
+public final class MetaItemModule extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {

@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.baubles;
 import baubles.api.BaublesApi;
 import baubles.common.Baubles;
 import net.minecraft.entity.player.EntityPlayer;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
@@ -13,7 +14,7 @@ import java.util.Set;
 /**
  * Provides an inventory called "baubles" for players
  */
-@ITransferProvider.Inject(value = EntityPlayer.class, modId = Baubles.MODID)
+@Injects(Baubles.MODID)
 public class TransferBaublesInventory implements ITransferProvider<EntityPlayer> {
 	@Nullable
 	@Override

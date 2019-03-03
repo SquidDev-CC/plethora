@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
@@ -19,8 +20,8 @@ import java.util.Set;
  *
  * We block secondary accesses as that allows people to do `self.north.north.north`, which is just silly
  */
-@ITransferProvider.Inject(value = TileEntity.class, secondary = false)
-public class TransferTileEntity implements ITransferProvider<TileEntity> {
+@Injects
+public final class TransferTileEntity implements ITransferProvider<TileEntity> {
 	private final Map<String, EnumFacing> mappings;
 
 	public TransferTileEntity() {
@@ -60,5 +61,10 @@ public class TransferTileEntity implements ITransferProvider<TileEntity> {
 		}
 
 		return out;
+	}
+
+	@Override
+	public boolean secondary() {
+		return false;
 	}
 }

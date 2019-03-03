@@ -1,10 +1,9 @@
 package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
-import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
@@ -49,8 +48,8 @@ public class NullableItemStack {
 		return result;
 	}
 
-	@IConverter.Inject(value = NullableItemStack.class)
-	public static class ConverterNullableItemStack extends ConstantConverter<NullableItemStack, ItemStack> {
+	@Injects
+	public static final class ConverterNullableItemStack extends ConstantConverter<NullableItemStack, ItemStack> {
 		@Nullable
 		@Override
 		public ItemStack convert(@Nonnull NullableItemStack from) {
@@ -58,8 +57,8 @@ public class NullableItemStack {
 		}
 	}
 
-	@IMetaProvider.Inject(value = NullableItemStack.class)
-	public static class MetaNullableItemStack extends BasicMetaProvider<NullableItemStack> {
+	@Injects
+	public static final class MetaNullableItemStack extends BasicMetaProvider<NullableItemStack> {
 		public MetaNullableItemStack() {
 			super("Simply wraps an item stack with additional information. Refer to the documentation on those instead for more information.");
 		}

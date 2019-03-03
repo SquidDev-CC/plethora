@@ -8,6 +8,7 @@ import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.integration.vanilla.NullableItemStack;
 
@@ -15,7 +16,7 @@ import javax.annotation.Nonnull;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
-@IMethod.Inject(value = NullableItemStack.class, modId = RS.ID)
+@Injects(RS.ID)
 public final class MethodCraftItem extends BasicMethod<NullableItemStack> {
 	public MethodCraftItem() {
 		super("craft", "(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +

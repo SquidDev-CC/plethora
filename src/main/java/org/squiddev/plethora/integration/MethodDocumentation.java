@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
@@ -13,8 +14,8 @@ import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 /**
  * Custom method which provides documentation
  */
-@IMethod.Inject(IMethodCollection.class)
-public class MethodDocumentation extends BasicMethod<IMethodCollection> {
+@Injects
+public final class MethodDocumentation extends BasicMethod<IMethodCollection> {
 	public MethodDocumentation() {
 		super("getDocs", "function([name:string]):table|string|nil -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.");
 	}

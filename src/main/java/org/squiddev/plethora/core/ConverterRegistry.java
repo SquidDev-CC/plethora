@@ -1,18 +1,14 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.converter.IConverterRegistry;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
-import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -22,8 +18,7 @@ public class ConverterRegistry implements IConverterRegistry {
 
 	private final Multimap<Class<?>, IConverter<?, ?>> converters = MultimapBuilder.hashKeys().hashSetValues().build();
 
-	@Override
-	public <TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter) {
+	<TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter) {
 		Preconditions.checkNotNull(source, "source cannot be null");
 		Preconditions.checkNotNull(converter, "converter cannot be null");
 
@@ -139,41 +134,6 @@ public class ConverterRegistry implements IConverterRegistry {
 			}
 		}
 		return true;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IConverter.Inject.class.getName())) {
-			String name = asmData.getClassName();
-			try {
-				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
-					continue;
-				}
-
-				Map<String, Object> info = asmData.getAnnotationInfo();
-				String modId = (String) info.get("modId");
-				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
-					continue;
-				}
-
-				PlethoraCore.LOG.debug("Registering " + name);
-
-				Class<?> asmClass = Class.forName(name);
-				IConverter instance = asmClass.asSubclass(IConverter.class).newInstance();
-
-				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
-				Helpers.assertTarget(asmClass, target, IConverter.class);
-				registerConverter(target, instance);
-			} catch (Throwable e) {
-				if (ConfigCore.Testing.strict) {
-					throw new IllegalStateException("Failed to load: " + name, e);
-				} else {
-					PlethoraCore.LOG.error("Failed to load: " + name, e);
-				}
-			}
-		}
 	}
 
 	private class ConverterIterator implements Iterator<Object> {

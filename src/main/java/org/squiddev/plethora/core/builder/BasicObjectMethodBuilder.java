@@ -3,9 +3,9 @@ package org.squiddev.plethora.core.builder;
 import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.MethodBuilder;
 
 import javax.annotation.Nonnull;
@@ -13,8 +13,8 @@ import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.*;
 
-@IMethodBuilder.Inject(BasicObjectMethod.Inject.class)
-public class BasicObjectMethodBuilder extends MethodBuilder<BasicObjectMethod.Inject> {
+@Injects
+public final class BasicObjectMethodBuilder extends MethodBuilder<BasicObjectMethod.Inject> {
 	public BasicObjectMethodBuilder() throws NoSuchMethodException {
 		super(BasicObjectMethod.class.getMethod("apply", IContext.class, Object[].class), BasicObjectMethod.class);
 	}

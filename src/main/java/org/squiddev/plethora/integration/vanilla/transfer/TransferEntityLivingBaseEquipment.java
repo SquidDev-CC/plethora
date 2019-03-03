@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
 import net.minecraft.entity.EntityLivingBase;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 import org.squiddev.plethora.utils.EquipmentInvWrapper;
 
@@ -12,8 +13,8 @@ import java.util.Set;
 /**
  * Provides inventory for {@link EntityLivingBase}'s equipment
  */
-@ITransferProvider.Inject(EntityLivingBase.class)
-public class TransferEntityLivingBaseEquipment implements ITransferProvider<EntityLivingBase> {
+@Injects
+public final class TransferEntityLivingBaseEquipment implements ITransferProvider<EntityLivingBase> {
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull EntityLivingBase object, @Nonnull String key) {

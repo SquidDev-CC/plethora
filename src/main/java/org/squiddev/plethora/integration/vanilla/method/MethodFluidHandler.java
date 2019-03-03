@@ -6,7 +6,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -15,8 +19,8 @@ import java.util.Map;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
-@IMethod.Inject(ICapabilityProvider.class)
-public class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
+@Injects
+public final class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
 	public MethodFluidHandler() {
 		super("getTanks", "function([side:string]):table -- Get a list of all tanks on this side");
 	}

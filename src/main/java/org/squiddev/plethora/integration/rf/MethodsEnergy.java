@@ -7,6 +7,7 @@ import cofh.redstoneflux.api.IEnergyStorage;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
@@ -49,7 +50,7 @@ public class MethodsEnergy {
 		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing)));
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
+	@Injects(RedstoneFluxProps.MOD_ID)
 	public static final class MethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MethodEnergyStoredItem() {
 			super("getRFStored", true, "function([side:string]):int -- The amount of RF currently stored");
@@ -74,7 +75,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
+	@Injects(RedstoneFluxProps.MOD_ID)
 	public static final class MaxMethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MaxMethodEnergyStoredItem() {
 			super("getRFCapacity", true, "function([side:string]):int -- The maximum amount of RF that can be stored");
