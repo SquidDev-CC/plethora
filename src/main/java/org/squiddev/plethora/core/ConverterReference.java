@@ -5,16 +5,8 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.IConverter;
 
-import javax.annotation.Nonnull;
-
 public class ConverterReference<T> {
-	private static final IConverter<Object, Object> identity = new ConstantConverter<Object, Object>() {
-		@Nonnull
-		@Override
-		public Object convert(@Nonnull Object from) {
-			return from;
-		}
-	};
+	private static final ConstantConverter<Object, Object> identity = x -> x;
 
 	private final int index;
 	private final Class<T> tIn;

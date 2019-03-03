@@ -14,6 +14,7 @@ import java.util.Map;
  * Provides metadata about an object
  * Register with {@link IMetaRegistry}
  */
+@FunctionalInterface
 public interface IMetaProvider<T> {
 	/**
 	 * Get metadata about an object

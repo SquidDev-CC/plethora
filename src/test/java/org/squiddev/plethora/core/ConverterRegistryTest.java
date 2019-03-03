@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.reference.Reference;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,12 +19,7 @@ public class ConverterRegistryTest {
 	@Before
 	public void setup() {
 		registry = new ConverterRegistry();
-		registry.registerConverter(Value.class, new ConstantConverter<Value, Value>() {
-			@Override
-			public Value convert(@Nonnull Value from) {
-				return new Value(!from.active, from.value);
-			}
-		});
+		registry.registerConverter(Value.class, (ConstantConverter<Value, Value>) from -> new Value(!from.active, from.value));
 	}
 
 	@Test

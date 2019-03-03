@@ -4,12 +4,9 @@ import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IPlayerOwnable;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
@@ -97,19 +94,6 @@ public class EntityIdentifier extends ConstantReference<EntityIdentifier> {
 
 			if (player == null) throw new LuaException("Player is not online");
 			return player;
-		}
-	}
-
-	@Injects
-	public static final class Converter extends ConstantConverter<Entity, EntityIdentifier> {
-		@Nullable
-		@Override
-		public EntityIdentifier convert(@Nonnull Entity from) {
-			if (from instanceof EntityPlayer) {
-				return new Player(((EntityPlayer) from).getGameProfile());
-			} else {
-				return new EntityIdentifier(from);
-			}
 		}
 	}
 }

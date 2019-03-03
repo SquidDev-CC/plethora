@@ -5,9 +5,10 @@ package org.squiddev.plethora.api.converter;
  *
  * @see IConverter#isConstant()
  */
-public abstract class DynamicConverter<TIn, TOut> implements IConverter<TIn, TOut> {
+@FunctionalInterface
+public interface DynamicConverter<TIn, TOut> extends IConverter<TIn, TOut> {
 	@Override
-	public boolean isConstant() {
+	default boolean isConstant() {
 		return false;
 	}
 }

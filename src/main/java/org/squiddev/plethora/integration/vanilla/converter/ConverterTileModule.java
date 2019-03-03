@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Injects
-public final class ConverterTileModule extends DynamicConverter<TileEntity, IModuleContainer> {
+public final class ConverterTileModule implements DynamicConverter<TileEntity, IModuleContainer> {
 	@Nullable
 	@Override
 	public IModuleContainer convert(@Nonnull TileEntity from) {

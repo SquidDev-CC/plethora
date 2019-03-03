@@ -9,25 +9,13 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.DynamicConverter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-/**
- * Gets the tile from a particular position
- */
 @Injects(IC2.MODID)
-public class ConverterEnergyTile extends DynamicConverter<TileEntity, IEnergyTile> {
-	@Nullable
-	@Override
-	public IEnergyTile convert(@Nonnull TileEntity from) {
+public final class IntegrationIc2 {
+	public static final DynamicConverter<TileEntity, IEnergyTile> TILE_TO_ENERGY_TILE = from -> {
 		if (EnergyNet.instance == null) return null;
 
 		World world = from.getWorld();
-		if (world == null) return null;
-
 		BlockPos pos = from.getPos();
-		if (pos == null) return null;
-
-		return EnergyNet.instance.getSubTile(world, pos);
-	}
+		return world == null || pos == null ? null : EnergyNet.instance.getSubTile(world, pos);
+	};
 }

@@ -41,7 +41,7 @@ final class Registry {
 			}
 
 			try {
-				LOG.debug("Registering " + name);
+				LOG.debug("Injecting " + name);
 
 				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
 					LOG.debug("Ignoring " + name + " as it has been blacklisted");
@@ -80,12 +80,16 @@ final class Registry {
 		}
 
 		Result result = registerInstance("class " + name, klass, klass, () -> {
+			Object value;
 			try {
-				return klass.newInstance();
+				value = klass.newInstance();
 			} catch (ReflectiveOperationException e) {
 				LOG.error("@Injects class {} could not be instantiated", name, e);
 				return null;
 			}
+
+			LOG.debug("Registering instance of @Injects class {}", name);
+			return value;
 		});
 
 		for (Field field : klass.getDeclaredFields()) result = result.plus(register(field));
@@ -114,12 +118,16 @@ final class Registry {
 				LOG.warn("@Injects field {} should be public static final, but is {}", name, Modifier.toString(modifiers));
 			}
 
+			Object value;
 			try {
-				return field.get(null);
+				value = field.get(null);
 			} catch (ReflectiveOperationException e) {
 				LOG.error("@Injects field {}'s value could not be fetched", name, e);
 				return null;
 			}
+
+			LOG.debug("Registering value of @Injects field {}", name);
+			return value;
 		});
 	}
 

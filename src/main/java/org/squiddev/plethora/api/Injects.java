@@ -11,9 +11,11 @@ import java.lang.annotation.Target;
  * This may either be used on an implementation of a registerable interface, or on a class with several public static
  * fields whose values should be registered.
  *
- * @see org.squiddev.plethora.api.converter.IConverter
- * @see org.squiddev.plethora.api.meta.IMetaProvider
  * @see org.squiddev.plethora.api.transfer.ITransferProvider
+ * @see org.squiddev.plethora.api.converter.IConverter
+ * @see org.squiddev.plethora.api.method.IMethodBuilder
+ * @see org.squiddev.plethora.api.method.IMethod
+ * @see org.squiddev.plethora.api.meta.IMetaProvider
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

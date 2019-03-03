@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Injects(ComputerCraft.MOD_ID)
-public final class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, Object> {
+public final class ConverterTargetedPeripheral implements ConstantConverter<IPeripheral, Object> {
 	private boolean fetched;
 
 	// IPeripheral
