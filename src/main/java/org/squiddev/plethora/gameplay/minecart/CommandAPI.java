@@ -34,7 +34,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	private final Entity entity;
 	private final MinecraftServer server;
 
-	private Map<Integer, String> output = Maps.newHashMap();
+	private final Map<Integer, String> output = Maps.newHashMap();
 
 	public CommandAPI(Entity entity) {
 		this.entity = entity;

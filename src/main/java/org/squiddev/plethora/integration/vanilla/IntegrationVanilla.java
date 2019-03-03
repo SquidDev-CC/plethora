@@ -53,7 +53,6 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	@SuppressWarnings("deprecation")
 	public void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
 		Item item = event.getObject().getItem();
 		if (item == Items.CLOCK) {
@@ -69,7 +68,6 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	@SuppressWarnings("deprecation")
 	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
 		TileEntity entity = event.getObject();
 		if (entity instanceof TileEntityNote) {
@@ -80,7 +78,6 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	@SuppressWarnings("deprecation")
 	public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
 		Entity entity = event.getObject();
 		if (entity instanceof EntityLiving) {

@@ -104,11 +104,11 @@ public final class MethodsKinetic {
 		}));
 	}
 
+	@Nonnull
 	@SubtargetedModuleObjectMethod.Inject(
 		module = PlethoraModules.KINETIC_S, target = EntityLiving.class,
 		doc = "function():boolean -- Whether the entity is currently walking somewhere"
 	)
-	@Nullable
 	public static Object[] isWalking(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
 		return new Object[]{!target.getNavigator().noPath()};
 	}

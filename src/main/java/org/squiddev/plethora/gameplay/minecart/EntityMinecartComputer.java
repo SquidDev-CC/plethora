@@ -53,7 +53,6 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.vehicle.IVehicleAccess;
@@ -439,11 +438,6 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		}
 	}
 
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox() {
-		return super.getCollisionBoundingBox();
-	}
-
 	public boolean isUsable(EntityPlayer player) {
 		if (isDead || player.getDistanceSq(this) > 64.0D) return false;
 
@@ -652,9 +646,8 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 			Entity entity = event.getTarget();
 			if (entity instanceof EntityMinecartComputer) {
 				EntityMinecartComputer minecart = (EntityMinecartComputer) entity;
-				IItemHandler handler = minecart.itemHandler;
 				for (int slot = 0; slot < SLOTS; slot++) {
-					ItemStack stack = handler.getStackInSlot(slot);
+					ItemStack stack = minecart.itemHandler.getStackInSlot(slot);
 					NBTTagCompound tag = minecart.accesses[slot].compound;
 					if (!stack.isEmpty() || tag != null) {
 						MessageMinecartSlot message = new MessageMinecartSlot(minecart, slot);

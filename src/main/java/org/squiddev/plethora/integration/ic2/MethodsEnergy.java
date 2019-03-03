@@ -19,7 +19,6 @@ import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Various methods for interacting with IC2's energy net
@@ -135,7 +134,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
 			ItemStack stack = context.getTarget();
@@ -162,7 +161,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
 			ItemStack stack = context.getTarget();

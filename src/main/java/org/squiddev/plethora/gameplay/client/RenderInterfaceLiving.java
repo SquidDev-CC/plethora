@@ -89,7 +89,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		// Inject the baubles renderer
 		if (Loader.isModLoaded(Baubles.MODID)) {
 			for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
-				render.addLayer(new LayerBaublesInterface(render.getMainModel()));
+				render.addLayer(new LayerBaublesInterface());
 			}
 		}
 	}

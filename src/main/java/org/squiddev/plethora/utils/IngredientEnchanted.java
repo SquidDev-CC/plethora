@@ -54,7 +54,7 @@ public class IngredientEnchanted extends Ingredient {
 				}
 			}
 		}
-		return this.stacks = stacks.toArray(new ItemStack[stacks.size()]);
+		return this.stacks = stacks.toArray(new ItemStack[0]);
 	}
 
 	@Override

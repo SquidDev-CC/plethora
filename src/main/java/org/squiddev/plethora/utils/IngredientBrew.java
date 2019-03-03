@@ -23,14 +23,12 @@ import javax.annotation.Nullable;
 
 public class IngredientBrew extends Ingredient {
 	private final Potion potion;
-	private final PotionType potionType;
 
 	private final ItemStack[] basicStacks;
 	private IntList packed;
 
-	IngredientBrew(Potion potion, PotionType potionType) {
+	private IngredientBrew(Potion potion, PotionType potionType) {
 		this.potion = potion;
-		this.potionType = potionType;
 
 		this.basicStacks = new ItemStack[3];
 		basicStacks[0] = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), potionType);

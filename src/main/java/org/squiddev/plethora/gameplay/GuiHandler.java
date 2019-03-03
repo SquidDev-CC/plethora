@@ -81,7 +81,7 @@ public class GuiHandler implements IGuiHandler {
 				return player;
 			case GUI_FLAG_ENTITY: {
 				Entity entity = world.getEntityByID(id);
-				return entity != null && entity instanceof EntityLivingBase ? (EntityLivingBase) entity : null;
+				return entity instanceof EntityLivingBase ? (EntityLivingBase) entity : null;
 			}
 			default:
 				Plethora.LOG.error("Unknown flag " + flag);

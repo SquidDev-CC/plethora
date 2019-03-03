@@ -55,7 +55,6 @@ public class Helpers {
 	 * @param strings The strings to try to translate
 	 * @return The first translateable string
 	 */
-	@SuppressWarnings("deprecation")
 	public static String translateAny(String... strings) {
 		return translateOrDefault(strings[strings.length - 1], strings);
 	}
@@ -257,7 +256,6 @@ public class Helpers {
 		} else if (owner instanceof TileEntity) {
 			TileEntity te = (TileEntity) owner;
 
-			@SuppressWarnings("deprecation")
 			ResourceLocation name = TileEntity.REGISTRY.getNameForObject(te.getClass());
 			if (name != null) return name.toString();
 

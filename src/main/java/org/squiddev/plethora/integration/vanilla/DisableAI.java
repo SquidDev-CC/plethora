@@ -33,7 +33,7 @@ public class DisableAI {
 
 			@Override
 			public void readNBT(Capability<IDisableAIHandler> capability, IDisableAIHandler instance, EnumFacing side, NBTBase nbt) {
-				instance.setDisabled(nbt != null && nbt instanceof NBTPrimitive && ((NBTPrimitive) nbt).getByte() == 1);
+				instance.setDisabled(nbt instanceof NBTPrimitive && ((NBTPrimitive) nbt).getByte() == 1);
 			}
 		}, DefaultDisableAI::new);
 	}

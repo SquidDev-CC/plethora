@@ -19,7 +19,7 @@ public class ConverterReference<T> {
 	}
 
 	public static ConverterReference<Object> identity(int index) {
-		return new ConverterReference<Object>(index, Object.class, identity);
+		return new ConverterReference<>(index, Object.class, identity);
 	}
 
 	public boolean isIdentity() {

@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class UseInRecipeWrapper implements IRecipeWrapper {
-	protected static String MINECART_COMPUTER = "entity.plethora.plethora:minecartComputer.name";
+	protected static final String MINECART_COMPUTER = "entity.plethora.plethora:minecartComputer.name";
 
 	protected final ItemStack stack;
 	private final IDrawable slotDrawable;
-	private final List<String> usable = new ArrayList<String>();
+	private final List<String> usable = new ArrayList<>();
 	private final String id;
 
 	public UseInRecipeWrapper(@Nonnull ItemStack stack, String id, @Nonnull ItemStack[] useIn, @Nonnull IGuiHelper helper) {

@@ -228,7 +228,7 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	private static class KeyboardModule extends BasicModuleHandler implements ICapabilityProvider, IModuleHandler {
-		public static KeyboardModule INSTANCE = new KeyboardModule();
+		public static final KeyboardModule INSTANCE = new KeyboardModule();
 
 		private KeyboardModule() {
 			super(new ResourceLocation(Plethora.ID, "keyboard"), Registry.itemKeyboard);

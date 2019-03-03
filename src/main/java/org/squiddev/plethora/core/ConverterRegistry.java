@@ -137,8 +137,8 @@ public class ConverterRegistry implements IConverterRegistry {
 	}
 
 	private class ConverterIterator implements Iterator<Object> {
-		private final Set<Object> allConverted = new HashSet<Object>();
-		private final Queue<Object> queue = new ArrayDeque<Object>();
+		private final Set<Object> allConverted = new HashSet<>();
+		private final Queue<Object> queue = new ArrayDeque<>();
 
 		ConverterIterator(Object input) {
 			allConverted.add(input);

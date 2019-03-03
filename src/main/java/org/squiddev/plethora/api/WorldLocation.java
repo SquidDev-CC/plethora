@@ -74,7 +74,7 @@ public final class WorldLocation extends ConstantReference<IWorldLocation> imple
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-		if (obj == null || !(obj instanceof WorldLocation)) return false;
+		if (!(obj instanceof WorldLocation)) return false;
 
 		WorldLocation other = (WorldLocation) obj;
 		return world.equals(other.world) && pos.equals(other.pos);

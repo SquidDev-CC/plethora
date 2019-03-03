@@ -9,7 +9,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.Constants;
-import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
@@ -48,7 +47,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 				BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te);
 				ContextFactory<BlockReference> factory = ContextFactory.of(reference)
 					.withCostHandler(CostHelpers.getCostHandler(te, enumFacing))
-					.<IWorldLocation>addContext(ContextKeys.ORIGIN, location);
+					.addContext(ContextKeys.ORIGIN, location);
 
 				Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 				if (paired.getLeft().size() > 0) {

@@ -130,7 +130,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public IBlockState getStateFromMeta(int meta) {
 		ManipulatorType type = VALUES[meta & 1];
 		EnumFacing facing = (meta >> 1) <= 6 ? EnumFacing.VALUES[meta >> 1] : EnumFacing.DOWN;

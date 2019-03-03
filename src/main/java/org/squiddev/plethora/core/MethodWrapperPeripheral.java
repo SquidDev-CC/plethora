@@ -121,7 +121,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	@Override
 	public boolean equals(IPeripheral other) {
 		if (this == other) return true;
-		if (other == null || !(other instanceof MethodWrapperPeripheral)) return false;
+		if (!(other instanceof MethodWrapperPeripheral)) return false;
 		if (!getType().equals(other.getType())) return false;
 
 		MethodWrapperPeripheral otherP = (MethodWrapperPeripheral) other;

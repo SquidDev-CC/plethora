@@ -32,9 +32,9 @@ public final class Context<T> extends PartialContext<T> implements IContext<T> {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(targetReference, "targetReference cannot be null");
 
-		ArrayList<String> keys = new ArrayList<String>(this.keys.length + 1);
-		ArrayList<Object> references = new ArrayList<Object>(this.parent.references.length + 1);
-		ArrayList<Object> values = new ArrayList<Object>(this.values.length + 1);
+		ArrayList<String> keys = new ArrayList<>(this.keys.length + 1);
+		ArrayList<Object> references = new ArrayList<>(this.parent.references.length + 1);
+		ArrayList<Object> values = new ArrayList<>(this.values.length + 1);
 
 		Collections.addAll(keys, this.keys);
 		Collections.addAll(references, this.parent.references);
@@ -51,8 +51,8 @@ public final class Context<T> extends PartialContext<T> implements IContext<T> {
 		values.add(target);
 		ConverterRegistry.instance.extendConverted(keys, values, references, this.values.length);
 
-		return new Context<U>(
-			new UnbakedContext<U>(this.keys.length, keys.toArray(new String[keys.size()]), references.toArray(),
+		return new Context<>(
+			new UnbakedContext<>(this.keys.length, keys.toArray(new String[0]), references.toArray(),
 				handler, parent.modules, parent.executor),
 			values.toArray(), modules
 		);

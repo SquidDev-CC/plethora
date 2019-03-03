@@ -98,8 +98,8 @@ public class PartialContext<T> implements IPartialContext<T> {
 	public <U> PartialContext<U> makePartialChild(@Nonnull U target) {
 		Preconditions.checkNotNull(target, "target cannot be null");
 
-		ArrayList<String> keys = new ArrayList<String>(this.keys.length + 1);
-		ArrayList<Object> values = new ArrayList<Object>(this.values.length + 1);
+		ArrayList<String> keys = new ArrayList<>(this.keys.length + 1);
+		ArrayList<Object> values = new ArrayList<>(this.values.length + 1);
 
 		Collections.addAll(keys, this.keys);
 		Collections.addAll(values, this.values);
@@ -114,7 +114,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 		values.add(target);
 		ConverterRegistry.instance.extendConverted(keys, values, this.values.length);
 
-		return new PartialContext<>(this.values.length, keys.toArray(new String[keys.size()]), values.toArray(), handler, modules);
+		return new PartialContext<>(this.values.length, keys.toArray(new String[0]), values.toArray(), handler, modules);
 	}
 
 	@Nonnull

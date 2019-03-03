@@ -24,7 +24,7 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 
 	public static final int S = 18;
 
-	public static final Vec2i POSITIONS[] = new Vec2i[]{
+	public static final Vec2i[] POSITIONS = new Vec2i[]{
 		new Vec2i(NEURAL_START_X + 1 + S, START_Y + 1 + 2 * S),
 		new Vec2i(NEURAL_START_X + 1 + S, START_Y + 1),
 

@@ -110,7 +110,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 			.withCostHandler(DefaultCostHandler.get(turtle))
 			.withModules(container, containerRef)
 			.addContext(ContextKeys.ORIGIN, new TurtlePlayerOwnable(turtle))
-			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new TurtleWorldLocation(turtle))
+			.addContext(ContextKeys.ORIGIN, new TurtleWorldLocation(turtle))
 			.addContext(ContextKeys.ORIGIN, turtle, Reference.id(turtle));
 
 		handler.getAdditionalContext(access, factory);
@@ -247,8 +247,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 			if (getProfile != null) {
 				try {
 					return (GameProfile) getProfile.invoke(access);
-				} catch (IllegalAccessException ignored) {
-				} catch (InvocationTargetException ignored) {
+				} catch (IllegalAccessException | InvocationTargetException ignored) {
 				}
 			}
 

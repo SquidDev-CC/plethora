@@ -166,7 +166,7 @@ public class FakeNetHandler extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void processKeepAlive(CPacketKeepAlive packet) {
+	public void processKeepAlive(@Nonnull CPacketKeepAlive packet) {
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
 			.withCostHandler(cost)
 			.withModules(container, containerRef)
-			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new EntityWorldLocation(entity))
+			.addContext(ContextKeys.ORIGIN, new EntityWorldLocation(entity))
 			.addContext(ContextKeys.ORIGIN, vehicle, Reference.id(vehicle))
 			.addContext(ContextKeys.ORIGIN, vehicle.getVehicle(), Reference.entity(vehicle.getVehicle()));
 

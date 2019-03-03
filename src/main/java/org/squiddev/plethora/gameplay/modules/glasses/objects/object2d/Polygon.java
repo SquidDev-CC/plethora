@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
 public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
-	protected final ArrayList<Vec2d> points = new ArrayList<Vec2d>();
+	protected final ArrayList<Vec2d> points = new ArrayList<>();
 
 	protected Polygon(int id, int parent, byte type) {
 		super(id, parent, type);
@@ -79,7 +79,7 @@ public class Polygon extends ColourableObject implements MultiPoint2D, MultiPoin
 		int count = buf.readUnsignedByte();
 		points.ensureCapacity(count);
 
-		for (int i = points.size() - 1; i >= count; i--) points.remove(i);
+		if (points.size() > count) points.subList(count, points.size()).clear();
 
 		for (int i = 0; i < count; i++) {
 			Vec2d point = ByteBufUtils.readVec2d(buf);

@@ -59,6 +59,6 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 	}
 
 	public interface IntStackFunction<T> {
-		public T apply(ItemStack stack, int slot);
+		T apply(ItemStack stack, int slot);
 	}
 }

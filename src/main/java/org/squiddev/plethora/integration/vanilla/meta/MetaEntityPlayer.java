@@ -19,7 +19,7 @@ public class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull EntityPlayer object) {
-		Map<Object, Object> result = new HashMap<Object, Object>();
+		Map<Object, Object> result = new HashMap<>();
 
 		FoodStats stats = object.getFoodStats();
 		Map<String, Object> foodMap = Maps.newHashMap();

@@ -27,7 +27,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 
 	private final IntSet removed = new IntOpenHashSet();
 
-	private AtomicInteger lastId = new AtomicInteger(ID_3D);
+	private final AtomicInteger lastId = new AtomicInteger(ID_3D);
 
 	private final ObjectGroup.Frame2D group2D = () -> ID_2D;
 	private final ObjectGroup.Origin3D origin3D = () -> ID_3D;

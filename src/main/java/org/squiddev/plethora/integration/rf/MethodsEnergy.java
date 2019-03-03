@@ -11,7 +11,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
@@ -61,7 +60,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
@@ -86,7 +85,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
