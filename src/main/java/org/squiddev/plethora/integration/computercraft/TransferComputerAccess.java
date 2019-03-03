@@ -4,7 +4,8 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +43,7 @@ public class TransferComputerAccess implements ITransferProvider<IComputerAccess
 			try {
 				return getAvailablePeripheral.invoke(object, key);
 			} catch (ReflectiveOperationException e) {
-				DebugLogger.error("Failed to call IComputerAccess.getAvailablePeripheral", e);
+				PlethoraIntegration.LOG.error("Failed to call IComputerAccess.getAvailablePeripheral", e);
 			}
 		}
 
@@ -58,7 +59,7 @@ public class TransferComputerAccess implements ITransferProvider<IComputerAccess
 			try {
 				return ((Map<String, IPeripheral>) getAvailablePeripherals.invoke(object)).keySet();
 			} catch (ReflectiveOperationException e) {
-				DebugLogger.error("Failed to call IComputerAccess.getAvailablePeripherals", e);
+				PlethoraIntegration.LOG.error("Failed to call IComputerAccess.getAvailablePeripherals", e);
 			}
 		}
 

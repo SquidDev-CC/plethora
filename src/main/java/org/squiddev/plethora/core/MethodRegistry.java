@@ -15,7 +15,6 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -41,7 +40,7 @@ public final class MethodRegistry implements IMethodRegistry {
 		providers.put(target, method);
 
 		if (target == Object.class && !(method instanceof IConverterExcludeMethod)) {
-			DebugLogger.warn(
+			PlethoraCore.LOG.warn(
 				"You're registering a method (" + method + ") targeting the base class (Object). Converters will " +
 					"probably mask the original object: it is recommended that you implement IConverterExcludeMethod to avoid this."
 			);
@@ -52,7 +51,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			if (ConfigCore.Testing.strict) {
 				throw new IllegalArgumentException(message);
 			} else {
-				DebugLogger.error(message);
+				PlethoraCore.LOG.error(message);
 			}
 		}
 	}
@@ -107,7 +106,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	public int getBaseMethodCost(IMethod method) {
 		Property property = ConfigCore.baseCosts.get(method.getClass().getName());
 		if (property == null) {
-			DebugLogger.warn("Cannot find cost for " + method.getClass().getName() + ", this may have been registered incorrectly");
+			PlethoraCore.LOG.warn("Cannot find cost for " + method.getClass().getName() + ", this may have been registered incorrectly");
 			return 0;
 		}
 
@@ -178,18 +177,18 @@ public final class MethodRegistry implements IMethodRegistry {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
+					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
 					continue;
 				}
 
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				String modId = (String) info.get("modId");
 				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					DebugLogger.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
+					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
 					continue;
 				}
 
-				DebugLogger.debug("Registering " + name);
+				PlethoraCore.LOG.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(name);
 				IMethod instance = asmClass.asSubclass(IMethod.class).newInstance();
@@ -201,7 +200,7 @@ public final class MethodRegistry implements IMethodRegistry {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + name, e);
 				} else {
-					DebugLogger.error("Failed to load: " + name, e);
+					PlethoraCore.LOG.error("Failed to load: " + name, e);
 				}
 			}
 		}

@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.keyboard.ServerKeyListener;
 import org.squiddev.plethora.gameplay.registry.Registry;
@@ -29,6 +31,8 @@ public class Plethora {
 	public static final String VERSION = "${mod_version}";
 	public static final String RESOURCE_DOMAIN = "plethora";
 	public static final String DEPENDENCIES = "required-after:computercraft@[${cc_version},);required-after:plethora-core";
+
+	public static final Logger LOG = LogManager.getLogger(ID);
 
 	public static CreativeTabs getCreativeTab() {
 		return tab;

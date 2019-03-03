@@ -3,8 +3,8 @@ package org.squiddev.plethora.gameplay.modules.glasses;
 import it.unimi.dsi.fastutil.ints.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_3D;
@@ -24,7 +24,7 @@ public class CanvasClient {
 	public void updateObject(BaseObject object) {
 		IntSet parent = childrenOf.get(object.parent());
 		if (parent == null) {
-			DebugLogger.error("Trying to add " + object.id() + " to group " + object.parent() + " (" + object + ")");
+			Plethora.LOG.error("Trying to add " + object.id() + " to group " + object.parent() + " (" + object + ")");
 			return; // Should never happen but...
 		}
 

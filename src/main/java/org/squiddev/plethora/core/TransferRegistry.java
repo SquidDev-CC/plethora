@@ -12,7 +12,6 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 import org.squiddev.plethora.api.transfer.ITransferRegistry;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -141,18 +140,18 @@ public final class TransferRegistry implements ITransferRegistry {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
+					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
 					continue;
 				}
 
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				String modId = (String) info.get("modId");
 				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					DebugLogger.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
+					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
 					continue;
 				}
 
-				DebugLogger.debug("Registering " + name);
+				PlethoraCore.LOG.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(name);
 				ITransferProvider instance = asmClass.asSubclass(ITransferProvider.class).newInstance();
@@ -173,7 +172,7 @@ public final class TransferRegistry implements ITransferRegistry {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + name, e);
 				} else {
-					DebugLogger.error("Failed to load: " + name, e);
+					PlethoraCore.LOG.error("Failed to load: " + name, e);
 				}
 			}
 		}

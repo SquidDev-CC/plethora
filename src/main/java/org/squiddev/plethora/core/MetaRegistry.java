@@ -13,7 +13,6 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -94,18 +93,18 @@ public final class MetaRegistry implements IMetaRegistry {
 			String name = asmData.getClassName();
 			try {
 				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					DebugLogger.debug("Ignoring " + name + " as it has been blacklisted");
+					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
 					continue;
 				}
 
 				Map<String, Object> info = asmData.getAnnotationInfo();
 				String modId = (String) info.get("modId");
 				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					DebugLogger.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
+					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
 					continue;
 				}
 
-				DebugLogger.debug("Registering " + name);
+				PlethoraCore.LOG.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(name);
 				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
@@ -123,7 +122,7 @@ public final class MetaRegistry implements IMetaRegistry {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + name, e);
 				} else {
-					DebugLogger.error("Failed to load: " + name, e);
+					PlethoraCore.LOG.error("Failed to load: " + name, e);
 				}
 			}
 		}

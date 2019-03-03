@@ -15,7 +15,6 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.IMethodRegistry;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.io.PrintWriter;
@@ -135,13 +134,13 @@ public final class MethodTypeBuilder extends ClassLoader {
 
 			try {
 				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, className + "#" + methodWhole)) {
-					DebugLogger.debug("Ignoring " + className + "#" + methodWhole);
+					PlethoraCore.LOG.debug("Ignoring " + className + "#" + methodWhole);
 					continue;
 				}
 
 				String modName = (String) asmData.getAnnotationInfo().get("modId");
 				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
-					DebugLogger.debug("Skipping " + className + "#" + methodWhole + " as " + modName + " is not loaded or is blacklisted");
+					PlethoraCore.LOG.debug("Skipping " + className + "#" + methodWhole + " as " + modName + " is not loaded or is blacklisted");
 					continue;
 				}
 
@@ -149,20 +148,20 @@ public final class MethodTypeBuilder extends ClassLoader {
 				Method method = findMethod(methodWhole, klass);
 
 				if (method == null) {
-					DebugLogger.warn("Cannot find method" + className + "#" + methodWhole + ". Try to use the injection annotation's modId field instead of @Optional.");
+					PlethoraCore.LOG.warn("Cannot find method" + className + "#" + methodWhole + ". Try to use the injection annotation's modId field instead of @Optional.");
 					continue;
 				}
 
-				DebugLogger.debug("Registering " + className + "#" + methodWhole);
+				PlethoraCore.LOG.debug("Registering " + className + "#" + methodWhole);
 
 				T meta = method.getAnnotation(annotation);
 				Class<? extends IMethod> builtClass = loadMethod(method, meta, builder);
-				methodRegistry.registerMethod(builder.getTarget(method, meta), builtClass.newInstance());
+				methodRegistry.registerMethod(builder.getTarget(method, meta), (IMethod) builtClass.newInstance());
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + className + "#" + methodWhole, e);
 				} else {
-					DebugLogger.error("Failed to load: " + className + "#" + methodWhole, e);
+					PlethoraCore.LOG.error("Failed to load: " + className + "#" + methodWhole, e);
 				}
 			}
 		}
@@ -182,7 +181,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMethodBuilder.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
-				DebugLogger.debug("Registering " + name);
+				PlethoraCore.LOG.debug("Registering " + name);
 
 				Class<?> asmClass = Class.forName(name);
 				IMethodBuilder instance = asmClass.asSubclass(IMethodBuilder.class).newInstance();
@@ -195,7 +194,7 @@ public final class MethodTypeBuilder extends ClassLoader {
 				if (ConfigCore.Testing.strict) {
 					throw new IllegalStateException("Failed to load: " + name, e);
 				} else {
-					DebugLogger.error("Failed to load: " + name, e);
+					PlethoraCore.LOG.error("Failed to load: " + name, e);
 				}
 			}
 		}

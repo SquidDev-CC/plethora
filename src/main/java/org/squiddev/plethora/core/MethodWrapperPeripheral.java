@@ -11,7 +11,6 @@ import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.core.executor.ComputerAccessExecutor;
 import org.squiddev.plethora.core.executor.TaskRunner;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -99,7 +98,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 			try {
 				access.queueEvent(name, args);
 			} catch (RuntimeException e) {
-				DebugLogger.error("Cannot queue event on " + access, e);
+				PlethoraCore.LOG.error("Cannot queue event on " + access, e);
 			}
 		}
 	}

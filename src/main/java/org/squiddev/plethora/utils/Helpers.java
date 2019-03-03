@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 import org.squiddev.plethora.core.ConfigCore;
+import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
@@ -278,7 +279,7 @@ public class Helpers {
 		try {
 			return getName(owner);
 		} catch (Throwable e) {
-			DebugLogger.error("Error getting data for " + owner.getClass().getName(), e);
+			PlethoraCore.LOG.error("Error getting data for " + owner.getClass().getName(), e);
 			return owner.getClass().getSimpleName();
 		}
 	}
@@ -340,14 +341,14 @@ public class Helpers {
 			for (java.lang.reflect.Type arg : allTargets) {
 				// If the type argument is a subtype then work correctly.
 				if (arg instanceof Class<?> && ((Class<?>) arg).isAssignableFrom(target)) {
-					DebugLogger.warn("Specified target as " + target.getName() + " but got superclass" + arg + " for " + klass.getName());
+					PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got superclass" + arg + " for " + klass.getName());
 					valid |= !ConfigCore.Testing.strict;
 				} else if (arg instanceof TypeVariable) {
 					// Try to find something limited by this arg
 					TypeVariable var = (TypeVariable) arg;
 					for (Type bound : var.getBounds()) {
 						if (bound instanceof Class<?> && ((Class<?>) bound).isAssignableFrom(target)) {
-							DebugLogger.warn("Specified target as " + target.getName() + " but got generic parameter with matching bound " + var.getName() + " extends " + ((Class<?>) bound).getName() + " for " + klass.getName());
+							PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got generic parameter with matching bound " + var.getName() + " extends " + ((Class<?>) bound).getName() + " for " + klass.getName());
 							valid |= !ConfigCore.Testing.strict;
 						}
 					}
@@ -366,7 +367,7 @@ public class Helpers {
 		if (ConfigCore.Testing.strict) {
 			throw new IllegalStateException(message);
 		} else {
-			DebugLogger.error(message);
+			PlethoraCore.LOG.error(message);
 		}
 	}
 

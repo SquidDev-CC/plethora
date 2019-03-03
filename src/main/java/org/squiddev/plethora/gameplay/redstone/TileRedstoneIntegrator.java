@@ -13,8 +13,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.Registry;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -94,7 +94,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 				try {
 					computer.queueEvent("redstone", new Object[]{computer.getAttachmentName()});
 				} catch (RuntimeException e) {
-					DebugLogger.error("Could not queue redstone event", e);
+					Plethora.LOG.error("Could not queue redstone event", e);
 					computers.remove();
 				}
 			}

@@ -9,7 +9,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,7 +90,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			byte[] hash = digest.digest();
 			return new String(Hex.encodeHex(hash));
 		} catch (NoSuchAlgorithmException | IOException e) {
-			DebugLogger.error("Cannot hash NBT", e);
+			PlethoraIntegration.LOG.error("Cannot hash NBT", e);
 			return null;
 		}
 	}

@@ -2,7 +2,7 @@ package org.squiddev.plethora.core.executor;
 
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ public abstract class Task {
 			} catch (Throwable e) {
 				markFinished();
 				finish(new LuaException("Java Exception Thrown: " + e.toString()));
-				DebugLogger.error("Unexpected error", e);
+				PlethoraCore.LOG.error("Unexpected error", e);
 				return true;
 			} finally {
 				submitTiming(System.nanoTime() - start);

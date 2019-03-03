@@ -16,7 +16,6 @@ import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.core.executor.TaskRunner;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -56,7 +55,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
 				}
 			} catch (RuntimeException e) {
-				DebugLogger.error("Error getting peripheral", e);
+				PlethoraCore.LOG.error("Error getting peripheral", e);
 			}
 		}
 
