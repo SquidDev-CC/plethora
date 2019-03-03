@@ -62,7 +62,7 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 		}
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-		writer.visit(V1_6, ACC_PUBLIC | ACC_FINAL, name, null, superName, allInterfaces.toArray(new String[allInterfaces.size()]));
+		writer.visit(V1_6, ACC_PUBLIC | ACC_FINAL, name, null, superName, allInterfaces.toArray(new String[0]));
 
 		MethodVisitor invoke = writer.visitMethod(ACC_PUBLIC, getMethod().getName(), methodSignature, null, exceptions);
 		invoke.visitCode();

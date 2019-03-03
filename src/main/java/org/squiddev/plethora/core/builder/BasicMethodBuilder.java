@@ -3,15 +3,19 @@ package org.squiddev.plethora.core.builder;
 import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.method.BasicMethod;
+import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodBuilder;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.*;
 
-@IMethodBuilder.Inject(BasicMethod.Inject.class)
-public class BasicMethodBuilder extends MethodBuilder<BasicMethod.Inject> {
+@Injects
+public final class BasicMethodBuilder extends MethodBuilder<BasicMethod.Inject> {
 	public BasicMethodBuilder() throws NoSuchMethodException {
 		super(IMethod.class.getMethod("apply", IUnbakedContext.class, Object[].class), BasicMethod.class);
 	}

@@ -17,7 +17,6 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
@@ -33,26 +32,23 @@ public final class MethodsChatCreative {
 		final String message = getString(args, 0);
 		validateMessage(message);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> context = unbaked.bake();
+		return MethodResult.nextTick(() -> {
+			IContext<IModuleContainer> context = unbaked.bake();
 
-				// Create the chat event and post to chat
-				ITextComponent formatted = ForgeHooks.newChatWithLinks(message);
+			// Create the chat event and post to chat
+			ITextComponent formatted = ForgeHooks.newChatWithLinks(message);
 
-				// Attempt to extract the server from the current world.
-				MinecraftServer server = null;
-				if (context.hasContext(ContextKeys.ORIGIN, IWorldLocation.class)) {
-					server = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class).getWorld().getMinecraftServer();
-				}
-
-				// If that failed then just get the global server.
-				if (server == null) server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
-				server.getPlayerList().sendMessage(formatted, false);
-				return MethodResult.empty();
+			// Attempt to extract the server from the current world.
+			MinecraftServer server = null;
+			if (context.hasContext(ContextKeys.ORIGIN, IWorldLocation.class)) {
+				server = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class).getWorld().getMinecraftServer();
 			}
+
+			// If that failed then just get the global server.
+			if (server == null) server = FMLCommonHandler.instance().getMinecraftServerInstance();
+
+			server.getPlayerList().sendMessage(formatted, false);
+			return MethodResult.empty();
 		});
 	}
 

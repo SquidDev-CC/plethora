@@ -32,7 +32,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 	private GameProfile profile;
 	private int stackHash;
 
-	private Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
+	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
 
 	private final TaskRunner runner = new TaskRunner();
 

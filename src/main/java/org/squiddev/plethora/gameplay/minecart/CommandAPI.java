@@ -20,7 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	private final Entity entity;
 	private final MinecraftServer server;
 
-	private Map<Integer, String> output = Maps.newHashMap();
+	private final Map<Integer, String> output = Maps.newHashMap();
 
 	public CommandAPI(Entity entity) {
 		this.entity = entity;
@@ -127,7 +127,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 									result.put(i++, name);
 								}
 							} catch (RuntimeException e) {
-								DebugLogger.error("Error executing command", e);
+								Plethora.LOG.error("Error executing command", e);
 							}
 						}
 					}

@@ -57,11 +57,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	@SuppressWarnings("unchecked")
 	public T getTile(IBlockAccess world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile != null && klass.isInstance(tile)) {
-			return (T) tile;
-		}
-
-		return null;
+		return klass.isInstance(tile) ? (T) tile : null;
 	}
 
 	@Override
@@ -83,7 +79,7 @@ public abstract class BlockBase<T extends TileBase> extends BlockContainer imple
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
 		super.neighborChanged(state, world, pos, neighborBlock, fromPos);
 

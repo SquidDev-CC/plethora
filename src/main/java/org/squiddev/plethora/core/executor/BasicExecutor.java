@@ -7,7 +7,7 @@ import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,7 +79,7 @@ public final class BasicExecutor implements IResultExecutor {
 				} catch (LuaException e) {
 					throw e;
 				} catch (Throwable e) {
-					DebugLogger.error("Unexpected error", e);
+					PlethoraCore.LOG.error("Unexpected error", e);
 					throw new LuaException("Java Exception Thrown: " + e.toString());
 				}
 			}

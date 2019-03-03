@@ -6,17 +6,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IBlockState.class)
-public class MetaBlockState extends BaseMetaProvider<IBlockState> {
+@Injects
+public final class MetaBlockState extends BaseMetaProvider<IBlockState> {
 	public MetaBlockState() {
 		super("Provides some very basic information about a block and its associated state.");
 	}

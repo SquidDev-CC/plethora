@@ -35,8 +35,9 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 		return NeuralHelpers.INV_SIZE;
 	}
 
-	public boolean isItemValid(int slot, ItemStack stack) {
-		if (stack == null || stack.isEmpty()) return false;
+	@Override
+	public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+		if (stack.isEmpty()) return false;
 
 		if (slot < NeuralHelpers.PERIPHERAL_SIZE) {
 			return stack.hasCapability(PERIPHERAL_HANDLER_CAPABILITY, null) ||

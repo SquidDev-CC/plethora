@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
@@ -26,8 +27,8 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.optEnum;
  * Various inventory methods which require interact with the world
  */
 public class MethodsInventoryWorld {
-	@IMethod.Inject(IItemHandler.class)
-	public static class MethodItemHandlerDrop extends BasicMethod<IItemHandler> {
+	@Injects
+	public static final class MethodItemHandlerDrop extends BasicMethod<IItemHandler> {
 		public MethodItemHandlerDrop() {
 			super("drop", "function(slot:int[, limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
 		}
@@ -59,8 +60,8 @@ public class MethodsInventoryWorld {
 		}
 	}
 
-	@IMethod.Inject(ItemSlot.class)
-	public static class MethodItemDrop extends BasicMethod<ItemSlot> {
+	@Injects
+	public static final class MethodItemDrop extends BasicMethod<ItemSlot> {
 		public MethodItemDrop() {
 			super("drop", "function([limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
 		}
@@ -106,8 +107,8 @@ public class MethodsInventoryWorld {
 		return stack.getCount();
 	}
 
-	@IMethod.Inject(IItemHandler.class)
-	public static class MethodItemHandlerSuck extends BasicMethod<IItemHandler> {
+	@Injects
+	public static final class MethodItemHandlerSuck extends BasicMethod<IItemHandler> {
 		private static final double RADIUS = 1;
 
 		public MethodItemHandlerSuck() {

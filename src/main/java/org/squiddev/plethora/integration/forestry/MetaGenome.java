@@ -4,14 +4,14 @@ import com.google.common.collect.Maps;
 import forestry.api.genetics.*;
 import forestry.core.config.Constants;
 import net.minecraft.util.math.Vec3i;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = IGenome.class, modId = Constants.MOD_ID)
+@Injects(Constants.MOD_ID)
 public class MetaGenome extends BasicMetaProvider<IGenome> {
 	@Nonnull
 	@Override

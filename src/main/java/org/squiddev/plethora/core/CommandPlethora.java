@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 import org.squiddev.plethora.core.docdump.HTMLWriter;
 import org.squiddev.plethora.core.docdump.IDocWriter;
 import org.squiddev.plethora.core.docdump.JSONWriter;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import java.io.FileOutputStream;
@@ -63,7 +62,7 @@ public class CommandPlethora extends CommandBase {
 				throw e;
 			} catch (Exception e) {
 				if (stream != null) IOUtils.closeQuietly(stream);
-				DebugLogger.error("Cannot handle " + name, e);
+				PlethoraCore.LOG.error("Cannot handle " + name, e);
 				throw new CommandException(e.toString());
 			}
 		} else if (Objects.equals(type, "reload")) {

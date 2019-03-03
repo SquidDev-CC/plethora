@@ -8,21 +8,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "banner")
-public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
+@Injects
+public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
+	public MetaItemBanner() {
+		super("banner", ItemBanner.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
-		if (!(stack.getItem() instanceof ItemBanner)) return Collections.emptyMap();
-
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemBanner banner) {
 		int idx = 0;
 		Map<Object, Object> out = Maps.newHashMap();
 
@@ -55,7 +55,7 @@ public class MetaItemBanner extends BasicMetaProvider<ItemStack> {
 		return out;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		NBTTagList patterns = new NBTTagList();

@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration;
 
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 
@@ -14,8 +15,8 @@ import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 /**
  * Lists all available transfer locations
  */
-@IMethod.Inject(IMethodCollection.class)
-public class MethodTransferLocations extends BasicMethod<IMethodCollection> {
+@Injects
+public final class MethodTransferLocations extends BasicMethod<IMethodCollection> {
 	public MethodTransferLocations() {
 		super("getTransferLocations", "function([location:string]):table -- Get a list of all available objects which can be transferred to or from");
 	}

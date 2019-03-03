@@ -51,6 +51,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IClientModu
 		setCreativeTab(Plethora.getCreativeTab());
 	}
 
+	@Override
 	protected IBlockState getDefaultBlockState(int meta, EnumFacing direction) {
 		return blockState.getBaseState();
 	}

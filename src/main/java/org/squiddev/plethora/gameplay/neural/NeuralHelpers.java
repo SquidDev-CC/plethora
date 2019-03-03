@@ -175,7 +175,7 @@ public final class NeuralHelpers {
 		ContextFactory<IModuleContainer> builder = ContextFactory.of(container, containerRef)
 			.withCostHandler(cost)
 			.withModules(container, containerRef)
-			.<IWorldLocation>addContext(ContextKeys.ORIGIN, new EntityWorldLocation(owner))
+			.addContext(ContextKeys.ORIGIN, new EntityWorldLocation(owner))
 			.addContext(ContextKeys.ORIGIN, owner, entity(owner));
 
 		for (IModuleHandler handler : moduleHandlers) {

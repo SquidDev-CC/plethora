@@ -67,7 +67,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 			}
 		}
 
-		return new Context<T>(this, values, modules.safeGet());
+		return new Context<>(this, values, modules.safeGet());
 	}
 
 	@Nonnull

@@ -13,23 +13,6 @@ import java.util.Map;
  */
 public interface IMetaRegistry {
 	/**
-	 * Register a metadata provider
-	 *
-	 * @param target   The class this provider targets
-	 * @param provider The relevant provider
-	 */
-	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider);
-
-	/**
-	 * Register a metadata provider
-	 *
-	 * @param target    The class this provider targets
-	 * @param namespace The namespace to put this data under.
-	 * @param provider  The relevant provider
-	 */
-	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider);
-
-	/**
 	 * Get metadata about an object
 	 *
 	 * @param context The object to get metadata about

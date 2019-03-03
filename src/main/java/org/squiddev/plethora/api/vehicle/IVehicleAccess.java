@@ -22,7 +22,7 @@ public interface IVehicleAccess {
 	 * to and shared with the client. It is not bound to the item
 	 * stack however and is discarded when the upgrade is removed.
 	 *
-	 * If you change this data, you should mark it as dirty with {@link ]#markDataDirty()}.
+	 * If you change this data, you should mark it as dirty with {@link #markDataDirty()}.
 	 *
 	 * @return The module specific data
 	 * @see #markDataDirty()

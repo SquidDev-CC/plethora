@@ -29,7 +29,7 @@ public interface ICostHandler {
 	/**
 	 * Consume a set amount of energy
 	 *
-	 * @param amount The amount to consume. This must be >= 0.
+	 * @param amount The amount to consume. This must be &gt;= 0.
 	 * @return If there is sufficient energy
 	 */
 	boolean consume(double amount);
@@ -37,7 +37,7 @@ public interface ICostHandler {
 	/**
 	 * Start a method once this cost handler has sufficient energy to consume it.
 	 *
-	 * @param amount The amount of energy to consume. This must be >= 0.
+	 * @param amount The amount of energy to consume. This must be &gt;= 0.
 	 * @param next   The method result to continue with once we have sufficient energy.
 	 * @return The method result
 	 * @throws LuaException If there will never be sufficient energy.
@@ -49,7 +49,7 @@ public interface ICostHandler {
 	/**
 	 * Start a method once this cost handler has sufficient energy to consume it.
 	 *
-	 * @param amount The amount of energy to consume. This must be >= 0.
+	 * @param amount The amount of energy to consume. This must be &gt;= 0.
 	 * @param next   The callback to continue with once we have sufficient energy.
 	 * @return The method result
 	 * @throws LuaException If there will never be sufficient energy.

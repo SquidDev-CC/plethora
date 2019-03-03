@@ -8,7 +8,6 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodRegistry;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -92,7 +91,7 @@ public class MethodWrapper {
 		} catch (LuaException e) {
 			throw e;
 		} catch (Throwable e) {
-			DebugLogger.error("Unexpected error calling " + method.getName(), e);
+			PlethoraCore.LOG.error("Unexpected error calling " + method.getName(), e);
 			throw new LuaException("Java Exception Thrown: " + e.toString());
 		}
 	}

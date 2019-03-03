@@ -5,22 +5,16 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * A Lua side method targeting a class.
  *
  * There are several ways of using {@link IMethod}:
- * - Extend {@link BasicMethod}, one of its subclasses or write your own. Then register using {@link Inject}.
- * - As above but register using {@link IMethodRegistry#registerMethod(Class, IMethod)}.
+ * - Extend {@link BasicMethod}, one of its subclasses or write your own. Then register using {@link org.squiddev.plethora.api.Injects}.
  * - Create a static method on a class and register using {@link BasicMethod.Inject} or similar. If you wish to
  * use a custom base class see {@link IMethodBuilder}.
  *
  * @see BasicMethod
- * @see IMethodRegistry#registerMethod(Class, IMethod)
  */
 public interface IMethod<T> {
 	/**
@@ -81,31 +75,4 @@ public interface IMethod<T> {
 	 */
 	@Nonnull
 	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
-
-	/**
-	 * Automatically register a method.
-	 *
-	 * The class must have a public constructor and implement {@link IMethod}.
-	 *
-	 * @see IMethodRegistry#registerMethod(Class, IMethod)
-	 */
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.CLASS)
-	@interface Inject {
-		/**
-		 * The target class
-		 *
-		 * @return The target class
-		 */
-		Class<?> value();
-
-		/**
-		 * Set if this method depends on a mod
-		 *
-		 * @return The mod's id
-		 * @see net.minecraftforge.fml.common.Optional.Method
-		 * @see net.minecraftforge.fml.common.Optional.Interface
-		 */
-		String modId() default "";
-	}
 }

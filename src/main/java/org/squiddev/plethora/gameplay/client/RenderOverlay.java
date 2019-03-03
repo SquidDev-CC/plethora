@@ -36,8 +36,10 @@ import org.squiddev.plethora.gameplay.registry.Module;
 import org.squiddev.plethora.gameplay.registry.Registry;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
@@ -121,11 +123,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		World world = player.getEntityWorld();
 
 		// "Tick" each iterator and remove them.
-		for (Iterator<ChatMessage> messages = chatMessages.iterator(); messages.hasNext(); ) {
-			if (messages.next().decrement()) {
-				messages.remove();
-			}
-		}
+		chatMessages.removeIf(ChatMessage::decrement);
 
 		if (stack != null && stack.getItem() == Registry.itemModule) {
 			minecraft.getTextureManager().bindTexture(TEXTURE);

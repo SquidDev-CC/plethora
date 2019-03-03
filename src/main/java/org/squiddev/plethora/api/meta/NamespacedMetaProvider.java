@@ -10,8 +10,6 @@ import java.util.Map;
 
 /**
  * A provider that wraps the data in a namespace
- *
- * @see IMetaRegistry#registerMetaProvider(Class, String, IMetaProvider)
  */
 public class NamespacedMetaProvider<T> extends BaseMetaProvider<T> {
 	private final String namespace;

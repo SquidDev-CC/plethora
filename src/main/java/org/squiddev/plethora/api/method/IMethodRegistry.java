@@ -15,14 +15,6 @@ import java.util.List;
  */
 public interface IMethodRegistry {
 	/**
-	 * Register a method
-	 *
-	 * @param target The class this provider targets
-	 * @param method The relevant method
-	 */
-	<T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method);
-
-	/**
 	 * Get all methods for a context
 	 *
 	 * @param context The context to execute under

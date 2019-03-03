@@ -14,9 +14,9 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.registry.IClientModule;
 import org.squiddev.plethora.gameplay.registry.Module;
-import org.squiddev.plethora.utils.DebugLogger;
 
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getMonocle;
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getNormal;
@@ -89,7 +89,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		// Inject the baubles renderer
 		if (Loader.isModLoaded(Baubles.MODID)) {
 			for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
-				render.addLayer(new LayerBaublesInterface(render.getMainModel()));
+				render.addLayer(new LayerBaublesInterface());
 			}
 		}
 	}
@@ -114,10 +114,10 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 			if (head != null) {
 				living.addLayer(new LayerInterface(head, iface, dx, dy, dz, rx, ry, rz));
 			} else {
-				DebugLogger.warn("Cannot inject neural renderer for " + render);
+				Plethora.LOG.warn("Cannot inject neural renderer for " + render);
 			}
 		} else {
-			DebugLogger.warn("Cannot inject neural renderer for " + render);
+			Plethora.LOG.warn("Cannot inject neural renderer for " + render);
 		}
 	}
 

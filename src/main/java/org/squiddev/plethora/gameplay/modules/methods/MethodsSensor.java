@@ -41,7 +41,7 @@ public final class MethodsSensor {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos), DEFAULT_PREDICATE);
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos), DEFAULT_PREDICATE::test);
 
 		int i = 0;
 		HashMap<Integer, Object> map = Maps.newHashMap();
@@ -107,14 +107,14 @@ public final class MethodsSensor {
 	@Nullable
 	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
-			entity -> DEFAULT_PREDICATE.apply(entity) && entity.getUniqueID().equals(uuid));
+			entity -> DEFAULT_PREDICATE.test(entity) && entity.getUniqueID().equals(uuid));
 		return entities.size() > 0 ? entities.get(0) : null;
 	}
 
 	@Nullable
 	private static Entity findEntityByName(IWorldLocation location, String name) {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
-			entity -> DEFAULT_PREDICATE.apply(entity) && Helpers.getName(entity).equals(name));
+			entity -> DEFAULT_PREDICATE.test(entity) && Helpers.getName(entity).equals(name));
 
 		return entities.size() > 0 ? entities.get(0) : null;
 	}

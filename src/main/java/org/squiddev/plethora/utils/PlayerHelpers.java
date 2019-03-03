@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
-		EntitySelectors.NOT_SPECTATING,
+		EntitySelectors.NOT_SPECTATING::apply,
 		Entity::canBeCollidedWith
 	);
 
@@ -65,7 +65,7 @@ public class PlayerHelpers {
 				look.x * range,
 				look.y * range,
 				look.z * range
-			).grow(1, 1, 1), collidablePredicate);
+			).grow(1, 1, 1), collidablePredicate::test);
 
 		Entity closestEntity = null;
 		Vec3d closestVec = null;

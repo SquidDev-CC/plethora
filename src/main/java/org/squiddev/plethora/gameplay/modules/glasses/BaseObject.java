@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.Comparator;
 
 public abstract class BaseObject {
-	public static final Comparator<BaseObject> SORTING_ORDER = (a, b) -> Integer.compare(a.id, b.id);
+	public static final Comparator<BaseObject> SORTING_ORDER = Comparator.comparingInt(a -> a.id);
 
 	private final int id;
 	private final byte type;
@@ -76,24 +76,6 @@ public abstract class BaseObject {
 	 * @param buf The buffer to read from.
 	 */
 	public abstract void readInitial(ByteBuf buf);
-
-	/**
-	 * Write the modified data for this object.
-	 *
-	 * @param buf The buffer to write to.
-	 */
-	public void writeUpdate(ByteBuf buf) {
-		writeInitial(buf);
-	}
-
-	/**
-	 * Read the modified data for this object.
-	 *
-	 * @param buf The buffer to read from.
-	 */
-	public void readUpdate(ByteBuf buf) {
-		readInitial(buf);
-	}
 
 	/**
 	 * Draw this object

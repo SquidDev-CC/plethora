@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Basic wrapper for meta-providers
  */
-public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> {
+public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> implements SimpleMetaProvider<T> {
 	public BasicMetaProvider(int priority, String description) {
 		super(priority, description);
 	}
@@ -24,9 +24,6 @@ public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> {
 	public BasicMetaProvider() {
 		super();
 	}
-
-	@Nonnull
-	public abstract Map<Object, Object> getMeta(@Nonnull T object);
 
 	@Nonnull
 	@Override

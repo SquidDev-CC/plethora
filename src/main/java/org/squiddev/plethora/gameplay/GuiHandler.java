@@ -19,7 +19,6 @@ import org.squiddev.plethora.gameplay.minecart.ContainerMinecartComputer;
 import org.squiddev.plethora.gameplay.minecart.EntityMinecartComputer;
 import org.squiddev.plethora.gameplay.neural.ContainerNeuralInterface;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.utils.DebugLogger;
 
 public class GuiHandler implements IGuiHandler {
 	private static final int GUI_NEURAL = 101;
@@ -82,10 +81,10 @@ public class GuiHandler implements IGuiHandler {
 				return player;
 			case GUI_FLAG_ENTITY: {
 				Entity entity = world.getEntityByID(id);
-				return entity != null && entity instanceof EntityLivingBase ? (EntityLivingBase) entity : null;
+				return entity instanceof EntityLivingBase ? (EntityLivingBase) entity : null;
 			}
 			default:
-				DebugLogger.error("Unknown flag " + flag);
+				Plethora.LOG.error("Unknown flag " + flag);
 				return null;
 		}
 	}

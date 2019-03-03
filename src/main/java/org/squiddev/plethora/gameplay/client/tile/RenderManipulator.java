@@ -42,7 +42,7 @@ public final class RenderManipulator extends TileEntitySpecialRenderer<TileManip
 		AxisAlignedBB[] boxes = type.boxesFor(EnumFacing.DOWN);
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = manipulator.getStack(i);
-			if (stack != null && !stack.isEmpty()) {
+			if (!stack.isEmpty()) {
 				GlStateManager.pushMatrix();
 
 				AxisAlignedBB box = boxes[i];

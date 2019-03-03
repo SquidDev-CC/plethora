@@ -7,7 +7,7 @@ import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ public final class ItemComputerHandler {
 			if (computer instanceof NeuralComputer) {
 				neural = (NeuralComputer) computer;
 			} else {
-				DebugLogger.error("Computer is not NeuralComputer but " + computer);
+				Plethora.LOG.error("Computer is not NeuralComputer but " + computer);
 			}
 		}
 
@@ -83,7 +83,7 @@ public final class ItemComputerHandler {
 			if (computer instanceof NeuralComputer) {
 				return (NeuralComputer) computer;
 			} else {
-				DebugLogger.error("Computer is not NeuralComputer but " + computer);
+				Plethora.LOG.error("Computer is not NeuralComputer but " + computer);
 				return null;
 			}
 		} else {

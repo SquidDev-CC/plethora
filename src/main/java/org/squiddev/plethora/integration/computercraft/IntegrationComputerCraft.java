@@ -32,7 +32,6 @@ public class IntegrationComputerCraft {
 	}
 
 	@SubscribeEvent
-	@SuppressWarnings("deprecation")
 	public void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
 		ItemStack stack = event.getObject();
 

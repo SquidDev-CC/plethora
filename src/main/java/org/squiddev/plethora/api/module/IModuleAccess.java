@@ -42,7 +42,7 @@ public interface IModuleAccess {
 	 *
 	 * Do note, this data may be shared across multiple accesses or instances of this module.
 	 *
-	 * If you change this data, you should mark it as dirty with {@link ]#markDataDirty()}.
+	 * If you change this data, you should mark it as dirty with {@link #markDataDirty()}.
 	 *
 	 * @return The module specific data
 	 * @see #markDataDirty()

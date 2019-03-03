@@ -26,7 +26,6 @@ package org.squiddev.plethora.utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public class LuaPattern {
 	@Nullable
@@ -159,7 +158,7 @@ public class LuaPattern {
 			default:
 				return matchClass == character;
 		}
-		return (lcl == matchClass) ? res : !res;
+		return (lcl == matchClass) == res;
 	}
 
 	private static final class MatchState {
@@ -168,9 +167,8 @@ public class LuaPattern {
 		private int level;
 		private final int[] captureInit = new int[MAX_CAPTURES];
 		private final int[] captureLength = new int[MAX_CAPTURES];
-		private final String[] captureValues = new String[MAX_CAPTURES];
 
-		public MatchState(String string, String pattern) {
+		MatchState(String string, String pattern) {
 			this.string = string;
 			this.pattern = pattern;
 			this.level = 0;
@@ -181,7 +179,6 @@ public class LuaPattern {
 		 */
 		public void reset() {
 			level = 0;
-			Arrays.fill(captureValues, null);
 		}
 
 		/**
@@ -191,7 +188,7 @@ public class LuaPattern {
 		 * @param end    The end position of the match
 		 * @return The matched string
 		 */
-		public String[] getCaptures(int offset, int end) {
+		String[] getCaptures(int offset, int end) {
 			int levels = level == 0 ? 1 : level;
 			String[] v = new String[levels];
 			for (int i = 0; i < levels; ++i) {

@@ -1,7 +1,7 @@
 package org.squiddev.plethora.api.method;
 
 import javax.annotation.Nonnull;
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -44,25 +44,6 @@ public interface IMethodBuilder<T extends Annotation> {
 	 * @param method     The method being generated
 	 * @param annotation The annotation data for this method
 	 * @return The method's target
-	 * @see IMethod.Inject#value()
-	 * @see IMethodRegistry#registerMethod(Class, IMethod)
 	 */
 	Class<?> getTarget(@Nonnull Method method, @Nonnull T annotation);
-
-	/**
-	 * Automatically register a {@link IMethodBuilder}
-	 * The class must have a public constructor and implement {@link IMethodBuilder}
-	 *
-	 * @see IMethodRegistry#registerMethod(Class, IMethod)
-	 */
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.CLASS)
-	@interface Inject {
-		/**
-		 * The target annotation
-		 *
-		 * @return The target annotation
-		 */
-		Class<? extends Annotation> value();
-	}
 }

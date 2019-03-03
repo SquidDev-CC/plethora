@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
 public class Triangle extends ColourableObject implements MultiPoint2D {
-	private Vec2d[] points = new Vec2d[3];
+	private final Vec2d[] points = new Vec2d[3];
 
 	public Triangle(int id, int parent) {
 		super(id, parent, ObjectRegistry.TRIANGLE_2D);

@@ -23,9 +23,9 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	private final Object targetValue;
 	private final Object targetReference;
 
-	private final List<String> keys = new ArrayList<String>();
-	private final List<Object> values = new ArrayList<Object>();
-	private final List<Object> references = new ArrayList<Object>();
+	private final List<String> keys = new ArrayList<>();
+	private final List<Object> values = new ArrayList<>();
+	private final List<Object> references = new ArrayList<>();
 
 	private final List<IAttachable> attachments = Lists.newArrayList();
 
@@ -44,11 +44,11 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	}
 
 	public static <T> ContextFactory<T> of(T target, IReference<T> targetReference) {
-		return new ContextFactory<T>(target, targetReference);
+		return new ContextFactory<>(target, targetReference);
 	}
 
 	public static <T extends IReference<T>> ContextFactory<T> of(T target) {
-		return new ContextFactory<T>(target, target);
+		return new ContextFactory<>(target, target);
 	}
 
 	private void dirty() {
@@ -135,7 +135,7 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 			combinedReferencesList.add(targetReference);
 			ConverterRegistry.instance.extendConverted(combinedKeysList, combinedValuesList, combinedReferencesList, combinedKeysList.size() - 1);
 
-			combinedKeys = combinedKeysList.toArray(new String[combinedKeysList.size()]);
+			combinedKeys = combinedKeysList.toArray(new String[0]);
 			combinedValues = combinedValuesList.toArray();
 			combinedReferences = combinedReferencesList.toArray();
 		}
@@ -145,14 +145,14 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Override
 	public Context<T> getBaked() {
 		setup();
-		return new Context<T>(getUnbaked(), combinedValues, modules);
+		return new Context<>(getUnbaked(), combinedValues, modules);
 	}
 
 	@Nonnull
 	@Override
 	public UnbakedContext<T> getUnbaked() {
 		setup();
-		return new UnbakedContext<T>(keys.size(), combinedKeys, combinedReferences, handler, moduleReference, executor);
+		return new UnbakedContext<>(keys.size(), combinedKeys, combinedReferences, handler, moduleReference, executor);
 	}
 
 	@Nonnull

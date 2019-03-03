@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import dan200.computercraft.api.lua.LuaException;
 import org.junit.Before;
@@ -8,10 +7,9 @@ import org.junit.Test;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.reference.Reference;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,18 +19,13 @@ public class ConverterRegistryTest {
 	@Before
 	public void setup() {
 		registry = new ConverterRegistry();
-		registry.registerConverter(Value.class, new ConstantConverter<Value, Value>() {
-			@Override
-			public Value convert(@Nonnull Value from) {
-				return new Value(!from.active, from.value);
-			}
-		});
+		registry.registerConverter(Value.class, (ConstantConverter<Value, Value>) from -> new Value(!from.active, from.value));
 	}
 
 	@Test
 	public void testExtendConvertedValues() {
 		List<String> keys = Lists.newArrayList("test");
-		List<Object> values = Lists.<Object>newArrayList(new Value(true, 0));
+		List<Object> values = Lists.newArrayList(new Value(true, 0));
 		registry.extendConverted(keys, values, 0);
 
 		assertEquals(Arrays.asList("test", "test"), keys);
@@ -42,7 +35,7 @@ public class ConverterRegistryTest {
 	@Test
 	public void testExtendConvertedValuesMultiple() {
 		List<String> keys = Lists.newArrayList("test", "other");
-		List<Object> values = Lists.<Object>newArrayList(new Value(true, 0), new Value(true, 0));
+		List<Object> values = Lists.newArrayList(new Value(true, 0), new Value(true, 0));
 		registry.extendConverted(keys, values, 0);
 
 		assertEquals(Arrays.asList("test", "other", "test", "other"), keys);
@@ -52,8 +45,8 @@ public class ConverterRegistryTest {
 	@Test
 	public void testExtendConvertedReferences() {
 		List<String> keys = Lists.newArrayList("test");
-		List<Object> values = Lists.<Object>newArrayList(new Value(true, 0));
-		List<Object> references = Lists.<Object>newArrayList(Reference.id(new Value(true, 0)));
+		List<Object> values = Lists.newArrayList(new Value(true, 0));
+		List<Object> references = Lists.newArrayList(Reference.id(new Value(true, 0)));
 
 		registry.extendConverted(keys, values, references, 0);
 
@@ -65,13 +58,8 @@ public class ConverterRegistryTest {
 	@Test
 	public void testExtendConverteReferencesMultiple() throws LuaException {
 		List<String> keys = Lists.newArrayList("test", "other");
-		List<Object> values = Lists.<Object>newArrayList(new Value(true, 0), new Value(true, 0));
-		List<Object> references = Lists.newArrayList(Lists.transform(values, new Function<Object, Object>() {
-			@Override
-			public Object apply(@Nullable Object input) {
-				return Reference.id(input);
-			}
-		}));
+		List<Object> values = Lists.newArrayList(new Value(true, 0), new Value(true, 0));
+		List<Object> references = Lists.newArrayList(values.stream().map(Reference::id).collect(Collectors.toList()));
 
 		registry.extendConverted(keys, values, references, 0);
 

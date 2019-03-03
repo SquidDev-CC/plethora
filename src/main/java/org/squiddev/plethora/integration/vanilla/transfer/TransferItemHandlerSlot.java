@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.vanilla.transfer;
 
 import com.google.common.collect.Sets;
 import net.minecraftforge.items.IItemHandler;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
@@ -14,8 +15,8 @@ import java.util.Set;
  *
  * We block primary accesses as they end up being rather noisy
  */
-@ITransferProvider.Inject(value = IItemHandler.class, primary = false)
-public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> {
+@Injects
+public final class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> {
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull IItemHandler object, @Nonnull String key) {
@@ -40,5 +41,10 @@ public class TransferItemHandlerSlot implements ITransferProvider<IItemHandler> 
 			if (!object.getStackInSlot(i).isEmpty()) slots.add(Integer.toString(i));
 		}
 		return slots;
+	}
+
+	@Override
+	public boolean primary() {
+		return false;
 	}
 }

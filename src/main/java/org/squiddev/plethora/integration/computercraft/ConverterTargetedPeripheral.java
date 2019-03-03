@@ -2,9 +2,9 @@ package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
-import org.squiddev.plethora.api.converter.IConverter;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-@IConverter.Inject(value = IPeripheral.class, modId = ComputerCraft.MOD_ID)
-public class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, Object> {
+@Injects(ComputerCraft.MOD_ID)
+public final class ConverterTargetedPeripheral implements ConstantConverter<IPeripheral, Object> {
 	private boolean fetched;
 
 	// IPeripheral
@@ -76,7 +76,7 @@ public class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, 
 					}
 				}
 			} catch (ReflectiveOperationException e) {
-				DebugLogger.error("Cannot extract peripherals from multi-peripheral", e);
+				PlethoraIntegration.LOG.error("Cannot extract peripherals from multi-peripheral", e);
 			}
 		}
 
@@ -88,7 +88,7 @@ public class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, 
 				to = getTarget(wrapped);
 				if (wrapped != to) return to;
 			} catch (ReflectiveOperationException e) {
-				DebugLogger.error("Cannot extract peripherals from multi-peripheral", e);
+				PlethoraIntegration.LOG.error("Cannot extract peripherals from multi-peripheral", e);
 			}
 		}
 
@@ -101,7 +101,7 @@ public class ConverterTargetedPeripheral extends ConstantConverter<IPeripheral, 
 			try {
 				return getTarget.invoke(peripheral);
 			} catch (ReflectiveOperationException e) {
-				DebugLogger.error("Cannot call IPeripheral.getTarget", e);
+				PlethoraIntegration.LOG.error("Cannot call IPeripheral.getTarget", e);
 			}
 		}
 

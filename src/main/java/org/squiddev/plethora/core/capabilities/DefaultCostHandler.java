@@ -6,7 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.core.PlethoraCore;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -89,7 +89,7 @@ public final class DefaultCostHandler implements ICostHandler {
 			} catch (LuaException e) {
 				throw e;
 			} catch (Throwable e) {
-				DebugLogger.error("Unexpected error", e);
+				PlethoraCore.LOG.error("Unexpected error", e);
 				throw new LuaException("Java Exception Thrown: " + e.toString());
 			}
 		}

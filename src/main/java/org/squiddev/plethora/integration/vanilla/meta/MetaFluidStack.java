@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * Basic properties for fluid stacks
  */
-@IMetaProvider.Inject(value = FluidStack.class)
-public class MetaFluidStack extends BasicMetaProvider<FluidStack> {
+@Injects
+public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 	public MetaFluidStack() {
 		super("Provides information about a fluid, as well as how much is currently stored.");
 	}

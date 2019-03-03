@@ -12,10 +12,13 @@ import ic2.api.tile.IEnergyStorage;
 import ic2.core.IC2;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.ISubTargetedMethod;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Various methods for interacting with IC2's energy net
@@ -120,7 +123,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = IC2.MODID)
+	@Injects(IC2.MODID)
 	public static final class MethodGetEuStored extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
 		public MethodGetEuStored() {
 			super("getEuStored", true, "function():integer -- The amount of EU currently stored");
@@ -131,7 +134,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
 			ItemStack stack = context.getTarget();
@@ -147,7 +150,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = IC2.MODID)
+	@Injects(IC2.MODID)
 	public static final class MethodGetEuCapacity extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
 		public MethodGetEuCapacity() {
 			super("getEuCapacity", true, "function():integer -- The maximum amount of EU that can be stored");
@@ -158,7 +161,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && getManager(context.getTarget()) != null;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
 			ItemStack stack = context.getTarget();

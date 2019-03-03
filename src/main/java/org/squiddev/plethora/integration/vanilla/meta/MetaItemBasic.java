@@ -7,9 +7,9 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,8 +27,8 @@ import java.util.Map;
 /**
  * Adds basic properties for item stacks.
  */
-@IMetaProvider.Inject(ItemStack.class)
-public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
+@Injects
+public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
@@ -89,7 +89,7 @@ public class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			byte[] hash = digest.digest();
 			return new String(Hex.encodeHex(hash));
 		} catch (NoSuchAlgorithmException | IOException e) {
-			DebugLogger.error("Cannot hash NBT", e);
+			PlethoraIntegration.LOG.error("Cannot hash NBT", e);
 			return null;
 		}
 	}

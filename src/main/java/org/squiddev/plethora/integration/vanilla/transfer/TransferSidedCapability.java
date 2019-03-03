@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
@@ -17,8 +18,8 @@ import java.util.Set;
  *
  * We block primary accesses as they end up being rather noisy
  */
-@ITransferProvider.Inject(value = ICapabilityProvider.class, primary = false)
-public class TransferSidedCapability implements ITransferProvider<ICapabilityProvider> {
+@Injects
+public final class TransferSidedCapability implements ITransferProvider<ICapabilityProvider> {
 	private final Map<String, EnumFacing> mappings;
 
 	public TransferSidedCapability() {
@@ -61,5 +62,10 @@ public class TransferSidedCapability implements ITransferProvider<ICapabilityPro
 		}
 
 		return items;
+	}
+
+	@Override
+	public boolean primary() {
+		return false;
 	}
 }

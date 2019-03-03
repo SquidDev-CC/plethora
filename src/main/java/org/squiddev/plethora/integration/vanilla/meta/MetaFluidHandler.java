@@ -39,7 +39,7 @@ public class MetaFluidHandler extends BaseMetaProvider<IFluidHandler> {
 	@Override
 	public IFluidHandler getExample() {
 		return new FluidHandlerItemStack(new ItemStack(Items.WATER_BUCKET), 1000) {
-			FluidStack stack = FluidRegistry.getFluidStack("water", 525);
+			final FluidStack stack = FluidRegistry.getFluidStack("water", 525);
 
 			@Nullable
 			@Override

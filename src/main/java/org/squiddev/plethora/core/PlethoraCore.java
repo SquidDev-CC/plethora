@@ -16,6 +16,8 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.method.ICostHandler;
@@ -27,7 +29,6 @@ import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.forestry.IntegrationForestry;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
-import org.squiddev.plethora.utils.DebugLogger;
 import org.squiddev.plethora.utils.Helpers;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
@@ -39,6 +40,8 @@ public class PlethoraCore {
 	public static final String VERSION = "${mod_version}";
 	public static final String DEPENDENCIES = "required-after:computercraft@[${cc_version},)";
 	public static final ResourceLocation PERIPHERAL_HANDLER_KEY = new ResourceLocation(Plethora.ID, "peripheralHandler");
+
+	public static final Logger LOG = LogManager.getLogger(ID);
 
 	private ASMDataTable asmData;
 
@@ -70,11 +73,10 @@ public class PlethoraCore {
 		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
 		// Load various objects from annotations
+		Registry.register(asmData);
+
 		MetaRegistry.instance.loadAsm(asmData);
-		MethodRegistry.instance.loadAsm(asmData);
-		ConverterRegistry.instance.loadAsm(asmData);
 		MethodTypeBuilder.instance.loadAsm(asmData);
-		TransferRegistry.instance.loadAsm(asmData);
 
 		ConfigCore.configuration.save();
 	}
@@ -110,10 +112,10 @@ public class PlethoraCore {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
 			if (m.isStringMessage()) {
 				if (Constants.IMC_BLACKLIST_PERIPHERAL.equalsIgnoreCase(m.key)) {
-					DebugLogger.debug("Blacklisting peripheral " + m.getStringValue() + " due to IMC from " + m.getSender());
+					PlethoraCore.LOG.debug("Blacklisting peripheral " + m.getStringValue() + " due to IMC from " + m.getSender());
 					PeripheralProvider.addToBlacklist(m.getStringValue());
 				} else if (Constants.IMC_BLACKLIST_MOD.equalsIgnoreCase(m.key)) {
-					DebugLogger.debug("Blacklisting mod " + m.getStringValue() + " due to IMC from " + m.getSender());
+					PlethoraCore.LOG.debug("Blacklisting mod " + m.getStringValue() + " due to IMC from " + m.getSender());
 					Helpers.blacklistMod(m.getStringValue());
 				}
 			}

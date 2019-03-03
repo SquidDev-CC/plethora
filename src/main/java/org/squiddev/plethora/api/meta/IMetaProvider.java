@@ -14,6 +14,7 @@ import java.util.Map;
  * Provides metadata about an object
  * Register with {@link IMetaRegistry}
  */
+@FunctionalInterface
 public interface IMetaProvider<T> {
 	/**
 	 * Get metadata about an object
@@ -60,8 +61,6 @@ public interface IMetaProvider<T> {
 	 * Automatically register a meta provider.
 	 *
 	 * The class must have a public constructor and implement {@link IMetaProvider}.
-	 *
-	 * @see IMetaRegistry#registerMetaProvider(Class, IMetaProvider)
 	 */
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.CLASS)

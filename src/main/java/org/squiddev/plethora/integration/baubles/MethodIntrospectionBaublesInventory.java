@@ -4,8 +4,8 @@ import baubles.api.BaublesApi;
 import baubles.common.Baubles;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.items.IItemHandler;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -18,7 +18,7 @@ import java.util.Collections;
 /**
  * Allows getting the player's baubles inventory
  */
-@IMethod.Inject(value = IModuleContainer.class, modId = Baubles.MODID)
+@Injects(Baubles.MODID)
 public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityIdentifier.Player> {
 	public MethodIntrospectionBaublesInventory() {
 		super(

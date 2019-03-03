@@ -20,7 +20,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.utils.DebugLogger;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,7 +117,7 @@ public class CraftingResult {
 			try {
 				access.queueEvent("crafting_status", args);
 			} catch (RuntimeException e) {
-				DebugLogger.error("Cannot queue crafting callback. Probably detached from the peripheral.", e);
+				PlethoraIntegration.LOG.error("Cannot queue crafting callback. Probably detached from the peripheral.", e);
 			}
 		}
 	}

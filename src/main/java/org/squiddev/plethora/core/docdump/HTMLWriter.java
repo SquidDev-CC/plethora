@@ -34,7 +34,7 @@ public class HTMLWriter implements IDocWriter {
 	private final PrintStream writer;
 	private final ObjectWriter objectWriter;
 
-	private Map<String, Object> escapeMap = new HashMap<>();
+	private final Map<String, Object> escapeMap = new HashMap<>();
 
 	private final ListMultimap<String, DocumentedMethod> methodLookup = MultimapBuilder.treeKeys().arrayListValues().build();
 	private final ListMultimap<String, DocumentedMethod> moduleMethodLookup = MultimapBuilder.treeKeys().arrayListValues().build();

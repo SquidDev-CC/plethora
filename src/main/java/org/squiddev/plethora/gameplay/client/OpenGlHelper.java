@@ -13,8 +13,8 @@ public class OpenGlHelper extends net.minecraft.client.renderer.OpenGlHelper {
 	private static FboMode mode;
 	private static int GL_DRAW_FRAMEBUFFER_BINDING = -1;
 
-	private static FloatBuffer projection = BufferUtils.createFloatBuffer(16);
-	private static FloatBuffer modelView = BufferUtils.createFloatBuffer(16);
+	private static final FloatBuffer projection = BufferUtils.createFloatBuffer(16);
+	private static final FloatBuffer modelView = BufferUtils.createFloatBuffer(16);
 
 	public static int getCurrentBuffer() {
 		setup();

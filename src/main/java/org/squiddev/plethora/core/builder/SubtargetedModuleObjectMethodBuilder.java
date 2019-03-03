@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.MethodBuilder;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
@@ -15,8 +15,8 @@ import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.*;
 
-@IMethodBuilder.Inject(SubtargetedModuleObjectMethod.Inject.class)
-public class SubtargetedModuleObjectMethodBuilder extends MethodBuilder<SubtargetedModuleObjectMethod.Inject> {
+@Injects
+public final class SubtargetedModuleObjectMethodBuilder extends MethodBuilder<SubtargetedModuleObjectMethod.Inject> {
 	public SubtargetedModuleObjectMethodBuilder() throws NoSuchMethodException {
 		super(SubtargetedModuleObjectMethod.class.getMethod("apply", Object.class, IContext.class, Object[].class), SubtargetedModuleObjectMethod.class);
 	}

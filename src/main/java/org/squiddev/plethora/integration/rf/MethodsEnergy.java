@@ -7,10 +7,10 @@ import cofh.redstoneflux.api.IEnergyStorage;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class MethodsEnergy {
 	@BasicObjectMethod.Inject(
@@ -49,7 +49,7 @@ public class MethodsEnergy {
 		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing)));
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
+	@Injects(RedstoneFluxProps.MOD_ID)
 	public static final class MethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MethodEnergyStoredItem() {
 			super("getRFStored", true, "function([side:string]):int -- The amount of RF currently stored");
@@ -60,7 +60,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
@@ -74,7 +74,7 @@ public class MethodsEnergy {
 		}
 	}
 
-	@IMethod.Inject(value = ItemStack.class, modId = RedstoneFluxProps.MOD_ID)
+	@Injects(RedstoneFluxProps.MOD_ID)
 	public static final class MaxMethodEnergyStoredItem extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IEnergyContainerItem> {
 		public MaxMethodEnergyStoredItem() {
 			super("getRFCapacity", true, "function([side:string]):int -- The maximum amount of RF that can be stored");
@@ -85,7 +85,7 @@ public class MethodsEnergy {
 			return super.canApply(context) && context.getTarget().getItem() instanceof IEnergyContainerItem;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) {
 			ItemStack stack = context.getTarget();
