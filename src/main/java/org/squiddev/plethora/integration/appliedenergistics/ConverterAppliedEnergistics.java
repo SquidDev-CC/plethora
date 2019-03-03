@@ -15,8 +15,8 @@ import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.DynamicConverter;
 
 @Injects(AppEng.MOD_ID)
-public final class IntegrationAppliedEnergistics {
-	private IntegrationAppliedEnergistics() {
+public final class ConverterAppliedEnergistics {
+	private ConverterAppliedEnergistics() {
 	}
 
 	public static final DynamicConverter<IAEFluidStack, FluidStack> GET_AE_FLUID_STACK = IAEFluidStack::getFluidStack;

@@ -9,8 +9,8 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.ContextFactory;
@@ -19,15 +19,14 @@ import org.squiddev.plethora.integration.MetaWrapper;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
 /**
  * A basic provider for living entities
  */
-@IMetaProvider.Inject(EntityLivingBase.class)
-public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
+@Injects
+public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityLivingBase> context) {
@@ -48,7 +47,6 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 
 		{
 			Map<Object, String> potionEffects = Maps.newHashMap();
-			@SuppressWarnings("unchecked")
 			Collection<PotionEffect> effects = target.getActivePotionEffects();
 
 			int count = 1;
@@ -77,7 +75,7 @@ public class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		return map;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public EntityLiving getExample() {
 		EntityZombie entity = new EntityZombie(WorldDummy.INSTANCE);

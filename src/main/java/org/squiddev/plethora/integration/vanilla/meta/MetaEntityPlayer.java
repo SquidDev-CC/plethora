@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.util.FoodStats;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.utils.EntityPlayerDummy;
 import org.squiddev.plethora.utils.WorldDummy;
 
@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(EntityPlayer.class)
-public class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
+@Injects
+public final class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull EntityPlayer object) {
@@ -37,7 +37,7 @@ public class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 		return result;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public EntityPlayer getExample() {
 		return new EntityPlayerDummy(WorldDummy.INSTANCE);

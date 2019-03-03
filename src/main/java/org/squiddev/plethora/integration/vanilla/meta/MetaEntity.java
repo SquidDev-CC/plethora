@@ -6,8 +6,8 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.utils.Helpers;
@@ -18,8 +18,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(Entity.class)
-public class MetaEntity extends BaseMetaProvider<Entity> {
+@Injects
+public final class MetaEntity extends BaseMetaProvider<Entity> {
 	public MetaEntity() {
 		super("Provides some basic information about an entity, such as their their UUID and name.");
 	}
@@ -69,7 +69,7 @@ public class MetaEntity extends BaseMetaProvider<Entity> {
 		return result;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public Entity getExample() {
 		EntityXPOrb entity = new EntityXPOrb(WorldDummy.INSTANCE);

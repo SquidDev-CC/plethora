@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getString;
-
+import static org.squiddev.plethora.integration.mcmultipart.IntegrationMcMultipart.getBasicMeta;
 
 public class MethodsMultipart {
 	@BasicObjectMethod.Inject(
@@ -27,7 +27,7 @@ public class MethodsMultipart {
 		int i = 0;
 		Map<Integer, Map<Object, Object>> out = Maps.newHashMap();
 		for (IPartInfo part : parts) {
-			out.put(++i, MetaMultipart.getBasicMeta(part));
+			out.put(++i, getBasicMeta(part));
 		}
 
 		return new Object[]{out};
@@ -41,7 +41,7 @@ public class MethodsMultipart {
 		Map<String, Map<Object, Object>> parts = Maps.newHashMap();
 
 		for (Map.Entry<IPartSlot, ? extends IPartInfo> slot : context.getTarget().getParts().entrySet()) {
-			parts.put(slot.getKey().getRegistryName().toString().toLowerCase(Locale.ENGLISH), MetaMultipart.getBasicMeta(slot.getValue()));
+			parts.put(slot.getKey().getRegistryName().toString().toLowerCase(Locale.ENGLISH), getBasicMeta(slot.getValue()));
 		}
 
 		return new Object[]{parts};

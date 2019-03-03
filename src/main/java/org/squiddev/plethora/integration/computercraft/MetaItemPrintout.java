@@ -4,24 +4,25 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.media.items.ItemPrintout;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
 
 /**
  * Meta provider for printed outs: printed page(s) and books.
  */
-@IMetaProvider.Inject(value = ItemStack.class, modId = ComputerCraft.MOD_ID, namespace = "printout")
-public class MetaItemPrintout extends BasicMetaProvider<ItemStack> {
+@Injects(ComputerCraft.MOD_ID)
+public final class MetaItemPrintout extends ItemStackMetaProvider<ItemPrintout> {
+	public MetaItemPrintout() {
+		super("printout", ItemPrintout.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
-		if (object.getItem() != ComputerCraft.Items.printout) return Collections.emptyMap();
-
+	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ItemPrintout item) {
 		Map<Object, Object> out = Maps.newHashMap();
 		out.put("type", ItemPrintout.getType(object).toString());
 		out.put("title", ItemPrintout.getTitle(object));
@@ -37,7 +38,7 @@ public class MetaItemPrintout extends BasicMetaProvider<ItemStack> {
 		return out;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return ItemPrintout.createSingleFromTitleAndText("My page",

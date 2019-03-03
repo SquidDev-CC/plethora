@@ -17,7 +17,7 @@ import org.squiddev.plethora.integration.ItemFingerprint;
 
 import java.util.Map;
 
-import static org.squiddev.plethora.integration.appliedenergistics.MetaAEItemStack.getBasicProperties;
+import static org.squiddev.plethora.integration.appliedenergistics.MetaAppliedEnergistics.getItemStackProperties;
 
 public class MethodsGrid {
 	@BasicObjectMethod.Inject(
@@ -58,7 +58,7 @@ public class MethodsGrid {
 
 		int i = 0;
 		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
-		for (IAEItemStack stack : items) output.put(++i, getBasicProperties(stack));
+		for (IAEItemStack stack : items) output.put(++i, getItemStackProperties(stack));
 		return new Object[]{output};
 	}
 

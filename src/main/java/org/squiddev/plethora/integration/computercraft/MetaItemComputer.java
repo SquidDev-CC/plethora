@@ -6,36 +6,34 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.computer.items.IComputerItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
 
 /**
  * Provider for computer items;
  */
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "computer", modId = ComputerCraft.MOD_ID)
-public class MetaItemComputer extends BasicMetaProvider<ItemStack> {
+@Injects(ComputerCraft.MOD_ID)
+public final class MetaItemComputer extends ItemStackMetaProvider<IComputerItem> {
+	public MetaItemComputer() {
+		super("computer", IComputerItem.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
-		Item item = stack.getItem();
-		if (!(item instanceof IComputerItem)) return Collections.emptyMap();
-
-		IComputerItem cItem = (IComputerItem) item;
+	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull IComputerItem item) {
 		Map<Object, Object> data = Maps.newHashMap();
 
-		int id = cItem.getComputerID(stack);
-		if (id > 0) data.put("id", id);
+		int id = item.getComputerID(stack);
+		if (id >= 0) data.put("id", id);
 
-		String label = cItem.getLabel(stack);
+		String label = item.getLabel(stack);
 		if (!Strings.isNullOrEmpty(label)) data.put("label", label);
-		data.put("family", cItem.getFamily(stack).toString());
+		data.put("family", item.getFamily(stack).toString());
 
 		return data;
 	}

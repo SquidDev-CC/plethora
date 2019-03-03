@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration;
 
 import com.google.common.base.Preconditions;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
@@ -38,8 +39,8 @@ public class MetaWrapper<T> extends ConstantReference<MetaWrapper<T>> {
 		return this;
 	}
 
-	@IMetaProvider.Inject(MetaWrapper.class)
-	public static class MetaProvider extends BaseMetaProvider<MetaWrapper> {
+	@Injects
+	public static final class MetaProvider extends BaseMetaProvider<MetaWrapper> {
 		public MetaProvider() {
 			super("Simply wraps an object and exposes metadata for that. You can happily ignore this.");
 		}

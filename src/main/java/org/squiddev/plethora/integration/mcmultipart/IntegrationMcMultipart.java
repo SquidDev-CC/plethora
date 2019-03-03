@@ -10,6 +10,11 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.DynamicConverter;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.integration.vanilla.meta.MetaBlock;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
 
 @Injects(MCMultiPart.MODID)
 public final class IntegrationMcMultipart {
@@ -26,4 +31,16 @@ public final class IntegrationMcMultipart {
 		IMultipartTile tile = part.getTile();
 		return tile == null ? null : tile.getTileEntity();
 	};
+
+	public static BasicMetaProvider<IPartInfo> META_MULTIPART = new BasicMetaProvider<IPartInfo>() {
+		@Nonnull
+		@Override
+		public Map<Object, Object> getMeta(@Nonnull IPartInfo part) {
+			return getBasicMeta(part);
+		}
+	};
+
+	public static Map<Object, Object> getBasicMeta(@Nonnull IPartInfo part) {
+		return MetaBlock.getBasicMeta(part.getPart().getBlock());
+	}
 }

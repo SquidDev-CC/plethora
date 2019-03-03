@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -16,8 +17,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-@IMetaProvider.Inject(BlockReference.class)
-public class MetaBlockReference extends BasicMetaProvider<BlockReference> {
+@Injects
+public final class MetaBlockReference extends BasicMetaProvider<BlockReference> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull BlockReference reference) {

@@ -6,25 +6,24 @@ import ic2.api.crops.CropProperties;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
 import ic2.core.IC2;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = IC2.MODID, namespace = "crop")
-public class MetaItemCrop extends BasicMetaProvider<ItemStack> {
+@Injects(IC2.MODID)
+public class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
+	public MetaItemCrop() {
+		super("crop", ICropSeed.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
+	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ICropSeed seed) {
 		if (Crops.instance == null) return Collections.emptyMap();
-
-		Item item = object.getItem();
-		if (!(item instanceof ICropSeed)) return Collections.emptyMap();
-		ICropSeed seed = (ICropSeed) item;
 
 		CropCard card = Crops.instance.getCropCard(object);
 		if (card == null) return Collections.emptyMap();
