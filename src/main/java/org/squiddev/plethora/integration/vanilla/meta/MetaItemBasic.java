@@ -3,13 +3,14 @@ package org.squiddev.plethora.integration.vanilla.meta;
 import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.integration.PlethoraIntegration;
+import org.squiddev.plethora.utils.LuaList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,6 +49,18 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			data.put("durability", stack.getItem().getDurabilityForDisplay(stack));
 		}
 
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("display", Constants.NBT.TAG_COMPOUND)) {
+			NBTTagCompound displayTag = tag.getCompoundTag("display");
+			if (displayTag.hasKey("Lore", Constants.NBT.TAG_LIST)) {
+				NBTTagList loreTag = displayTag.getTagList("Lore", Constants.NBT.TAG_STRING);
+				LuaList<String> loreText = new LuaList<>();
+				for (NBTBase child : loreTag) loreText.add(((NBTTagString) child).getString());
+
+				data.put("lore", loreText.asMap());
+			}
+		}
+
 		return data;
 	}
 
@@ -65,7 +78,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 		data.put("nbtHash", getNBTHash(stack));
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return new ItemStack(Items.STICK, 5);
