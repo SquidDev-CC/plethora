@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Injects(Constants.MOD_ID)
-public class MetaIndividual extends BaseMetaProvider<IIndividual> {
+public final class MetaIndividual extends BaseMetaProvider<IIndividual> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IIndividual> context) {
