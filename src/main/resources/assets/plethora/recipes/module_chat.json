@@ -1,19 +1,19 @@
 {
-	"result": {
-		"item": "plethora:module",
-		"data": 5
-	},
+	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		" RS",
 		"WRN",
 		"IIS"
 	],
-	"type": "minecraft:crafting_shaped",
 	"key": {
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
 		"S": { "type": "forge:ore_dict", "ore": "stone" },
 		"W": { "item": "#WOOL" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
 		"N": { "item": "minecraft:noteblock" }
+	},
+	"result": {
+		"item": "plethora:module",
+		"data": 5
 	}
 }

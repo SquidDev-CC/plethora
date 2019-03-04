@@ -1,18 +1,18 @@
 {
-	"result": {
-		"item": "plethora:module",
-		"data": 3
-	},
+	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"ERE",
 		"IOI",
 		"III"
 	],
-	"type": "minecraft:crafting_shaped",
 	"key": {
 		"R": { "item": "minecraft:rotten_flesh" },
 		"E": { "item": "minecraft:ender_eye" },
 		"O": { "item": "minecraft:observer" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
+	},
+	"result": {
+		"item": "plethora:module",
+		"data": 3
 	}
 }

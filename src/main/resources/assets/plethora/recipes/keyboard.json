@@ -1,16 +1,16 @@
 {
-	"result": {
-		"item": "plethora:keyboard"
-	},
+	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"  M",
 		"SSI",
 		"SSS"
 	],
-	"type": "minecraft:crafting_shaped",
 	"key": {
 		"S": { "type": "forge:ore_dict", "ore": "stone" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
 		"M": { "item": "computercraft:peripheral", "data": 1 }
+	},
+	"result": {
+		"item": "plethora:keyboard"
 	}
 }
