@@ -24,7 +24,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer.extractHandler;
 
 @Injects(AppEng.MOD_ID)
-public class MethodExportItem extends BasicMethod<IAEItemStack> implements ITransferMethod {
+public final class MethodExportItem extends BasicMethod<IAEItemStack> implements ITransferMethod {
 	public MethodExportItem() {
 		super("export", "function(to:string, [, limit:int][, toSlot:int]):int -- Export this item from the AE network to an inventory. Returns the amount transferred.");
 	}

@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Injects(IC2.MODID)
-public class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
+public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 	public MetaItemCrop() {
 		super("crop", ICropSeed.class);
 	}

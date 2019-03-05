@@ -19,7 +19,7 @@ import java.util.Collections;
  * Allows getting the player's baubles inventory
  */
 @Injects(Baubles.MODID)
-public class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityIdentifier.Player> {
+public final class MethodIntrospectionBaublesInventory extends SubtargetedModuleObjectMethod<EntityIdentifier.Player> {
 	public MethodIntrospectionBaublesInventory() {
 		super(
 			"getBaubles", Collections.singleton(PlethoraModules.INTROSPECTION_M), EntityIdentifier.Player.class, true,

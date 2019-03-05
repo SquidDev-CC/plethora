@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
 @Injects(AppEng.MOD_ID)
-public class MethodCraftItem extends BasicMethod<IAEItemStack> {
+public final class MethodCraftItem extends BasicMethod<IAEItemStack> {
 	public MethodCraftItem() {
 		super("craft", "(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +
 			"reference to the crafting task.");
