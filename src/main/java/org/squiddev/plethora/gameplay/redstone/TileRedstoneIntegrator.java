@@ -115,14 +115,11 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		updateInput();
 	}
 
-	@Override
 	public ItemStack getPickedItem() {
 		return new ItemStack(Registry.blockRedstoneIntegrator);
 	}
 
-	@Override
 	public void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
-		super.getDroppedItems(drops, creative);
 		if (!creative) drops.add(getPickedItem());
 	}
 

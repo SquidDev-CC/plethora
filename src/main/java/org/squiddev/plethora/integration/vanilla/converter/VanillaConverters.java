@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.converter.ConstantConverter;
@@ -75,7 +76,9 @@ public final class VanillaConverters {
 		// We could do this in ITEM_HANDLER_CAP, but this is (hopefully) constant.
 		if (from instanceof ICapabilityProvider && ((ICapabilityProvider) from).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
 			IItemHandler handler = ((ICapabilityProvider) from).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (handler != null) return handler;
+			// SidedInvWrapper for a null side will cause an NPE. While this is a problem with the mod returning such
+			// an instance, it's happened enough times that we should ignore these instances.
+			if (handler != null && !(handler instanceof SidedInvWrapper)) return handler;
 		}
 
 		return new InvWrapper(from);

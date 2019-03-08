@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Injects(Constants.MOD_ID)
-public class MetaGenome extends BasicMetaProvider<IGenome> {
+public final class MetaGenome extends BasicMetaProvider<IGenome> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IGenome genome) {
