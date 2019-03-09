@@ -15,13 +15,10 @@ import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.FromSubtarget;
 import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -32,15 +29,13 @@ import org.squiddev.plethora.integration.vanilla.FakePlayerProviderLocation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
-import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
 
 public final class MethodsChat {
 	@PlethoraMethod(module = PlethoraModules.CHAT_S, doc = "-- Send a message to everyone")
 	public static void say(
 		@Nonnull IContext<IModuleContainer> context,
-		@FromContext(ContextKeys.ORIGIN) @Nullable Entity entity,
+		@FromContext @Nullable Entity entity, // TODO: EntityIdentifier?
 		@FromContext(ContextKeys.ORIGIN) @Nullable IWorldLocation location,
 		String message
 	) throws LuaException {
@@ -98,24 +93,14 @@ public final class MethodsChat {
 		player.server.getPlayerList().sendMessage(event.getComponent(), false);
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = EntityIdentifier.class,
-		doc = "function(message:string) -- Send a message to yourself"
-	)
-	@Nonnull
-	public static MethodResult tell(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final String message = getString(args, 0);
+	@PlethoraMethod(module = PlethoraModules.CHAT_S, doc = "-- Send a message to yourself")
+	public static void tell(@FromSubtarget EntityIdentifier entity, String message) throws LuaException {
 		validateMessage(message);
-
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> context = unbaked.bake();
-			EntityLivingBase sender = getOriginOr(context, PlethoraModules.CHAT_S, EntityIdentifier.class).getEntity();
-			sender.sendMessage(ForgeHooks.newChatWithLinks(message));
-			return MethodResult.empty();
-		});
+		EntityLivingBase sender = entity.getEntity();
+		sender.sendMessage(ForgeHooks.newChatWithLinks(message));
 	}
 
-	public static void validateMessage(String message) throws LuaException {
+	static void validateMessage(String message) throws LuaException {
 		if (ConfigGameplay.Chat.maxLength > 0 && message.length() > ConfigGameplay.Chat.maxLength) {
 			throw new LuaException(String.format("Message is too long (was %d, maximum is %d)", message.length(), ConfigGameplay.Chat.maxLength));
 		}
@@ -128,35 +113,27 @@ public final class MethodsChat {
 		}
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
-		doc = "function(pattern:string) -- Capture all chat messages matching a Lua pattern, preventing them from being said."
+	@PlethoraMethod(
+		module = PlethoraModules.CHAT_S, worldThread = false,
+		doc = "-- Capture all chat messages matching a Lua pattern, preventing them from being said."
 	)
-	@Nullable
-	public static Object[] capture(Listener listener, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		String pattern = getString(args, 0);
+	public static void capture(@FromContext(PlethoraModules.CHAT_S) Listener listener, String pattern) {
 		listener.addPattern(pattern);
-		return null;
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
-		doc = "function(pattern:string):boolean -- Remove a capture added by capture(pattern)."
+	@PlethoraMethod(
+		module = PlethoraModules.CHAT_S, worldThread = false,
+		doc = "-- Remove a capture added by capture(pattern)."
 	)
-	@Nonnull
-	public static Object[] uncapture(Listener listener, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		String pattern = getString(args, 0);
-		boolean removed = listener.removePattern(pattern);
-		return new Object[]{removed};
+	public static boolean uncapture(@FromContext(PlethoraModules.CHAT_S) Listener listener, String pattern) {
+		return listener.removePattern(pattern);
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.CHAT_S, target = Listener.class, worldThread = false,
-		doc = "function() -- Remove all listeners added by capture()."
+	@PlethoraMethod(
+		module = PlethoraModules.CHAT_S, worldThread = false,
+		doc = "-- Remove all listeners added by capture()."
 	)
-	@Nullable
-	public static Object[] clearCaptures(Listener listener, @Nonnull final IContext<IModuleContainer> unbaked, @Nonnull Object[] args) {
+	public static void clearCaptures(@FromContext(PlethoraModules.CHAT_S) Listener listener) {
 		listener.clearPatterns();
-		return null;
 	}
 }

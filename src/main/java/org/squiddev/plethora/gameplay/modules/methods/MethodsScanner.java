@@ -10,11 +10,9 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaBlockState;
@@ -23,16 +21,12 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.SCANNER_S, target = IWorldLocation.class,
-		doc = "function():table -- Scan all blocks in the vicinity"
-	)
-	public static Object[] scan(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
+	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Scan all blocks in the vicinity")
+	public static Map<Integer, Object> scan(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -60,36 +54,22 @@ public final class MethodsScanner {
 			}
 		}
 
-		return new Object[]{map};
+		return map;
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.SCANNER_S,
-		target = IWorldLocation.class,
-		doc = "function(x:integer, y:integer, z:integer):table -- Get metadata about a nearby block"
-	)
 	@Nonnull
-	public static MethodResult getBlockMeta(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final int x = getInt(args, 0);
-		final int y = getInt(args, 1);
-		final int z = getInt(args, 2);
-
+	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Get metadata about a nearby block")
+	public static Map<Object, Object> getBlockMeta(
+		IContext<IModuleContainer> context,
+		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		int x, int y, int z
+	) throws LuaException {
 		assertBetween(x, -radius, radius, "X coordinate out of bounds (%s)");
 		assertBetween(y, -radius, radius, "Y coordinate out of bounds (%s)");
 		assertBetween(z, -radius, radius, "Z coordinate out of bounds (%s)");
 
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> baked = context.bake();
-			IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-
-			World world = location.getWorld();
-			BlockPos pos = location.getPos().add(x, y, z);
-
-			Map<Object, Object> meta = baked
-				.makeChild(new BlockReference(new WorldLocation(world, pos)))
-				.getMeta();
-
-			return MethodResult.result(meta);
-		});
+		return context
+			.makeChild(new BlockReference(new WorldLocation(location.getWorld(), location.getPos().add(x, y, z))))
+			.getMeta();
 	}
 }

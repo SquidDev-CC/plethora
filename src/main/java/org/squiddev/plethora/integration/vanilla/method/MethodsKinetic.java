@@ -6,18 +6,17 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromSubtarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.DisableAI;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static dan200.computercraft.core.apis.ArgumentHelper.optNumber;
@@ -45,19 +44,16 @@ public final class MethodsKinetic {
 		}));
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityLiving.class,
-		doc = "function() -- Disable the AI of this entity. Be warned: this permanently scars them - they'll never be the same again!"
+	@PlethoraMethod(
+		module = PlethoraModules.KINETIC_S,
+		doc = "-- Disable the AI of this entity. Be warned: this permanently scars them - they'll never be the same again!"
 	)
-	@Nullable
-	public static Object[] disableAI(@Nonnull EntityLiving entity, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static void disableAI(@FromSubtarget(ContextKeys.ORIGIN) EntityLiving entity) throws LuaException {
 		DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
 		if (disable == null) throw new LuaException("Cannot disable AI");
 
 		disable.setDisabled(true);
 		DisableAI.maybeClear(entity);
-
-		return null;
 	}
 
 	@SubtargetedModuleMethod.Inject(
@@ -104,12 +100,8 @@ public final class MethodsKinetic {
 		}));
 	}
 
-	@Nonnull
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityLiving.class,
-		doc = "function():boolean -- Whether the entity is currently walking somewhere"
-	)
-	public static Object[] isWalking(@Nonnull EntityLiving target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
-		return new Object[]{!target.getNavigator().noPath()};
+	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Whether the entity is currently walking somewhere.")
+	public static boolean isWalking(@FromSubtarget(ContextKeys.ORIGIN) EntityLiving target) {
+		return !target.getNavigator().noPath();
 	}
 }

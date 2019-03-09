@@ -28,9 +28,10 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromSubtarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
@@ -43,36 +44,24 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
  * Various methods for mobs
  */
 public final class MethodsKineticEntity {
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S,
-		target = EntityLivingBase.class,
-		doc = "function(yaw:number, pitch:number) -- Look in a set direction"
-	)
+	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Look in a set direction")
 	@Nonnull
-	public static MethodResult look(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double yaw = getReal(args, 0) % 360;
-		final double pitch = getReal(args, 1) % 360;
+	public static void look(@FromSubtarget EntityLivingBase target, double pitch, double yaw) {
+		yaw %= 360;
+		pitch %= 360;
 
-		return MethodResult.nextTick(() -> {
-			EntityLivingBase target = context.bake().getContext(ContextKeys.ORIGIN, EntityLivingBase.class);
-			if (target instanceof EntityPlayerMP) {
-				NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
-				handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
-			} else {
-				target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
-				target.rotationPitch = (float) (pitch % 360);
-			}
-			return MethodResult.empty();
-		});
+		if (target instanceof EntityPlayerMP) {
+			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
+			handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
+		} else {
+			target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
+			target.rotationPitch = (float) (pitch % 360);
+		}
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityCreeper.class,
-		doc = "function() -- Explode this creeper"
-	)
-	public static Object[] explode(@Nonnull EntityCreeper target, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
+	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Explode this creeper.")
+	public static void explode(@FromSubtarget(ContextKeys.ORIGIN) EntityCreeper target) {
 		target.explode();
-		return null;
 	}
 
 	@SubtargetedModuleMethod.Inject(

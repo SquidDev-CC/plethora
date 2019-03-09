@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -11,33 +10,25 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getUUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.SENSOR_S, target = IWorldLocation.class,
-		doc = "function():table -- Scan for entities in the vicinity"
-	)
-	public static Object[] sense(@Nonnull IWorldLocation location, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
+	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Scan for entities in the vicinity")
+	public static Map<Integer, Object> sense(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 
@@ -50,50 +41,27 @@ public final class MethodsSensor {
 			map.put(++i, data);
 		}
 
-		return new Object[]{map};
+		return map;
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.SENSOR_S,
-		target = IWorldLocation.class,
-		doc = "function(id:string):table|nil -- Find a nearby entity by UUID"
-	)
-	public static MethodResult getMetaByID(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final UUID uuid = getUUID(args, 0);
-
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> baked = context.bake();
-			IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			Entity entity = findEntityByUUID(location, uuid);
-			if (entity == null) {
-				return MethodResult.empty();
-			} else {
-				return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
-
-			}
-		});
+	@Nullable
+	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by UUID")
+	public static Map<Object, Object> getMetaByID(
+		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		UUID id
+	) {
+		Entity entity = findEntityByUUID(location, id);
+		return entity == null ? null : context.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta();
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.SENSOR_S,
-		target = IWorldLocation.class,
-		doc = "function(name:string):table|nil -- Find a nearby entity by name"
-	)
-	@Nonnull
-	public static MethodResult getMetaByName(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final String name = getString(args, 0);
-
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> baked = context.bake();
-			IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			Entity entity = findEntityByName(location, name);
-			if (entity == null) {
-				return MethodResult.empty();
-			} else {
-				return MethodResult.result(baked.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta());
-
-			}
-		});
+	@Nullable
+	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by name")
+	public static Map<Object, Object> getMetaByName(
+		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		String name
+	) {
+		Entity entity = findEntityByName(location, name);
+		return entity == null ? null : context.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta();
 	}
 
 	private static AxisAlignedBB getBox(BlockPos pos) {

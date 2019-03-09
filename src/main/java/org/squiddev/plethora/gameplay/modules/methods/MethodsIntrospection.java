@@ -1,38 +1,32 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
-import net.minecraft.entity.Entity;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.gen.FromSubtarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public final class MethodsIntrospection {
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class,
-		doc = "function():string -- Get this entity's UUID."
-	)
-	public static Object[] getID(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
-		return new Object[]{identifier.getId().toString()};
+	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this entity's UUID.")
+	public static String getID(@FromSubtarget EntityIdentifier identifier) {
+		return identifier.getId().toString();
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.INTROSPECTION_S, target = EntityIdentifier.class,
-		doc = "function():string -- Get this entity's UUID."
-	)
-	public static Object[] getName(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) {
-		return new Object[]{identifier.getName()};
+	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this entity's UUID.")
+	public static String getName(@FromSubtarget EntityIdentifier identifier) {
+		return identifier.getName();
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S}, target = EntityIdentifier.class,
-		doc = "function():string -- Get this entity's UUID."
+	@PlethoraMethod(
+		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S},
+		doc = "-- Get this entity's UUID."
 	)
-	public static Object[] getMetaOwner(@Nonnull EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		Entity entity = identifier.getEntity();
-		return new Object[]{context.makePartialChild(entity).getMeta()};
+	public static Map<Object, Object> getMetaOwner(@FromSubtarget EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context) throws LuaException {
+		return context.makePartialChild(identifier.getEntity()).getMeta();
 	}
 }
