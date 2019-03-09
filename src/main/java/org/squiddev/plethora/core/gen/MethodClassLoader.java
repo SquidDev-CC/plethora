@@ -239,7 +239,7 @@ class MethodClassLoader extends ClassLoader {
 			mw.visitVarInsn(ALOAD, IDX_ARG);
 			loadInt(mw, index);
 			Default def = parameter.getAnnotation(Default.class);
-			if (argument == int.class || argument == short.class || argument == byte.class || argument == char.class) {
+			if (argument == int.class || argument == short.class || argument == char.class || argument == byte.class) {
 				if (def == null) {
 					visitGet(mw, "Int", "I");
 				} else {
@@ -278,17 +278,29 @@ class MethodClassLoader extends ClassLoader {
 				Executable method = parameter.getDeclaringExecutable();
 				LOG.error(
 					"Argument {} for @PlethoraMethod {}.{} has an unknown primitive type {}.",
-					parameter.getName(), method.getDeclaringClass().getName(), method.getName(), parameter.getType()
+					parameter.getName(), method.getDeclaringClass().getName(), method.getName(), argument
 				);
 				return false;
 			}
+		} else if (argument.isAssignableFrom(Enum.class) && argument != Enum.class) {
+			// We have a special handler for enums
+			mw.visitVarInsn(ALOAD, IDX_ARG);
+			loadInt(mw, index);
+			mw.visitLdcInsn(Type.getType(argument));
+			if (parameter.getAnnotation(Nullable.class) == null) {
+				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "getEnum", "([Ljava/lang/Object;ILjava/lang/Class;)Ljava/lang/Enum;", false);
+			} else {
+				mw.visitInsn(ACONST_NULL);
+				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "getEnum", "([Ljava/lang/Object;ILjava/lang/Class;Ljava/lang/Enum;)Ljava/lang/Enum;", false);
+			}
+			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(argument));
 		} else {
-			Field field = ArgumentTypeRegistry.get(parameter.getType());
+			Field field = ArgumentTypeRegistry.getField(argument);
 			if (field == null) {
 				Executable method = parameter.getDeclaringExecutable();
 				LOG.error(
 					"Argument {} for @PlethoraMethod {}.{} has no obvious converter for {}.",
-					parameter.getName(), method.getDeclaringClass().getName(), method.getName(), parameter.getType()
+					parameter.getName(), method.getDeclaringClass().getName(), method.getName(), argument
 				);
 				return false;
 			}
@@ -301,7 +313,7 @@ class MethodClassLoader extends ClassLoader {
 				parameter.getAnnotation(Nullable.class) == null ? "get" : "opt",
 				"([Ljava/lang/Object;I)Ljava/lang/Object;", true
 			);
-			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
+			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(argument));
 		}
 
 		return true;

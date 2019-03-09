@@ -2,24 +2,26 @@ package org.squiddev.plethora.core.gen;
 
 import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
+import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.*;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.core.gen.MethodInstance.ContextInfo;
 import org.squiddev.plethora.utils.Helpers;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
 
@@ -43,20 +45,6 @@ public final class PlethoraMethodRegistry {
 			return false;
 		}
 
-		// Extract some trivial properties
-		String[] names = annotation.name();
-		String docs = annotation.doc();
-		String[] moduleNames = annotation.module();
-		ResourceLocation[] modules;
-		if (names.length == 0 || names.length == 1 && names[0].equals("")) names = new String[]{method.getName()};
-		if (Strings.isNullOrEmpty(docs)) docs = null;
-		if (moduleNames.length == 0 || moduleNames.length == 1 && moduleNames[0].equals("")) {
-			modules = null;
-		} else {
-			modules = new ResourceLocation[moduleNames.length];
-			for (int i = 0; i < moduleNames.length; i++) modules[i] = new ResourceLocation(moduleNames[i]);
-		}
-
 		MarkerInterfaces markers = method.getAnnotation(MarkerInterfaces.class);
 		Class<?>[] markerIfaces = markers == null || markers.value().length == 0 ? null : markers.value();
 
@@ -72,9 +60,6 @@ public final class PlethoraMethodRegistry {
 			FromContext fromContext = parameter.getAnnotation(FromContext.class);
 			FromTarget fromTarget = parameter.getAnnotation(FromTarget.class);
 			boolean contextTarget = parameter.getType() == IContext.class || parameter.getType() == IPartialContext.class;
-
-			// TODO: Determine if we're IPartialContext or IContext - read this as @FromTarget and verify it's not
-			//  annotated. Also do codegen for that.
 
 			if (fromContext == null && fromTarget == null && !contextTarget) break;
 
@@ -154,6 +139,40 @@ public final class PlethoraMethodRegistry {
 			}
 
 			if (getRawType(parameter) == null) ok = false;
+		}
+
+		// Extract some trivial properties
+		String[] names = annotation.name();
+		String docs = annotation.doc();
+		String[] moduleNames = annotation.module();
+		ResourceLocation[] modules;
+		if (names.length == 0 || names.length == 1 && names[0].equals("")) names = new String[]{method.getName()};
+
+		// Prefix the doc string with the type signature where possible.
+		if (Strings.isNullOrEmpty(docs)) {
+			LOG.error("@PlethoraMethod {} does not have any documentation.", name);
+			ok = false;
+		} else if (!docs.startsWith("function(")) {
+			if (!docs.startsWith("-- ")) {
+				LOG.error("@PlethoraMethod {}'s documentation should start with 'function(' or '--'.", name);
+				ok = false;
+			}
+
+			String signature = getSignature(method, name, parameters, contextIndex);
+			if (signature == null) {
+				LOG.error("@PlethoraMethod {} should specify a signature, due to dynamic arguments or return values.", name);
+				ok = false;
+			} else {
+				docs = signature + " " + docs;
+			}
+		}
+
+		// Extract our module names.
+		if (moduleNames.length == 0 || moduleNames.length == 1 && moduleNames[0].equals("")) {
+			modules = null;
+		} else {
+			modules = new ResourceLocation[moduleNames.length];
+			for (int i = 0; i < moduleNames.length; i++) modules[i] = new ResourceLocation(moduleNames[i]);
 		}
 
 		if (target == null) {
@@ -258,5 +277,64 @@ public final class PlethoraMethodRegistry {
 		}
 
 		return null;
+	}
+
+	@Nullable
+	private static String getSignature(Method method, String name, Parameter[] parameters, int start) {
+		if (start == parameters.length - 1 && parameters[parameters.length - 1].getType() == Object[].class) {
+			return null;
+		}
+
+		Class<?> ret = method.getReturnType();
+		if (ret == MethodResult.class || ret == Object[].class || ret == Object.class) return null;
+
+		StringBuilder builder = new StringBuilder("function(");
+		int optDepth = 0;
+		for (int i = start; i < parameters.length; i++) {
+			Parameter parameter = parameters[i];
+			boolean optional = parameter.getAnnotation(Default.class) != null || parameter.getAnnotation(Nullable.class) != null;
+
+			if (optional) {
+				builder.append('[');
+				optDepth++;
+			} else {
+				for (; optDepth > 0; optDepth--) builder.append(']');
+			}
+
+			if (i > start) builder.append(", ");
+			builder.append(parameter.getName()).append(':').append(getTypeName(name, parameter.getType()));
+		}
+
+		for (; optDepth > 0; optDepth--) builder.append(']');
+		builder.append(")");
+
+		if (ret != void.class) {
+			builder.append(":").append(getTypeName(name, ret));
+			boolean optional = method.getAnnotation(Default.class) != null || method.getAnnotation(Nullable.class) != null;
+			if (optional) builder.append("|nil");
+		}
+
+		return builder.toString();
+	}
+
+	@Nonnull
+	private static String getTypeName(String name, Class<?> ty) {
+		if (ty.isPrimitive()) {
+			if (ty == long.class || ty == int.class || ty == short.class || ty == char.class || ty == byte.class) {
+				return "int";
+			}
+			if (ty == double.class || ty == float.class) return "number";
+			if (ty == boolean.class) return "boolean";
+
+			LOG.warn("@PlethoraMethod {} has unknown primitive type {}", name, ty.getName());
+			return ty.getName();
+		} else if (Enum.class.isAssignableFrom(ty)) {
+			return "string";
+		} else if (Map.class.isAssignableFrom(ty) || ILuaObject.class.isAssignableFrom(ty)) {
+			return "table";
+		} else {
+			ArgumentType<?> argTy = ArgumentTypeRegistry.get(ty);
+			return argTy == null ? "value" : argTy.name();
+		}
 	}
 }

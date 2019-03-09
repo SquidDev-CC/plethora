@@ -3,7 +3,6 @@ package org.squiddev.plethora.integration;
 import com.google.common.base.Preconditions;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.reference.ConstantReference;
 

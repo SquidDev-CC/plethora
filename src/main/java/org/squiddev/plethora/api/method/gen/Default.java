@@ -9,11 +9,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Default {
-    long defLong() default -1;
+	long defLong() default -1;
 
-    int defInt() default -1;
+	int defInt() default -1;
 
-    double defDoub() default -1;
+	double defDoub() default -1;
 
-    boolean defBool() default false;
+	boolean defBool() default false;
 }

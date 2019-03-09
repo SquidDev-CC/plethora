@@ -16,6 +16,11 @@ import static dan200.computercraft.core.apis.ArgumentHelper.*;
 @Injects
 public final class ArgumentTypes {
 	public static final ArgumentType<String> STRING = new ArgumentType<String>() {
+		@Override
+		public String name() {
+			return "string";
+		}
+
 		@Nonnull
 		@Override
 		public String get(@Nonnull Object[] args, int index) throws LuaException {
@@ -44,6 +49,11 @@ public final class ArgumentTypes {
 	});
 
 	public static final ArgumentType<Map<?, ?>> TABLE = new ArgumentType<Map<?, ?>>() {
+		@Override
+		public String name() {
+			return "table";
+		}
+
 		@Nonnull
 		@Override
 		public Map<?, ?> get(@Nonnull Object[] args, int index) throws LuaException {

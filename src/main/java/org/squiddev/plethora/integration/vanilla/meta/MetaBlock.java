@@ -6,7 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

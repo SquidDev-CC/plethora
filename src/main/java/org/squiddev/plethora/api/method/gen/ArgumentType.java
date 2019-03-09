@@ -6,8 +6,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-@FunctionalInterface
 public interface ArgumentType<T> {
+	String name();
+
 	@Nonnull
 	T get(@Nonnull Object[] args, int index) throws LuaException;
 
@@ -16,11 +17,16 @@ public interface ArgumentType<T> {
 		return index < args.length && args[index] != null ? get(args, index) : null;
 	}
 
-	default <U> ArgumentType<U> map(LuaFunction<T, U> func) {
+	default <U> ArgumentType<U> map(ArgumentFunction<T, U> func) {
 		Objects.requireNonNull(func);
 
 		ArgumentType<T> original = this;
 		return new ArgumentType<U>() {
+			@Override
+			public String name() {
+				return original.name();
+			}
+
 			@Nonnull
 			@Override
 			public U get(@Nonnull Object[] args, int index) throws LuaException {
@@ -35,14 +41,19 @@ public interface ArgumentType<T> {
 			}
 
 			@Override
-			public <V> ArgumentType<V> map(LuaFunction<U, V> func2) {
+			public <V> ArgumentType<V> map(ArgumentFunction<U, V> func2) {
 				Objects.requireNonNull(func2);
 				return original.map(x -> func2.apply(func.apply(x)));
 			}
 		};
 	}
 
-	interface LuaFunction<T, U> {
+	interface ArgumentGetter<T> {
+		@Nonnull
+		T get(@Nonnull Object[] args, int index) throws LuaException;
+	}
+
+	interface ArgumentFunction<T, U> {
 		@Nonnull
 		U apply(@Nonnull T value) throws LuaException;
 	}

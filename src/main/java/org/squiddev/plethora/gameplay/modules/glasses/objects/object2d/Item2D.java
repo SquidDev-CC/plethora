@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;

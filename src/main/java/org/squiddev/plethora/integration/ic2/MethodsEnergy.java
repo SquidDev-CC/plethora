@@ -76,7 +76,7 @@ public class MethodsEnergy {
 		return source.getOfferedEnergy();
 	}
 
-	@PlethoraMethod(modId = IC2.MODID,doc = "-- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc.")
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc.")
 	public static int getSourceTier(@FromTarget IEnergySource tier) {
 		return tier.getSourceTier();
 	}

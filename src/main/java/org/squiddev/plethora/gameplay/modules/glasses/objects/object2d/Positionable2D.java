@@ -23,8 +23,7 @@ public interface Positionable2D {
 	}
 
 	@PlethoraMethod(doc = "-- Set the position for this object.", worldThread = false)
-	static MethodResult setPosition(@FromTarget Positionable2D object, double x, double y) {
+	static void setPosition(@FromTarget Positionable2D object, double x, double y) {
 		object.setPosition(new Vec2d(x, y));
-		return MethodResult.empty();
 	}
 }

@@ -139,7 +139,7 @@ public abstract class MethodBuilder<T extends Annotation> implements IMethodBuil
 				throw new IllegalStateException("Expected argument " + ret.getName() + ", got " + childRet.getName());
 			}
 
-			if (ret == int.class || ret == boolean.class || ret == byte.class || ret == short.class || ret == char.class) {
+			if (ret == int.class || ret == boolean.class || ret == byte.class || ret == char.class || ret == short.class) {
 				mv.visitInsn(IRETURN);
 			} else if (ret == float.class) {
 				mv.visitInsn(FRETURN);

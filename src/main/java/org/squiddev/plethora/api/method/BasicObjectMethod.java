@@ -5,10 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * Basic wrapper for methods which deals returns an object array.
