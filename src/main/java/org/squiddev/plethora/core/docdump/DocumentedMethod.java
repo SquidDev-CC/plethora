@@ -23,7 +23,7 @@ public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
 	private final List<String> modules;
 
 	public DocumentedMethod(@Nonnull Class<?> target, @Nonnull IMethod<?> method) {
-		super(method, method.getClass().getName(), method.getName(), getDescription(method.getDocString()));
+		super(method, method.getId(), method.getName(), getDescription(method.getDocString()));
 
 		this.args = getArgs(method.getDocString());
 		this.target = target;
@@ -32,7 +32,7 @@ public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
 			: null;
 
 		if (method instanceof IModuleMethod) {
-			Set<ResourceLocation> modules = ((IModuleMethod<?>) method).getModules();
+			Collection<ResourceLocation> modules = ((IModuleMethod<?>) method).getModules();
 			List<String> moduleList = new ArrayList<>(modules.size());
 			for (ResourceLocation module : modules) moduleList.add(module.toString());
 			moduleList.sort(Comparator.naturalOrder());

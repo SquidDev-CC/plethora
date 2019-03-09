@@ -2,6 +2,8 @@ package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,11 +12,8 @@ import javax.annotation.Nullable;
  * A Lua side method targeting a class.
  *
  * There are several ways of using {@link IMethod}:
- * - Extend {@link BasicMethod}, one of its subclasses or write your own. Then register using {@link org.squiddev.plethora.api.Injects}.
- * - Create a static method on a class and register using {@link BasicMethod.Inject} or similar. If you wish to
- * use a custom base class see {@link IMethodBuilder}.
- *
- * @see BasicMethod
+ * - Extend {@link BasicMethod}, one of its subclasses or write your own. Then register using {@link Injects}.
+ * - Create a static method on a class and register using {@link PlethoraMethod} or similar.
  */
 public interface IMethod<T> {
 	/**
@@ -42,7 +41,9 @@ public interface IMethod<T> {
 	 * @return The doc string. This can be {@code null} if you don't want to include one.
 	 */
 	@Nullable
-	String getDocString();
+	default String getDocString() {
+		return null;
+	}
 
 	/**
 	 * Get the priority of this provider
@@ -52,7 +53,9 @@ public interface IMethod<T> {
 	 *
 	 * @return The provider's priority
 	 */
-	int getPriority();
+	default int getPriority() {
+		return 0;
+	}
 
 	/**
 	 * Check if this function can be applied in the given context.
@@ -61,7 +64,9 @@ public interface IMethod<T> {
 	 * @return If this function can be applied.
 	 * @see IContext#hasContext(Class)
 	 */
-	boolean canApply(@Nonnull IPartialContext<T> context);
+	default boolean canApply(@Nonnull IPartialContext<T> context) {
+		return true;
+	}
 
 	/**
 	 * Apply the method
@@ -75,4 +80,28 @@ public interface IMethod<T> {
 	 */
 	@Nonnull
 	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
+
+
+	/**
+	 * Get a unique identifier for this method
+	 *
+	 * @return This method's unique identifier. This is only used within config files, to establish the base cost.
+	 */
+	@Nonnull
+	default String getId() {
+		return getClass().getName();
+	}
+
+	/**
+	 * See if this method implements an interface or class.
+	 *
+	 * This is used to see if a marker interface is present.
+	 *
+	 * @param iface The interface or class to check
+	 * @return If any method implements this interface (or extends this class)
+	 * @see IMethodCollection#has(Class)
+	 */
+	default boolean has(@Nonnull Class<?> iface) {
+		return iface.isInstance(this);
+	}
 }

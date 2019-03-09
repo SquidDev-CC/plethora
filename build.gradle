@@ -143,7 +143,7 @@ processResources {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing"
+		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing" << "-parameters"
 	}
 }
 

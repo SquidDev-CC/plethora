@@ -1,6 +1,6 @@
 package org.squiddev.plethora.api.method;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A method which targets a child property.
@@ -14,8 +14,8 @@ public interface ISubTargetedMethod<T, U> extends IMethod<T> {
 	/**
 	 * Get the sub-target for this method
 	 *
-	 * @return The method's sub-target
+	 * @return The method's sub-target, or {@code null} if we have no sub-target.
 	 */
-	@Nonnull
+	@Nullable
 	Class<U> getSubTarget();
 }

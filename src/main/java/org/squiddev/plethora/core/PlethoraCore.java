@@ -25,6 +25,7 @@ import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
+import org.squiddev.plethora.core.gen.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.forestry.IntegrationForestry;
@@ -76,6 +77,7 @@ public class PlethoraCore {
 		Registry.register(asmData);
 
 		MetaRegistry.instance.loadAsm(asmData);
+		PlethoraMethodRegistry.loadAsm(asmData);
 		MethodTypeBuilder.instance.loadAsm(asmData);
 
 		ConfigCore.configuration.save();

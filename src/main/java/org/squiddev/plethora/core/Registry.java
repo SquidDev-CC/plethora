@@ -8,7 +8,9 @@ import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodBuilder;
+import org.squiddev.plethora.api.method.gen.ArgumentType;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
+import org.squiddev.plethora.core.gen.ArgumentTypeRegistry;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.lang.reflect.*;
@@ -23,6 +25,7 @@ final class Registry {
 	private static final Type METHOD_BUILDER_IN = IMethodBuilder.class.getTypeParameters()[0];
 	private static final Type METHOD_IN = IMethod.class.getTypeParameters()[0];
 	private static final Type META_IN = IMetaProvider.class.getTypeParameters()[0];
+	private static final Type ARGUMENT_TYPE_IN = ArgumentType.class.getTypeParameters()[0];
 
 	private Registry() {
 	}
@@ -51,14 +54,14 @@ final class Registry {
 				Result result = register(Class.forName(name));
 				if (result == Result.PASS) LOG.warn("@Injects class {} has no usable fields or interfaces", name);
 				if (result == Result.ERROR) ok = false;
-			} catch (Exception e) {
+			} catch (Exception | LinkageError e) {
 				LOG.error("@Injects class {} failed to load", name, e);
 				ok = false;
 			}
 		}
 
 		if (!ok && ConfigCore.Testing.strict) {
-			throw new IllegalStateException("Errors occurred when registering. See the log above for more details.");
+			throw new IllegalStateException("Errors occurred when processing @Injects annotations. See the log above for more details.");
 		}
 	}
 
@@ -79,7 +82,7 @@ final class Registry {
 			LOG.warn("@Injects class {} should be public final, but is only {}", name, Modifier.toString(modifiers));
 		}
 
-		Result result = registerInstance("class " + name, klass, klass, () -> {
+		Result result = registerInstance("class " + name, klass, klass, klass, () -> {
 			Object value;
 			try {
 				value = klass.newInstance();
@@ -97,7 +100,7 @@ final class Registry {
 		return result;
 	}
 
-	static Result register(Field field) {
+	private static Result register(Field field) {
 		// Skip blacklisted fields.
 		String name = field.getDeclaringClass().getName() + "." + field.getName();
 		if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
@@ -105,7 +108,7 @@ final class Registry {
 			return Result.OK;
 		}
 
-		return registerInstance("field " + name, field.getType(), field.getGenericType(), () -> {
+		return registerInstance("field " + name, field, field.getType(), field.getGenericType(), () -> {
 			// Verify this is a "public static final" field. We do this inside the getter as it means we don't warn on
 			// fields which don't look like ours.
 			int modifiers = field.getModifiers();
@@ -131,8 +134,8 @@ final class Registry {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Result registerInstance(String name, Class<?> rawType, Type type, Supplier<?> instanceGetter) {
+	@SuppressWarnings({"unchecked", "UnstableApiUsage"})
+	private static Result registerInstance(String name, AnnotatedElement element, Class<?> rawType, Type type, Supplier<?> instanceGetter) {
 		Object instance = null;
 
 		// Register ITransferProviders
@@ -199,6 +202,24 @@ final class Registry {
 			if (instance == null) return Result.ERROR;
 
 			MetaRegistry.instance.registerMetaProvider(klass, (IMetaProvider) instance);
+		}
+
+		// Register ArgumentType
+		if (ArgumentType.class.isAssignableFrom(rawType)) {
+			Type typeParameter = TypeToken.of(type).resolveType(ARGUMENT_TYPE_IN).getType();
+			Class<?> klass = getRawType(name, typeParameter, typeParameter);
+			if (klass == null) return Result.ERROR;
+
+			if (!(element instanceof Field)) {
+				LOG.error("@Injects {} must be a field in order to be injected as an ArgumentType");
+				return Result.ERROR;
+			}
+
+			// Just get the instance to verify we're all OK.
+			if (instance == null) instance = instanceGetter.get();
+			if (instance == null) return Result.ERROR;
+
+			if (!ArgumentTypeRegistry.register(klass, (Field) element)) return Result.ERROR;
 		}
 
 		return instance == null ? Result.PASS : Result.OK;

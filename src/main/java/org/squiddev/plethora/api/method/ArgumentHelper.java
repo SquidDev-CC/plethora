@@ -29,7 +29,6 @@ public final class ArgumentHelper {
 		return (float) getReal(args, index);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
 		if (index >= args.length) throw badArgument(index, "string", "no value");
@@ -46,7 +45,6 @@ public final class ArgumentHelper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
 		if (index >= args.length) throw badArgument(index, "string", "no value");
@@ -75,7 +73,6 @@ public final class ArgumentHelper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T optEnum(@Nonnull Object[] args, int index, Class<T> klass, T def) throws LuaException {
 		if (index >= args.length || args[index] == null) {

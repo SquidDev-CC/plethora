@@ -150,7 +150,7 @@ public class HTMLWriter implements IDocWriter {
 		if (doc.getDetail() != null) writer.printf("<p>%s</p>\n", doc.getDetail().replace("\n", "</p>\n<p>"));
 
 		writer.println("<table class=\"doc-details\">");
-		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", doc.getObject().getClass().getName());
+		writer.printf("<tr><td>Class</td><td><code>%s</code></td></tr>\n", doc.getId());
 		writer.printf("<tr><td>Target</td><td><code>%s</code></td></tr>\n", doc.getTarget());
 
 		if (doc.getSubtarget() != null) {

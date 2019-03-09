@@ -33,7 +33,10 @@ public final class MethodRegistry implements IMethodRegistry {
 		String comment = method.getName();
 		String doc = method.getDocString();
 		if (doc != null) comment += ": " + doc;
-		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, comment, 0, Integer.MAX_VALUE);
+
+		String id = method.getId();
+		if (id.indexOf('#') >= 0) ConfigCore.configuration.renameProperty("baseCosts", id.replace('#', '$'), id);
+		ConfigCore.configuration.get("baseCosts", method.getId(), 0, comment, 0, Integer.MAX_VALUE);
 
 		providers.put(target, method);
 
@@ -44,13 +47,10 @@ public final class MethodRegistry implements IMethodRegistry {
 			);
 		}
 
-		if (ConfigCore.Testing.likeDocs && method.getDocString() == null) {
-			String message = "Method " + method + " (" + method.getName() + ") has no documentation. This isn't a bug but you really should add one.";
-			if (ConfigCore.Testing.strict) {
-				throw new IllegalArgumentException(message);
-			} else {
-				PlethoraCore.LOG.error(message);
-			}
+		if (method.getDocString() == null) {
+			String message = "Method " + method + " (" + method.getName() + ") has no documentation.";
+			PlethoraCore.LOG.warn(message);
+			if (ConfigCore.Testing.strict) throw new IllegalArgumentException(message);
 		}
 	}
 
@@ -102,9 +102,9 @@ public final class MethodRegistry implements IMethodRegistry {
 
 	@Override
 	public int getBaseMethodCost(IMethod method) {
-		Property property = ConfigCore.baseCosts.get(method.getClass().getName());
+		Property property = ConfigCore.baseCosts.get(method.getId());
 		if (property == null) {
-			PlethoraCore.LOG.warn("Cannot find cost for " + method.getClass().getName() + ", this may have been registered incorrectly");
+			PlethoraCore.LOG.warn("Cannot find cost for " + method.getId() + ", this may have been registered incorrectly");
 			return 0;
 		}
 
