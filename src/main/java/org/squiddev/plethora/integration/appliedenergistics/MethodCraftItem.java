@@ -7,49 +7,35 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.me.helpers.MachineSource;
-import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
-
-@Injects(AppEng.MOD_ID)
-public final class MethodCraftItem extends BasicMethod<IAEItemStack> {
-	public MethodCraftItem() {
-		super("craft", "(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +
-			"reference to the crafting task.");
-	}
-
-	@Override
-	public boolean canApply(@Nonnull IPartialContext<IAEItemStack> context) {
-		return super.canApply(context) && context.hasContext(IActionHost.class) && context.hasContext(IGridNode.class);
-	}
-
+public final class MethodCraftItem {
 	@Nonnull
-	@Override
-	public MethodResult apply(@Nonnull final IUnbakedContext<IAEItemStack> context, @Nonnull Object[] args) throws LuaException {
-		final int quantity = getInt(args, 0);
+	@PlethoraMethod(
+		modId = AppEng.MOD_ID,
+		doc = "-- Craft this item, returning a reference to the crafting task."
+	)
+	public static ILuaObject craft(
+		IContext<IAEItemStack> context, @FromContext IGridNode node, @FromContext IActionHost host,
+		int quantity
+	) {
+		IGrid grid = node.getGrid();
+		ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
 
-		return MethodResult.nextTick(() -> {
-			IContext<IAEItemStack> baked = context.bake();
+		IAEItemStack toCraft = context.getTarget().copy();
+		toCraft.setStackSize(quantity);
 
-			IGridNode node = baked.getContext(IGridNode.class);
-			IActionHost host = baked.getContext(IActionHost.class);
+		IComputerAccess computer = context.getContext(ContextKeys.COMPUTER, IComputerAccess.class);
+		CraftingResult result = new CraftingResult(grid, computer, host);
+		crafting.beginCraftingJob(node.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
 
-			IGrid grid = node.getGrid();
-			ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-
-			IAEItemStack toCraft = baked.getTarget().copy();
-			toCraft.setStackSize(quantity);
-
-			IComputerAccess computer = baked.getContext(ContextKeys.COMPUTER, IComputerAccess.class);
-			CraftingResult result = new CraftingResult(grid, computer, host);
-			crafting.beginCraftingJob(node.getWorld(), grid, new MachineSource(host), toCraft, result.getCallback());
-
-			return MethodResult.result(baked.makeChildId(result).getObject());
-		});
+		return context.makeChildId(result).getObject();
 	}
 }

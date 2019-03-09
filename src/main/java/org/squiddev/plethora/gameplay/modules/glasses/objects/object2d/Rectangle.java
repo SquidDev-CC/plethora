@@ -1,16 +1,15 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import com.google.common.base.Objects;
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
@@ -20,7 +19,6 @@ import org.squiddev.plethora.utils.Vec2d;
 import javax.annotation.Nonnull;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class Rectangle extends ColourableObject implements Positionable2D {
 	private Vec2d position = Vec2d.ZERO;
@@ -98,16 +96,13 @@ public class Rectangle extends ColourableObject implements Positionable2D {
 		tessellator.draw();
 	}
 
-	@BasicMethod.Inject(value = Rectangle.class, doc = "function():number, number -- Get the size of this rectangle.")
-	public static MethodResult getSize(IUnbakedContext<Rectangle> context, Object[] arguments) throws LuaException {
-		Rectangle rect = context.safeBake().getTarget();
+	@PlethoraMethod(doc = "function():number, number -- Get the size of this rectangle.", worldThread = false)
+	public static MethodResult getSize(@FromTarget Rectangle rect) {
 		return MethodResult.result(rect.getWidth(), rect.getHeight());
 	}
 
-	@BasicMethod.Inject(value = Rectangle.class, doc = "function(width:number, height:number) -- Set the size of this rectangle.")
-	public static MethodResult setSize(IUnbakedContext<Rectangle> context, Object[] arguments) throws LuaException {
-		Rectangle rect = context.safeBake().getTarget();
-		rect.setSize(getFloat(arguments, 0), getFloat(arguments, 1));
-		return MethodResult.empty();
+	@PlethoraMethod(doc = "-- Set the size of this rectangle.", worldThread = false)
+	public static void setSize(@FromTarget Rectangle rect, float width, float height) {
+		rect.setSize(width, height);
 	}
 }

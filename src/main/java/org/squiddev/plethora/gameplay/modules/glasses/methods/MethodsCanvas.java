@@ -1,10 +1,12 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.BasicMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -33,17 +35,13 @@ public class MethodsCanvas {
 		return MethodResult.result(baked.makeChildId(server.canvas3d()).getObject());
 	}
 
-	@BasicMethod.Inject(value = ObjectGroup.class, doc = "function() -- Remove all objects.")
-	public static MethodResult clear(IUnbakedContext<ObjectGroup> context, Object[] args) throws LuaException {
-		IContext<ObjectGroup> baked = context.safeBake();
-		baked.getContext(CanvasServer.class).clear(baked.getTarget());
-		return MethodResult.empty();
+	@PlethoraMethod(doc = "-- Remove all objects.", worldThread = false)
+	public static void clear(@FromTarget ObjectGroup group, @FromContext CanvasServer canvas) {
+		canvas.clear(group);
 	}
 
-	@BasicMethod.Inject(value = BaseObject.class, doc = "function() -- Remove this object from the canvas.")
-	public static MethodResult remove(IUnbakedContext<BaseObject> context, Object[] args) throws LuaException {
-		IContext<BaseObject> baked = context.safeBake();
-		baked.getContext(CanvasServer.class).remove(baked.getTarget());
-		return MethodResult.result();
+	@PlethoraMethod(doc = "-- Remove this object from the canvas.", worldThread = false)
+	public static void remove(@FromTarget BaseObject object, @FromContext CanvasServer canvas) {
+		canvas.remove(object);
 	}
 }

@@ -4,49 +4,50 @@ import cofh.redstoneflux.RedstoneFluxProps;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import cofh.redstoneflux.api.IEnergyHandler;
 import cofh.redstoneflux.api.IEnergyStorage;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.BasicObjectMethod;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MethodsEnergy {
-	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFStored",
+	@PlethoraMethod(
+		modId = RedstoneFluxProps.MOD_ID,
 		doc = "function():int -- The amount of RF currently stored"
 	)
-	public static Object[] getRFStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
-		return new Object[]{context.getTarget().getEnergyStored()};
+	public static int getRFStored(@FromTarget IEnergyStorage storage) {
+		return storage.getEnergyStored();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFCapacity",
+	@PlethoraMethod(
+		modId = RedstoneFluxProps.MOD_ID,
 		doc = "function():int -- The maximum amount of RF that can be stored"
 	)
-	public static Object[] getRFCapacityStoredStorage(IContext<IEnergyStorage> context, Object[] args) {
-		return new Object[]{context.getTarget().getMaxEnergyStored()};
+	public static int getRFCapacityStored(@FromTarget IEnergyStorage storage) {
+		return storage.getMaxEnergyStored();
 	}
 
-	@BasicMethod.Inject(
-		value = IEnergyHandler.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFStored",
+	@PlethoraMethod(
+		modId = RedstoneFluxProps.MOD_ID,
 		doc = "function([side:string]):int -- The amount of RF currently stored"
 	)
-	public static MethodResult getRFStoredHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
-		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
-
-		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getEnergyStored(facing)));
+	public static int getRFStored(@FromTarget IEnergyHandler handler, @Nullable EnumFacing side) {
+		return handler.getEnergyStored(side);
 	}
 
-	@BasicMethod.Inject(
-		value = IEnergyHandler.class, modId = RedstoneFluxProps.MOD_ID, name = "getRFCapacity",
+	@PlethoraMethod(
+		modId = RedstoneFluxProps.MOD_ID,
 		doc = "function([side:string]):int -- The maximum amount of RF that can be stored"
 	)
-	public static MethodResult getRFCapacityHandler(final IUnbakedContext<IEnergyHandler> context, Object[] args) throws LuaException {
-		final EnumFacing facing = ArgumentHelper.optEnum(args, 0, EnumFacing.class, null);
-
-		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getTarget().getMaxEnergyStored(facing)));
+	public static int getRFCapacity(@FromTarget IEnergyHandler handler, @Nullable EnumFacing side) {
+		return handler.getMaxEnergyStored(side);
 	}
 
 	@Injects(RedstoneFluxProps.MOD_ID)

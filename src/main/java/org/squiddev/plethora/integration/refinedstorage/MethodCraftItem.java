@@ -8,64 +8,48 @@ import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.integration.vanilla.NullableItemStack;
 
-import javax.annotation.Nonnull;
+public final class MethodCraftItem {
+	@PlethoraMethod(
+		modId = RS.ID,
+		doc = "function(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +
+			"reference to the crafting task."
+	)
+	public static MethodResult craft(IContext<NullableItemStack> baked, @FromContext INetworkNode node, int quantity) throws LuaException {
+		ItemStack stack = baked.getTarget().getFilledStack();
+		INetwork network = node.getNetwork();
+		if (network == null) throw new LuaException("Cannot find network");
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+		ICraftingManager manager = network.getCraftingManager();
 
-@Injects(RS.ID)
-public final class MethodCraftItem extends BasicMethod<NullableItemStack> {
-	public MethodCraftItem() {
-		super("craft", "(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +
-			"reference to the crafting task.");
-	}
+		ICraftingTask task = manager.create(stack, quantity);
+		if (task == null) throw new LuaException("No matching patterns");
 
-	@Override
-	public boolean canApply(@Nonnull IPartialContext<NullableItemStack> context) {
-		return super.canApply(context) && context.hasContext(INetworkNode.class);
-	}
-
-	@Nonnull
-	@Override
-	public MethodResult apply(@Nonnull final IUnbakedContext<NullableItemStack> context, @Nonnull Object[] args) throws LuaException {
-		final int quantity = getInt(args, 0);
-
-		return MethodResult.nextTick(() -> {
-			IContext<NullableItemStack> baked = context.bake();
-
-			ItemStack stack = baked.getTarget().getFilledStack();
-			INetwork network = baked.getContext(INetworkNode.class).getNetwork();
-			if (network == null) throw new LuaException("Cannot find network");
-
-			ICraftingManager manager = network.getCraftingManager();
-
-			ICraftingTask task = manager.create(stack, quantity);
-			if (task == null) throw new LuaException("No matching patterns");
-
-			ICraftingTaskError error = task.calculate();
-			if (error != null) {
-				String errorMessage;
-				switch (error.getType()) {
-					case RECURSIVE:
-						errorMessage = "Encountered a recursive pattern";
-						break;
-					case TOO_COMPLEX:
-						errorMessage = "Recipe is too complex";
-						break;
-					default:
-						errorMessage = null;
-						break;
-				}
-				return MethodResult.result(false, errorMessage);
-			} else if (task.hasMissing()) {
-				return MethodResult.result(false, "Missing requirements");
-			} else {
-				manager.add(task);
-				return MethodResult.result(true, baked.makeChildId(task).getObject());
+		ICraftingTaskError error = task.calculate();
+		if (error != null) {
+			String errorMessage;
+			switch (error.getType()) {
+				case RECURSIVE:
+					errorMessage = "Encountered a recursive pattern";
+					break;
+				case TOO_COMPLEX:
+					errorMessage = "Recipe is too complex";
+					break;
+				default:
+					errorMessage = null;
+					break;
 			}
-		});
+			return MethodResult.result(false, errorMessage);
+		} else if (task.hasMissing()) {
+			return MethodResult.result(false, "Missing requirements");
+		} else {
+			manager.add(task);
+			return MethodResult.result(true, baked.makeChildId(task).getObject());
+		}
 	}
 }

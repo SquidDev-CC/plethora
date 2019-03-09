@@ -1,9 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
@@ -19,28 +18,19 @@ public interface MultiPointResizable2D extends MultiPoint2D {
 
 	void addPoint(int idx, @Nonnull Vec2d point);
 
-	@BasicMethod.Inject(value = MultiPointResizable2D.class, doc = "function():int -- Get the number of verticies on this object.")
-	static MethodResult getPointCount(IUnbakedContext<MultiPointResizable2D> context, Object[] args) throws LuaException {
-		MultiPointResizable2D object = context.safeBake().getTarget();
-
-		return MethodResult.result(object.getVertices());
+	@PlethoraMethod(doc = "-- Get the number of verticies on this object.", worldThread = false)
+	static int getPointCount(@FromTarget MultiPointResizable2D object) {
+		return object.getVertices();
 	}
 
-	@BasicMethod.Inject(value = MultiPointResizable2D.class, doc = "function(idx:int) -- Remove the specified vertex of this object.")
-	static MethodResult removePoint(IUnbakedContext<MultiPointResizable2D> context, Object[] args) throws LuaException {
-		MultiPointResizable2D object = context.safeBake().getTarget();
-
-		int idx = getInt(args, 0);
+	@PlethoraMethod(doc = "function(idx:int) -- Remove the specified vertex of this object.", worldThread = false)
+	static void removePoint(@FromTarget MultiPointResizable2D object, int idx) throws LuaException {
 		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
-
 		object.removePoint(idx - 1);
-		return MethodResult.empty();
 	}
 
-	@BasicMethod.Inject(value = MultiPointResizable2D.class, doc = "function(idx:int, x:number, y:number) -- Add a specified vertex to this object.")
-	static MethodResult insertPoint(IUnbakedContext<MultiPointResizable2D> context, Object[] args) throws LuaException {
-		MultiPointResizable2D object = context.safeBake().getTarget();
-
+	@PlethoraMethod(doc = "function([idx:int, ]x:number, y:number) -- Add a specified vertex to this object.", worldThread = false)
+	static void insertPoint(@FromTarget MultiPointResizable2D object, Object[] args) throws LuaException {
 		float x, y;
 		int idx;
 
@@ -61,6 +51,5 @@ public interface MultiPointResizable2D extends MultiPoint2D {
 		}
 
 		object.addPoint(idx - 1, new Vec2d(x, y));
-		return MethodResult.empty();
 	}
 }

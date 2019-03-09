@@ -4,22 +4,19 @@ import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import com.google.common.collect.Maps;
-import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.*;
+import dan200.computercraft.api.lua.ILuaObject;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.squiddev.plethora.api.method.ArgumentHelper.getEnum;
-
 public class MethodsMultipart {
-	@BasicObjectMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe",
-		doc = "function():table -- Get a list of all parts in the multipart."
-	)
-	public static Object[] listParts(IContext<TileMultipart> context, Object[] args) {
-		Collection<? extends TMultiPart> parts = context.getTarget().jPartList();
+	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a list of all parts in the multipart.")
+	public static Map<Integer, ?> listParts(TileMultipart multipart) {
+		Collection<? extends TMultiPart> parts = multipart.jPartList();
 
 		int i = 0;
 		Map<Integer, Map<Object, Object>> out = Maps.newHashMap();
@@ -27,17 +24,13 @@ public class MethodsMultipart {
 			out.put(++i, MetaMultipart.getBasicMeta(part));
 		}
 
-		return new Object[]{out};
+		return out;
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe",
-		doc = "function():table -- Get a lookup of slot to parts."
-	)
-	public static Object[] listSlottedParts(IContext<TileMultipart> context, Object[] args) {
+	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a lookup of slot to parts.")
+	public static Map<String, ?> listSlottedParts(TileMultipart container, Object[] args) {
 		Map<String, Map<Object, Object>> parts = Maps.newHashMap();
 
-		TileMultipart container = context.getTarget();
 		for (PartMap slot : PartMap.values()) {
 			TMultiPart part = container.partMap(slot.i);
 			if (part != null) {
@@ -45,42 +38,25 @@ public class MethodsMultipart {
 			}
 		}
 
-		return new Object[]{parts};
+		return parts;
 	}
 
-	@BasicMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe",
-		doc = "function(slot:string):table|nil -- Get a reference to the part in the specified slot."
-	)
-	public static MethodResult getSlottedPart(final IUnbakedContext<TileMultipart> context, Object[] args) throws LuaException {
-		final PartMap slot = getEnum(args, 0, PartMap.class);
+	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a reference to the part in the specified slot.")
+	public static ILuaObject getSlottedPart(IContext<TileMultipart> context, PartMap slot) {
+		TileMultipart container = context.getTarget();
 
-		return MethodResult.nextTick(() -> {
-			IContext<TileMultipart> baked = context.bake();
-			TileMultipart container = baked.getTarget();
-
-			TMultiPart part = container.partMap(slot.i);
-			return part == null
-				? MethodResult.empty()
-				: MethodResult.result(baked.makeChild(part, new ReferenceMultipart(container, part)).getObject());
-		});
+		TMultiPart part = container.partMap(slot.i);
+		return part == null
+			? null
+			: context.makeChild(part, new ReferenceMultipart(container, part)).getObject();
 	}
 
-	@BasicMethod.Inject(
-		value = TileMultipart.class, modId = "forgemultipartcbe",
-		doc = "function(slot:string):table|nil -- Get the metadata of the part in the specified slot."
-	)
-	public static MethodResult getSlottedPartMeta(final IUnbakedContext<TileMultipart> context, Object[] args) throws LuaException {
-		final PartMap slot = getEnum(args, 0, PartMap.class);
+	@Nullable
+	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get the metadata of the part in the specified slot.")
+	public static Map<Object, Object> getSlottedPartMeta(IContext<TileMultipart> context, PartMap slot) {
+		TileMultipart container = context.getTarget();
 
-		return MethodResult.nextTick(() -> {
-			IContext<TileMultipart> baked = context.bake();
-			TileMultipart container = baked.getTarget();
-
-			TMultiPart part = container.partMap(slot.i);
-			return part == null
-				? MethodResult.empty()
-				: MethodResult.result(baked.makePartialChild(part).getMeta());
-		});
+		TMultiPart part = container.partMap(slot.i);
+		return part == null ? null : context.makePartialChild(part).getMeta();
 	}
 }

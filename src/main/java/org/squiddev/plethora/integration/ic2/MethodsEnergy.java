@@ -17,6 +17,8 @@ import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 
@@ -24,95 +26,62 @@ import javax.annotation.Nonnull;
  * Various methods for interacting with IC2's energy net
  */
 public class MethodsEnergy {
-	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = IC2.MODID,
-		doc = "function():integer -- The amount of EU currently stored"
-	)
-	public static Object[] getEUStored(IContext<IEnergyStorage> target, Object[] args) {
-		return new Object[]{target.getTarget().getStored()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The amount of EU currently stored")
+	public static int getEUStored(@FromTarget IEnergyStorage storage) {
+		return storage.getStored();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = IC2.MODID,
-		doc = "function():integer -- The maximum amount of EU that can be stored"
-	)
-	public static Object[] getEUCapacity(IContext<IEnergyStorage> target, Object[] args) {
-		return new Object[]{target.getTarget().getCapacity()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The maximum amount of EU that can be stored")
+	public static int getEUCapacity(@FromTarget IEnergyStorage storage) {
+		return storage.getCapacity();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyStorage.class, modId = IC2.MODID,
-		doc = "function():integer -- The maximum EU output per tick"
-	)
-	public static Object[] getEUOutput(IContext<IEnergyStorage> target, Object[] args) {
-		return new Object[]{target.getTarget().getOutputEnergyUnitsPerTick()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The maximum EU output per tick")
+	public static double getEUOutput(@FromTarget IEnergyStorage storage) {
+		return storage.getOutputEnergyUnitsPerTick();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, modId = IC2.MODID,
-		doc = "function():integer -- The maximum amount of EU that can be received"
-	)
-	public static Object[] getDemandedEnergy(IContext<IEnergySink> target, Object[] args) {
-		return new Object[]{target.getTarget().getDemandedEnergy()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The maximum amount of EU that can be received")
+	public static double getDemandedEnergy(@FromTarget IEnergySink sink) {
+		return sink.getDemandedEnergy();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergySink.class, modId = IC2.MODID,
-		doc = "function():integer -- The tier of this EU sink. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
-	)
-	public static Object[] getSinkTier(IContext<IEnergySink> target, Object[] args) {
-		return new Object[]{target.getTarget().getSinkTier()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The tier of this EU sink. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc.")
+	public static int getSinkTier(@FromTarget IEnergySink sink) {
+		return sink.getSinkTier();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, modId = IC2.MODID,
-		doc = "function():integer -- The EU loss for this conductor"
-	)
-	public static Object[] getConductionLoss(IContext<IEnergyConductor> target, Object[] args) {
-		return new Object[]{target.getTarget().getConductionLoss()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The EU loss for this conductor")
+	public static double getConductionLoss(@FromTarget IEnergyConductor conductor) {
+		return conductor.getConductionLoss();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, modId = IC2.MODID,
-		doc = "function():integer -- Amount of EU the insulation can handle before shocking players"
-	)
-	public static Object[] getInsulationEnergyAbsorption(IContext<IEnergyConductor> target, Object[] args) {
-		return new Object[]{target.getTarget().getInsulationEnergyAbsorption()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- Amount of EU the insulation can handle before shocking players")
+	public static double getInsulationEnergyAbsorption(@FromTarget IEnergyConductor conductor) {
+		return conductor.getInsulationEnergyAbsorption();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, modId = IC2.MODID,
-		doc = "function():integer -- Amount of EU the insulation will handle before it is destroyed"
-	)
-	public static Object[] getInsulationBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
-		return new Object[]{target.getTarget().getInsulationBreakdownEnergy()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- Amount of EU the insulation will handle before it is destroyed")
+	public static double getInsulationBreakdownEnergy(@FromTarget IEnergyConductor conductor) {
+		return conductor.getInsulationBreakdownEnergy();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergyConductor.class, modId = IC2.MODID,
-		doc = "function():integer -- Amount of EU the the conductor will handle before it melts"
-	)
-	public static Object[] getConductorBreakdownEnergy(IContext<IEnergyConductor> target, Object[] args) {
-		return new Object[]{target.getTarget().getConductorBreakdownEnergy()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- Amount of EU the the conductor will handle before it melts")
+	public static double getConductorBreakdownEnergy(@FromTarget IEnergyConductor condutor) {
+		return condutor.getConductorBreakdownEnergy();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, modId = IC2.MODID,
-		doc = "function():integer -- EU output provided per tick"
-	)
-	public static Object[] getOfferedEnergy(IContext<IEnergySource> target, Object[] args) {
-		return new Object[]{target.getTarget().getOfferedEnergy()};
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- EU output provided per tick")
+	public static double getOfferedEnergy(@FromTarget IEnergySource source) {
+		return source.getOfferedEnergy();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IEnergySource.class, modId = IC2.MODID,
-		doc = "function():integer -- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc."
-	)
-	public static Object[] getSourceTier(IContext<IEnergySource> target, Object[] args) {
-		return new Object[]{target.getTarget().getSourceTier()};
+	@PlethoraMethod(modId = IC2.MODID,doc = "-- The tier of this EU source. 1 = LV, 2 = MV, 3 = HV, 4 = EV etc.")
+	public static int getSourceTier(@FromTarget IEnergySource tier) {
+		return tier.getSourceTier();
 	}
 
-	public static IElectricItemManager getManager(ItemStack stack) {
+	static IElectricItemManager getManager(ItemStack stack) {
 		Item item = stack.getItem();
 		if (item instanceof ISpecialElectricItem) {
 			return ((ISpecialElectricItem) item).getManager(stack);

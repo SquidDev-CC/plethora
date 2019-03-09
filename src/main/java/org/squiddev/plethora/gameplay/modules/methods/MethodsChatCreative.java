@@ -8,10 +8,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleContainerMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
@@ -23,33 +22,28 @@ import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 import static org.squiddev.plethora.gameplay.modules.methods.MethodsChat.validateMessage;
 
 public final class MethodsChatCreative {
-	@ModuleContainerMethod.Inject(
-		value = PlethoraModules.CHAT_CREATIVE_S,
-		doc = "function(message:string) -- Send a message to everyone"
+	@PlethoraMethod(
+		module = PlethoraModules.CHAT_CREATIVE_S,
+		doc = "-- Send a message to everyone"
 	)
-	@Nonnull
-	public static MethodResult say(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final String message = getString(args, 0);
+	public static void say(
+		@Nonnull final IContext<IModuleContainer> context,
+		@FromContext(ContextKeys.ORIGIN) @Nullable IWorldLocation location,
+		String message
+	) throws LuaException {
 		validateMessage(message);
 
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> context = unbaked.bake();
+		// Create the chat event and post to chat
+		ITextComponent formatted = ForgeHooks.newChatWithLinks(message);
 
-			// Create the chat event and post to chat
-			ITextComponent formatted = ForgeHooks.newChatWithLinks(message);
+		// Attempt to extract the server from the current world.
+		MinecraftServer server = null;
+		if (location != null) server = location.getWorld().getMinecraftServer();
 
-			// Attempt to extract the server from the current world.
-			MinecraftServer server = null;
-			if (context.hasContext(ContextKeys.ORIGIN, IWorldLocation.class)) {
-				server = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class).getWorld().getMinecraftServer();
-			}
+		// If that failed then just get the global server.
+		if (server == null) server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
-			// If that failed then just get the global server.
-			if (server == null) server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
-			server.getPlayerList().sendMessage(formatted, false);
-			return MethodResult.empty();
-		});
+		server.getPlayerList().sendMessage(formatted, false);
 	}
 
 	@SubtargetedModuleObjectMethod.Inject(

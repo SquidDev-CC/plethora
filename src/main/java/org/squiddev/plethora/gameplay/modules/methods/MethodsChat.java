@@ -17,8 +17,9 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleContainerMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.ConfigGameplay;
@@ -36,76 +37,65 @@ import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 import static org.squiddev.plethora.utils.ContextHelpers.getOriginOr;
 
 public final class MethodsChat {
-	@ModuleContainerMethod.Inject(
-		value = PlethoraModules.CHAT_S,
-		doc = "function(message:string) -- Send a message to everyone"
-	)
-	@Nonnull
-	public static MethodResult say(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final String message = getString(args, 0);
+	@PlethoraMethod(module = PlethoraModules.CHAT_S, doc = "-- Send a message to everyone")
+	public static void say(
+		@Nonnull IContext<IModuleContainer> context,
+		@FromContext(ContextKeys.ORIGIN) @Nullable Entity entity,
+		@FromContext(ContextKeys.ORIGIN) @Nullable IWorldLocation location,
+		String message
+	) throws LuaException {
 		validateMessage(message);
 
-		return MethodResult.nextTick(() -> {
-			IContext<IModuleContainer> context = unbaked.bake();
+		@Nullable
+		GameProfile moduleProfile = null;
 
-			// If we've got an entity, just use that
-			@Nullable
-			Entity entity = context.getContext(ContextKeys.ORIGIN, Entity.class);
-			@Nullable
-			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+		if (ConfigGameplay.Chat.allowBinding) {
+			// If we allow binding the neural interface, fetch the entity info from the module location instead.
+			if (entity == null) entity = context.getContext(PlethoraModules.CHAT_S, Entity.class);
 
-			@Nullable
-			GameProfile moduleProfile = null;
-
-			if (ConfigGameplay.Chat.allowBinding) {
-				// If we allow binding the neural interface, fetch the entity info from the module location instead.
-				if (entity == null) entity = context.getContext(PlethoraModules.CHAT_S, Entity.class);
-
-				IPlayerOwnable moduleOwner = context.getContext(PlethoraModules.CHAT_S, IPlayerOwnable.class);
-				if (ConfigGameplay.Chat.allowOffline && moduleOwner != null) {
-					moduleProfile = moduleOwner.getOwningProfile();
-				}
+			IPlayerOwnable moduleOwner = context.getContext(PlethoraModules.CHAT_S, IPlayerOwnable.class);
+			if (ConfigGameplay.Chat.allowOffline && moduleOwner != null) {
+				moduleProfile = moduleOwner.getOwningProfile();
 			}
+		}
 
 
-			EntityPlayerMP player;
-			ITextComponent name;
+		EntityPlayerMP player;
+		ITextComponent name;
 
-			// Attempt to guess who is posting it and their position.
-			if (entity instanceof EntityPlayerMP) {
-				// If we've got some player, go ahead as normal
-				name = entity.getDisplayName();
-				player = (EntityPlayerMP) entity;
-			} else if (ConfigGameplay.Chat.allowMobs && entity != null && entity.getEntityWorld() instanceof WorldServer) {
-				IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
-				GameProfile owner = ownable == null ? null : ownable.getOwningProfile();
-				if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
+		// Attempt to guess who is posting it and their position.
+		if (entity instanceof EntityPlayerMP) {
+			// If we've got some player, go ahead as normal
+			name = entity.getDisplayName();
+			player = (EntityPlayerMP) entity;
+		} else if (ConfigGameplay.Chat.allowMobs && entity != null && entity.getEntityWorld() instanceof WorldServer) {
+			IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+			GameProfile owner = ownable == null ? null : ownable.getOwningProfile();
+			if (owner == null) owner = PlethoraFakePlayer.PROFILE;// We include the position of the entity
 
-				name = entity.getDisplayName().createCopy();
+			name = entity.getDisplayName().createCopy();
 
-				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
-				FakePlayerProviderEntity.load(fakePlayer, entity);
-				player = fakePlayer;
-			} else if (moduleProfile != null && location != null && location.getWorld() instanceof WorldServer) {
-				// If we've got a location and a game profile _associated with this module_ then we use that
-				PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) location.getWorld(), null, moduleProfile);
-				fakePlayer.setCustomNameTag(moduleProfile.getName());
-				FakePlayerProviderLocation.load(fakePlayer, location);
-				player = fakePlayer;
+			PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) entity.getEntityWorld(), entity, owner);
+			FakePlayerProviderEntity.load(fakePlayer, entity);
+			player = fakePlayer;
+		} else if (moduleProfile != null && location != null && location.getWorld() instanceof WorldServer) {
+			// If we've got a location and a game profile _associated with this module_ then we use that
+			PlethoraFakePlayer fakePlayer = new PlethoraFakePlayer((WorldServer) location.getWorld(), null, moduleProfile);
+			fakePlayer.setCustomNameTag(moduleProfile.getName());
+			FakePlayerProviderLocation.load(fakePlayer, location);
+			player = fakePlayer;
 
-				name = fakePlayer.getDisplayName();
-			} else {
-				throw new LuaException("Cannot post to chat");
-			}
+			name = fakePlayer.getDisplayName();
+		} else {
+			throw new LuaException("Cannot post to chat");
+		}
 
-			// Create the chat event and post to chat
-			TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
-			ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
-			if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return MethodResult.empty();
+		// Create the chat event and post to chat
+		TextComponentTranslation translateChat = new TextComponentTranslation("chat.type.text", name, ForgeHooks.newChatWithLinks(message));
+		ServerChatEvent event = new ServerChatEvent(player, message, translateChat);
+		if (MinecraftForge.EVENT_BUS.post(event) || event.getComponent() == null) return;
 
-			player.server.getPlayerList().sendMessage(event.getComponent(), false);
-			return MethodResult.empty();
-		});
+		player.server.getPlayerList().sendMessage(event.getComponent(), false);
 	}
 
 	@SubtargetedModuleMethod.Inject(
