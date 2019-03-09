@@ -5,11 +5,9 @@ import com.google.common.reflect.TypeToken;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.method.gen.*;
+import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
@@ -26,6 +24,8 @@ import java.util.Map;
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
 
 public final class PlethoraMethodRegistry {
+	private static final String[] ORIGIN = new String[]{ContextKeys.ORIGIN};
+
 	private static final Type PARTIAL_CONTEXT_T = IPartialContext.class.getTypeParameters()[0];
 
 	static boolean add(Method method) {
@@ -45,48 +45,60 @@ public final class PlethoraMethodRegistry {
 			return false;
 		}
 
-		MarkerInterfaces markers = method.getAnnotation(MarkerInterfaces.class);
-		Class<?>[] markerIfaces = markers == null || markers.value().length == 0 ? null : markers.value();
+		// Extract our module names.
+		String[] moduleNames = annotation.module();
+		ResourceLocation[] modules;
+		if (moduleNames.length == 0) {
+			moduleNames = null;
+			modules = null;
+		} else {
+			modules = new ResourceLocation[moduleNames.length];
+			for (int i = 0; i < moduleNames.length; i++) modules[i] = new ResourceLocation(moduleNames[i]);
+		}
 
 		// Extract our required context and validate the arguments
-		Class<?> target = null;
+		Class<?> target = null, subTarget = null;
 		List<ContextInfo> context = new ArrayList<>();
 		Parameter[] parameters = method.getParameters();
 
-		// First scan all "context" arguments.
+		// First scan all "context" arguments. Look, I'm sorry - this is ugly as anything.
 		int contextIndex;
 		for (contextIndex = 0; contextIndex < parameters.length; contextIndex++) {
 			Parameter parameter = parameters[contextIndex];
 			FromContext fromContext = parameter.getAnnotation(FromContext.class);
 			FromTarget fromTarget = parameter.getAnnotation(FromTarget.class);
+			FromSubtarget fromSubtarget = parameter.getAnnotation(FromSubtarget.class);
 			boolean contextTarget = parameter.getType() == IContext.class || parameter.getType() == IPartialContext.class;
 
-			if (fromContext == null && fromTarget == null && !contextTarget) break;
+			int counts = 0;
+			if (fromContext != null) counts++;
+			if (fromTarget != null) counts++;
+			if (fromSubtarget != null) counts++;
+			if (contextTarget) counts++;
 
-			if (fromContext != null && fromTarget != null) {
+			if (counts == 0) break;
+			if (counts > 1) {
 				PlethoraCore.LOG.error(
-					"@PlethoraMethod method {}'s has a context argument {} with both @FromContext and @FromTarget",
+					"@PlethoraMethod method {}'s has a context argument {} with multiple annotations",
 					name, parameter.getName(), parameter.getType().getName()
 				);
 				ok = false;
 			}
 
-			if (contextTarget && (fromTarget != null || fromContext != null)) {
-				PlethoraCore.LOG.error(
-					"@PlethoraMethod method {}'s has a context argument {} which is both annotated and has a {} type.",
-					name, parameter.getName(), parameter.getType().getName()
-				);
-				ok = false;
-			}
-
+			// We don't need to require Nullable annotations. However, targets/sub-targets shouldn't be marked as
+			// nullable.
 			if (parameter.getAnnotation(Nullable.class) != null) {
 				if (fromTarget != null || contextTarget) {
 					PlethoraCore.LOG.error("@PlethoraMethod method {}'s target has a nullable context argument {}.", name, parameter.getName());
+					ok = false;
+				} else if (fromSubtarget != null) {
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s sub-target has a nullable context argument {}.", name, parameter.getName());
 					ok = false;
 				}
 				continue;
 			}
 
+			// What on earth were they even trying to do here?
 			if (parameter.getClass().isPrimitive()) {
 				PlethoraCore.LOG.error(
 					"@PlethoraMethod method {}'s has a context argument {} with a primitive type {}",
@@ -96,6 +108,7 @@ public final class PlethoraMethodRegistry {
 			}
 
 			if (contextTarget) {
+				// We need to extract the T from IPartialContext<T>, and mark that as our target.
 				Type typeParameter = TypeToken.of(parameter.getParameterizedType()).resolveType(PARTIAL_CONTEXT_T).getType();
 				Class<?> rawType = getRawType(parameter, typeParameter);
 				if (rawType == null) {
@@ -103,30 +116,51 @@ public final class PlethoraMethodRegistry {
 				} else if (target == null) {
 					target = rawType;
 				} else {
-					PlethoraCore.LOG.error(
-						"@PlethoraMethod method {}'s has multiple targets ({} and {}).",
-						name, parameter.getName(), parameter.getType().getName()
-					);
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s has multiple targets.", name);
 					ok = false;
 				}
-			} else if (fromContext == null) {
+			} else if (fromTarget != null) {
+				// Ensure the argument is raw, and set it as our target.
 				if (getRawType(parameter) == null) ok = false;
 
 				if (target == null) {
 					target = parameter.getType();
 				} else {
-					PlethoraCore.LOG.error(
-						"@PlethoraMethod method {}'s has multiple targets ({} and {}).",
-						name, parameter.getName(), parameter.getType().getName()
-					);
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s has multiple targets.", name);
 					ok = false;
 				}
-			} else {
+			} else if (fromSubtarget != null) {
+				// Ensure the argument is raw, and set it as our subtarget.
+				if (getRawType(parameter) == null) ok = false;
+
+				if (subTarget == null) {
+					subTarget = parameter.getType();
+
+					// Also register a a new context info.
+					String[] keys = fromSubtarget.value();
+					if (keys.length == 0) {
+						if (moduleNames == null) {
+							keys = ORIGIN;
+						} else {
+							keys = new String[1 + moduleNames.length];
+							keys[0] = ContextKeys.ORIGIN;
+							System.arraycopy(moduleNames, 0, keys, 1, moduleNames.length);
+						}
+					}
+
+					context.add(new ContextInfo(keys, parameter.getType()));
+				} else {
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s has multiple sub-targets.", name);
+					ok = false;
+				}
+			} else if (fromContext != null) {
 				if (getRawType(parameter) == null) ok = false;
 
 				String[] keys = fromContext.value();
-				if (keys.length == 0 || keys.length == 1 && keys[0].equals("")) keys = null;
+				if (keys.length == 0) keys = null;
 				context.add(new ContextInfo(keys, parameter.getType()));
+			} else {
+				throw new IllegalStateException("Fallen through on annotation checks");
 			}
 		}
 
@@ -141,14 +175,17 @@ public final class PlethoraMethodRegistry {
 			if (getRawType(parameter) == null) ok = false;
 		}
 
-		// Extract some trivial properties
-		String[] names = annotation.name();
-		String docs = annotation.doc();
-		String[] moduleNames = annotation.module();
-		ResourceLocation[] modules;
-		if (names.length == 0 || names.length == 1 && names[0].equals("")) names = new String[]{method.getName()};
+		if (target == null) {
+			if (modules == null) {
+				LOG.error("@PlethoraMethod {} has no obvious target.", name);
+				ok = false;
+			} else {
+				target = IModuleContainer.class;
+			}
+		}
 
 		// Prefix the doc string with the type signature where possible.
+		String docs = annotation.doc();
 		if (Strings.isNullOrEmpty(docs)) {
 			LOG.error("@PlethoraMethod {} does not have any documentation.", name);
 			ok = false;
@@ -167,18 +204,13 @@ public final class PlethoraMethodRegistry {
 			}
 		}
 
-		// Extract our module names.
-		if (moduleNames.length == 0 || moduleNames.length == 1 && moduleNames[0].equals("")) {
-			modules = null;
-		} else {
-			modules = new ResourceLocation[moduleNames.length];
-			for (int i = 0; i < moduleNames.length; i++) modules[i] = new ResourceLocation(moduleNames[i]);
-		}
+		// Extract some trivial properties
+		String[] names = annotation.name();
+		if (names.length == 0) names = new String[]{method.getName()};
 
-		if (target == null) {
-			LOG.error("@PlethoraMethod {} has no obvious target.", name);
-			ok = false;
-		}
+		// Get the marker interfaces.
+		MarkerInterfaces markers = method.getAnnotation(MarkerInterfaces.class);
+		Class<?>[] markerIfaces = markers == null || markers.value().length == 0 ? null : markers.value();
 
 		if (!ok) return false;
 
@@ -186,8 +218,8 @@ public final class PlethoraMethodRegistry {
 		MethodRegistry.instance.registerMethod(target, new MethodInstance(
 			method, names, docs, annotation.worldThread(),
 			context.toArray(new ContextInfo[0]), contextIndex,
-			modules,
-			markerIfaces));
+			modules, markerIfaces, subTarget
+		));
 		return true;
 	}
 

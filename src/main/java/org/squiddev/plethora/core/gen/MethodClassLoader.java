@@ -3,15 +3,10 @@ package org.squiddev.plethora.core.gen;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Primitives;
 import dan200.computercraft.core.apis.ArgumentHelper;
+import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.*;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.gen.ArgumentType;
-import org.squiddev.plethora.api.method.gen.Default;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
+import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.gen.*;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Executable;
@@ -70,7 +65,7 @@ class MethodClassLoader extends ClassLoader {
 	}
 
 	@Nullable
-	private Class<?> writeClass(MethodInstance<?> methodInstance) {
+	private Class<?> writeClass(MethodInstance<?, ?> methodInstance) {
 		Method method = methodInstance.method;
 		Parameter[] parameters = method.getParameters();
 
@@ -149,51 +144,7 @@ class MethodClassLoader extends ClassLoader {
 			mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_UNBAKED_CONTEXT, methodInstance.worldThread ? "bake" : "safeBake", "()L" + INTERNAL_BAKED_CONTEXT + ";", true);
 			mw.visitVarInsn(ASTORE, 0);
 
-			for (int i = 0; i < methodInstance.totalContext; i++) {
-				Parameter parameter = parameters[i];
-
-				// If we're an IContext, just load that directly.
-				if (parameter.getType() == IContext.class || parameter.getType() == IPartialContext.class) {
-					mw.visitVarInsn(ALOAD, 0);
-					continue;
-				}
-
-				FromTarget target = parameter.getAnnotation(FromTarget.class);
-				if (target != null) {
-					mw.visitVarInsn(ALOAD, 0);
-					mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getTarget", "()Ljava/lang/Object;", true);
-					mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
-					continue;
-				}
-
-				FromContext context = parameter.getAnnotation(FromContext.class);
-				String[] names = context.value();
-				if (names.length == 0 || (names.length == 1 && Strings.isNullOrEmpty(names[0]))) {
-					// use getContext(Class)
-					mw.visitVarInsn(ALOAD, 0);
-					mw.visitLdcInsn(Type.getType(parameter.getType()));
-					mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getContext", "(Ljava/lang/Class;)Ljava/lang/Object;", true);
-					mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
-				} else {
-					// Use getContext(String, Class) until we have a success
-					Label success = new Label();
-
-					for (int j = 0; j < names.length; j++) {
-						if (j > 0) {
-							mw.visitInsn(DUP);
-							mw.visitJumpInsn(IFNONNULL, success);
-						}
-
-						mw.visitVarInsn(ALOAD, 0);
-						mw.visitLdcInsn(names[j]);
-						mw.visitLdcInsn(Type.getType(parameter.getType()));
-						mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getContext", "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;", true);
-						mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
-					}
-
-					mw.visitLabel(success);
-				}
-			}
+			for (int i = 0; i < methodInstance.totalContext; i++) loadContextArg(mw, methodInstance, parameters[i]);
 
 			int varIndex = 1;
 			for (int i = methodInstance.totalContext; i < parameters.length; i++) {
@@ -319,11 +270,88 @@ class MethodClassLoader extends ClassLoader {
 		return true;
 	}
 
+	private static void loadContextArg(MethodVisitor mw, MethodInstance method, Parameter parameter) {
+		// If we're an IContext, just load that directly.
+		if (parameter.getType() == IContext.class || parameter.getType() == IPartialContext.class) {
+			mw.visitVarInsn(ALOAD, 0);
+			return;
+		}
+
+		FromTarget target = parameter.getAnnotation(FromTarget.class);
+		if (target != null) {
+			mw.visitVarInsn(ALOAD, 0);
+			mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getTarget", "()Ljava/lang/Object;", true);
+			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
+			return;
+		}
+
+		FromSubtarget subTarget = parameter.getAnnotation(FromSubtarget.class);
+		if (subTarget != null) {
+			// Use getContext(String, Class) until we have a success
+			String[] names = subTarget.value();
+			if (names.length == 0) {
+				Label success = new Label();
+				visitGetContext(mw, ContextKeys.ORIGIN, parameter.getType());
+				for (ResourceLocation name : method.modules) {
+					mw.visitInsn(DUP);
+					mw.visitJumpInsn(IFNONNULL, success);
+					mw.visitInsn(POP);
+					visitGetContext(mw, name.toString(), parameter.getType());
+				}
+				mw.visitLabel(success);
+			} else {
+				visitGetContext(mw, names, parameter.getType());
+			}
+			return;
+		}
+
+		FromContext context = parameter.getAnnotation(FromContext.class);
+		if (context != null) {
+			String[] names = context.value();
+			if (names.length == 0 || (names.length == 1 && Strings.isNullOrEmpty(names[0]))) {
+				// use getContext(Class)
+				mw.visitVarInsn(ALOAD, 0);
+				mw.visitLdcInsn(Type.getType(parameter.getType()));
+				mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getContext", "(Ljava/lang/Class;)Ljava/lang/Object;", true);
+				mw.visitTypeInsn(CHECKCAST, Type.getInternalName(parameter.getType()));
+			} else {
+				// Use getContext(String, Class) until we have a success
+				visitGetContext(mw, names, parameter.getType());
+			}
+			return;
+		}
+
+		throw new IllegalStateException("Fallthrough in annotation checks.");
+	}
+
 	private static void visitGet(MethodVisitor visitor, String name, String type) {
 		visitor.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER, "get" + name, "([Ljava/lang/Object;I)" + type, false);
 	}
 
 	private static void visitOpt(MethodVisitor visitor, String name, String type) {
 		visitor.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER, "opt" + name, "([Ljava/lang/Object;I" + type + ")" + type, false);
+	}
+
+	private static void visitGetContext(MethodVisitor mw, String key, Class<?> type) {
+		mw.visitVarInsn(ALOAD, 0);
+		mw.visitLdcInsn(key);
+		mw.visitLdcInsn(Type.getType(type));
+		mw.visitMethodInsn(INVOKEINTERFACE, INTERNAL_BAKED_CONTEXT, "getContext", "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;", true);
+		mw.visitTypeInsn(CHECKCAST, Type.getInternalName(type));
+	}
+
+	private static void visitGetContext(MethodVisitor mw, String[] keys, Class<?> type) {
+		// Use getContext(String, Class) until we have a success
+		Label success = new Label();
+
+		for (int i = 0; i < keys.length; i++) {
+			if (i > 0) {
+				mw.visitInsn(DUP);
+				mw.visitJumpInsn(IFNONNULL, success);
+				mw.visitInsn(POP);
+			}
+
+			visitGetContext(mw, keys[i], type);
+		}
 	}
 }

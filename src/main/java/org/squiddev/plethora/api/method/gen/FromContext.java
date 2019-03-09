@@ -16,5 +16,5 @@ public @interface FromContext {
 	 *
 	 * @return The context key to use.
 	 */
-	String[] value() default {""};
+	String[] value() default {};
 }

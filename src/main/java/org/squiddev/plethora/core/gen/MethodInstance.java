@@ -2,10 +2,7 @@ package org.squiddev.plethora.core.gen;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleMethod;
 import org.squiddev.plethora.core.ConfigCore;
@@ -17,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-final class MethodInstance<T> implements IMethod<T>, IModuleMethod<T> {
+final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTargetedMethod<T, U> {
 	private final String id;
 	private final String[] names;
 	private final String documentation;
@@ -26,11 +23,12 @@ final class MethodInstance<T> implements IMethod<T>, IModuleMethod<T> {
 	final int totalContext;
 	final ResourceLocation[] modules;
 	private final Class<?>[] markerIfaces;
+	private final Class<U> subtarget;
 
 	final Method method;
 	private Delegate delegate;
 
-	MethodInstance(Method method, String[] names, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces) {
+	MethodInstance(Method method, String[] names, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces, Class<U> subtarget) {
 		this.id = method.getDeclaringClass().getName() + "#" + method.getName();
 
 		this.names = names;
@@ -41,6 +39,7 @@ final class MethodInstance<T> implements IMethod<T>, IModuleMethod<T> {
 		this.modules = modules;
 		this.method = method;
 		this.markerIfaces = markerIfaces;
+		this.subtarget = subtarget;
 
 		// If strict
 		if (ConfigCore.Testing.strict) delegate = MethodClassLoader.INSTANCE.build(this);
@@ -123,6 +122,12 @@ final class MethodInstance<T> implements IMethod<T>, IModuleMethod<T> {
 	@Override
 	public Collection<ResourceLocation> getModules() {
 		return modules == null ? Collections.emptyList() : Arrays.asList(modules);
+	}
+
+	@Nullable
+	@Override
+	public Class<U> getSubTarget() {
+		return subtarget;
 	}
 
 	public interface Delegate {

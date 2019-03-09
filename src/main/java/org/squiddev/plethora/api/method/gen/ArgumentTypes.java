@@ -9,7 +9,9 @@ import org.squiddev.plethora.api.Injects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -47,6 +49,30 @@ public final class ArgumentTypes {
 		if (fluid == null) throw new LuaException("Unknown fluid '" + name + "'");
 		return fluid;
 	});
+
+	public static final ArgumentType<UUID> UUID_ARG = new ArgumentType<UUID>() {
+		@Override
+		public String name() {
+			return "string";
+		}
+
+		@Nonnull
+		@Override
+		public UUID get(@Nonnull Object[] args, int index) throws LuaException {
+			if (index >= args.length) throw badArgument(index, "string", "no value");
+			Object value = args[index];
+			if (value instanceof String) {
+				String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
+				try {
+					return UUID.fromString(uuid);
+				} catch (IllegalArgumentException e) {
+					throw new LuaException("Bad uuid '" + uuid + "' for argument #" + (index + 1));
+				}
+			} else {
+				throw badArgument(index, "string", value);
+			}
+		}
+	};
 
 	public static final ArgumentType<Map<?, ?>> TABLE = new ArgumentType<Map<?, ?>>() {
 		@Override
