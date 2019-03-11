@@ -8,8 +8,8 @@ import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

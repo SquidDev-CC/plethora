@@ -1,4 +1,4 @@
-package org.squiddev.plethora.api.method.gen;
+package org.squiddev.plethora.api.method.wrapper;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;

@@ -5,7 +5,7 @@ import forestry.api.genetics.IAlleleSpecies;
 import forestry.api.genetics.ISpeciesRoot;
 import forestry.core.config.Constants;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.utils.LuaList;
 

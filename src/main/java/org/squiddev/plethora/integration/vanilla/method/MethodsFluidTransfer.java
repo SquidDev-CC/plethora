@@ -10,8 +10,8 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.gen.Default;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.Default;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

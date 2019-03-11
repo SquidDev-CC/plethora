@@ -6,8 +6,8 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 

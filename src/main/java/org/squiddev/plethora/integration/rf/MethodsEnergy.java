@@ -11,8 +11,8 @@ import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

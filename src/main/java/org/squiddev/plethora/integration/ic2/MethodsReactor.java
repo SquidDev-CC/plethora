@@ -7,7 +7,7 @@ import ic2.api.reactor.IReactorChamber;
 import ic2.core.IC2;
 import net.minecraft.tileentity.TileEntity;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;

@@ -1,6 +1,6 @@
-package org.squiddev.plethora.core.gen;
+package org.squiddev.plethora.core.wrapper;
 
-import org.squiddev.plethora.api.method.gen.ArgumentType;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

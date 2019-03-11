@@ -6,7 +6,7 @@ import codechicken.multipart.TileMultipart;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

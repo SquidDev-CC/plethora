@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core.gen;
+package org.squiddev.plethora.core.wrapper;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.MethodVisitor;

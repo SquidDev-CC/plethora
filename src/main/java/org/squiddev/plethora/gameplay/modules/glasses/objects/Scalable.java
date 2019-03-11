@@ -1,8 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 /**
  * An object which can be scaled. This includes point side, text size and line thickness.

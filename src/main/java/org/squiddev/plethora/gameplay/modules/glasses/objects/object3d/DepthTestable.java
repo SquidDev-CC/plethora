@@ -1,7 +1,7 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 public interface DepthTestable {
 	boolean hasDepthTest();

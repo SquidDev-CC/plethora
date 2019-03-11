@@ -2,8 +2,8 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;

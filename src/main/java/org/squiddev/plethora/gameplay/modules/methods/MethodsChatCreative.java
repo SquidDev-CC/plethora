@@ -7,8 +7,8 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nullable;

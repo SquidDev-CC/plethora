@@ -2,7 +2,7 @@ package org.squiddev.plethora.integration;
 
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.gen.ArgumentType;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
 
 import javax.annotation.Nonnull;
 

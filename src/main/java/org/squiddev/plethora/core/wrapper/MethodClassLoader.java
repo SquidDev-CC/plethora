@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core.gen;
+package org.squiddev.plethora.core.wrapper;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Primitives;
@@ -6,7 +6,7 @@ import dan200.computercraft.core.apis.ArgumentHelper;
 import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.*;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.method.gen.*;
+import org.squiddev.plethora.api.method.wrapper.*;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Executable;
@@ -16,7 +16,7 @@ import java.lang.reflect.Parameter;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
-import static org.squiddev.plethora.core.gen.ClassWriterHelpers.*;
+import static org.squiddev.plethora.core.wrapper.ClassWriterHelpers.*;
 
 class MethodClassLoader extends ClassLoader {
 	public static final MethodClassLoader INSTANCE = new MethodClassLoader();

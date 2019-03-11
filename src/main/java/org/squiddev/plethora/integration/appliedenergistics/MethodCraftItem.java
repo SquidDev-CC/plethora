@@ -11,8 +11,8 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 

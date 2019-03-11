@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core.gen;
+package org.squiddev.plethora.core.wrapper;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;

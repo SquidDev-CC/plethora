@@ -3,8 +3,8 @@ package org.squiddev.plethora.integration.refinedstorage;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import java.util.Map;
 

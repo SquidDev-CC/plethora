@@ -7,9 +7,9 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.gen.ArgumentType;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
-import org.squiddev.plethora.core.gen.ArgumentTypeRegistry;
+import org.squiddev.plethora.core.wrapper.ArgumentTypeRegistry;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.lang.reflect.*;

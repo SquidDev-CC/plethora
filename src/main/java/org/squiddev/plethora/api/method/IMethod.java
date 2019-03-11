@@ -3,7 +3,7 @@ package org.squiddev.plethora.api.method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,4 +1,4 @@
-package org.squiddev.plethora.core.gen;
+package org.squiddev.plethora.core.wrapper;
 
 import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
@@ -6,12 +6,12 @@ import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.method.gen.*;
+import org.squiddev.plethora.api.method.wrapper.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.core.gen.MethodInstance.ContextInfo;
+import org.squiddev.plethora.core.wrapper.MethodInstance.ContextInfo;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;

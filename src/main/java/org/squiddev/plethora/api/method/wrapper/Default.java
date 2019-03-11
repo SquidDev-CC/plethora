@@ -1,4 +1,4 @@
-package org.squiddev.plethora.api.method.gen;
+package org.squiddev.plethora.api.method.wrapper;
 
 import java.lang.annotation.*;
 

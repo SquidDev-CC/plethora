@@ -15,8 +15,8 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 

@@ -2,8 +2,8 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 

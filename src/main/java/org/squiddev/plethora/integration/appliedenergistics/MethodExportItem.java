@@ -16,9 +16,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.gen.Default;
-import org.squiddev.plethora.api.method.gen.FromContext;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.Default;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer.extractHandler;

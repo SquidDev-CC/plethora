@@ -2,8 +2,8 @@ package org.squiddev.plethora.gameplay.modules.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromSubtarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;

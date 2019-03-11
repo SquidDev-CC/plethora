@@ -3,8 +3,8 @@ package org.squiddev.plethora.gameplay.modules.glasses.methods;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.gen.ArgumentType;
-import org.squiddev.plethora.api.method.gen.ArgumentTypes;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
+import org.squiddev.plethora.api.method.wrapper.ArgumentTypes;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;

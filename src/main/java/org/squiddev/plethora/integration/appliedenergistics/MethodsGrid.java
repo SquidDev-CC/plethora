@@ -14,8 +14,8 @@ import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.gen.FromTarget;
-import org.squiddev.plethora.api.method.gen.PlethoraMethod;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
 
 import javax.annotation.Nullable;
