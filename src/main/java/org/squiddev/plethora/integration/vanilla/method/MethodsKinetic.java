@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
@@ -23,14 +24,16 @@ import static dan200.computercraft.core.apis.ArgumentHelper.optNumber;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
+@Injects
 public final class MethodsKinetic {
-	@Nonnull
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S,
-		target = Entity.class,
-		doc = "function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction"
-	)
-	public static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static final SubtargetedModuleMethod<Entity> LAUNCH = SubtargetedModuleMethod.of(
+		MethodsKinetic.class.getName() + "#launch",
+		"launch", PlethoraModules.KINETIC_M, Entity.class,
+		"function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction",
+		MethodsKinetic::launch
+	);
+
+	private static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final float yaw = (float) getReal(args, 0) % 360;
 		final float pitch = (float) getReal(args, 1) % 360;
 		final float power = (float) getReal(args, 2);
@@ -56,13 +59,15 @@ public final class MethodsKinetic {
 		DisableAI.maybeClear(entity);
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S,
-		target = EntityLiving.class,
-		doc = "function(x:number, y:number, z:number):boolean, string|nil -- Walk to a coordinate"
-	)
+	public static final SubtargetedModuleMethod<EntityLiving> WALK = SubtargetedModuleMethod.of(
+		MethodsKinetic.class.getName() + "#walk",
+		"walk", PlethoraModules.KINETIC_M, EntityLiving.class,
+		"function(x:number, y:number, z:number):boolean, string|nil -- Walk to a coordinate",
+		MethodsKinetic::walk
+	);
+
 	@Nonnull
-	public static MethodResult walk(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	private static MethodResult walk(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final double x = getReal(args, 0);
 		final double y = getReal(args, 1);
 		final double z = getReal(args, 2);

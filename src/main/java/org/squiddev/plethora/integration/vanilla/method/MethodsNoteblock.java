@@ -13,10 +13,11 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.gen.FromContext;
+import org.squiddev.plethora.api.method.gen.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.List;
@@ -50,11 +51,14 @@ public class MethodsNoteblock {
 		return null;
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
+	@PlethoraMethod(
+		module = IntegrationVanilla.noteblock,
 		doc = "function(instrument:string|number, pitch:number[, volume:number]) -- Plays a note block note"
 	)
-	public static MethodResult playNote(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
+	public static MethodResult playNote(
+		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		Object[] arguments
+	) throws LuaException {
 		List<SoundEvent> instruments = getInstruments();
 
 		final SoundEvent sound;
@@ -81,9 +85,7 @@ public class MethodsNoteblock {
 
 		final float adjPitch = (float) Math.pow(2d, (double) (pitch - 12) / 12d);
 
-		context.safeBake();
-		context.getExecutor().executeAsync(MethodResult.nextTick(() -> {
-			IWorldLocation location = context.bake().getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+		context.unbake().getExecutor().executeAsync(MethodResult.nextTick(() -> {
 			BlockPos pos = location.getPos();
 			Vec3d vec = location.getLoc();
 
@@ -98,11 +100,14 @@ public class MethodsNoteblock {
 		return MethodResult.empty();
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = IntegrationVanilla.noteblock, target = IWorldLocation.class,
+	@PlethoraMethod(
+		module = IntegrationVanilla.noteblock,
 		doc = "function(sound:string[, pitch:number][, volume:number]) -- Play a sound"
 	)
-	public static MethodResult playSound(final IUnbakedContext<IModuleContainer> context, Object[] arguments) throws LuaException {
+	public static MethodResult playSound(
+		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		Object[] arguments
+	) throws LuaException {
 		final String name = getString(arguments, 0);
 		final float pitch = (float) optNumber(arguments, 1, 0);
 		final float volume = (float) optNumber(arguments, 2, 1);
@@ -113,11 +118,8 @@ public class MethodsNoteblock {
 		final SoundEvent sound = SoundEvent.REGISTRY.getObject(new ResourceLocation(name));
 		if (sound == null) throw new LuaException("No such sound '" + name + "'");
 
-		context.safeBake();
-		context.getExecutor().executeAsync(MethodResult.nextTick(() -> {
-			IWorldLocation location = context.bake().getContext(ContextKeys.ORIGIN, IWorldLocation.class);
+		context.unbake().getExecutor().executeAsync(MethodResult.nextTick(() -> {
 			BlockPos pos = location.getPos();
-
 			location.getWorld().playSound(null, pos, sound, SoundCategory.RECORDS, volume, pitch);
 			return MethodResult.empty();
 		}));

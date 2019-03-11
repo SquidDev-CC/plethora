@@ -24,6 +24,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IUnbakedContext;
@@ -43,9 +44,9 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 /**
  * Various methods for mobs
  */
+@Injects
 public final class MethodsKineticEntity {
 	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Look in a set direction")
-	@Nonnull
 	public static void look(@FromSubtarget EntityLivingBase target, double pitch, double yaw) {
 		yaw %= 360;
 		pitch %= 360;
@@ -64,11 +65,14 @@ public final class MethodsKineticEntity {
 		target.explode();
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityEnderman.class,
-		doc = "function(x:number, y:number, z:number) -- Teleport to a position relative to the current one"
-	)
-	public static MethodResult teleport(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static final SubtargetedModuleMethod<EntityEnderman> TELEPORT = SubtargetedModuleMethod.of(
+		MethodsKineticEntity.class.getName() + "#teleport",
+		"teleport", PlethoraModules.KINETIC_M, EntityEnderman.class,
+		"function(x:number, y:number, z:number) -- Teleport to a position relative to the current one",
+		MethodsKineticEntity::teleport
+	);
+
+	private static MethodResult teleport(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final double x = getReal(args, 0);
 		final double y = getReal(args, 1);
 		final double z = getReal(args, 2);
@@ -87,12 +91,15 @@ public final class MethodsKineticEntity {
 		}));
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = AbstractSkeleton.class, name = "shoot",
-		doc = "function(potency:number) -- Fire an arrow in the direction the skeleton is looking"
-	)
+	public static final SubtargetedModuleMethod<AbstractSkeleton> SHOOT_SKELETON = SubtargetedModuleMethod.of(
+		MethodsKineticEntity.class.getName() + "#shootSkeleton",
+		"shoot", PlethoraModules.KINETIC_M, AbstractSkeleton.class,
+		"function(potency:number) -- Fire an arrow in the direction the skeleton is looking",
+		MethodsKineticEntity::shootSkeleton
+	);
+
 	@Nonnull
-	public static MethodResult shootSkeleton(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+	private static MethodResult shootSkeleton(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
 		final double potency = getReal(args, 0);
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
@@ -132,12 +139,15 @@ public final class MethodsKineticEntity {
 		}));
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityBlaze.class, name = "shoot",
-		doc = "function(yaw:number, pitch:number) -- Fire a fireball in the specified direction."
-	)
+	public static final SubtargetedModuleMethod<EntityBlaze> SHOOT_BLAZE = SubtargetedModuleMethod.of(
+		MethodsKineticEntity.class.getName() + "#shootBlaze",
+		"shoot", PlethoraModules.KINETIC_M, EntityBlaze.class,
+		"function(yaw:number, pitch:number) -- Fire a fireball in the specified direction.",
+		MethodsKineticEntity::shootBlaze
+	);
+
 	@Nonnull
-	public static MethodResult shootBlaze(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+	private static MethodResult shootBlaze(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
 		final double yaw = getReal(args, 0) % 360;
 		double pitch = getReal(args, 1) % 360;
 
@@ -166,12 +176,15 @@ public final class MethodsKineticEntity {
 		PotionTypes.WEAKNESS
 	};
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityWitch.class, name = "shoot",
-		doc = "function(potency:number) -- Throw a potion in the direction the witch is looking"
-	)
+	public static final SubtargetedModuleMethod<EntityWitch> SHOOT_WITCH = SubtargetedModuleMethod.of(
+		MethodsKineticEntity.class.getName() + "#shootWitch",
+		"shoot", PlethoraModules.KINETIC_M, EntityWitch.class,
+		"function(potency:number) -- Throw a potion in the direction the witch is looking",
+		MethodsKineticEntity::shootWitch
+	);
+
 	@Nonnull
-	public static MethodResult shootWitch(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
+	private static MethodResult shootWitch(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
 		final double potency = getReal(args, 0);
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
@@ -195,11 +208,14 @@ public final class MethodsKineticEntity {
 		}));
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = EntityMinecart.class,
-		doc = "function(velocity:number) -- Propel this minecart in along the track."
-	)
-	public static MethodResult propel(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static final SubtargetedModuleMethod<EntityMinecart> PROPEL = SubtargetedModuleMethod.of(
+		MethodsKineticEntity.class.getName() + "#propel",
+		"propel", PlethoraModules.KINETIC_M, EntityMinecart.class,
+		"function(velocity:number) -- Propel this minecart in along the track.",
+		MethodsKineticEntity::propel
+	);
+
+	private static MethodResult propel(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		double given = getReal(args, 0);
 
 		assertBetween(given, -Kinetic.propelMax, Kinetic.propelMax, "Velocity coordinate out of bounds (%s)");

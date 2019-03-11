@@ -26,7 +26,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	private final Class<U> subtarget;
 
 	final Method method;
-	private Delegate delegate;
+	private Delegate<T> delegate;
 
 	MethodInstance(Method method, String[] names, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces, Class<U> subtarget) {
 		this.id = method.getDeclaringClass().getName() + "#" + method.getName();
@@ -78,7 +78,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	@Nonnull
 	@Override
 	public MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException {
-		Delegate delegate = this.delegate;
+		Delegate<T> delegate = this.delegate;
 		if (delegate == null) {
 			synchronized (this) {
 				if ((delegate = this.delegate) == null) {
@@ -87,7 +87,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 			}
 		}
 
-		return delegate.invoke(context, args);
+		return delegate.apply(context, args);
 	}
 
 	@Nonnull
@@ -128,10 +128,6 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	@Override
 	public Class<U> getSubTarget() {
 		return subtarget;
-	}
-
-	public interface Delegate {
-		MethodResult invoke(IUnbakedContext<?> context, Object[] args) throws LuaException;
 	}
 
 	static class ContextInfo {

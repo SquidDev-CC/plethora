@@ -15,7 +15,6 @@ import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,14 +89,6 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(object, "object cannot be null");
 		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, side);
 		return handler != null ? handler : DefaultCostHandler.get(object);
-	}
-
-	@Override
-	public <T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
-		Preconditions.checkNotNull(builder, "builder cannot be null");
-
-		MethodTypeBuilder.instance.addBuilder(klass, builder);
 	}
 
 	@Override

@@ -104,4 +104,23 @@ public interface IMethod<T> {
 	default boolean has(@Nonnull Class<?> iface) {
 		return iface.isInstance(this);
 	}
+
+	/**
+	 * A delegate for some {@link IMethod}.
+	 *
+	 * @param <T> The type of this delegate's target.
+	 */
+	interface Delegate<T> {
+		/**
+		 * Apply this method delegate method
+		 *
+		 * @param context The context to apply within
+		 * @param args    The arguments this function was called with
+		 * @return The return values
+		 * @throws LuaException     On the event of an error
+		 * @throws RuntimeException Unhandled errors: these will be rethrown as {@link LuaException}s and the call stack logged.
+		 * @see IMethod#apply(IUnbakedContext, Object[])
+		 */
+		MethodResult apply(IUnbakedContext<T> context, Object[] args) throws LuaException;
+	}
 }

@@ -7,7 +7,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.IConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IMethodBuilder;
 import org.squiddev.plethora.api.method.gen.ArgumentType;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 import org.squiddev.plethora.core.gen.ArgumentTypeRegistry;
@@ -22,7 +21,6 @@ import static org.squiddev.plethora.core.PlethoraCore.LOG;
 final class Registry {
 	private static final Type TRANSFER_IN = ITransferProvider.class.getTypeParameters()[0];
 	private static final Type CONVERTER_IN = IConverter.class.getTypeParameters()[0];
-	private static final Type METHOD_BUILDER_IN = IMethodBuilder.class.getTypeParameters()[0];
 	private static final Type METHOD_IN = IMethod.class.getTypeParameters()[0];
 	private static final Type META_IN = IMetaProvider.class.getTypeParameters()[0];
 	private static final Type ARGUMENT_TYPE_IN = ArgumentType.class.getTypeParameters()[0];
@@ -166,18 +164,6 @@ final class Registry {
 			if (instance == null) return Result.ERROR;
 
 			ConverterRegistry.instance.registerConverter(klass, (IConverter) instance);
-		}
-
-		// Register IMethodBuilders
-		if (IMethodBuilder.class.isAssignableFrom(rawType)) {
-			Type typeParameter = TypeToken.of(type).resolveType(METHOD_BUILDER_IN).getType();
-			Class<?> klass = getRawType(name, typeParameter, typeParameter);
-			if (klass == null) return Result.ERROR;
-
-			if (instance == null) instance = instanceGetter.get();
-			if (instance == null) return Result.ERROR;
-
-			MethodTypeBuilder.instance.addBuilder((Class) klass, (IMethodBuilder) instance);
 		}
 
 		// Register IMethod

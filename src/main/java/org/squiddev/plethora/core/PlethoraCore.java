@@ -75,10 +75,8 @@ public class PlethoraCore {
 
 		// Load various objects from annotations
 		Registry.register(asmData);
-
 		MetaRegistry.instance.loadAsm(asmData);
 		PlethoraMethodRegistry.loadAsm(asmData);
-		MethodTypeBuilder.instance.loadAsm(asmData);
 
 		ConfigCore.configuration.save();
 	}

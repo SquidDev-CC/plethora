@@ -22,7 +22,7 @@ class MethodClassLoader extends ClassLoader {
 	public static final MethodClassLoader INSTANCE = new MethodClassLoader();
 
 	private static final String INTERNAL_OBJECT = Type.getInternalName(Object.class);
-	private static final String INTERNAL_DELEGATE = Type.getInternalName(MethodInstance.Delegate.class);
+	private static final String INTERNAL_DELEGATE = Type.getInternalName(IMethod.Delegate.class);
 	private static final String INTERNAL_ARGUMENT_HELPER = Type.getInternalName(ArgumentHelper.class);
 	private static final String INTERNAL_ARGUMENT_HELPER_II = Type.getInternalName(org.squiddev.plethora.api.method.ArgumentHelper.class);
 	private static final String INTERNAL_ARGUMENT_TYPE = Type.getInternalName(ArgumentType.class);
@@ -46,7 +46,8 @@ class MethodClassLoader extends ClassLoader {
 		super(MethodClassLoader.class.getClassLoader());
 	}
 
-	MethodInstance.Delegate build(MethodInstance method) {
+	@SuppressWarnings("unchecked")
+	<T> MethodInstance.Delegate<T> build(MethodInstance method) {
 		try {
 			Class<?> klass = writeClass(method);
 			if (klass == null) throw BadWrapperException.INSTANCE;
@@ -98,8 +99,8 @@ class MethodClassLoader extends ClassLoader {
 			mw.visitEnd();
 		}
 
-		{ // The main invoke method validates arguments and delegates to the static invoker.
-			MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "invoke", "(Lorg/squiddev/plethora/api/method/IUnbakedContext;[Ljava/lang/Object;)Lorg/squiddev/plethora/api/method/MethodResult;", null, null);
+		{ // The main apply method validates arguments and delegates to the static invoker.
+			MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "apply", "(Lorg/squiddev/plethora/api/method/IUnbakedContext;[Ljava/lang/Object;)Lorg/squiddev/plethora/api/method/MethodResult;", null, null);
 			mw.visitCode();
 			mw.visitVarInsn(ALOAD, IDX_CTX); // Load the unbaked context
 
