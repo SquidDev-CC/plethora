@@ -14,8 +14,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.client.FramebufferGlasses;
 import org.squiddev.plethora.gameplay.client.OpenGlHelper;
@@ -186,7 +186,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 	}
 
 	@PlethoraMethod(doc = "-- Set the item and damage value for this object.", worldThread = false)
-	public static void setItem(@FromTarget Item2D object, Item item, @Default(defInt = 0) int damage) {
+	public static void setItem(@FromTarget Item2D object, Item item, @Optional(defInt = 0) int damage) {
 		object.setItem(item);
 		object.setDamage(damage);
 	}

@@ -15,10 +15,10 @@ import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 import static org.squiddev.plethora.integration.appliedenergistics.MetaAppliedEnergistics.getItemStackProperties;
@@ -54,7 +54,7 @@ public class MethodsGrid {
 		return output;
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(
 		modId = AppEng.MOD_ID,
 		doc = "function(item:string|table):table -- Search for an item in the network. " +

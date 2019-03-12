@@ -6,7 +6,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * A Lua side method targeting a class.
@@ -38,12 +37,10 @@ public interface IMethod<T> {
 	 * The function description can be multiple lines. The first line or sentence is read as a synopsis, with everything else being
 	 * considered additional detail.
 	 *
-	 * @return The doc string. This can be {@code null} if you don't want to include one.
+	 * @return The doc string.
 	 */
-	@Nullable
-	default String getDocString() {
-		return null;
-	}
+	@Nonnull
+	String getDocString();
 
 	/**
 	 * Get the priority of this provider

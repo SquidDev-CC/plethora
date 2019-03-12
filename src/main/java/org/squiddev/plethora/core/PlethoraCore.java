@@ -74,9 +74,18 @@ public class PlethoraCore {
 		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
 		// Load various objects from annotations
+		long start = System.currentTimeMillis();
+
 		Registry.register(asmData);
 		MetaRegistry.instance.loadAsm(asmData);
 		PlethoraMethodRegistry.loadAsm(asmData);
+
+		long finish = System.currentTimeMillis();
+
+		LOG.info(
+			"Loaded {} methods and {} metadata providers in {} seconds",
+			MethodRegistry.instance.providers.size(), MetaRegistry.instance.providers.size(), (finish - start) * 1e-3
+		);
 
 		ConfigCore.configuration.save();
 	}

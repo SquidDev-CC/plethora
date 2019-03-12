@@ -16,8 +16,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -31,7 +31,7 @@ public final class MethodExportItem {
 	@MarkerInterfaces(ITransferMethod.class)
 	public static long export(
 		IContext<IAEItemStack> baked, @FromContext IGrid grid, @FromContext IActionHost host,
-		String toName, @Default(defInt = Integer.MAX_VALUE) int limit, @Default int toSlot
+		String toName, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
 	) throws LuaException {
 		// Find location to transfer to
 		Object location = baked.getTransferLocation(toName);

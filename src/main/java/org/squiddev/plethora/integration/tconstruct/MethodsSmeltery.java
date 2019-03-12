@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.DynamicReference;
 import slimeknights.tconstruct.TConstruct;
@@ -35,7 +36,7 @@ public class MethodsSmeltery {
 		modId = TConstruct.modID,
 		doc = "function(fluid: number|string) -- Select which fluid will be extracted by drains in the smeltery. One can specify a fluid name or an index in list of molten fluids."
 	)
-	public static void selectMolten(ISmelteryTankHandler smeltery, Object[] args) throws LuaException {
+	public static void selectMolten(@FromTarget ISmelteryTankHandler smeltery, Object[] args) throws LuaException {
 		if (args.length >= 1 && args[0] instanceof String) {
 			String fluid = (String) args[0];
 			List<FluidStack> fluids = smeltery.getTank().getFluids();
@@ -99,7 +100,7 @@ public class MethodsSmeltery {
 		return structure.getTemperature();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the controller for this smeltery component.")
 	public static ILuaObject getController(IContext<TileSmelteryComponent> context) {
 		TileSmelteryComponent component = context.getTarget();

@@ -9,9 +9,9 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -43,12 +43,9 @@ public class MethodsMultipart {
 		return parts;
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a reference to the part in the specified slot.")
 	public static ILuaObject getSlottedPart(final IContext<IMultipartContainer> context, IPartSlot slot) {
-		// TODO: final IPartSlot slot = MCMultiPart.slotRegistry.getValue(new ResourceLocation(slotName));
-		//  if (slot == null) throw new LuaException("Bad name '" + slotName + "' for argument 1");
-
 		IMultipartContainer container = context.getTarget();
 
 		IPartInfo part = container.get(slot).orElse(null);
@@ -57,7 +54,7 @@ public class MethodsMultipart {
 			: context.makeChild(part, new ReferenceMultipart(container, part)).getObject();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get the metadata of the part in the specified slot.")
 	public static Map<Object, Object> getSlottedPartMeta(final IContext<IMultipartContainer> context, IPartSlot slot) throws LuaException {
 		IMultipartContainer container = context.getTarget();

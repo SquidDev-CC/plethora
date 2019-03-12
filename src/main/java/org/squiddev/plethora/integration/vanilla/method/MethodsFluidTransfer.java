@@ -10,7 +10,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.wrapper.Default;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class MethodsFluidTransfer {
 	@MarkerInterfaces(ITransferMethod.class)
 	public static int pushFluid(
 		IContext<IFluidHandler> context,
-		String toName, @Default(defInt = Integer.MAX_VALUE) int limit, @Nullable Fluid fluid
+		String toName, @Optional(defInt = Integer.MAX_VALUE) int limit, Fluid fluid
 	) throws LuaException {
 		IFluidHandler from = context.getTarget();
 
@@ -46,7 +46,7 @@ public class MethodsFluidTransfer {
 	@MarkerInterfaces(ITransferMethod.class)
 	public static int pullFluid(
 		IContext<IFluidHandler> context,
-		String fromName, @Default(defInt = Integer.MAX_VALUE) int limit, @Nullable Fluid fluid
+		String fromName, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional Fluid fluid
 	) throws LuaException {
 		IFluidHandler to = context.getTarget();
 

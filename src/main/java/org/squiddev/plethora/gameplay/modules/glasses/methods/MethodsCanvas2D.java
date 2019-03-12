@@ -5,9 +5,9 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Frame2D;
@@ -24,7 +24,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "-- Create a new rectangle.", worldThread = false)
 	public static ILuaObject addRectangle(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		float x, float y, float width, float height, @Default(defInt = DEFAULT_COLOUR) int colour
+		float x, float y, float width, float height, @Optional(defInt = DEFAULT_COLOUR) int colour
 	) {
 		Group2D group = baked.getTarget();
 
@@ -41,7 +41,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "-- Create a new line.", worldThread = false)
 	public static ILuaObject addLine(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		Vec2d start, Vec2d end, @Default(defInt = DEFAULT_COLOUR) int colour, @Default(defDoub = 1) float thickness
+		Vec2d start, Vec2d end, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float thickness
 	) {
 		Group2D group = baked.getTarget();
 
@@ -59,7 +59,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.", worldThread = false)
 	public static ILuaObject addDot(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		Vec2d position, @Default(defInt = DEFAULT_COLOUR) int colour, @Default(defDoub = 1) float size
+		Vec2d position, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float size
 	) {
 		Group2D group = baked.getTarget();
 
@@ -75,7 +75,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "-- Create a new text object.", worldThread = false)
 	public static ILuaObject addText(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		Vec2d position, String contents, @Default(defInt = DEFAULT_COLOUR) int colour, @Default(defDoub = 1) float size
+		Vec2d position, String contents, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float size
 	) {
 		Group2D group = baked.getTarget();
 
@@ -93,7 +93,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "-- Create a new triangle, composed of three points.", worldThread = false)
 	public static ILuaObject addTriangle(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		Vec2d p1, Vec2d p2, Vec2d p3, @Default(defInt = DEFAULT_COLOUR) int colour
+		Vec2d p1, Vec2d p2, Vec2d p3, @Optional(defInt = DEFAULT_COLOUR) int colour
 	) {
 		Group2D group = baked.getTarget();
 
@@ -154,7 +154,7 @@ public class MethodsCanvas2D {
 	@PlethoraMethod(doc = "-- Create a item icon.", worldThread = false)
 	public static ILuaObject addItem(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
-		Vec2d position, Item item, @Default(defInt = 0) int damage, @Default(defDoub = 1) float scale
+		Vec2d position, Item item, @Optional(defInt = 0) int damage, @Optional(defDoub = 1) float scale
 	) {
 		Group2D group = baked.getTarget();
 

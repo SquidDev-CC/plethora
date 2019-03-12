@@ -5,13 +5,13 @@ import forestry.core.config.Constants;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class MethodsBeeHousing {
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current queen for this bee housing.")
 	public static Map<Object, Object> getQueen(IContext<IBeeHousing> context) {
 		ItemStack queen = context.getTarget().getBeeInventory().getQueen();
@@ -20,7 +20,7 @@ public class MethodsBeeHousing {
 			: context.makePartialChild(queen).getMeta();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current drone for this bee housing.")
 	public static Map<Object, Object> getDrone(IContext<IBeeHousing> context) {
 		ItemStack drone = context.getTarget().getBeeInventory().getDrone();

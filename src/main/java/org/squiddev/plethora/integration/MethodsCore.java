@@ -8,12 +8,12 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodCollection;
 import org.squiddev.plethora.api.method.wrapper.ArgumentTypes;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -54,8 +54,8 @@ public class MethodsCore {
 		return object.getMethodNames().length == 0 ? null : object;
 	}
 
-	@PlethoraMethod(doc = "-- Get the documentation for all functions or the function specified. Errors if the function cannot be found.", worldThread = false)
-	public static Object getDocs(@FromTarget IMethodCollection methodCollection, @Nullable String name) throws LuaException {
+	@PlethoraMethod(doc = "function([name: string]):string|table -- Get the documentation for all functions or the function specified. Errors if the function cannot be found.", worldThread = false)
+	public static Object getDocs(@FromTarget IMethodCollection methodCollection, @Optional String name) throws LuaException {
 		if (name == null) {
 			Map<String, String> out = new HashMap<>();
 			for (IMethod method : methodCollection.methods()) {

@@ -143,7 +143,6 @@ public class CraftingResult {
 		return result.getStatus();
 	}
 
-	@Nullable
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Get the ID for this crafting task.")
 	public static String getId(@FromTarget CraftingResult result) {
 		ICraftingLink link = result.getLink();

@@ -13,14 +13,13 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
@@ -31,7 +30,7 @@ public class MethodsInventoryWorld {
 	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
 	public static int drop(
 		@FromTarget IItemHandler handler, @FromContext(ContextKeys.TARGET) IWorldLocation location,
-		int slot, @Default(defInt = Integer.MAX_VALUE) int limit, @Nullable EnumFacing direction
+		int slot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 		assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
@@ -43,7 +42,7 @@ public class MethodsInventoryWorld {
 	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
 	public static int drop(
 		@FromTarget ItemSlot slot, @FromContext(ContextKeys.TARGET) IWorldLocation location,
-		@Default(defInt = Integer.MAX_VALUE) int limit, @Nullable EnumFacing direction
+		@Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
@@ -75,7 +74,7 @@ public class MethodsInventoryWorld {
 	@PlethoraMethod(doc = "-- Suck an item from the ground")
 	public static int suck(
 		@FromTarget IItemHandler handler, @FromContext(ContextKeys.TARGET) IWorldLocation location,
-		@Default int slot, @Default(defInt = Integer.MAX_VALUE) int limit
+		@Optional int slot, @Optional(defInt = Integer.MAX_VALUE) int limit
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 		if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");

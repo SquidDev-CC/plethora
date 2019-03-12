@@ -8,9 +8,8 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-
-import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
@@ -20,7 +19,7 @@ public class MethodsIDrawerGroup {
 		return drawer.getDrawerCount();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- Return the drawer at this particular slot")
 	public static ILuaObject getDrawer(IContext<IDrawerGroup> context, int slot) throws LuaException {
 		IDrawerGroup group = context.getTarget();

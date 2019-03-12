@@ -5,9 +5,9 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class MethodsIDrawer {
@@ -21,7 +21,7 @@ public class MethodsIDrawer {
 		return drawer.getStoredItemCount();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The metadata of the item in this drawer.")
 	public static Map<Object, Object> getItemMeta(IContext<IDrawer> context) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();

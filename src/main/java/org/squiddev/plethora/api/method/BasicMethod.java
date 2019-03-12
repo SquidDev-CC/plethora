@@ -3,7 +3,6 @@ package org.squiddev.plethora.api.method;
 import com.google.common.base.Strings;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * A basic wrapper for methods
@@ -39,7 +38,7 @@ public abstract class BasicMethod<T> implements IMethod<T> {
 		return priority;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public String getDocString() {
 		return docs;

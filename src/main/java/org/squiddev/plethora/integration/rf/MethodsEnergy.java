@@ -9,9 +9,8 @@ import net.minecraft.util.EnumFacing;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-
-import javax.annotation.Nullable;
 
 public class MethodsEnergy {
 	@PlethoraMethod(modId = RedstoneFluxProps.MOD_ID, doc = "-- The amount of RF currently stored")
@@ -25,12 +24,12 @@ public class MethodsEnergy {
 	}
 
 	@PlethoraMethod(modId = RedstoneFluxProps.MOD_ID, doc = "-- The amount of RF currently stored")
-	public static int getRFStored(@FromTarget IEnergyHandler handler, @Nullable EnumFacing side) {
+	public static int getRFStored(@FromTarget IEnergyHandler handler, @Optional EnumFacing side) {
 		return handler.getEnergyStored(side);
 	}
 
 	@PlethoraMethod(modId = RedstoneFluxProps.MOD_ID, doc = "-- The maximum amount of RF that can be stored")
-	public static int getRFCapacity(@FromTarget IEnergyHandler handler, @Nullable EnumFacing side) {
+	public static int getRFCapacity(@FromTarget IEnergyHandler handler, @Optional EnumFacing side) {
 		return handler.getMaxEnergyStored(side);
 	}
 

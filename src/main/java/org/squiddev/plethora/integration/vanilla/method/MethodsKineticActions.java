@@ -10,9 +10,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
@@ -20,7 +20,6 @@ import org.squiddev.plethora.integration.PlayerInteractionHelpers;
 import org.squiddev.plethora.integration.vanilla.FakePlayerProviderEntity;
 import org.squiddev.plethora.utils.PlayerHelpers;
 
-import javax.annotation.Nullable;
 import java.util.Locale;
 
 public final class MethodsKineticActions {
@@ -31,8 +30,8 @@ public final class MethodsKineticActions {
 	)
 	public static MethodResult use(
 		@FromSubtarget(ContextKeys.ORIGIN) EntityLivingBase entity,
-		@Nullable @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable,
-		@Default(defInt = 0) int duration, @Nullable String hand
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable,
+		@Optional(defInt = 0) int duration, @Optional String hand
 	) throws LuaException {
 		if (duration < 0) throw new LuaException("Duration out of range (must be >= 0)");
 
@@ -78,7 +77,7 @@ public final class MethodsKineticActions {
 	)
 	public static Object[] swing(
 		@FromSubtarget(ContextKeys.ORIGIN) EntityLivingBase entity,
-		@Nullable @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable
 	) throws LuaException {
 		EntityPlayerMP player;
 		PlethoraFakePlayer fakePlayer;

@@ -35,8 +35,8 @@ public final class MethodsChat {
 	@PlethoraMethod(module = PlethoraModules.CHAT_S, doc = "-- Send a message to everyone")
 	public static void say(
 		@Nonnull IContext<IModuleContainer> context,
-		@FromContext @Nullable Entity entity, // TODO: EntityIdentifier?
-		@FromContext(ContextKeys.ORIGIN) @Nullable IWorldLocation location,
+		@FromContext Entity entity, // TODO: EntityIdentifier?
+		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		String message
 	) throws LuaException {
 		validateMessage(message);

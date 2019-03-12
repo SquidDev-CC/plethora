@@ -85,14 +85,14 @@ public final class PlethoraMethodRegistry {
 				ok = false;
 			}
 
-			// We don't need to require Nullable annotations. However, targets/sub-targets shouldn't be marked as
-			// nullable.
-			if (parameter.getAnnotation(Nullable.class) != null) {
+			// We don't need to require Optional annotations. However, targets/sub-targets shouldn't be marked as
+			// optional.
+			if (parameter.getAnnotation(Optional.class) != null) {
 				if (fromTarget != null || contextTarget) {
-					PlethoraCore.LOG.error("@PlethoraMethod method {}'s target has a nullable context argument {}.", name, parameter.getName());
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s target has an @Optional context argument {}.", name, parameter.getName());
 					ok = false;
 				} else if (fromSubtarget != null) {
-					PlethoraCore.LOG.error("@PlethoraMethod method {}'s sub-target has a nullable context argument {}.", name, parameter.getName());
+					PlethoraCore.LOG.error("@PlethoraMethod method {}'s sub-target has an @Optional context argument {}.", name, parameter.getName());
 					ok = false;
 				}
 				continue;
@@ -214,13 +214,20 @@ public final class PlethoraMethodRegistry {
 
 		if (!ok) return false;
 
-		//noinspection unchecked
-		MethodRegistry.instance.registerMethod(target, new MethodInstance(
-			method, names, docs, annotation.worldThread(),
-			context.toArray(new ContextInfo[0]), contextIndex,
-			modules, markerIfaces, subTarget
-		));
+		MethodInstance<?, ?> instance = new MethodInstance<>(
+			method, target, names[0], docs,
+			annotation.worldThread(), context.toArray(new ContextInfo[0]),
+			contextIndex, modules, markerIfaces,
+			subTarget
+		);
+		register(target, instance);
+		for (int i = 1; i < names.length; i++) register(target, new RenamedMethod<>(names[i], instance));
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void register(Class<?> target, IMethod<?> instance) {
+		MethodRegistry.instance.registerMethod(target, (IMethod) instance);
 	}
 
 	private static Class<?> getRawType(Parameter parameter) {
@@ -324,7 +331,7 @@ public final class PlethoraMethodRegistry {
 		int optDepth = 0;
 		for (int i = start; i < parameters.length; i++) {
 			Parameter parameter = parameters[i];
-			boolean optional = parameter.getAnnotation(Default.class) != null || parameter.getAnnotation(Nullable.class) != null;
+			boolean optional = parameter.getAnnotation(Optional.class) != null;
 
 			if (optional) {
 				builder.append('[');
@@ -342,7 +349,7 @@ public final class PlethoraMethodRegistry {
 
 		if (ret != void.class) {
 			builder.append(":").append(getTypeName(name, ret));
-			boolean optional = method.getAnnotation(Default.class) != null || method.getAnnotation(Nullable.class) != null;
+			boolean optional = method.getAnnotation(Optional.class) != null;
 			if (optional) builder.append("|nil");
 		}
 

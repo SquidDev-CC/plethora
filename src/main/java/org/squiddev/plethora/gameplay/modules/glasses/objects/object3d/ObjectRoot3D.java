@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.Minecraft;
@@ -14,14 +13,13 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
-
-import javax.annotation.Nullable;
 
 public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 	private Vec3d origin;
@@ -82,10 +80,9 @@ public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 
 	@PlethoraMethod(doc = "-- Recenter this canvas relative to the current position.", worldThread = false)
 	public static void recenter(
-		@FromTarget ObjectRoot3D target,
-		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-		@Nullable Vec3d offset
-	) throws LuaException {
+		@FromTarget ObjectRoot3D target, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@Optional Vec3d offset
+	) {
 		if (offset == null) offset = Vec3d.ZERO;
 		target.recentre(location.getWorld(), location.getLoc().add(offset));
 	}

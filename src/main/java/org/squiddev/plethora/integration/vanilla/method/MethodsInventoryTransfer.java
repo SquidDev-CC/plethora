@@ -10,7 +10,7 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.wrapper.Default;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
@@ -23,10 +23,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
  */
 public class MethodsInventoryTransfer {
 	@PlethoraMethod(doc = "-- Push items from this inventory to another inventory. Returns the amount transferred.")
-	@MarkerInterfaces(ITransferMethod.class) // TODO: This!
+	@MarkerInterfaces(ITransferMethod.class)
 	public static int pushItems(
 		IContext<IItemHandler> context,
-		String toName, int fromSlot, @Default(defInt = Integer.MAX_VALUE) int limit, @Default int toSlot
+		String toName, int fromSlot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
 	) throws LuaException {
 		IItemHandler from = context.getTarget();
 
@@ -49,7 +49,7 @@ public class MethodsInventoryTransfer {
 	@MarkerInterfaces(ITransferMethod.class)
 	public static int pullItems(
 		IContext<IItemHandler> context,
-		String fromName, int fromSlot, @Default(defInt = Integer.MAX_VALUE) int limit, @Default int toSlot
+		String fromName, int fromSlot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
 	) throws LuaException {
 		IItemHandler to = context.getTarget();
 

@@ -9,17 +9,15 @@ import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.Default;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.PlayerInteractionHelpers;
 import org.squiddev.plethora.utils.PlayerHelpers;
-
-import javax.annotation.Nullable;
 
 public class MethodsKineticTurtle {
 	@PlethoraMethod(
@@ -29,8 +27,8 @@ public class MethodsKineticTurtle {
 	)
 	public static MethodResult use(
 		IContext<IModuleContainer> context, @FromSubtarget(ContextKeys.ORIGIN) ITurtleAccess turtle,
-		@Nullable @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable,
-		@Default(defInt = 0) int duration
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable,
+		@Optional(defInt = 0) int duration
 	) throws LuaException {
 		if (duration < 0) throw new LuaException("Duration out of range (must be >= 0)");
 		PlethoraFakePlayer fakePlayer = FakePlayerProviderTurtle.getPlayer(turtle, ownable);
@@ -51,7 +49,7 @@ public class MethodsKineticTurtle {
 	)
 	public static Object[] swing(
 		@FromSubtarget(ContextKeys.ORIGIN) ITurtleAccess turtle,
-		@Nullable @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable
 	) {
 		PlethoraFakePlayer fakePlayer = FakePlayerProviderTurtle.getPlayer(turtle, ownable);
 

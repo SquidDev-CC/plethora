@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class MethodsErrorLogicSource {
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get any errors preventing operation")
-	public static Map<Integer, String> getErrors(@FromTarget IErrorLogicSource source, Object[] arg) {
+	public static Map<Integer, String> getErrors(@FromTarget IErrorLogicSource source) {
 		return source.getErrorLogic().getErrorStates().stream()
 			.map(IErrorState::getUniqueName)
 			.collect(LuaList.toLuaList())

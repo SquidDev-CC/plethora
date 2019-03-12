@@ -11,8 +11,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.ITransferMethod;
 import org.squiddev.plethora.api.method.MarkerInterfaces;
-import org.squiddev.plethora.api.method.wrapper.Default;
-import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.vanilla.NullableItemStack;
 
@@ -22,9 +21,9 @@ import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryT
 public final class MethodExportItem {
 	@PlethoraMethod(modId = RS.ID, doc = "-- Export this item from the RS network to an inventory. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
-	public int export(
-		@FromTarget IContext<NullableItemStack> context, INetworkNode node,
-		String toName, @Default(defInt = Integer.MAX_VALUE) int limit, @Default int toSlot
+	public static int export(
+		IContext<NullableItemStack> context, INetworkNode node,
+		String toName, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 

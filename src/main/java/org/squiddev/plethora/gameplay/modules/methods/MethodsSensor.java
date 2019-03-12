@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.Reference;
@@ -44,7 +45,7 @@ public final class MethodsSensor {
 		return map;
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by UUID")
 	public static Map<Object, Object> getMetaByID(
 		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
@@ -54,7 +55,7 @@ public final class MethodsSensor {
 		return entity == null ? null : context.makeChild(entity, Reference.bounded(entity, location, radius)).getMeta();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by name")
 	public static Map<Object, Object> getMetaByName(
 		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,

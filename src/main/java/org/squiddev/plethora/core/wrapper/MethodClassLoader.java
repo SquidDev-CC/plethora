@@ -13,6 +13,7 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
@@ -42,6 +43,8 @@ class MethodClassLoader extends ClassLoader {
 	private static final int IDX_CTX = 1;
 	private static final int IDX_ARG = 2;
 
+	private static final AtomicInteger METHOD_ID = new AtomicInteger();
+
 	private MethodClassLoader() {
 		super(MethodClassLoader.class.getClassLoader());
 	}
@@ -70,7 +73,7 @@ class MethodClassLoader extends ClassLoader {
 		Method method = methodInstance.method;
 		Parameter[] parameters = method.getParameters();
 
-		String className = method.getDeclaringClass().getName() + "$" + method.getName();
+		String className = method.getDeclaringClass().getName() + "$" + method.getName() + METHOD_ID.getAndIncrement();
 		String internalName = className.replace(".", "/");
 
 		// Construct a public final class which extends Object and implements MethodInstance.Delegate
@@ -190,7 +193,7 @@ class MethodClassLoader extends ClassLoader {
 		if (argument.isPrimitive()) {
 			mw.visitVarInsn(ALOAD, IDX_ARG);
 			loadInt(mw, index);
-			Default def = parameter.getAnnotation(Default.class);
+			Optional def = parameter.getAnnotation(Optional.class);
 			if (argument == int.class || argument == short.class || argument == char.class || argument == byte.class) {
 				if (def == null) {
 					visitGet(mw, "Int", "I");
@@ -234,12 +237,12 @@ class MethodClassLoader extends ClassLoader {
 				);
 				return false;
 			}
-		} else if (argument.isAssignableFrom(Enum.class) && argument != Enum.class) {
+		} else if (Enum.class.isAssignableFrom(argument) && argument != Enum.class) {
 			// We have a special handler for enums
 			mw.visitVarInsn(ALOAD, IDX_ARG);
 			loadInt(mw, index);
 			mw.visitLdcInsn(Type.getType(argument));
-			if (parameter.getAnnotation(Nullable.class) == null) {
+			if (parameter.getAnnotation(Optional.class) == null) {
 				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "getEnum", "([Ljava/lang/Object;ILjava/lang/Class;)Ljava/lang/Enum;", false);
 			} else {
 				mw.visitInsn(ACONST_NULL);
@@ -262,7 +265,7 @@ class MethodClassLoader extends ClassLoader {
 			loadInt(mw, index);
 			mw.visitMethodInsn(
 				INVOKEINTERFACE, INTERNAL_ARGUMENT_TYPE,
-				parameter.getAnnotation(Nullable.class) == null ? "get" : "opt",
+				parameter.getAnnotation(Optional.class) == null ? "get" : "opt",
 				"([Ljava/lang/Object;I)Ljava/lang/Object;", true
 			);
 			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(argument));

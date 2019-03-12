@@ -8,17 +8,16 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
-
-import javax.annotation.Nullable;
 
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 import static org.squiddev.plethora.gameplay.modules.methods.MethodsChat.validateMessage;
 
 public final class MethodsChatCreative {
 	@PlethoraMethod(module = PlethoraModules.CHAT_CREATIVE_S, doc = "-- Send a message to everyone")
-	public static void say(@Nullable @FromContext(ContextKeys.ORIGIN) IWorldLocation location, String message) throws LuaException {
+	public static void say(@Optional @FromContext(ContextKeys.ORIGIN) IWorldLocation location, String message) throws LuaException {
 		validateMessage(message);
 
 		// Create the chat event and post to chat

@@ -15,8 +15,6 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Box;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectFrame;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoot3D;
 
-import javax.annotation.Nullable;
-
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
@@ -25,7 +23,7 @@ public class MethodsCanvas3D {
 	@PlethoraMethod(doc = "-- Create a new 3D canvas centred relative to the current position.", worldThread = false)
 	public static ILuaObject create(
 		IContext<Origin3D> baked, @FromContext CanvasServer canvas, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-		@Nullable Vec3d offset
+		Vec3d offset
 	) {
 		if (offset == null) offset = Vec3d.ZERO;
 

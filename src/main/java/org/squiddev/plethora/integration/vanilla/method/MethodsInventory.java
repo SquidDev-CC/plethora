@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public final class MethodsInventory {
 		return items;
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(doc = "-- The item in the specified slot. The slot number starts from 1.")
 	public static ILuaObject getItem(IContext<IItemHandler> baked, int slot) throws LuaException {
 		IItemHandler inventory = baked.getTarget();
@@ -49,7 +49,7 @@ public final class MethodsInventory {
 		return inventory.getSlots();
 	}
 
-	@Nullable
+	@Optional
 	@PlethoraMethod(doc = "-- The metadata of the item in the specified slot. The slot number starts from 1.")
 	public static Map<Object, Object> getItemMeta(IContext<IItemHandler> context, int slot) throws LuaException {
 		IItemHandler inventory = context.getTarget();

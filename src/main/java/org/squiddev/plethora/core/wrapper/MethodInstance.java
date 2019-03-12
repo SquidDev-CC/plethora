@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTargetedMethod<T, U> {
+	final Method method;
+
 	private final String id;
-	private final String[] names;
+	private final String name;
 	private final String documentation;
 	final boolean worldThread;
 	private final ContextInfo[] requiredContext;
@@ -25,19 +27,18 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	private final Class<?>[] markerIfaces;
 	private final Class<U> subtarget;
 
-	final Method method;
-	private Delegate<T> delegate;
+	private volatile Delegate<T> delegate;
 
-	MethodInstance(Method method, String[] names, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces, Class<U> subtarget) {
-		this.id = method.getDeclaringClass().getName() + "#" + method.getName();
+	MethodInstance(Method method, Class<T> target, String name, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces, Class<U> subtarget) {
+		this.method = method;
 
-		this.names = names;
+		this.id = method.getDeclaringClass().getName() + "#" + method.getName() + "(" + target.getSimpleName() + ")";
+		this.name = name;
 		this.documentation = documentation;
 		this.worldThread = worldThread;
 		this.requiredContext = requiredContext;
 		this.totalContext = totalContext;
 		this.modules = modules;
-		this.method = method;
 		this.markerIfaces = markerIfaces;
 		this.subtarget = subtarget;
 
@@ -93,11 +94,10 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	@Nonnull
 	@Override
 	public String getName() {
-		// TODO: Fix me.
-		return names[0];
+		return name;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public String getDocString() {
 		return documentation;
