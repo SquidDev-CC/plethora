@@ -3,17 +3,14 @@ package org.squiddev.plethora.integration;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IConverterExcludeMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
 
 @Injects
-public final class MethodMeta extends BasicObjectMethod<Object> implements IConverterExcludeMethod {
+public final class MethodMeta extends BasicMethod<Object> implements IConverterExcludeMethod {
 	public MethodMeta() {
-		super("getMetadata", true, Integer.MIN_VALUE, "function():table -- Get metadata about this object");
+		super("getMetadata", Integer.MIN_VALUE, "function():table -- Get metadata about this object");
 	}
 
 	@Override
@@ -31,8 +28,9 @@ public final class MethodMeta extends BasicObjectMethod<Object> implements IConv
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public Object[] apply(@Nonnull IContext<Object> context, @Nonnull Object[] args) {
-		return new Object[]{context.getMeta()};
+	public MethodResult apply(@Nonnull IUnbakedContext<Object> context, @Nonnull Object[] args) {
+		return MethodResult.nextTick(() -> MethodResult.result(context.bake().getMeta()));
 	}
 }

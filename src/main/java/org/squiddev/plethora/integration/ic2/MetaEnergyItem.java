@@ -16,7 +16,7 @@ public class MetaEnergyItem extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
-		IElectricItemManager manager = MethodsEnergy.getManager(object);
+		IElectricItemManager manager = IntegrationIc2.getManager(object);
 		if (manager == null) return Collections.emptyMap();
 
 		Map<Object, Object> map = Maps.newHashMap();

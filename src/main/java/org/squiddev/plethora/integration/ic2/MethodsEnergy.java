@@ -1,26 +1,16 @@
 package org.squiddev.plethora.integration.ic2;
 
-import dan200.computercraft.api.lua.LuaException;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.IC2;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-
-import javax.annotation.Nonnull;
 
 /**
  * Various methods for interacting with IC2's energy net
@@ -81,68 +71,13 @@ public class MethodsEnergy {
 		return tier.getSourceTier();
 	}
 
-	static IElectricItemManager getManager(ItemStack stack) {
-		Item item = stack.getItem();
-		if (item instanceof ISpecialElectricItem) {
-			return ((ISpecialElectricItem) item).getManager(stack);
-		} else if (item instanceof IElectricItem) {
-			return ElectricItem.rawManager;
-		} else {
-			return ElectricItem.getBackupManager(stack);
-		}
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The amount of EU currently stored.")
+	public static double getEuStored(@FromTarget ItemStack stack, @FromSubtarget(ContextKeys.TARGET) IElectricItemManager manager) {
+		return manager.getCharge(stack);
 	}
 
-	@Injects(IC2.MODID)
-	public static final class MethodGetEuStored extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
-		public MethodGetEuStored() {
-			super("getEuStored", true, "function():integer -- The amount of EU currently stored");
-		}
-
-		@Override
-		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
-			return super.canApply(context) && getManager(context.getTarget()) != null;
-		}
-
-		@Nonnull
-		@Override
-		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
-			ItemStack stack = context.getTarget();
-			IElectricItemManager manager = getManager(stack);
-			if (manager == null) throw new LuaException("Not an electric item");
-			return new Object[]{manager.getCharge(stack)};
-		}
-
-		@Nonnull
-		@Override
-		public Class<IElectricItem> getSubTarget() {
-			return IElectricItem.class;
-		}
-	}
-
-	@Injects(IC2.MODID)
-	public static final class MethodGetEuCapacity extends BasicObjectMethod<ItemStack> implements ISubTargetedMethod<ItemStack, IElectricItem> {
-		public MethodGetEuCapacity() {
-			super("getEuCapacity", true, "function():integer -- The maximum amount of EU that can be stored");
-		}
-
-		@Override
-		public boolean canApply(@Nonnull IPartialContext<ItemStack> context) {
-			return super.canApply(context) && getManager(context.getTarget()) != null;
-		}
-
-		@Nonnull
-		@Override
-		public Object[] apply(@Nonnull IContext<ItemStack> context, @Nonnull Object[] args) throws LuaException {
-			ItemStack stack = context.getTarget();
-			IElectricItemManager manager = getManager(stack);
-			if (manager == null) throw new LuaException("Not an electric item");
-			return new Object[]{manager.getMaxCharge(stack)};
-		}
-
-		@Nonnull
-		@Override
-		public Class<IElectricItem> getSubTarget() {
-			return IElectricItem.class;
-		}
+	@PlethoraMethod(modId = IC2.MODID, doc = "-- The maximum amount of EU that can be stored.")
+	public static double getEuCapacity(@FromTarget ItemStack stack, @FromSubtarget(ContextKeys.TARGET) IElectricItemManager manager) {
+		return manager.getMaxCharge(stack);
 	}
 }
