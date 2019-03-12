@@ -20,7 +20,7 @@ public final class MethodIntrospectionBaublesInventory {
 		module = PlethoraModules.INTROSPECTION_S, modId = Baubles.MODID,
 		doc = "-- Get this player's baubles inventory"
 	)
-	public static ILuaObject getInventory(IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player player) throws LuaException {
+	public static ILuaObject getBaubles(IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player player) throws LuaException {
 		IItemHandler inventory = BaublesApi.getBaublesHandler(player.getPlayer());
 		return context.makeChildId(inventory).getObject();
 	}

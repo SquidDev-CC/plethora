@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  *
  * @see org.squiddev.plethora.api.transfer.ITransferProvider
  * @see org.squiddev.plethora.api.converter.IConverter
- * @see org.squiddev.plethora.api.method.IMethodBuilder
  * @see org.squiddev.plethora.api.method.IMethod
  * @see org.squiddev.plethora.api.meta.IMetaProvider
  */

@@ -14,14 +14,6 @@ import java.util.Set;
 public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod implements ISubTargetedMethod<IModuleContainer, T> {
 	private final Class<T> klass;
 
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass) {
-		this(name, modules, klass, 0, null);
-	}
-
-	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, int priority) {
-		this(name, modules, klass, priority, null);
-	}
-
 	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, String docs) {
 		this(name, modules, klass, 0, docs);
 	}

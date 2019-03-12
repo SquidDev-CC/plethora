@@ -246,7 +246,7 @@ class MethodClassLoader extends ClassLoader {
 				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "getEnum", "([Ljava/lang/Object;ILjava/lang/Class;)Ljava/lang/Enum;", false);
 			} else {
 				mw.visitInsn(ACONST_NULL);
-				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "getEnum", "([Ljava/lang/Object;ILjava/lang/Class;Ljava/lang/Enum;)Ljava/lang/Enum;", false);
+				mw.visitMethodInsn(INVOKESTATIC, INTERNAL_ARGUMENT_HELPER_II, "optEnum", "([Ljava/lang/Object;ILjava/lang/Class;Ljava/lang/Enum;)Ljava/lang/Enum;", false);
 			}
 			mw.visitTypeInsn(CHECKCAST, Type.getInternalName(argument));
 		} else {

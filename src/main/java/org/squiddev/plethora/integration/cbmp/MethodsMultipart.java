@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.squiddev.plethora.integration.cbmp.IntegrationMultipart.getBasicMeta;
+
 public class MethodsMultipart {
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a list of all parts in the multipart.")
 	public static Map<Integer, ?> listParts(@FromTarget TileMultipart multipart) {
@@ -21,9 +23,7 @@ public class MethodsMultipart {
 
 		int i = 0;
 		Map<Integer, Map<Object, Object>> out = Maps.newHashMap();
-		for (TMultiPart part : parts) {
-			out.put(++i, MetaMultipart.getBasicMeta(part));
-		}
+		for (TMultiPart part : parts) out.put(++i, getBasicMeta(part));
 
 		return out;
 	}
@@ -35,7 +35,7 @@ public class MethodsMultipart {
 		for (PartMap slot : PartMap.values()) {
 			TMultiPart part = container.partMap(slot.i);
 			if (part != null) {
-				parts.put(slot.name().toLowerCase(Locale.ENGLISH), MetaMultipart.getBasicMeta(part));
+				parts.put(slot.name().toLowerCase(Locale.ENGLISH), getBasicMeta(part));
 			}
 		}
 

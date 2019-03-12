@@ -29,7 +29,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 public class MethodsInventoryWorld {
 	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
 	public static int drop(
-		@FromTarget IItemHandler handler, @FromContext(ContextKeys.TARGET) IWorldLocation location,
+		@FromTarget IItemHandler handler, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		int slot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
@@ -41,7 +41,7 @@ public class MethodsInventoryWorld {
 
 	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
 	public static int drop(
-		@FromTarget ItemSlot slot, @FromContext(ContextKeys.TARGET) IWorldLocation location,
+		@FromTarget ItemSlot slot, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
@@ -73,7 +73,7 @@ public class MethodsInventoryWorld {
 
 	@PlethoraMethod(doc = "-- Suck an item from the ground")
 	public static int suck(
-		@FromTarget IItemHandler handler, @FromContext(ContextKeys.TARGET) IWorldLocation location,
+		@FromTarget IItemHandler handler, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@Optional int slot, @Optional(defInt = Integer.MAX_VALUE) int limit
 	) throws LuaException {
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
