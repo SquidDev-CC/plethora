@@ -1,7 +1,7 @@
 package org.squiddev.plethora.integration.blockcraftery;
 
-import elucent.blockcraftery.Blockcraftery;
-import elucent.blockcraftery.tile.TileEditableBlock;
+import epicsquid.blockcraftery.Blockcraftery;
+import epicsquid.blockcraftery.tile.TileEditableBlock;
 import net.minecraft.init.Blocks;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;

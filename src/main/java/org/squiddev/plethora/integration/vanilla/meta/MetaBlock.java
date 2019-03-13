@@ -6,7 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public final class MetaBlock extends BasicMetaProvider<Block> {
 		data.put("name", name == null ? "unknown" : name.toString());
 
 		data.put("displayName", block.getLocalizedName());
-		data.put("TranslationKey", block.getTranslationKey());
+		data.put("translationKey", block.getTranslationKey());
 
 		return data;
 	}

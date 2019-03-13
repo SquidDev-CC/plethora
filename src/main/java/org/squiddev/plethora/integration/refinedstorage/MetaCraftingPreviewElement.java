@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 @Injects(RS.ID)
-public class MetaCraftingPreviewElement extends BaseMetaProvider<ICraftingPreviewElement> {
+public final class MetaCraftingPreviewElement extends BaseMetaProvider<ICraftingPreviewElement> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingPreviewElement> context) {

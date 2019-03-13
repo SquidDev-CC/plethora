@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Injects(RedstoneFluxProps.MOD_ID)
-public class MetaEnergyContainerItem extends ItemStackMetaProvider<IEnergyContainerItem> {
+public final class MetaEnergyContainerItem extends ItemStackMetaProvider<IEnergyContainerItem> {
 	public MetaEnergyContainerItem() {
 		super("rf", IEnergyContainerItem.class);
 	}

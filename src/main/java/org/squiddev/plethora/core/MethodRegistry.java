@@ -15,7 +15,6 @@ import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,10 +29,16 @@ public final class MethodRegistry implements IMethodRegistry {
 		Preconditions.checkNotNull(target, "target cannot be null");
 		Preconditions.checkNotNull(method, "method cannot be null");
 
-		String comment = method.getName();
-		String doc = method.getDocString();
-		if (doc != null) comment += ": " + doc;
-		ConfigCore.configuration.get("baseCosts", method.getClass().getName(), 0, comment, 0, Integer.MAX_VALUE);
+		String comment = method.getName() + ": " + method.getDocString();
+
+		String id = method.getId();
+		if (id.indexOf('#') >= 0) {
+			String oldId = id.replace('#', '$');
+			int targetIdx = oldId.lastIndexOf('(');
+			if (targetIdx >= 0) oldId = oldId.substring(0, targetIdx);
+			ConfigCore.configuration.renameProperty("baseCosts", oldId, id);
+		}
+		ConfigCore.configuration.get("baseCosts", method.getId(), 0, comment, 0, Integer.MAX_VALUE);
 
 		providers.put(target, method);
 
@@ -42,15 +47,6 @@ public final class MethodRegistry implements IMethodRegistry {
 				"You're registering a method (" + method + ") targeting the base class (Object). Converters will " +
 					"probably mask the original object: it is recommended that you implement IConverterExcludeMethod to avoid this."
 			);
-		}
-
-		if (ConfigCore.Testing.likeDocs && method.getDocString() == null) {
-			String message = "Method " + method + " (" + method.getName() + ") has no documentation. This isn't a bug but you really should add one.";
-			if (ConfigCore.Testing.strict) {
-				throw new IllegalArgumentException(message);
-			} else {
-				PlethoraCore.LOG.error(message);
-			}
 		}
 	}
 
@@ -93,18 +89,10 @@ public final class MethodRegistry implements IMethodRegistry {
 	}
 
 	@Override
-	public <T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
-		Preconditions.checkNotNull(builder, "builder cannot be null");
-
-		MethodTypeBuilder.instance.addBuilder(klass, builder);
-	}
-
-	@Override
 	public int getBaseMethodCost(IMethod method) {
-		Property property = ConfigCore.baseCosts.get(method.getClass().getName());
+		Property property = ConfigCore.baseCosts.get(method.getId());
 		if (property == null) {
-			PlethoraCore.LOG.warn("Cannot find cost for " + method.getClass().getName() + ", this may have been registered incorrectly");
+			PlethoraCore.LOG.warn("Cannot find cost for " + method.getId() + ", this may have been registered incorrectly");
 			return 0;
 		}
 

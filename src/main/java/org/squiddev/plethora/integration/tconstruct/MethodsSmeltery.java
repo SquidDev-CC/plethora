@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.tconstruct;
 
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +9,10 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.DynamicReference;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -28,48 +32,36 @@ import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 public class MethodsSmeltery {
-	@BasicMethod.Inject(
-		value = ISmelteryTankHandler.class, modId = TConstruct.modID,
+	@PlethoraMethod(
+		modId = TConstruct.modID,
 		doc = "function(fluid: number|string) -- Select which fluid will be extracted by drains in the smeltery. One can specify a fluid name or an index in list of molten fluids."
 	)
-	public static MethodResult selectMolten(IUnbakedContext<ISmelteryTankHandler> context, Object[] args) throws LuaException {
+	public static void selectMolten(@FromTarget ISmelteryTankHandler smeltery, Object[] args) throws LuaException {
 		if (args.length >= 1 && args[0] instanceof String) {
 			String fluid = (String) args[0];
-			return MethodResult.nextTick(() -> {
-				ISmelteryTankHandler smeltery = context.bake().getTarget();
-
-				List<FluidStack> fluids = smeltery.getTank().getFluids();
-				for (int i = 0; i < fluids.size(); i++) {
-					Fluid stack = fluids.get(i).getFluid();
-					if (stack.getName().equalsIgnoreCase(fluid) || FluidRegistry.getDefaultFluidName(stack).equalsIgnoreCase(fluid)) {
-						smeltery.getTank().moveFluidToBottom(i);
-						smeltery.onTankChanged(fluids, null);
-						return MethodResult.empty();
-					}
+			List<FluidStack> fluids = smeltery.getTank().getFluids();
+			for (int i = 0; i < fluids.size(); i++) {
+				Fluid stack = fluids.get(i).getFluid();
+				if (stack.getName().equalsIgnoreCase(fluid) || FluidRegistry.getDefaultFluidName(stack).equalsIgnoreCase(fluid)) {
+					smeltery.getTank().moveFluidToBottom(i);
+					smeltery.onTankChanged(fluids, null);
+					return;
 				}
+			}
 
-				throw new LuaException(String.format("Cannot find fluid '%s'", fluid));
-			});
+			throw new LuaException(String.format("Cannot find fluid '%s'", fluid));
 		} else {
 			int fluid = getInt(args, 0);
-			return MethodResult.nextTick(() -> {
-				ISmelteryTankHandler smeltery = context.bake().getTarget();
-				List<FluidStack> fluids = smeltery.getTank().getFluids();
-				assertBetween(fluid, 1, fluids.size(), "Fluid out of range (%s)");
+			List<FluidStack> fluids = smeltery.getTank().getFluids();
+			assertBetween(fluid, 1, fluids.size(), "Fluid out of range (%s)");
 
-				smeltery.getTank().moveFluidToBottom(fluid - 1);
-				smeltery.onTankChanged(fluids, null);
-
-				return MethodResult.empty();
-			});
+			smeltery.getTank().moveFluidToBottom(fluid - 1);
+			smeltery.onTankChanged(fluids, null);
 		}
 	}
 
-	@BasicObjectMethod.Inject(
-		value = ISmelteryTankHandler.class, modId = TConstruct.modID,
-		doc = "function():table -- Get a list of all molten fluids within the smeltery."
-	)
-	public static Object[] getMolten(IContext<ISmelteryTankHandler> context, Object[] args) {
+	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get a list of all molten fluids within the smeltery.")
+	public static Map<Integer, Object> getMolten(IContext<ISmelteryTankHandler> context) {
 		ISmelteryTankHandler smeltery = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
@@ -78,14 +70,14 @@ public class MethodsSmeltery {
 			result.put(++i, context.makePartialChild(fluid).getMeta());
 		}
 
-		return new Object[]{result};
+		return result;
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID,
-		doc = "function():table -- Get a list of all fuels currently used by the seared-bricks multiblock."
+	@PlethoraMethod(
+		modId = TConstruct.modID,
+		doc = "-- Get a list of all fuels currently used by the seared-bricks multiblock."
 	)
-	public static Object[] getFuels(IContext<TileHeatingStructureFuelTank> context, Object[] args) {
+	public static Map<Integer, Object> getFuels(IContext<TileHeatingStructureFuelTank> context) {
 		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 
 		Map<Integer, Object> result = new HashMap<>();
@@ -100,30 +92,24 @@ public class MethodsSmeltery {
 			}
 		}
 
-		return new Object[]{result};
+		return result;
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileHeatingStructureFuelTank.class, modId = TConstruct.modID,
-		doc = "function():number -- Get the internal temperature of this structure."
-	)
-	public static Object[] getTemperature(IContext<TileHeatingStructureFuelTank> context, Object[] args) {
-		TileHeatingStructureFuelTank<?> structure = context.getTarget();
-		return new Object[]{structure.getTemperature()};
+	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the internal temperature of this structure.")
+	public static double getTemperature(@FromTarget TileHeatingStructureFuelTank structure) {
+		return structure.getTemperature();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileSmelteryComponent.class, modId = TConstruct.modID,
-		doc = "function():table|nil -- Get the controller for this smeltery component."
-	)
-	public static Object[] getController(IContext<TileSmelteryComponent> context, Object[] args) {
+	@Optional
+	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the controller for this smeltery component.")
+	public static ILuaObject getController(IContext<TileSmelteryComponent> context) {
 		TileSmelteryComponent component = context.getTarget();
 		if (!component.getHasMaster()) return null;
 
 		TileEntity te = getRelatedTile(component, component.getMasterPosition());
 		if (!(te instanceof TileMultiblock)) return null;
 
-		return new Object[]{context.makeChild((TileMultiblock) te, new ControllerReference(component, (TileMultiblock) te)).getObject()};
+		return context.makeChild((TileMultiblock) te, new ControllerReference(component, (TileMultiblock) te)).getObject();
 	}
 
 	private static class ControllerReference extends DynamicReference<TileMultiblock> {

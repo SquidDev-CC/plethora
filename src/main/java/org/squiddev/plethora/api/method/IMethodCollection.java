@@ -26,5 +26,11 @@ public interface IMethodCollection {
 	 * @param iface The interface or class to check
 	 * @return If any method implements this interface (or extends this class)
 	 */
-	boolean has(@Nonnull Class<?> iface);
+	default boolean has(@Nonnull Class<?> iface) {
+		for (IMethod<?> method : methods()) {
+			if (method.has(iface)) return true;
+		}
+
+		return false;
+	}
 }

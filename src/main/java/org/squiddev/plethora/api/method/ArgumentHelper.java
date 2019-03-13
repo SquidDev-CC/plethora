@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Locale;
-import java.util.UUID;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
@@ -29,7 +28,6 @@ public final class ArgumentHelper {
 		return (float) getReal(args, index);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T getEnum(@Nonnull Object[] args, int index, Class<T> klass) throws LuaException {
 		if (index >= args.length) throw badArgument(index, "string", "no value");
@@ -46,24 +44,6 @@ public final class ArgumentHelper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	public static UUID getUUID(@Nonnull Object[] args, int index) throws LuaException {
-		if (index >= args.length) throw badArgument(index, "string", "no value");
-		Object value = args[index];
-		if (value instanceof String) {
-			String uuid = ((String) value).toLowerCase(Locale.ENGLISH);
-			try {
-				return UUID.fromString(uuid);
-			} catch (IllegalArgumentException e) {
-				throw new LuaException("Bad uuid '" + uuid + "' for argument #" + (index + 1));
-			}
-		} else {
-			throw badArgument(index, "string", value);
-		}
-	}
-
-
 	public static float optFloat(@Nonnull Object[] args, int index, float def) throws LuaException {
 		Object value = index < args.length ? args[index] : null;
 		if (value == null) {
@@ -75,7 +55,6 @@ public final class ArgumentHelper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	public static <T extends Enum<T>> T optEnum(@Nonnull Object[] args, int index, Class<T> klass, T def) throws LuaException {
 		if (index >= args.length || args[index] == null) {

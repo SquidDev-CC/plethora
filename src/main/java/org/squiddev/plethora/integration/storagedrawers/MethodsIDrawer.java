@@ -3,36 +3,28 @@ package org.squiddev.plethora.integration.storagedrawers;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+
+import java.util.Map;
 
 public class MethodsIDrawer {
-	@BasicObjectMethod.Inject(
-		value = IDrawer.class, modId = StorageDrawers.MOD_ID,
-		doc = "function():int -- The maximum number of items in this drawer"
-	)
-	public static Object[] getCapacity(IContext<IDrawer> context, Object[] arguments) {
-		return new Object[]{context.getTarget().getMaxCapacity()};
+	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The maximum number of items in this drawer.")
+	public static int getCapacity(@FromTarget IDrawer drawer) {
+		return drawer.getMaxCapacity();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IDrawer.class, modId = StorageDrawers.MOD_ID,
-		doc = "function():int -- The number of items in this drawer"
-	)
-	public static Object[] getCount(IContext<IDrawer> context, Object[] arguments) {
-		return new Object[]{context.getTarget().getStoredItemCount()};
+	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The number of items in this drawer.")
+	public static int getCount(@FromTarget IDrawer drawer) {
+		return drawer.getStoredItemCount();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = IDrawer.class, modId = StorageDrawers.MOD_ID,
-		doc = "function():table -- The metadata of the item in this drawer"
-	)
-	public static Object[] getItemMeta(IContext<IDrawer> context, Object[] arguments) {
+	@Optional
+	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The metadata of the item in this drawer.")
+	public static Map<Object, Object> getItemMeta(IContext<IDrawer> context) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();
-		return new Object[]{
-			stack.isEmpty()
-				? null
-				: context.makePartialChild(stack).getMeta()
-		};
+		return stack.isEmpty() ? null : context.makePartialChild(stack).getMeta();
 	}
 }

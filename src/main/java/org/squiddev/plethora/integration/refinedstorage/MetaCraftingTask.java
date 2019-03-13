@@ -4,15 +4,15 @@ import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingRequestInfo;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(modId = RS.ID, value = ICraftingTask.class)
-public class MetaCraftingTask extends BaseMetaProvider<ICraftingTask> {
+@Injects(RS.ID)
+public final class MetaCraftingTask extends BaseMetaProvider<ICraftingTask> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingTask> context) {

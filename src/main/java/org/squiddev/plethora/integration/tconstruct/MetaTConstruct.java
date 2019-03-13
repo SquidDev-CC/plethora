@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Injects(TConstruct.modID)
-public class MetaTConstruct {
+public final class MetaTConstruct {
 	public static final SimpleMetaProvider<IMaterialStats> META_MATERIAL_STATS = stats -> {
 		Map<Object, Object> out = new HashMap<>(2);
 		out.put("id", stats.getIdentifier());

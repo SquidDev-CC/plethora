@@ -116,6 +116,16 @@ public final class MethodResult {
 	}
 
 	/**
+	 * Get a final method MethodResult
+	 *
+	 * @param arg The argument to return
+	 * @return The built MethodResult
+	 */
+	public static MethodResult result(Object arg) {
+		return new MethodResult(new Object[]{arg});
+	}
+
+	/**
 	 * Get a final method MethodResult which will finish after a number of ticks
 	 *
 	 * @param delay The number of ticks to sit idle before executing. 0 will result in the method being executed n

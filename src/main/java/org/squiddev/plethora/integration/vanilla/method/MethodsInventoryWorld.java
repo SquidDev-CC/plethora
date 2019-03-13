@@ -12,80 +12,42 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.ItemSlot;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.api.method.ArgumentHelper.optEnum;
 
 /**
  * Various inventory methods which require interact with the world
  */
 public class MethodsInventoryWorld {
-	@Injects
-	public static final class MethodItemHandlerDrop extends BasicMethod<IItemHandler> {
-		public MethodItemHandlerDrop() {
-			super("drop", "function(slot:int[, limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
-		}
+	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
+	public static int drop(
+		@FromTarget IItemHandler handler, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		int slot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
+	) throws LuaException {
+		if (limit <= 0) throw new LuaException("Limit must be > 0");
+		assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
-		@Override
-		public boolean canApply(@Nonnull IPartialContext<IItemHandler> context) {
-			return super.canApply(context) && context.hasContext(IWorldLocation.class);
-		}
-
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			final int slot = getInt(args, 0);
-			final int limit = optInt(args, 1, Integer.MAX_VALUE);
-
-			if (limit <= 0) throw new LuaException("Limit must be > 0");
-
-			final EnumFacing direction = optEnum(args, 2, EnumFacing.class, null);
-
-			return MethodResult.nextTick(() -> {
-				IContext<IItemHandler> baked = context.bake();
-				IItemHandler handler = baked.getTarget();
-
-				assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
-
-				ItemStack stack = handler.extractItem(slot - 1, limit, false);
-				return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
-			});
-		}
+		ItemStack stack = handler.extractItem(slot - 1, limit, false);
+		return dropItem(location, stack, direction);
 	}
 
-	@Injects
-	public static final class MethodItemDrop extends BasicMethod<ItemSlot> {
-		public MethodItemDrop() {
-			super("drop", "function([limit:int][, direction:string]):int -- Drop an item on the ground. Returns the number of items dropped");
-		}
+	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
+	public static int drop(
+		@FromTarget ItemSlot slot, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@Optional(defInt = Integer.MAX_VALUE) int limit, @Optional EnumFacing direction
+	) throws LuaException {
+		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		@Override
-		public boolean canApply(@Nonnull IPartialContext<ItemSlot> context) {
-			return super.canApply(context) && context.hasContext(IWorldLocation.class);
-		}
-
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<ItemSlot> context, @Nonnull Object[] args) throws LuaException {
-			final int limit = optInt(args, 0, Integer.MAX_VALUE);
-			if (limit <= 0) throw new LuaException("Limit must be > 0");
-			final EnumFacing direction = optEnum(args, 1, EnumFacing.class, null);
-
-			return MethodResult.nextTick(() -> {
-				IContext<ItemSlot> baked = context.bake();
-				ItemSlot slot = baked.getTarget();
-
-				ItemStack stack = slot.extract(limit);
-				return MethodResult.result(dropItem(baked.getContext(IWorldLocation.class), stack, direction));
-			});
-		}
+		ItemStack stack = slot.extract(limit);
+		return dropItem(location, stack, direction);
 	}
 
 	private static int dropItem(IWorldLocation location, @Nonnull ItemStack stack, EnumFacing direction) {
@@ -107,67 +69,49 @@ public class MethodsInventoryWorld {
 		return stack.getCount();
 	}
 
-	@Injects
-	public static final class MethodItemHandlerSuck extends BasicMethod<IItemHandler> {
-		private static final double RADIUS = 1;
+	private static final double SUCK_RADIUS = 1;
 
-		public MethodItemHandlerSuck() {
-			super("suck", "function([slot:int][, limit:int]):int -- Suck an item from the ground");
+	@PlethoraMethod(doc = "-- Suck an item from the ground")
+	public static int suck(
+		@FromTarget IItemHandler handler, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@Optional int slot, @Optional(defInt = Integer.MAX_VALUE) int limit
+	) throws LuaException {
+		if (limit <= 0) throw new LuaException("Limit must be > 0");
+		if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
+
+		World world = location.getWorld();
+		BlockPos pos = location.getPos();
+
+		AxisAlignedBB box = new AxisAlignedBB(
+			pos.getX() + 0.5 - SUCK_RADIUS, pos.getY() + 0.5 - SUCK_RADIUS, pos.getZ() + 0.5 - SUCK_RADIUS,
+			pos.getX() + 0.5 + SUCK_RADIUS, pos.getY() + 0.5 + SUCK_RADIUS, pos.getZ() + 0.5 + SUCK_RADIUS
+		);
+
+		int total = 0;
+		int remaining = limit;
+		for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
+			ItemStack original = item.getItem();
+
+			ItemStack toInsert = original.copy();
+			if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
+
+			ItemStack rest = slot == -1
+				? ItemHandlerHelper.insertItem(handler, toInsert, false)
+				: handler.insertItem(slot - 1, toInsert, false);
+			int inserted = rest.isEmpty() ? toInsert.getCount() : toInsert.getCount() - rest.getCount();
+			remaining -= inserted;
+			total += inserted;
+
+			if (inserted >= original.getCount()) {
+				item.setDead();
+			} else {
+				original.grow(-inserted);
+				item.setItem(original);
+			}
+
+			if (remaining <= 0) break;
 		}
 
-		@Override
-		public boolean canApply(@Nonnull IPartialContext<IItemHandler> context) {
-			return super.canApply(context) && context.hasContext(IWorldLocation.class);
-		}
-
-		@Nonnull
-		@Override
-		public MethodResult apply(@Nonnull final IUnbakedContext<IItemHandler> context, @Nonnull Object[] args) throws LuaException {
-			final int slot = optInt(args, 0, -1);
-
-			final int limit = optInt(args, 1, Integer.MAX_VALUE);
-			if (limit <= 0) throw new LuaException("Limit must be > 0");
-
-			return MethodResult.nextTick(() -> {
-				IContext<IItemHandler> baked = context.bake();
-				IItemHandler handler = baked.getTarget();
-
-				if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
-
-				IWorldLocation location = baked.getContext(IWorldLocation.class);
-				World world = location.getWorld();
-				BlockPos pos = location.getPos();
-
-				AxisAlignedBB box = new AxisAlignedBB(
-					pos.getX() + 0.5 - RADIUS, pos.getY() + 0.5 - RADIUS, pos.getZ() + 0.5 - RADIUS,
-					pos.getX() + 0.5 + RADIUS, pos.getY() + 0.5 + RADIUS, pos.getZ() + 0.5 + RADIUS
-				);
-
-				int total = 0;
-				int remaining = limit;
-				for (EntityItem item : world.getEntitiesWithinAABB(EntityItem.class, box, EntitySelectors.IS_ALIVE)) {
-					ItemStack original = item.getItem();
-
-					ItemStack toInsert = original.copy();
-					if (toInsert.getCount() > remaining) toInsert.setCount(remaining);
-
-					ItemStack rest = slot == -1 ? ItemHandlerHelper.insertItem(handler, toInsert, false) : handler.insertItem(slot - 1, toInsert, false);
-					int inserted = rest.isEmpty() ? toInsert.getCount() : toInsert.getCount() - rest.getCount();
-					remaining -= inserted;
-					total += inserted;
-
-					if (inserted >= original.getCount()) {
-						item.setDead();
-					} else {
-						original.grow(-inserted);
-						item.setItem(original);
-					}
-
-					if (remaining <= 0) break;
-				}
-
-				return MethodResult.result(total);
-			});
-		}
+		return total;
 	}
 }

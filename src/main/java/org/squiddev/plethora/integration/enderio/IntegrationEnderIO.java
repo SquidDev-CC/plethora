@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Injects(EnderIO.MODID)
-public class IntegrationEnderIO {
+public final class IntegrationEnderIO {
 	public static final IMetaProvider<ItemStack> META_SOUL_VIAL = new ItemStackContextMetaProvider<ItemSoulVial>(
 		ItemSoulVial.class,
 		"Provides the entity captured inside this Soul Vial."

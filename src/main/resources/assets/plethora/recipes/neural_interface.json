@@ -1,8 +1,5 @@
 {
 	"type": "plethora:neural_interface",
-	"result": {
-		"item": "plethora:neuralinterface"
-	},
 	"pattern": [
 		"  G",
 		"IPR",
@@ -14,5 +11,8 @@
 		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
 		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
 		"M": { "item": "computercraft:cable", "data": 1 }
+	},
+	"result": {
+		"item": "plethora:neuralinterface"
 	}
 }

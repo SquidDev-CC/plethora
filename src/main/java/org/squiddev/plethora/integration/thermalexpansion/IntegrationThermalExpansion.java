@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Injects(ThermalExpansion.MOD_ID)
-public class IntegrationThermalExpansion {
+public final class IntegrationThermalExpansion {
 	public static final IMetaProvider<ItemStack> META_MORB = new ItemStackContextMetaProvider<ItemMorb>(
 		ItemMorb.class,
 		"Provides the entity captured inside this Morb."

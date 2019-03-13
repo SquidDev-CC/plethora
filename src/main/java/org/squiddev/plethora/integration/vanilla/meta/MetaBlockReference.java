@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.utils.WorldDummy;
 

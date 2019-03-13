@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.Minecraft;
@@ -11,14 +10,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
-
-import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.optVec3d;
 
 public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 	private Vec3d origin;
@@ -77,15 +78,12 @@ public class ObjectRoot3D extends BaseObject implements ObjectGroup.Group3D {
 		GlStateManager.popMatrix();
 	}
 
-	@BasicMethod.Inject(value = ObjectRoot3D.class, doc = "function([offset:table]):table -- Recenter this canvas relative to the current position.")
-	public static MethodResult recenter(IUnbakedContext<ObjectRoot3D> context, Object[] args) throws LuaException {
-		Vec3d offset = optVec3d(args, 0, Vec3d.ZERO);
-
-		IContext<ObjectRoot3D> baked = context.safeBake();
-		IWorldLocation location = baked.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-		if (location == null) throw new LuaException("Cannot find a location");
-
-		baked.getTarget().recentre(location.getWorld(), location.getLoc().add(offset));
-		return MethodResult.empty();
+	@PlethoraMethod(doc = "-- Recenter this canvas relative to the current position.", worldThread = false)
+	public static void recenter(
+		@FromTarget ObjectRoot3D target, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@Optional Vec3d offset
+	) {
+		if (offset == null) offset = Vec3d.ZERO;
+		target.recentre(location.getWorld(), location.getLoc().add(offset));
 	}
 }

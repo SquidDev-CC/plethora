@@ -13,72 +13,58 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ITransferMethod;
+import org.squiddev.plethora.api.method.MarkerInterfaces;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import javax.annotation.Nonnull;
-
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer.extractHandler;
 
-@Injects(AppEng.MOD_ID)
-public class MethodExportItem extends BasicMethod<IAEItemStack> implements ITransferMethod {
-	public MethodExportItem() {
-		super("export", "function(to:string, [, limit:int][, toSlot:int]):int -- Export this item from the AE network to an inventory. Returns the amount transferred.");
-	}
+public final class MethodExportItem {
+	@PlethoraMethod(
+		modId = AppEng.MOD_ID,
+		doc = "-- Export this item from the AE network to an inventory. Returns the amount transferred."
+	)
+	@MarkerInterfaces(ITransferMethod.class)
+	public static long export(
+		IContext<IAEItemStack> baked, @FromContext IGrid grid, @FromContext IActionHost host,
+		String toName, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
+	) throws LuaException {
+		// Find location to transfer to
+		Object location = baked.getTransferLocation(toName);
+		if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
 
-	@Override
-	public boolean canApply(@Nonnull IPartialContext<IAEItemStack> context) {
-		return super.canApply(context) && context.hasContext(IActionHost.class) && context.hasContext(IGrid.class);
-	}
+		// Validate our location is valid
+		IItemHandler to = extractHandler(location);
+		if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
 
-	@Nonnull
-	@Override
-	public MethodResult apply(@Nonnull IUnbakedContext<IAEItemStack> context, @Nonnull Object[] args) throws LuaException {
-		final String toName = getString(args, 0);
-
-		final int limit = optInt(args, 1, Integer.MAX_VALUE);
-		final int toSlot = optInt(args, 2, -1);
-
+		if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		return MethodResult.nextTick(() -> {
-			IContext<IAEItemStack> baked = context.bake();
+		// Find the stack to extract
+		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+		MachineSource source = new MachineSource(host);
 
-			// Find location to transfer to
-			Object location = baked.getTransferLocation(toName);
-			if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
+		// Extract said item
+		IAEItemStack toExtract = baked.getTarget().copy();
+		toExtract.setStackSize(Math.min(limit, toExtract.getDefinition().getMaxStackSize()));
+		toExtract = storageGrid.getInventory(channel).extractItems(toExtract, Actionable.MODULATE, source);
 
-			// Validate our location is valid
-			IItemHandler to = extractHandler(location);
-			if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
-			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
+		// Attempt to insert into the appropriate inventory
+		ItemStack toInsert = toExtract.createItemStack();
+		ItemStack remainder = toSlot <= 0
+			? ItemHandlerHelper.insertItem(to, toInsert, false)
+			: to.insertItem(toSlot - 1, toInsert, false);
 
-			// Find the stack to extract
-			IGrid grid = baked.getContext(IGrid.class);
-			IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-			IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-			MachineSource source = new MachineSource(baked.getContext(IActionHost.class));
+		// If not everything could be inserted, replace back in the inventory
+		if (!remainder.isEmpty()) {
+			storageGrid.getInventory(channel).injectItems(channel.createStack(remainder), Actionable.MODULATE, source);
+		}
 
-			// Extract said item
-			IAEItemStack toExtract = baked.getTarget().copy();
-			toExtract.setStackSize(Math.min(limit, toExtract.getDefinition().getMaxStackSize()));
-			toExtract = storageGrid.getInventory(channel).extractItems(toExtract, Actionable.MODULATE, source);
-
-			// Attempt to insert into the appropriate inventory
-			ItemStack toInsert = toExtract.createItemStack();
-			ItemStack remainder = toSlot <= 0
-				? ItemHandlerHelper.insertItem(to, toInsert, false)
-				: to.insertItem(toSlot - 1, toInsert, false);
-
-			// If not everything could be inserted, replace back in the inventory
-			if (!remainder.isEmpty()) {
-				storageGrid.getInventory(channel).injectItems(channel.createStack(remainder), Actionable.MODULATE, source);
-			}
-
-			return MethodResult.result(toExtract.getStackSize() - remainder.getCount());
-		});
+		return toExtract.getStackSize() - remainder.getCount();
 	}
 }

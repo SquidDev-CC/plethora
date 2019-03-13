@@ -1,18 +1,18 @@
 {
-	"result": {
-		"item": "plethora:module",
-		"data": 4
-	},
+	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"RGR",
 		"PBP",
 		"RGR"
 	],
-	"type": "minecraft:crafting_shaped",
 	"key": {
 		"P": { "item": "minecraft:piston" },
 		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
 		"B": { "type": "plethora:brew", "potion": "minecraft:leaping", "effect": "minecraft:jump_boost" },
 		"G": { "type": "forge:ore_dict", "ore": "ingotGold" }
+	},
+	"result": {
+		"item": "plethora:module",
+		"data": 4
 	}
 }

@@ -1,7 +1,6 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import com.google.common.base.Objects;
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,17 +8,15 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.utils.ByteBufUtils;
 
 import javax.annotation.Nonnull;
-
-import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 
 public class Box extends ColourableObject implements Positionable3D, DepthTestable {
 	private Vec3d position;
@@ -144,17 +141,13 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 		tessellator.draw();
 	}
 
-
-	@BasicMethod.Inject(value = Box.class, doc = "function():number, number, number -- Get the size of this box.")
-	public static MethodResult getSize(IUnbakedContext<Box> context, Object[] args) throws LuaException {
-		Box rect = context.safeBake().getTarget();
+	@PlethoraMethod(doc = "function():number, number, number -- Get the size of this box.", worldThread = false)
+	public static MethodResult getSize(@FromTarget Box rect) {
 		return MethodResult.result(rect.width, rect.height, rect.depth);
 	}
 
-	@BasicMethod.Inject(value = Box.class, doc = "function(width:number, height:number, depth:number) -- Set the size of this box.")
-	public static MethodResult setSize(IUnbakedContext<Box> context, Object[] args) throws LuaException {
-		Box rect = context.safeBake().getTarget();
-		rect.setSize(getFloat(args, 0), getFloat(args, 1), getFloat(args, 2));
-		return MethodResult.empty();
+	@PlethoraMethod(doc = "function(width:number, height:number, depth:number) -- Set the size of this box.", worldThread = false)
+	public static void setSize(@FromTarget Box rect, float width, float height, float depth) {
+		rect.setSize(width, height, depth);
 	}
 }

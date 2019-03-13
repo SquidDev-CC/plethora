@@ -2,25 +2,29 @@ package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.Vec3d;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
+import org.squiddev.plethora.api.method.wrapper.ArgumentTypes;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.core.apis.ArgumentHelper.getTable;
+import static dan200.computercraft.core.apis.ArgumentHelper.getType;
 
-public class ArgumentPointHelper {
-	public static Vec2d optVec2d(@Nonnull Object[] args, int index, Vec2d def) throws LuaException {
-		Map<?, ?> table = optTable(args, index, null);
-		return table == null ? def : getVec2d(table);
-	}
+@Injects
+public final class ArgumentPointHelper {
+	public static final ArgumentType<Vec2d> VEC2D = ArgumentTypes.TABLE.map(ArgumentPointHelper::getVec2d);
+
+	public static final ArgumentType<Vec3d> VEC3D = ArgumentTypes.TABLE.map(ArgumentPointHelper::getVec3d);
 
 	public static Vec2d getVec2d(@Nonnull Object[] args, int index) throws LuaException {
 		return getVec2d(getTable(args, index));
 	}
 
-	public static Vec2d getVec2d(Map<?, ?> point) throws LuaException {
+	private static Vec2d getVec2d(Map<?, ?> point) throws LuaException {
 		Object xObj, yObj;
 		if (point.containsKey("x")) {
 			xObj = point.get("x");
@@ -39,16 +43,7 @@ public class ArgumentPointHelper {
 		return new Vec2d(((Number) xObj).doubleValue(), ((Number) yObj).doubleValue());
 	}
 
-	public static Vec3d optVec3d(@Nonnull Object[] args, int index, Vec3d def) throws LuaException {
-		Map<?, ?> table = optTable(args, index, null);
-		return table == null ? def : getVec3d(table);
-	}
-
-	public static Vec3d getVec3d(@Nonnull Object[] args, int index) throws LuaException {
-		return getVec3d(getTable(args, index));
-	}
-
-	public static Vec3d getVec3d(Map<?, ?> point) throws LuaException {
+	private static Vec3d getVec3d(Map<?, ?> point) throws LuaException {
 		Object xObj, yObj, zObj;
 		if (point.containsKey("x")) {
 			xObj = point.get("x");
@@ -76,7 +71,7 @@ public class ArgumentPointHelper {
 	}
 
 	@Nonnull
-	public static LuaException badKey(@Nullable Object object, @Nonnull String key, @Nonnull String expected) {
+	private static LuaException badKey(@Nullable Object object, @Nonnull String key, @Nonnull String expected) {
 		return new LuaException("Expected " + expected + " for key " + key + ", got " + getType(object));
 	}
 }

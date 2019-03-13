@@ -15,7 +15,7 @@ import java.util.Set;
  * Provides an inventory called "baubles" for players
  */
 @Injects(Baubles.MODID)
-public class TransferBaublesInventory implements ITransferProvider<EntityPlayer> {
+public final class TransferBaublesInventory implements ITransferProvider<EntityPlayer> {
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull EntityPlayer object, @Nonnull String key) {

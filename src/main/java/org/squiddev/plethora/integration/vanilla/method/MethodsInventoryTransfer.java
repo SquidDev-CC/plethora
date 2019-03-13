@@ -7,82 +7,65 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ITransferMethod;
+import org.squiddev.plethora.api.method.MarkerInterfaces;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 /**
  * Various methods for inventory transfer
  */
 public class MethodsInventoryTransfer {
-	@BasicMethod.Inject(
-		value = IItemHandler.class,
-		doc = "function(to:string, fromSlot:int[, limit:int][, toSlot:int]):int -- Push items from this inventory to another inventory. Returns the amount transferred."
-	)
+	@PlethoraMethod(doc = "-- Push items from this inventory to another inventory. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
-	public static MethodResult pushItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
-		final String toName = getString(args, 0);
-		final int fromSlot = getInt(args, 1);
+	public static int pushItems(
+		IContext<IItemHandler> context,
+		String toName, int fromSlot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
+	) throws LuaException {
+		IItemHandler from = context.getTarget();
 
-		final int limit = optInt(args, 2, Integer.MAX_VALUE);
-		final int toSlot = optInt(args, 3, -1);
+		// Find location to transfer to
+		Object location = context.getTransferLocation(toName);
+		if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
 
+		IItemHandler to = extractHandler(location);
+		if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
+
+		// Validate slots
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
+		assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
+		if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 
-		return MethodResult.nextTick(() -> {
-			IContext<IItemHandler> baked = context.bake();
-			IItemHandler from = baked.getTarget();
-
-			// Find location to transfer to
-			Object location = baked.getTransferLocation(toName);
-			if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
-
-			IItemHandler to = extractHandler(location);
-			if (to == null) throw new LuaException("Target '" + toName + "' is not an inventory");
-
-			// Validate slots
-			assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
-			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
-
-			return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
-		});
+		return moveItem(from, fromSlot - 1, to, toSlot - 1, limit);
 	}
 
-	@BasicMethod.Inject(
-		value = IItemHandler.class,
-		doc = "function(from:string, fromSlot:int[, limit:int][, toSlot:int]):int -- Pull items to this inventory from another inventory. Returns the amount transferred."
-	)
+	@PlethoraMethod(doc = "-- Pull items to this inventory from another inventory. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
-	public static MethodResult pullItems(final IUnbakedContext<IItemHandler> context, Object[] args) throws LuaException {
-		final String fromName = getString(args, 0);
-		final int fromSlot = getInt(args, 1);
+	public static int pullItems(
+		IContext<IItemHandler> context,
+		String fromName, int fromSlot, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional int toSlot
+	) throws LuaException {
+		IItemHandler to = context.getTarget();
 
-		final int limit = optInt(args, 2, Integer.MAX_VALUE);
-		final int toSlot = optInt(args, 3, -1);
+		// Find location to transfer to
+		Object location = context.getTransferLocation(fromName);
+		if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
 
+		IItemHandler from = extractHandler(location);
+		if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
+
+		// Validate slots
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
+		assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
+		if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
 
-		return MethodResult.nextTick(() -> {
-			IContext<IItemHandler> baked = context.bake();
-			IItemHandler to = baked.getTarget();
-
-			// Find location to transfer to
-			Object location = baked.getTransferLocation(fromName);
-			if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
-
-			IItemHandler from = extractHandler(location);
-			if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
-
-			// Validate slots
-			assertBetween(fromSlot, 1, from.getSlots(), "From slot out of range (%s)");
-			if (toSlot != -1) assertBetween(toSlot, 1, to.getSlots(), "To slot out of range (%s)");
-
-			return MethodResult.result(moveItem(from, fromSlot - 1, to, toSlot - 1, limit));
-		});
+		return moveItem(from, fromSlot - 1, to, toSlot - 1, limit);
 	}
 
 	@Nullable
