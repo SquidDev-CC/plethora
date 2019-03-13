@@ -4,7 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.IMethod;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * A marker interface for methods which require one or more modules.
@@ -18,5 +18,5 @@ public interface IModuleMethod<T> extends IMethod<T> {
 	 * @return The modules that this method requires
 	 */
 	@Nonnull
-	Set<ResourceLocation> getModules();
+	Collection<ResourceLocation> getModules();
 }

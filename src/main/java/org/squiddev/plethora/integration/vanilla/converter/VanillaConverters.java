@@ -5,6 +5,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +39,8 @@ public final class VanillaConverters {
 	}
 
 	public static final ConstantConverter<ItemSlot, ItemStack> GET_SLOT_STACK = ItemSlot::getStack;
+
+	public static final ConstantConverter<ItemStack, Item> GET_STACK_ITEM = ItemStack::getItem;
 
 	public static final DynamicConverter<BlockReference, IBlockState> GET_BLOCK_REFERENCE_BLOCK = BlockReference::getState;
 

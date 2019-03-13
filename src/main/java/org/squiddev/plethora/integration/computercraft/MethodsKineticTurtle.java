@@ -8,59 +8,49 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.PlayerInteractionHelpers;
 import org.squiddev.plethora.utils.PlayerHelpers;
 
-import javax.annotation.Nonnull;
-import java.util.concurrent.Callable;
-
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
-
 public class MethodsKineticTurtle {
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = ITurtleAccess.class,
+	@PlethoraMethod(
+		module = PlethoraModules.KINETIC_S,
 		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item. The duration is in " +
 			"ticks, or 1/20th of a second."
 	)
-	public static MethodResult use(@Nonnull IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final int duration = optInt(args, 0, 0);
+	public static MethodResult use(
+		IContext<IModuleContainer> context, @FromSubtarget(ContextKeys.ORIGIN) ITurtleAccess turtle,
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable,
+		@Optional(defInt = 0) int duration
+	) throws LuaException {
 		if (duration < 0) throw new LuaException("Duration out of range (must be >= 0)");
+		PlethoraFakePlayer fakePlayer = FakePlayerProviderTurtle.getPlayer(turtle, ownable);
 
-		return MethodResult.nextTick(new Callable<MethodResult>() {
-			@Override
-			@Nonnull
-			public MethodResult call() throws Exception {
-				IContext<IModuleContainer> baked = context.bake();
-				ITurtleAccess turtle = baked.getContext(ContextKeys.ORIGIN, ITurtleAccess.class);
+		FakePlayerProviderTurtle.load(fakePlayer, turtle, turtle.getDirection());
 
-				IPlayerOwnable ownable = baked.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
-				PlethoraFakePlayer fakePlayer = FakePlayerProviderTurtle.getPlayer(turtle, ownable);
-
-				FakePlayerProviderTurtle.load(fakePlayer, turtle, turtle.getDirection());
-
-				try {
-					RayTraceResult hit = PlayerHelpers.findHit(fakePlayer, 1.5);
-					return PlayerInteractionHelpers.use(fakePlayer, hit, EnumHand.MAIN_HAND, duration);
-				} finally {
-					FakePlayerProviderTurtle.unload(fakePlayer, turtle);
-				}
-			}
-		});
+		try {
+			RayTraceResult hit = PlayerHelpers.findHit(fakePlayer, 1.5);
+			return PlayerInteractionHelpers.use(fakePlayer, hit, EnumHand.MAIN_HAND, duration);
+		} finally {
+			FakePlayerProviderTurtle.unload(fakePlayer, turtle);
+		}
 	}
 
-	@SubtargetedModuleObjectMethod.Inject(
-		module = PlethoraModules.KINETIC_S, target = ITurtleAccess.class,
+	@PlethoraMethod(
+		module = PlethoraModules.KINETIC_S,
 		doc = "function():boolean, string|nil -- Left click with this item. Returns the action taken."
 	)
-	public static Object[] swing(ITurtleAccess turtle, IContext<ITurtleAccess> context, Object[] args) {
-		IPlayerOwnable ownable = context.getContext(ContextKeys.ORIGIN, IPlayerOwnable.class);
+	public static Object[] swing(
+		@FromSubtarget(ContextKeys.ORIGIN) ITurtleAccess turtle,
+		@Optional @FromContext(ContextKeys.ORIGIN) IPlayerOwnable ownable
+	) {
 		PlethoraFakePlayer fakePlayer = FakePlayerProviderTurtle.getPlayer(turtle, ownable);
 
 		FakePlayerProviderTurtle.load(fakePlayer, turtle, turtle.getDirection());

@@ -1,21 +1,22 @@
 package org.squiddev.plethora.integration.cbmp;
 
 import codechicken.multipart.PartMap;
+import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
 import com.google.common.collect.Maps;
-import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.SimpleMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = TSlottedPart.class, modId = "forgemultipartcbe")
-public class MetaSlottedMultipart extends BasicMetaProvider<TSlottedPart> {
-	@Nonnull
-	@Override
-	public Map<Object, Object> getMeta(@Nonnull TSlottedPart object) {
+@Injects("forgemultipartcbe")
+public final class IntegrationMultipart {
+	public static final SimpleMetaProvider<TMultiPart> META_MULTIPART = IntegrationMultipart::getBasicMeta;
+
+	public static final SimpleMetaProvider<TSlottedPart> META_SLOTTED_PART = object -> {
 		int slots = object.getSlotMask();
 
 		int i = 0;
@@ -26,5 +27,12 @@ public class MetaSlottedMultipart extends BasicMetaProvider<TSlottedPart> {
 			}
 		}
 		return Collections.singletonMap("slots", out);
+	};
+
+	@Nonnull
+	public static Map<Object, Object> getBasicMeta(@Nonnull TMultiPart part) {
+		Map<Object, Object> out = Maps.newHashMap();
+		out.put("name", part.getType().toString());
+		return out;
 	}
 }

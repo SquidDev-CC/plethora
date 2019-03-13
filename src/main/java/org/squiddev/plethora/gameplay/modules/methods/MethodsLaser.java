@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
@@ -20,14 +21,17 @@ import javax.annotation.Nonnull;
 import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
+@Injects
 public final class MethodsLaser {
-	@SubtargetedModuleMethod.Inject(
-		module = PlethoraModules.LASER_S,
-		target = IWorldLocation.class,
-		doc = "function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction"
-	)
+	public static final SubtargetedModuleMethod<IWorldLocation> FIRE = SubtargetedModuleMethod.of(
+		MethodsLaser.class.getName() + "#fire",
+		"fire", PlethoraModules.LASER_M, IWorldLocation.class,
+		"function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction",
+		MethodsLaser::fire
+	);
+
 	@Nonnull
-	public static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
+	private static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
 		final double yaw = getReal(args, 0) % 360;
 		double pitchArg = getReal(args, 1) % 360;
 		final float potency = (float) getReal(args, 2);

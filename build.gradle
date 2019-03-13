@@ -108,11 +108,12 @@ dependencies {
 	compileOnly "slimeknights.mantle:Mantle:1.12-1.3.3.43"
 
 	// All the Curse mods
-	compileOnly curseMod("botania", 2524591, "r1.10-353")
+	compileOnly curseMod("botania", 2677096, "r1.10-360")
 	compileOnly curseMod("baubles", 2518667, "1.12-1.5.2")
-	compileOnly curseMod("storage-drawers", 2536306, "1.12.2-5.3.5")
+	compileOnly curseMod("storage-drawers", 2642386, "1.12.2-5.3.8")
 	compileOnly curseMod("chameleon", 2450900, "1.12-4.1.3")
-	compileOnly curseMod("blockcraftery", 2485336, "0.1.3")
+	compileOnly curseMod("blockcraftery", 2681355, "1.2.0")
+	compileOnly curseMod("mysticallib", 2681363, "1.12.2-1.1.1")
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
@@ -143,7 +144,7 @@ processResources {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing"
+		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing" << "-parameters"
 	}
 }
 

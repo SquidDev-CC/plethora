@@ -5,7 +5,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
@@ -41,14 +40,6 @@ public interface IMethodRegistry {
 	 */
 	@Nonnull
 	ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side);
-
-	/**
-	 * Register a method builder
-	 *
-	 * @param klass   The annotation to build from
-	 * @param builder The builder to register
-	 */
-	<T extends Annotation> void registerMethodBuilder(@Nonnull Class<T> klass, @Nonnull IMethodBuilder<T> builder);
 
 	/**
 	 * Gets the base cost of a method. This is subtracted when the method is executed.

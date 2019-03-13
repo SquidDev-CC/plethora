@@ -18,8 +18,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
@@ -122,55 +123,34 @@ public class CraftingResult {
 		}
 	}
 
-	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID,
-		doc = "function():boolean -- Check if this crafting task has finished."
-	)
-	public static Object[] isFinished(IContext<CraftingResult> context, Object[] args) {
-		CraftingResult result = context.getTarget();
-
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Check if this crafting task has finished.")
+	public static boolean isFinished(@FromTarget CraftingResult result) {
 		ICraftingJob job = result.getJob();
-		if (job != null && job.isSimulation()) return new Object[]{true};
+		if (job != null && job.isSimulation()) return true;
 
 		ICraftingLink link = result.getLink();
-		return new Object[]{link != null && link.isDone()};
+		return link != null && link.isDone();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID,
-		doc = "function():boolean -- Check if this crafting task has been canceled."
-	)
-	public static Object[] isCanceled(IContext<CraftingResult> context, Object[] args) {
-		CraftingResult result = context.getTarget();
-
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Check if this crafting task has been canceled.")
+	public static boolean isCanceled(@FromTarget CraftingResult result) {
 		ICraftingLink link = result.getLink();
-		return new Object[]{link != null && link.isCanceled()};
+		return link != null && link.isCanceled();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID,
-		doc = "function():string -- Get the status for this crafting task."
-	)
-	public static Object[] status(IContext<CraftingResult> context, Object[] args) {
-		return new Object[]{context.getTarget().getStatus()};
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Get the status for this crafting task.")
+	public static String status(@FromTarget CraftingResult result) {
+		return result.getStatus();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID,
-		doc = "function():int|nil -- Get the ID for this crafting task."
-	)
-	public static Object[] getId(IContext<CraftingResult> context, Object[] args) {
-		CraftingResult result = context.getTarget();
-
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Get the ID for this crafting task.")
+	public static String getId(@FromTarget CraftingResult result) {
 		ICraftingLink link = result.getLink();
-		return new Object[]{link == null ? null : link.getCraftingID()};
+		return link == null ? null : link.getCraftingID();
 	}
 
-	@BasicObjectMethod.Inject(
-		value = CraftingResult.class, modId = AppEng.MOD_ID,
-		doc = "function():table -- Get the various items required for this task."
-	)
-	public static Object[] getComponents(IContext<CraftingResult> context, Object[] args) throws LuaException {
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Get the various items required for this task.")
+	public static Map<Integer, ?> getComponents(IContext<CraftingResult> context) throws LuaException {
 		CraftingResult result = context.getTarget();
 
 		ICraftingJob job = result.getJob();
@@ -204,6 +184,6 @@ public class CraftingResult {
 			out.put(++i, component);
 		}
 
-		return new Object[]{out};
+		return out;
 	}
 }

@@ -3,100 +3,69 @@ package org.squiddev.plethora.integration.vanilla.method;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ITransferMethod;
+import org.squiddev.plethora.api.method.MarkerInterfaces;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
 
 /**
  * Various methods for fluid transfer
  */
 public class MethodsFluidTransfer {
-	@BasicMethod.Inject(
-		value = IFluidHandler.class,
-		doc = "function(to:string[, limit:int [, fluid:string]]):int -- Push fluid from this tank to another tank. Returns the amount transferred."
-	)
+	@PlethoraMethod(doc = "-- Push fluid from this tank to another tank. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
-	public static MethodResult pushFluid(final IUnbakedContext<IFluidHandler> context, Object[] args) throws LuaException {
-		final String toName = getString(args, 0);
-		final int limit = optInt(args, 1, Integer.MAX_VALUE);
-		final String fluidName = optString(args, 2, null);
+	public static int pushFluid(
+		IContext<IFluidHandler> context,
+		String toName, @Optional(defInt = Integer.MAX_VALUE) int limit, Fluid fluid
+	) throws LuaException {
+		IFluidHandler from = context.getTarget();
+
+		// Find location to transfer to
+		Object location = context.getTransferLocation(toName);
+		if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
+
+		IFluidHandler to = extractHandler(location);
+		if (to == null) throw new LuaException("Target '" + toName + "' is not an tank");
 
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		Fluid fluid;
-		if (fluidName != null) {
-			fluid = FluidRegistry.getFluid(fluidName);
-			if (fluid == null) throw new LuaException("Unknown fluid '" + fluidName + "'");
-		} else {
-			fluid = null;
-		}
-
-		return MethodResult.nextTick(() -> {
-			IContext<IFluidHandler> baked = context.bake();
-			IFluidHandler from = baked.getTarget();
-
-			// Find location to transfer to
-			Object location = baked.getTransferLocation(toName);
-			if (location == null) throw new LuaException("Target '" + toName + "' does not exist");
-
-			IFluidHandler to = extractHandler(location);
-			if (to == null) throw new LuaException("Target '" + toName + "' is not an tank");
-
-			return MethodResult.result(fluid == null
-				? moveFluid(from, limit, to)
-				: moveFluid(from, new FluidStack(fluid, limit), to)
-			);
-		});
+		return fluid == null
+			? moveFluid(from, limit, to)
+			: moveFluid(from, new FluidStack(fluid, limit), to);
 	}
 
-	@BasicMethod.Inject(
-		value = IFluidHandler.class,
-		doc = "function(from:string[, limit:int [, fluid:string]]):int -- Pull fluid to this tank from another tank. Returns the amount transferred."
-	)
+	@PlethoraMethod(doc = "-- Pull fluid to this tank from another tank. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
-	public static MethodResult pullFluid(final IUnbakedContext<IFluidHandler> context, Object[] args) throws LuaException {
-		final String fromName = getString(args, 0);
-		final int limit = optInt(args, 1, Integer.MAX_VALUE);
-		final String fluidName = optString(args, 2, null);
+	public static int pullFluid(
+		IContext<IFluidHandler> context,
+		String fromName, @Optional(defInt = Integer.MAX_VALUE) int limit, @Optional Fluid fluid
+	) throws LuaException {
+		IFluidHandler to = context.getTarget();
+
+		// Find location to transfer to
+		Object location = context.getTransferLocation(fromName);
+		if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
+
+		IFluidHandler from = extractHandler(location);
+		if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
 
 		if (limit <= 0) throw new LuaException("Limit must be > 0");
 
-		Fluid fluid;
-		if (fluidName != null) {
-			fluid = FluidRegistry.getFluid(fluidName);
-			if (fluid == null) throw new LuaException("Unknown fluid '" + fluidName + "'");
-		} else {
-			fluid = null;
-		}
-
-		return MethodResult.nextTick(() -> {
-			IContext<IFluidHandler> baked = context.bake();
-			IFluidHandler to = baked.getTarget();
-
-			// Find location to transfer to
-			Object location = baked.getTransferLocation(fromName);
-			if (location == null) throw new LuaException("Source '" + fromName + "' does not exist");
-
-			IFluidHandler from = extractHandler(location);
-			if (from == null) throw new LuaException("Source '" + fromName + "' is not an inventory");
-
-			return MethodResult.result(fluid == null
-				? moveFluid(from, limit, to)
-				: moveFluid(from, new FluidStack(fluid, limit), to)
-			);
-		});
+		return fluid == null
+			? moveFluid(from, limit, to)
+			: moveFluid(from, new FluidStack(fluid, limit), to);
 	}
 
 	@Nullable
-	public static IFluidHandler extractHandler(@Nonnull Object object) {
+	private static IFluidHandler extractHandler(@Nonnull Object object) {
 		for (Object child : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
 			if (child instanceof IFluidHandler) return (IFluidHandler) child;
 

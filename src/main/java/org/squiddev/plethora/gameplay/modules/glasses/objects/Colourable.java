@@ -1,9 +1,8 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects;
 
 import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 
@@ -17,20 +16,17 @@ public interface Colourable {
 
 	void setColour(int colour);
 
-	@BasicMethod.Inject(value = Colourable.class, doc = "function():int -- Get the colour for this object.")
-	static MethodResult getColour(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		int colour = context.safeBake().getTarget().getColour();
-		return MethodResult.result(colour & 0xffffffffL);
+	@PlethoraMethod(name = {"getColour", "getColor"}, doc = "-- Get the colour for this object.", worldThread = false)
+	static long getColour(@FromTarget Colourable colourable) {
+		int colour = colourable.getColour();
+		return colour & 0xffffffffL;
 	}
 
-	@BasicMethod.Inject(value = Colourable.class, doc = "function():int -- Get the color for this object.")
-	static MethodResult getColor(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		return getColour(context, args);
-	}
-
-	@BasicMethod.Inject(value = Colourable.class, doc = "function(colour|r:int, [g:int, b:int], [alpha:int]):number -- Set the colour for this object.")
-	static MethodResult setColour(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		Colourable object = context.safeBake().getTarget();
+	@PlethoraMethod(worldThread = false,
+		name = {"setColor", "setColour"},
+		doc = "function(colour|r:int, [g:int, b:int], [alpha:int]):number -- Set the colour for this object."
+	)
+	static void setColour(@FromTarget Colourable object, Object[] args) throws LuaException {
 		switch (args.length) {
 			case 1:
 				object.setColour(getInt(args, 0));
@@ -55,24 +51,15 @@ public interface Colourable {
 				break;
 			}
 		}
-		return MethodResult.empty();
 	}
 
-	@BasicMethod.Inject(value = Colourable.class, doc = "function(color|r:int, [g:int, b:int], [alpha:int]):number -- Set the color for this object.")
-	static MethodResult setColor(IUnbakedContext<Colourable> object, Object[] args) throws LuaException {
-		return setColour(object, args);
+	@PlethoraMethod(doc = "-- Get the alpha for this object.", worldThread = false)
+	static int getAlpha(@FromTarget Colourable colourable) {
+		return colourable.getColour() & 0xFF;
 	}
 
-	@BasicMethod.Inject(value = Colourable.class, doc = "function():int -- Get the alpha for this object.")
-	static MethodResult getAlpha(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		return MethodResult.result(context.safeBake().getTarget().getColour() & 0xFF);
+	@PlethoraMethod(doc = "-- Set the alpha for this object.", worldThread = false)
+	static void setAlpha(@FromTarget Colourable object, int alpha) {
+		object.setColour((object.getColour() & ~0xFF) | (alpha & 0xFF));
 	}
-
-	@BasicMethod.Inject(value = Colourable.class, doc = "function(alpha:int) -- Set the alpha for this object.")
-	static MethodResult setAlpha(IUnbakedContext<Colourable> context, Object[] args) throws LuaException {
-		Colourable object = context.safeBake().getTarget();
-		object.setColour((object.getColour() & ~0xFF) | (getInt(args, 0) & 0xFF));
-		return MethodResult.empty();
-	}
-
 }

@@ -19,15 +19,4 @@ public class MethodCollection implements IMethodCollection {
 	public List<IMethod<?>> methods() {
 		return methods;
 	}
-
-	@Override
-	public boolean has(@Nonnull Class<?> iface) {
-		for (IMethod<?> method : methods) {
-			if (iface.isInstance(method)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }

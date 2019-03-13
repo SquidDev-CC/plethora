@@ -9,61 +9,54 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
+
+import java.util.Map;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
 public class MethodsVanillaTileEntities {
-	@BasicObjectMethod.Inject(
-		value = TileEntityFurnace.class, worldThread = false,
-		doc = "function():int -- Number of ticks of fuel left"
+	@PlethoraMethod(
+		doc = "function():int -- Number of ticks of fuel left",
+		worldThread = false
 	)
-	public static Object[] getRemainingBurnTime(final IContext<TileEntityFurnace> context, Object[] args) {
-		// furnaceBurnTime
-		return new Object[]{context.getTarget().getField(0)};
+	public static int getRemainingBurnTime(@FromTarget TileEntityFurnace furnace) {
+		return furnace.getField(0); // furnaceBurnTime
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileEntityFurnace.class, worldThread = false,
-		doc = "function():int -- Number of ticks of burning the current fuel provides"
+	@PlethoraMethod(
+		doc = "function():int -- Number of ticks of burning the current fuel provides",
+		worldThread = false
 	)
-	public static Object[] getBurnTime(final IContext<TileEntityFurnace> context, Object[] args) {
-		// currentItemBurnTime
-		return new Object[]{context.getTarget().getField(1)};
+	public static int getBurnTime(@FromTarget TileEntityFurnace furnace) {
+		return furnace.getField(1); // currentItemBurnTime
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileEntityFurnace.class, worldThread = false,
-		doc = "function():int -- Number of ticks the current item has cooked for"
+	@PlethoraMethod(
+		doc = "function():int -- Number of ticks the current item has cooked for",
+		worldThread = false
 	)
-	public static Object[] getCookTime(final IContext<TileEntityFurnace> context, Object[] args) {
-		// cookTime
-		return new Object[]{context.getTarget().getField(2)};
+	public static int getCookTime(@FromTarget TileEntityFurnace furnace) {
+		return furnace.getField(2); // cookTime
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileEntityBrewingStand.class, worldThread = false,
-		doc = "function():int -- Number of ticks the current potion has brewed for"
+	@PlethoraMethod(
+		doc = "function():int -- Number of ticks the current potion has brewed for",
+		worldThread = false
 	)
-	public static Object[] getBrewTime(final IContext<TileEntityBrewingStand> context, Object[] args) {
-		// brewTime
-		return new Object[]{context.getTarget().getField(0)};
+	public static int getBrewTime(@FromTarget TileEntityBrewingStand brewing) {
+		return brewing.getField(0); // brewTime
 	}
 
-	@BasicObjectMethod.Inject(
-		value = TileEntitySign.class,
-		doc = "function():table -- Each line of text on this sign"
-	)
-	public static Object[] getSignText(final IContext<TileEntitySign> context, Object[] args) {
-		return new Object[]{MetaTileSign.getSignLines(context.getTarget())};
+	@PlethoraMethod(doc = "function():table -- Each line of text on this sign")
+	public static Map<Object, Object> getSignText(@FromTarget TileEntitySign sign) {
+		return MetaTileSign.getSignLines(sign);
 	}
 
-	@BasicMethod.Inject(
-		value = TileEntitySign.class,
-		doc = "function(lines...:string) -- Set the lines of text on this sign"
-	)
-	public static MethodResult setSignText(final IUnbakedContext<TileEntitySign> context, Object[] args) throws LuaException {
+	@PlethoraMethod(doc = "function(lines...:string) -- Set the lines of text on this sign")
+	public static void setSignText(@FromTarget TileEntitySign sign, Object[] args) throws LuaException {
 		final ITextComponent[] lines = new ITextComponent[4];
 		for (int i = 0; i < lines.length; i++) {
 			String arg = optString(args, i, "");
@@ -76,17 +69,12 @@ public class MethodsVanillaTileEntities {
 			lines[i] = new TextComponentString(arg);
 		}
 
-		return MethodResult.nextTick(() -> {
-			TileEntitySign sign = context.bake().getTarget();
-			System.arraycopy(lines, 0, sign.signText, 0, lines.length);
-			sign.markDirty();
+		System.arraycopy(lines, 0, sign.signText, 0, lines.length);
+		sign.markDirty();
 
-			World world = sign.getWorld();
-			BlockPos pos = sign.getPos();
-			IBlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
-
-			return MethodResult.empty();
-		});
+		World world = sign.getWorld();
+		BlockPos pos = sign.getPos();
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 3);
 	}
 }

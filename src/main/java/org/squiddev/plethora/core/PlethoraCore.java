@@ -25,6 +25,7 @@ import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
+import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.forestry.IntegrationForestry;
@@ -73,10 +74,18 @@ public class PlethoraCore {
 		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
 		// Load various objects from annotations
-		Registry.register(asmData);
+		long start = System.currentTimeMillis();
 
+		Registry.register(asmData);
 		MetaRegistry.instance.loadAsm(asmData);
-		MethodTypeBuilder.instance.loadAsm(asmData);
+		PlethoraMethodRegistry.loadAsm(asmData);
+
+		long finish = System.currentTimeMillis();
+
+		LOG.info(
+			"Loaded {} methods and {} metadata providers in {} seconds",
+			MethodRegistry.instance.providers.size(), MetaRegistry.instance.providers.size(), (finish - start) * 1e-3
+		);
 
 		ConfigCore.configuration.save();
 	}

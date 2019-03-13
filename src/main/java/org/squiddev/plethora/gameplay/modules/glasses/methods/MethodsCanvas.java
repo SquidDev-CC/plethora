@@ -1,49 +1,36 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
-import dan200.computercraft.api.lua.LuaException;
-import org.squiddev.plethora.api.method.BasicMethod;
+import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
-import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 
+import static org.squiddev.plethora.gameplay.modules.PlethoraModules.GLASSES_S;
+
 public class MethodsCanvas {
-	@SubtargetedModuleMethod.Inject(
-		target = CanvasServer.class, module = PlethoraModules.GLASSES_S,
-		doc = "function():table -- Get the 2D canvas for these glasses."
-	)
-	public static MethodResult canvas(IUnbakedContext<IModuleContainer> context, Object[] args) throws LuaException {
-		IContext<IModuleContainer> baked = context.safeBake();
-		CanvasServer server = baked.getContext(PlethoraModules.GLASSES_S, CanvasServer.class);
-		return MethodResult.result(baked.makeChildId(server.canvas2d()).getObject());
+	@PlethoraMethod(module = GLASSES_S, doc = "-- Get the 2D canvas for these glasses.", worldThread = false)
+	public static ILuaObject canvas(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
+		return context.makeChildId(server.canvas2d()).getObject();
 	}
 
-	@SubtargetedModuleMethod.Inject(
-		target = CanvasServer.class, module = PlethoraModules.GLASSES_S,
-		doc = "function():table -- Get the 3D canvas for these glasses."
-	)
-	public static MethodResult canvas3d(IUnbakedContext<IModuleContainer> context, Object[] args) throws LuaException {
-		IContext<IModuleContainer> baked = context.safeBake();
-		CanvasServer server = baked.getContext(PlethoraModules.GLASSES_S, CanvasServer.class);
-		return MethodResult.result(baked.makeChildId(server.canvas3d()).getObject());
+	@PlethoraMethod(module = GLASSES_S, doc = "-- Get the 3D canvas for these glasses.", worldThread = false)
+	public static ILuaObject canvas3d(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
+		return context.makeChildId(server.canvas3d()).getObject();
 	}
 
-	@BasicMethod.Inject(value = ObjectGroup.class, doc = "function() -- Remove all objects.")
-	public static MethodResult clear(IUnbakedContext<ObjectGroup> context, Object[] args) throws LuaException {
-		IContext<ObjectGroup> baked = context.safeBake();
-		baked.getContext(CanvasServer.class).clear(baked.getTarget());
-		return MethodResult.empty();
+	@PlethoraMethod(doc = "-- Remove all objects.", worldThread = false)
+	public static void clear(@FromTarget ObjectGroup group, @FromContext CanvasServer canvas) {
+		canvas.clear(group);
 	}
 
-	@BasicMethod.Inject(value = BaseObject.class, doc = "function() -- Remove this object from the canvas.")
-	public static MethodResult remove(IUnbakedContext<BaseObject> context, Object[] args) throws LuaException {
-		IContext<BaseObject> baked = context.safeBake();
-		baked.getContext(CanvasServer.class).remove(baked.getTarget());
-		return MethodResult.result();
+	@PlethoraMethod(doc = "-- Remove this object from the canvas.", worldThread = false)
+	public static void remove(@FromTarget BaseObject object, @FromContext CanvasServer canvas) {
+		canvas.remove(object);
 	}
 }

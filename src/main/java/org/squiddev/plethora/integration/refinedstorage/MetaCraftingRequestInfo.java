@@ -5,15 +5,15 @@ import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingRequestInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-@IMetaProvider.Inject(modId = RS.ID, value = ICraftingRequestInfo.class)
-public class MetaCraftingRequestInfo extends BaseMetaProvider<ICraftingRequestInfo> {
+@Injects(RS.ID)
+public final class MetaCraftingRequestInfo extends BaseMetaProvider<ICraftingRequestInfo> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingRequestInfo> context) {

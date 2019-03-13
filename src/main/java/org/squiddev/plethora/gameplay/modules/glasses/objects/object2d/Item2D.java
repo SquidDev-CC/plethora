@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects.object2d;
 
-import dan200.computercraft.api.lua.LuaException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -14,9 +13,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.client.FramebufferGlasses;
 import org.squiddev.plethora.gameplay.client.OpenGlHelper;
 import org.squiddev.plethora.gameplay.client.RenderState;
@@ -29,8 +29,6 @@ import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
@@ -182,26 +180,14 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		}
 	}
 
-	@BasicMethod.Inject(value = Item2D.class, doc = "function(): string, number -- Get the item and damage value for this object.")
-	public static MethodResult getItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
-		Item2D object = context.safeBake().getTarget();
-
+	@PlethoraMethod(doc = "function(): string, number -- Get the item and damage value for this object.", worldThread = false)
+	public static MethodResult getItem(@FromTarget Item2D object) {
 		return MethodResult.result(object.getItem().getRegistryName().toString(), object.getDamage());
 	}
 
-	@BasicMethod.Inject(value = Item2D.class, doc = "function(item:string[, damage:number]) -- Set the item and damage value for this object.")
-	public static MethodResult setItem(IUnbakedContext<Item2D> context, Object[] args) throws LuaException {
-		Item2D object = context.safeBake().getTarget();
-
-		ResourceLocation name = new ResourceLocation(getString(args, 0));
-		int damage = optInt(args, 1, 0);
-
-		Item item = Item.REGISTRY.getObject(name);
-		if (item == null) throw new LuaException("Unknown item '" + name + "'");
-
+	@PlethoraMethod(doc = "-- Set the item and damage value for this object.", worldThread = false)
+	public static void setItem(@FromTarget Item2D object, Item item, @Optional(defInt = 0) int damage) {
 		object.setItem(item);
 		object.setDamage(damage);
-
-		return MethodResult.empty();
 	}
 }
