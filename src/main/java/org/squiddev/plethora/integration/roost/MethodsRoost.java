@@ -1,16 +1,17 @@
 package org.squiddev.plethora.integration.roost;
 
+import com.setycz.chickens.ChickensMod;
+import com.setycz.chickens.registry.ChickensRegistry;
 import com.timwoodcreates.roost.Roost;
 import com.timwoodcreates.roost.data.DataChicken;
 import com.timwoodcreates.roost.data.DataChickenModded;
 import com.timwoodcreates.roost.data.DataChickenVanilla;
 import com.timwoodcreates.roost.tileentity.TileEntityBreeder;
+import net.minecraftforge.fml.common.Loader;
 import org.squiddev.plethora.api.method.BasicObjectMethod;
 import org.squiddev.plethora.api.method.IContext;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.List;
 
 public class MethodsRoost {
 
@@ -19,19 +20,17 @@ public class MethodsRoost {
 			doc = "function():table -- Get the chicken breeding data"
 	)
 	public static Object[] getBreedingData(IContext<TileEntityBreeder> context, Object[] arg) {
-		List<DataChicken> chickenList = DataChicken.getAllChickens();
-		for (DataChicken chicken : chickenList){
-			//Unlike Forestry, we don't have a separate genetic registry in Roost
-			//This means either we hand-build the breeding data/mutation list,
-			//or we expose extra data on the items themselves...
-
-			//REFINE Wish I could recall how generics behaved well enough to know if I even need the
-			// instanceof checks...
-
+		if (Loader.isModLoaded(ChickensMod.MODID)) {
+			//TODO Test if this contains an equivalent to Roosts' "DataChickenVanilla"
+			//FIXME Appears to be returning an empty array, assuming this path is traversed?
+			return ChickensRegistry.getItems().toArray();
 		}
 
-		//FIXME Not an actual return!
-		return new Object[]{};
+		//FIXME Determine a proper return value
+		// If Chickens isn't loaded, then Roost only registers DataChickenVanilla
+		// This, in turn, doesn't have any breeding pairs,
+		// but it will expose different methods than a ChickensRegistryItem
+		return new Object[0];
 	}
 
 	//TODO Right, if I go this route then I need to define another converter...

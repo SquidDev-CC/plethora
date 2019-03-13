@@ -50,10 +50,9 @@ public final class IntegrationRoost {
 			out.put("strength", nbt.getInteger("Strength"));
 
 			//REFINE Test whether this is needed/the same as chicken.getName()
+			// Odd, this appears to be an empty string?
 			out.put("chicken", nbt.getString("Chicken"));
 		}
-
-		PlethoraIntegration.LOG.debug("Chicken meta parsed as %s", out);
 
 		return out;
 

@@ -113,8 +113,10 @@ dependencies {
 	compileOnly curseMod("storage-drawers", 2536306, "1.12.2-5.3.5")
 	compileOnly curseMod("chameleon", 2450900, "1.12-4.1.3")
 	compileOnly curseMod("blockcraftery", 2485336, "0.1.3")
-	compileOnly curseMod("roost", 2635449, "1.3.0")
-	compileOnly curseMod("chickens", 2545467, "6.1.0v")
+	//FIXME Revert to compileOnly once feature dev is finished
+	compile curseMod("roost", 2635449, "1.3.0")
+	compile curseMod("chickens", 2545467, "6.1.0v")
+	compile curseMod("hatchery", 2674999, "2.2.1")
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
