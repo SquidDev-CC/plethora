@@ -4,7 +4,7 @@ import com.gendeathrow.hatchery.Hatchery;
 import org.squiddev.plethora.api.Injects;
 
 @Injects(Hatchery.MODID)
-public class IntegrationHatchery {
+public final class IntegrationHatchery {
 
 	//TODO Determine what integrations we need
 	/*Hatchery functionality:

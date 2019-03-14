@@ -4,51 +4,70 @@ import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.config.ConfigHandler;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
+import com.setycz.chickens.registry.ChickensRegistryItem;
+import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.ModuleContainerObjectMethod;
-import org.squiddev.plethora.api.module.SubtargetedModuleObjectMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.utils.LuaList;
 
-//REFINE Check if I need to annotate each method, or if the new @Injects annotation will work
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Map;
+
 public class MethodsAnalyzer {
-	@ModuleContainerObjectMethod.Inject(
-			module = IntegrationChickens.analyzerMod, worldThread = false, modId = ChickensMod.MODID,
-			doc = "function():table -- Get a list of all chicken species"
+
+	@PlethoraMethod(
+			module = IntegrationChickens.ANALYZER_S, modId = ChickensMod.MODID,
+			doc = "-- Get a list of all chicken species"
 	)
-	public static Object[] getSpeciesList(IContext<IModuleContainer> context, Object[] args) {
-		//TODO Determine if we need to do any additional manipulation of the collection
-		// before returning
-		return ChickensRegistry.getItems().toArray();
+	public static Map<Integer, Object> getSpeciesList(@Nonnull IContext<IModuleContainer> context) {
+		LuaList<Object> species = ChickensRegistry.getItems().stream()
+				.map(m -> context.makePartialChild(m).getMeta())
+				.collect(LuaList.toLuaList());
+
+		return species.asMap();
 	}
 
-	/*TODO Determine full set of desired functionality for the Chickens Analyzer
-	 *
-	 * Public methods from the `ChickensRegistry` class include:
-	 * getByResourceLocation
-	 * getByRegistryName
-	 * getItems - Returns all _enabled_ `ChickensRegistryItem`s
-	 *
-	 * Other methods feel superfluous at this time; they can be added if requested
-	 */
-
-	/*
-	//TODO If Chickens requires analyzing an entity to show stats, enable a method that
-	// requires both the Chickens analyzer and the Entity Sensor
-	// Reference MethodsIntrospection.getMetaOwner
-	//TODO Determine the correct method type for this use
-	@SubtargetedModuleObjectMethod.Inject(
-			module = {PlethoraModules.SENSOR_S, IntegrationChickens.analyzerMod},
-			target = EntityChickensChicken.class
-
+	@Nonnull
+	@PlethoraMethod(
+			module = IntegrationChickens.ANALYZER_S, modId = ChickensMod.MODID,
+			doc = "-- Get a single chicken species"
 	)
-	public static MethodResult getChickenStatsByID() {
-		if (!ConfigHandler.alwaysShowStats) {
-			//TODO Then we need to have the analyzer, otherwise a standard sensor module works
+	public static Map<Object, Object> getSpecies(@Nonnull IContext<IModuleContainer> context, String name) {
+		ChickensRegistryItem species = ChickensRegistry.getByRegistryName(name);
+
+		//REFINE Code style review: What style is preferred?
+		// The current structure?
+		// Flipping the conditional? (E.g. "species != null")
+		// Ternary operator?
+		if (species == null) return Collections.emptyMap();
+
+		return context.makePartialChild(species).getMeta();
+	}
+
+	//TODO Doesn't show in getDocs... what'd I break?
+	@PlethoraMethod(
+			module = {PlethoraModules.SENSOR_S}, modId = ChickensMod.MODID,
+			doc = "-- Analyze a chicken's stats; once analyzed, check meta as usual"
+	)
+	public static void analyzeChicken(@Nonnull IPartialContext<EntityChickensChicken> context) throws LuaException {
+		// Check if a chicken even _needs_ to be analyzed
+		if (ConfigHandler.alwaysShowStats) return;
+
+		// The more I work on it, the more I question the structure of this method...
+		if (!context.getModules().hasModule(IntegrationChickens.ANALYZER_MOD)){
+			throw new LuaException("Chickens Analyzer required!");
 		}
 
-		//FIXME Implement this mess
-		return null;
-	} */
+		EntityChickensChicken chicken = context.getTarget();
+
+		// Not sure if this actually protects anything, or just adds overhead...
+		if (!chicken.getStatsAnalyzed()) {
+			chicken.setStatsAnalyzed(true);
+		}
+
+	}
 }

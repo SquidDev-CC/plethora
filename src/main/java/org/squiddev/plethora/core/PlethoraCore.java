@@ -27,6 +27,7 @@ import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.chickens.IntegrationChickens;
 import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
 import org.squiddev.plethora.integration.forestry.IntegrationForestry;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
@@ -67,6 +68,8 @@ public class PlethoraCore {
 		IntegrationComputerCraft.setup();
 		IntegrationVanilla.setup();
 		IntegrationForestry.setup();
+		//REFINE Would we benefit from a generalized handler for defining new modules?
+		IntegrationChickens.setup();
 	}
 
 	@Mod.EventHandler

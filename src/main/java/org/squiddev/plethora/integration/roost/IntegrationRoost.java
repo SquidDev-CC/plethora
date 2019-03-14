@@ -12,8 +12,6 @@ import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
-import org.squiddev.plethora.gameplay.ConfigGameplay;
-import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import java.util.Map;
 
@@ -50,7 +48,9 @@ public final class IntegrationRoost {
 			out.put("strength", nbt.getInteger("Strength"));
 
 			//REFINE Test whether this is needed/the same as chicken.getName()
-			// Odd, this appears to be an empty string?
+			//TODO Determine if there is a way to pull this from the item stack
+			// This field isn't included in createTagCompound... >:(
+			// May need to convert to an ItemStackContextMetaProvider...?
 			out.put("chicken", nbt.getString("Chicken"));
 		}
 
