@@ -5,27 +5,32 @@ import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 
+import javax.annotation.Nullable;
 import java.util.Map;
-
-import static org.squiddev.plethora.integration.PlethoraIntegration.LOG;
 
 @Injects(ChickensMod.MODID)
 public final class MetaChickens {
 	private MetaChickens() {
 	}
 
-	//TODO Define a converter for Entity to EntityChickensChicken
+	// A lambda expression would be more concise, but the line length is a bit much
+	//REFINE Determine whether this needs to be a `DynamicConverter` or if it can be a `ConstantConverter`
+	@SuppressWarnings("CodeBlock2Expr")
+	@Nullable
+	public static final DynamicConverter<Entity, EntityChickensChicken> GET_CHICKEN_FROM_ENTITY = entity -> {
+		return entity instanceof EntityChickensChicken ? (EntityChickensChicken) entity : null;
+	};
 
 	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", object -> {
 		Map<Object, Object> out = Maps.newHashMap();
 		EntityChickensChicken chicken = object.getTarget();
-
-		LOG.info("Chicken found as: {}", chicken);
 
 		// Growth, gain, strength, layProgress, analyzed, tier
 		out.put("analyzed", chicken.getStatsAnalyzed());
@@ -51,8 +56,6 @@ public final class MetaChickens {
 			out.put("dropItem", object.makePartialChild(chickenDesc.createDropItem()).getMeta());
 		}
 
-		LOG.info("EntityChickensChicken decoded as: {}", out);
-
 		return out;
 	});
 
@@ -63,6 +66,7 @@ public final class MetaChickens {
 		out.put("name", chicken.getRegistryName().toString());
 		out.put("entityName", chicken.getEntityName());
 
+		//REFINE This is a bit TOO verbose; determine the proper data to expose (e.g. display name or resource location)
 		out.put("layItem", object.makePartialChild(chicken.createLayItem()).getMeta());
 		out.put("dropItem", object.makePartialChild(chicken.createDropItem()).getMeta());
 
