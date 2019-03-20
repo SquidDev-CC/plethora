@@ -7,6 +7,7 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group3D;
@@ -23,7 +24,7 @@ public class MethodsCanvas3D {
 	@PlethoraMethod(doc = "-- Create a new 3D canvas centred relative to the current position.", worldThread = false)
 	public static ILuaObject create(
 		IContext<Origin3D> baked, @FromContext CanvasServer canvas, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-		Vec3d offset
+		@Optional Vec3d offset
 	) {
 		if (offset == null) offset = Vec3d.ZERO;
 

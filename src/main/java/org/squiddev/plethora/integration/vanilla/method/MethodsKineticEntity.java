@@ -47,7 +47,7 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 @Injects
 public final class MethodsKineticEntity {
 	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Look in a set direction")
-	public static void look(@FromSubtarget EntityLivingBase target, double pitch, double yaw) {
+	public static void look(@FromSubtarget EntityLivingBase target, double yaw, double pitch) {
 		yaw %= 360;
 		pitch %= 360;
 
@@ -55,8 +55,8 @@ public final class MethodsKineticEntity {
 			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
 			handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
 		} else {
-			target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) (yaw % 360);
-			target.rotationPitch = (float) (pitch % 360);
+			target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) yaw;
+			target.rotationPitch = (float) pitch;
 		}
 	}
 
