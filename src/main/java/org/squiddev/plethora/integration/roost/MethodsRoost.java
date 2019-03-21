@@ -9,8 +9,11 @@ import com.timwoodcreates.roost.data.DataChicken;
 import com.timwoodcreates.roost.data.DataChickenModded;
 import com.timwoodcreates.roost.data.DataChickenVanilla;
 import com.timwoodcreates.roost.tileentity.TileEntityBreeder;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.utils.LuaList;
 
@@ -28,19 +31,19 @@ public class MethodsRoost {
 		doc = "-- Get a list of chickens species"
 	)
 	public static Map<Integer, Object> getSpeciesList(@Nonnull IContext<TileEntityBreeder> context) {
+		Map<Object, Object> vanillaChicken = getVanillaChicken(context);
+
 		if (Loader.isModLoaded(ChickensMod.MODID)) {
 			LuaList<Object> species = ChickensRegistry.getItems().stream()
 				.map(m -> context.makePartialChild(m).getMeta())
 				.collect(LuaList.toLuaList());
 
+			species.add(vanillaChicken);
+
 			return species.asMap();
 		}
 
-		//FIXME Determine a proper return value
-		// If Chickens isn't loaded, then Roost only registers DataChickenVanilla
-		// This, in turn, doesn't have any breeding pairs,
-		// but it will expose different methods than a ChickensRegistryItem
-		return Collections.emptyMap();
+		return Collections.singletonMap(1, vanillaChicken);
 	}
 
 	@PlethoraMethod(
@@ -48,43 +51,35 @@ public class MethodsRoost {
 		doc = "-- Get a single chicken species"
 	)
 	public static Map<Object, Object> getSpecies(@Nonnull IContext<TileEntityBreeder> context, String name) {
-
-		//FIXME Well crud... Roost and Chickens use different internal names, e.g. Roost's "blue" to Chicken's "chickens:bluechicken"
-		// unless this is exposed by the (hidden...) "Chicken" tag... yup, that's the case...
+		if ("minecraft:chicken".equals(name)) return getVanillaChicken(context);
 
 		if (Loader.isModLoaded(ChickensMod.MODID)) {
 			ChickensRegistryItem species = ChickensRegistry.getByRegistryName(name);
 
-			//REFINE Code style review: What style is preferred?
-			// The current structure?
-			// Flipping the conditional? (E.g. "species != null")
-			// Ternary operator?
-			if (species == null) return Collections.emptyMap();
-
-			return context.makePartialChild(species).getMeta();
+			return species != null
+				? context.makePartialChild(species).getMeta()
+				: Collections.emptyMap();
 		}
 
-		//FIXME Determine a proper return value
-		// If Chickens isn't loaded, then Roost only registers DataChickenVanilla
-		// This, in turn, doesn't have any breeding pairs,
-		// but it will expose different methods than a ChickensRegistryItem
 		return Collections.emptyMap();
 	}
 
-	public static Map<Object, Object> getVanillaChicken() {
+	private static Map<Object, Object> getVanillaChicken(@Nonnull IPartialContext context) {
 		Map<Object, Object> out = Maps.newHashMap();
 
-		/* The map for ChickensRegistryItem's currently contains the following:
-		 * dropItem: {ItemStack.getMeta}
-		 * layItem: {ItemStack.getMeta}
-		 * entityName: "WhiteChicken"
-		 * name: "chickens:whitechicken"
-		 * tier = 1
-		 */
+		out.put("type", "minecraft:chicken");
+		out.put("tier", 0);
 
-		//FIXME Actually implement this
-		// Will probably need a Context of some sort...
-		return Collections.emptyMap();
+		//Technically, it has a chance for either eggs or feathers...
+		out.put("layItem", context.makePartialChild(new ItemStack(Items.FEATHER)).getMeta());
+
+		//TODO Determine what value we want for this entry
+		out.put("dropItem", null);
+
+		out.put("parent1", null);
+		out.put("parent2", null);
+
+		return out;
 	}
 
 }

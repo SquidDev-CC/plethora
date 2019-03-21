@@ -6,22 +6,14 @@ import com.timwoodcreates.roost.data.DataChicken;
 import com.timwoodcreates.roost.data.DataChickenModded;
 import com.timwoodcreates.roost.data.DataChickenVanilla;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
-import org.squiddev.plethora.api.method.IPartialContext;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Injects(Roost.MODID)
@@ -52,15 +44,16 @@ public final class IntegrationRoost {
 			out.put("gain", nbt.getInteger("Gain"));
 			out.put("strength", nbt.getInteger("Strength"));
 
-			//REFINE Test whether this is needed/the same as chicken.getName()
-			out.put("chicken", nbt.getString("Chicken"));
+			//Using key "type" for consistency with Chickens Mod
+			out.put("type", nbt.getString("Chicken"));
 		}
 		else if (chicken instanceof DataChickenVanilla) {
 			DataChickenVanilla vanillaChicken = (DataChickenVanilla) chicken;
 			ItemStack chickenStack = vanillaChicken.buildChickenStack();
 			NBTTagCompound nbt = chickenStack.getTagCompound();
 
-			out.put("chicken", nbt.getString("Chicken"));
+			//Using key "type" for consistency with Chickens Mod
+			out.put("type", nbt.getString("Chicken"));
 		}
 
 		return out;

@@ -10,9 +10,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.DynamicConverter;
+import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.method.IPartialContext;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
@@ -56,30 +59,43 @@ public final class MetaChickens {
 		return out;
 	});
 
-	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new NamespacedMetaProvider<>("chickens", context -> {
-		Map<Object, Object> out = Maps.newHashMap();
-		ChickensRegistryItem chicken = context.getTarget();
+	//When modifying this provider, ensure that MethodsRoost.getVanillaChicken is also updated
+	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new BaseMetaProvider<ChickensRegistryItem>() {
+		@Nonnull
+		@Override
+		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ChickensRegistryItem> context) {
+			Map<Object, Object> out = Maps.newHashMap();
+			ChickensRegistryItem chicken = context.getTarget();
 
-		out.put("name", chicken.getRegistryName().toString());
-		out.put("entityName", chicken.getEntityName());
+			//Using key "type" for consistency
+			out.put("type", chicken.getRegistryName().toString());
+			//out.put("entityName", chicken.getEntityName());
 
-		//REFINE This is a bit TOO verbose; determine the proper data to expose (e.g. display name or resource location)
-		out.put("layItem", context.makePartialChild(chicken.createLayItem()).getMeta());
-		out.put("dropItem", context.makePartialChild(chicken.createDropItem()).getMeta());
+			//REFINE This is a bit TOO verbose; determine the proper data to expose (e.g. display name or resource location)
+			out.put("layItem", context.makePartialChild(chicken.createLayItem()).getMeta());
+			out.put("dropItem", context.makePartialChild(chicken.createDropItem()).getMeta());
 
-		out.put("tier", chicken.getTier());
+			out.put("tier", chicken.getTier());
 
-		//REFINE Check if this is the value that we want here
-		// We could put the full parent reference, but that could get a bit messy
-		// in terms of reference management/GC, and data structure size
-		ChickensRegistryItem parent1 = chicken.getParent1();
-		out.put("parent1", parent1 == null ? null : parent1.getRegistryName().toString());
+			//REFINE Check if this is the value that we want here
+			// We could put the full parent reference, but that could get a bit messy
+			// in terms of reference management/GC, and data structure size
+			ChickensRegistryItem parent1 = chicken.getParent1();
+			out.put("parent1", parent1 == null ? null : parent1.getRegistryName().toString());
 
-		ChickensRegistryItem parent2 = chicken.getParent2();
-		out.put("parent2", parent2 == null ? null : parent2.getRegistryName().toString());
+			ChickensRegistryItem parent2 = chicken.getParent2();
+			out.put("parent2", parent2 == null ? null : parent2.getRegistryName().toString());
 
-		//REFINE Do we want any more fields exposed?
-		return out;
-	});
+			//REFINE Do we want any more fields exposed?
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public ChickensRegistryItem getExample() {
+			//While this example won't fully demonstrate all of the meta fields, it gives us a consistent example (if not disabled)
+			return ChickensRegistry.getSmartChicken();
+		}
+	};
 
 }
