@@ -21,13 +21,9 @@ public final class MetaChickens {
 	private MetaChickens() {
 	}
 
-	// A lambda expression would be more concise, but the line length is a bit much
-	//REFINE Determine whether this needs to be a `DynamicConverter` or if it can be a `ConstantConverter`
-	@SuppressWarnings("CodeBlock2Expr")
 	@Nullable
-	public static final DynamicConverter<Entity, EntityChickensChicken> GET_CHICKEN_FROM_ENTITY = entity -> {
-		return entity instanceof EntityChickensChicken ? (EntityChickensChicken) entity : null;
-	};
+	public static final DynamicConverter<Entity, EntityChickensChicken> GET_CHICKEN_FROM_ENTITY =
+		entity -> entity instanceof EntityChickensChicken ? (EntityChickensChicken) entity : null;
 
 	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", context -> {
 		Map<Object, Object> out = Maps.newHashMap();

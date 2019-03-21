@@ -5,6 +5,8 @@ import com.gendeathrow.hatchery.core.init.ModItems;
 import com.gendeathrow.hatchery.item.AnimalNet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +18,9 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.utils.EntityPlayerDummy;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,8 +56,8 @@ public final class IntegrationHatchery {
 	 */
 
 	public static final IMetaProvider<ItemStack> META_ANIMAL_NET = new ItemStackContextMetaProvider<AnimalNet>(
-			AnimalNet.class,
-			"Provides the entity captured inside this Animal Net."
+		AnimalNet.class,
+		"Provides the entity captured inside this Animal Net."
 	) {
 
 		//TODO All three (so far) classes that expose captured entity data have many of the same checks;
@@ -92,9 +96,9 @@ public final class IntegrationHatchery {
 			Map<Object, Object> details = new HashMap<>(2);
 			details.put("name", translated);
 			details.put("displayName",
-					entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
-							? entityData.getString("CustomName")
-							: translated
+				entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
+					? entityData.getString("CustomName")
+					: translated
 			);
 			return Collections.singletonMap("capturedEntity", details);
 		}
@@ -102,12 +106,13 @@ public final class IntegrationHatchery {
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			//TODO Cannot cleanly generate an example, as the public methods on AnimalNet
-			// require a parameter of type EntityPlayer, and manually constructing the
-			// stack would be very brittle, as we would be relying entirely upon
-			// implementation details not changing...
-			//ModItems.animalNet.getDefaultInstance();
-			return null;
+			EntityPlayer dummyPlayer = new EntityPlayerDummy(WorldDummy.INSTANCE);
+			ItemStack netStack = ModItems.animalNet.getDefaultInstance();
+			ResourceLocation cowLocation = EntityList.getKey(EntityCow.class);
+			if (cowLocation == null) return null;
+
+			Entity cow = EntityList.createEntityByIDFromName(cowLocation, WorldDummy.INSTANCE);
+			return cow == null ? null : AnimalNet.addEntitytoNet(dummyPlayer, netStack, cow);
 		}
 	};
 

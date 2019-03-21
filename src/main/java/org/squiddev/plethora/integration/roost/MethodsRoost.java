@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.roost;
 
+import com.google.common.collect.Maps;
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
@@ -17,17 +18,20 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
+/*
+ * When working on this class, ensure that getSpecies and getSpeciesList from chickens/MethodsAnalyzer are kept in lock-step!
+ */
 public class MethodsRoost {
 
 	@PlethoraMethod(
-			modId = Roost.MODID,
-			doc = "-- Get a list of chickens species"
+		modId = Roost.MODID,
+		doc = "-- Get a list of chickens species"
 	)
 	public static Map<Integer, Object> getSpeciesList(@Nonnull IContext<TileEntityBreeder> context) {
 		if (Loader.isModLoaded(ChickensMod.MODID)) {
 			LuaList<Object> species = ChickensRegistry.getItems().stream()
-					.map(m -> context.makePartialChild(m).getMeta())
-					.collect(LuaList.toLuaList());
+				.map(m -> context.makePartialChild(m).getMeta())
+				.collect(LuaList.toLuaList());
 
 			return species.asMap();
 		}
@@ -40,8 +44,8 @@ public class MethodsRoost {
 	}
 
 	@PlethoraMethod(
-			modId = Roost.MODID,
-			doc = "-- Get a single chicken species"
+		modId = Roost.MODID,
+		doc = "-- Get a single chicken species"
 	)
 	public static Map<Object, Object> getSpecies(@Nonnull IContext<TileEntityBreeder> context, String name) {
 
@@ -67,6 +71,20 @@ public class MethodsRoost {
 		return Collections.emptyMap();
 	}
 
-	//FIXME Write a helper method to provide the data for DataChickenVanilla
+	public static Map<Object, Object> getVanillaChicken() {
+		Map<Object, Object> out = Maps.newHashMap();
+
+		/* The map for ChickensRegistryItem's currently contains the following:
+		 * dropItem: {ItemStack.getMeta}
+		 * layItem: {ItemStack.getMeta}
+		 * entityName: "WhiteChicken"
+		 * name: "chickens:whitechicken"
+		 * tier = 1
+		 */
+
+		//FIXME Actually implement this
+		// Will probably need a Context of some sort...
+		return Collections.emptyMap();
+	}
 
 }
