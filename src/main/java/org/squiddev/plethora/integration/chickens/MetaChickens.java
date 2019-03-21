@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.chickens;
 
 import com.google.common.collect.Maps;
 import com.setycz.chickens.ChickensMod;
+import com.setycz.chickens.config.ConfigHandler;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
@@ -28,15 +29,15 @@ public final class MetaChickens {
 		return entity instanceof EntityChickensChicken ? (EntityChickensChicken) entity : null;
 	};
 
-	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", object -> {
+	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", context -> {
 		Map<Object, Object> out = Maps.newHashMap();
-		EntityChickensChicken chicken = object.getTarget();
+		EntityChickensChicken chicken = context.getTarget();
 
 		// Growth, gain, strength, layProgress, analyzed, tier
 		out.put("analyzed", chicken.getStatsAnalyzed());
 		out.put("tier", chicken.getTier());
 
-		if (chicken.getStatsAnalyzed()) {
+		if (ConfigHandler.alwaysShowStats || chicken.getStatsAnalyzed() || context.getModules().hasModule(IntegrationChickens.ANALYZER_MOD)) {
 			out.put("growth", chicken.getGrowth());
 			out.put("gain", chicken.getGain());
 			out.put("strength", chicken.getStrength());
@@ -52,23 +53,23 @@ public final class MetaChickens {
 		//REFINE Should this be directly associated, or require a lookup against the registry?
 		ChickensRegistryItem chickenDesc = ChickensRegistry.getByRegistryName(chickenType);
 		if (chickenDesc != null) {
-			out.put("layItem", object.makePartialChild(chickenDesc.createLayItem()).getMeta());
-			out.put("dropItem", object.makePartialChild(chickenDesc.createDropItem()).getMeta());
+			out.put("layItem", context.makePartialChild(chickenDesc.createLayItem()).getMeta());
+			out.put("dropItem", context.makePartialChild(chickenDesc.createDropItem()).getMeta());
 		}
 
 		return out;
 	});
 
-	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new NamespacedMetaProvider<>("chickens", object -> {
+	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new NamespacedMetaProvider<>("chickens", context -> {
 		Map<Object, Object> out = Maps.newHashMap();
-		ChickensRegistryItem chicken = object.getTarget();
+		ChickensRegistryItem chicken = context.getTarget();
 
 		out.put("name", chicken.getRegistryName().toString());
 		out.put("entityName", chicken.getEntityName());
 
 		//REFINE This is a bit TOO verbose; determine the proper data to expose (e.g. display name or resource location)
-		out.put("layItem", object.makePartialChild(chicken.createLayItem()).getMeta());
-		out.put("dropItem", object.makePartialChild(chicken.createDropItem()).getMeta());
+		out.put("layItem", context.makePartialChild(chicken.createLayItem()).getMeta());
+		out.put("dropItem", context.makePartialChild(chicken.createDropItem()).getMeta());
 
 		out.put("tier", chicken.getTier());
 

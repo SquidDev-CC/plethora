@@ -21,13 +21,12 @@ public class IntegrationChickens {
 	private IntegrationChickens() {
 	}
 
-	/*TODO List of items/entities/blocks from Chickens that _may_ need integration:
-	 * Henhouse - Collects nearby chicken drops; uses hay bales as fuel, and creates dirt
-	 * EntityChickensChicken
-	 * ItemAnalyzer - Analyzes chickens in-world, at cost of durability
+	/*The following classes from Chickens _may_ need added integration:
+	 * Henhouse - Collects nearby chicken drops; uses hay bales as fuel, and creates dirt.
+	 *            Standard inv methods should suffice, unless we want to reveal the 'energy' property (think furnace burn time).
+	 * ItemLiquidEgg - In short, a single-use bucket.  Appears to be properly exposed by standard fluid capabilities.
 	 * ItemColoredEgg - Custom egg for dye chickens; not a guaranteed spawn, same as vanilla eggs
-	 * ItemLiquidEgg - In short, a single-use bucket.  Check the LiquidEggFluidWrapper capability
-	 * ItemSpawnEgg
+	 * ItemSpawnEgg - The only metadata that may be useful for the eggs would be the species to spawn...
 	 */
 
 	public static final String ANALYZER_S = "chickens:analyzer";

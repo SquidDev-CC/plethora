@@ -18,7 +18,9 @@ import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Injects(Roost.MODID)
@@ -35,9 +37,9 @@ public final class IntegrationRoost {
 	public static final DynamicConverter<Entity, DataChicken> GET_DATA_CHICKEN_FROM_ENTITY = DataChicken::getDataFromEntity;
 
 	//REFINE Do we want to use 'roost' for the namespace, 'chicken', or something else?
-	public static final IMetaProvider<DataChicken> META_DATA_CHICKEN = new NamespacedMetaProvider<>("roost", object -> {
+	public static final IMetaProvider<DataChicken> META_DATA_CHICKEN = new NamespacedMetaProvider<>("roost", context -> {
 		Map<Object, Object> out = Maps.newHashMap();
-		DataChicken chicken = object.getTarget();
+		DataChicken chicken = context.getTarget();
 		out.put("name", chicken.getName());
 
 		//TODO Unless we can get the ItemStackContextMetaProvider version to work,
@@ -72,40 +74,85 @@ public final class IntegrationRoost {
 
 	});
 
-	//FIXME This doesn't seem to be registering?
-	public static final IMetaProvider<ItemStack> META_DATA_CHICKEN_NEW = new ItemStackContextMetaProvider<DataChicken>(
+	//FIXME This provider, and the variants for subclasses of DataChicken, don't appear to be registering?
+	// The debug log records "Registering value of @Injects field ...", but in-game I do not get any
+	// "roost2" meta records on either subclass
+	//Technically, this specific meta provider shouldn't be needed, as all instances should be one of the subtypes, but...
+	public static final IMetaProvider<ItemStack> META_DATA_CHICKEN_BASE = new ItemStackContextMetaProvider<DataChicken>(
 			DataChicken.class
 	) {
 
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull DataChicken item) {
-			//REFINE Implement checks against malformed NBT
-			// Can be caused by corruption, NBT editors, improperly tweaked recipes...
-			Map<Object, Object> details = Maps.newHashMap();
-			NBTTagCompound nbt = context.getTarget().getTagCompound();
-
-			details.put("name", item.getName());
-			details.put("chicken", nbt.getString("Chicken"));
-
-			if (item instanceof DataChickenModded) {
-				//Unlike the original code, we already have the NBT
-				//The type check merely tells us if certain tags should be present
-
-				//This _shouldn't_ throw errors; if it does, we have a malformed chicken!
-				//That, or Roost changed their (private) NBT key IDs...
-				details.put("growth", nbt.getInteger("Growth"));
-				details.put("gain", nbt.getInteger("Gain"));
-				details.put("strength", nbt.getInteger("Strength"));
-			}
-
-			return Collections.singletonMap("roost", details);
+			return getGeneralizedMeta(context, item);
 		}
 
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			return DataChicken.getAllChickens().isEmpty() ? null : DataChicken.getAllChickens().get(0).buildChickenStack();
+			return null;
 		}
 	};
+
+	public static final IMetaProvider<ItemStack> META_DATA_CHICKEN_VANILLA = new ItemStackContextMetaProvider<DataChickenVanilla>(
+			DataChickenVanilla.class
+	) {
+
+		@Nonnull
+		@Override
+		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull DataChickenVanilla item) {
+			return getGeneralizedMeta(context, item);
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return new DataChickenVanilla().buildChickenStack();
+		}
+	};
+
+	//TODO Test if this will cause any issues if we only have Roost and not Chickens
+	public static final IMetaProvider<ItemStack> META_DATA_CHICKEN_MODDED = new ItemStackContextMetaProvider<DataChickenModded>(
+			DataChickenModded.class
+	) {
+
+		@Nonnull
+		@Override
+		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull DataChickenModded item) {
+			return getGeneralizedMeta(context, item);
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			List<DataChicken> chickenList = new ArrayList<>();
+			DataChickenModded.addAllChickens(chickenList);
+			return chickenList.isEmpty() ? null : chickenList.get(0).buildChickenStack();
+		}
+	};
+
+
+	private static Map<Object, Object> getGeneralizedMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull DataChicken item) {
+		//REFINE Implement checks against malformed NBT
+		// Can be caused by corruption, NBT editors, improperly tweaked recipes...
+		Map<Object, Object> details = Maps.newHashMap();
+		NBTTagCompound nbt = context.getTarget().getTagCompound();
+
+		details.put("name", item.getName());
+		details.put("chicken", nbt.getString("Chicken"));
+
+		if (item instanceof DataChickenModded) {
+			//Unlike the original code, we already have the NBT
+			//The type check merely tells us if certain tags should be present
+
+			//This _shouldn't_ throw errors; if it does, we have a malformed chicken!
+			//That, or Roost changed their (private) NBT key IDs...
+			details.put("growth", nbt.getInteger("Growth"));
+			details.put("gain", nbt.getInteger("Gain"));
+			details.put("strength", nbt.getInteger("Strength"));
+		}
+
+		return Collections.singletonMap("roost2", details);
+	}
 }
