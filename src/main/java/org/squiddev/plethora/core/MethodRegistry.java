@@ -113,6 +113,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			UnbakedContext<?> unbaked = null;
 			for (IMethod method : getMethods(builder.withIndex(i))) {
 				// Skip IConverterExclude methods
+				PlethoraCore.LOG.info("Got {} for {}", method.getId(), values[i]);
 				if (i != builder.target && method instanceof IConverterExcludeMethod) {
 					continue;
 				}

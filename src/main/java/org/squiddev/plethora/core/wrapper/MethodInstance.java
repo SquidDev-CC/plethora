@@ -19,6 +19,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 
 	private final String id;
 	private final String name;
+	private final Class<T> target;
 	private final String documentation;
 	final boolean worldThread;
 	private final ContextInfo[] requiredContext;
@@ -34,6 +35,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 
 		this.id = method.getDeclaringClass().getName() + "#" + method.getName() + "(" + target.getSimpleName() + ")";
 		this.name = name;
+		this.target = target;
 		this.documentation = documentation;
 		this.worldThread = worldThread;
 		this.requiredContext = requiredContext;
@@ -50,7 +52,7 @@ final class MethodInstance<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTa
 	public boolean canApply(@Nonnull IPartialContext<T> context) {
 		// Ensure we have all required modules.
 		if (modules != null) {
-			IModuleContainer moduleContainer = context.getModules();
+			IModuleContainer moduleContainer = IModuleContainer.class.isAssignableFrom(target) ? (IModuleContainer) context.getTarget() : context.getModules();
 			for (ResourceLocation module : modules) {
 				if (!moduleContainer.hasModule(module)) return false;
 			}
