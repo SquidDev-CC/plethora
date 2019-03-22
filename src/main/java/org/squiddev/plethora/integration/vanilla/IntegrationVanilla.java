@@ -13,9 +13,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityDaylightDetector;
 import net.minecraft.tileentity.TileEntityNote;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
@@ -27,6 +27,7 @@ import org.squiddev.plethora.core.modules.VehicleModuleHandlerTransform;
 
 import javax.vecmath.Matrix4f;
 
+@Mod.EventBusSubscriber(modid = PlethoraCore.ID)
 public class IntegrationVanilla {
 	public static final String daylightSensor = "minecraft:daylight_detector";
 	public static final String clock = "minecraft:clock";
@@ -37,8 +38,6 @@ public class IntegrationVanilla {
 	public static final ResourceLocation noteblockMod = new ResourceLocation(noteblock);
 
 	public static void setup() {
-		IntegrationVanilla instance = new IntegrationVanilla();
-		MinecraftForge.EVENT_BUS.register(instance);
 		DisableAI.register();
 
 		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
@@ -53,7 +52,7 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	public void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
+	public static void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
 		Item item = event.getObject().getItem();
 		if (item == Items.CLOCK) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, clockCap);
@@ -68,7 +67,7 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
+	public static void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
 		TileEntity entity = event.getObject();
 		if (entity instanceof TileEntityNote) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, noteblockCap);
@@ -78,7 +77,7 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
+	public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
 		Entity entity = event.getObject();
 		if (entity instanceof EntityLiving) {
 			event.addCapability(DisableAI.DISABLE_AI, new DisableAI.DefaultDisableAI());
@@ -86,7 +85,7 @@ public class IntegrationVanilla {
 	}
 
 	@SubscribeEvent
-	public void entityTick(LivingEvent.LivingUpdateEvent event) {
+	public static void entityTick(LivingEvent.LivingUpdateEvent event) {
 		EntityLivingBase livingBase = event.getEntityLiving();
 		if (livingBase instanceof EntityLiving) {
 			DisableAI.maybeClear((EntityLiving) livingBase);

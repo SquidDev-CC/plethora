@@ -17,7 +17,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.io.IOException;
@@ -101,7 +101,7 @@ public class GuiKeyboard extends GuiScreen {
 
 		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack module = handler.getStackInSlot(i);
-			if (module.getItem() == Registry.itemModule && module.getMetadata() == PlethoraModules.GLASSES_ID) {
+			if (module.getItem() == Registration.itemModule && module.getMetadata() == PlethoraModules.GLASSES_ID) {
 				return true;
 			}
 		}

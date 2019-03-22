@@ -5,7 +5,6 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -27,14 +26,13 @@ import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
-import org.squiddev.plethora.integration.forestry.IntegrationForestry;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.Helpers;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
 @Mod(modid = ID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = "org.squiddev.plethora.core.client.gui.GuiConfigCore")
+@Mod.EventBusSubscriber(modid = ID)
 public class PlethoraCore {
 	public static final String ID = "plethora-core";
 	public static final String NAME = "Plethora Core";
@@ -60,13 +58,8 @@ public class PlethoraCore {
 		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral::new);
 		CapabilityManager.INSTANCE.register(IVehicleUpgradeHandler.class, new DefaultStorage<>(), DefaultVehicleUpgradeHandler::new);
 
-		// Various event handlers
-		MinecraftForge.EVENT_BUS.register(this);
-
 		// Integration modules. Generally just listen to capability events
-		IntegrationComputerCraft.setup();
 		IntegrationVanilla.setup();
-		IntegrationForestry.setup();
 	}
 
 	@Mod.EventHandler
@@ -132,7 +125,7 @@ public class PlethoraCore {
 	}
 
 	@SubscribeEvent
-	public void onServerTick(TickEvent.ServerTickEvent event) {
+	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			DefaultCostHandler.update();
 			TaskRunner.SHARED.update();
@@ -140,14 +133,14 @@ public class PlethoraCore {
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.getModID().equals(PlethoraCore.ID)) {
 			ConfigCore.sync();
 		}
 	}
 
 	@SubscribeEvent
-	public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+	public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 		ModuleRegistry.instance.addRecipes(event.getRegistry());
 	}
 }

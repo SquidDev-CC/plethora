@@ -34,7 +34,7 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.LoadedCache;
 import org.squiddev.plethora.utils.TinySlot;
 
@@ -64,7 +64,7 @@ public final class NeuralHelpers {
 	public static TinySlot getSlot(EntityLivingBase entity) {
 		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
-		if (!stack.isEmpty() && stack.getItem() == Registry.itemNeuralInterface) {
+		if (!stack.isEmpty() && stack.getItem() == Registration.itemNeuralInterface) {
 			if (entity instanceof EntityPlayer) {
 				return new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
 			} else {
@@ -92,7 +92,7 @@ public final class NeuralHelpers {
 		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
 		for (int slot : getBaubleType().getValidSlots()) {
 			ItemStack stack = handler.getStackInSlot(slot);
-			if (stack.getItem() == Registry.itemNeuralInterface) {
+			if (stack.getItem() == Registration.itemNeuralInterface) {
 				return new TinySlot.BaublesSlot(stack, handler, slot);
 			}
 		}

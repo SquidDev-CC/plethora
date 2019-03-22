@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.modules;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -13,7 +12,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,9 +25,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,8 +43,6 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.BlockBase;
-import org.squiddev.plethora.gameplay.client.tile.RenderManipulator;
-import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.MatrixHelpers;
 import org.squiddev.plethora.utils.PlayerHelpers;
 import org.squiddev.plethora.utils.RenderHelper;
@@ -179,30 +172,6 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	@Override
 	public int damageDropped(IBlockState state) {
 		return state.getValue(TYPE).ordinal();
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		ComputerCraftAPI.registerPeripheralProvider(this);
-
-		// Prevent wrapping by accident
-		FMLInterModComms.sendMessage(PlethoraCore.ID, Constants.IMC_BLACKLIST_PERIPHERAL, TileManipulator.class.getName());
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileManipulator.class, new RenderManipulator());
-	}
-
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerModels(ModelRegistryEvent event) {
-		for (ManipulatorType type : VALUES) {
-			Helpers.setupModel(Item.getItemFromBlock(this), type.ordinal(), name + "." + type.getName());
-		}
 	}
 
 	@Override

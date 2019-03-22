@@ -2,11 +2,12 @@ package org.squiddev.plethora.gameplay.keyboard;
 
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.squiddev.plethora.gameplay.registry.BasicMessage;
 
 import java.util.List;
 
-public class KeyMessage implements IMessage {
+public class KeyMessage implements BasicMessage {
 	public static class KeyPress {
 		public final int key;
 		public final boolean repeat;
@@ -19,8 +20,8 @@ public class KeyMessage implements IMessage {
 		}
 	}
 
-	public List<KeyPress> presses;
-	public List<Integer> ups;
+	private List<KeyPress> presses;
+	private List<Integer> ups;
 
 	public KeyMessage() {
 	}
@@ -62,5 +63,10 @@ public class KeyMessage implements IMessage {
 		for (Integer up : ups) {
 			buf.writeInt(up);
 		}
+	}
+
+	@Override
+	public void onMessage(MessageContext ctx) {
+		ServerKeyListener.process(ctx.getServerHandler().player, presses, ups);
 	}
 }

@@ -1,16 +1,22 @@
 package org.squiddev.plethora.gameplay.minecart;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.squiddev.plethora.gameplay.registry.BasicMessage;
 
-public class MessageMinecartSlot implements IMessage {
-	public static final byte FLAG_TAG = 1;
-	public static final byte FLAG_STACK = 2;
+public class MessageMinecartSlot implements BasicMessage {
+	private static final byte FLAG_TAG = 1;
+	private static final byte FLAG_STACK = 2;
 
-	public int entityId;
+	private int entityId;
 	public int slot;
 	private int flags;
 	public ItemStack stack;
@@ -60,5 +66,28 @@ public class MessageMinecartSlot implements IMessage {
 
 		if ((flags & FLAG_TAG) != 0) ByteBufUtils.writeTag(buf, tag);
 		if ((flags & FLAG_STACK) != 0) ByteBufUtils.writeItemStack(buf, stack);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void onMessage(final MessageContext ctx) {
+		// We schedule this to run on the main thread so the entity is actually loaded by this point.
+		// After all, this is what the S0EPacketSpawnObject packet does.
+		Minecraft mc = Minecraft.getMinecraft();
+		if (!mc.isCallingFromMinecraftThread()) {
+			mc.addScheduledTask(() -> this.onMessage(ctx));
+			return;
+		}
+
+		World world = Minecraft.getMinecraft().world;
+		if (world == null) return;
+
+		Entity entity = world.getEntityByID(entityId);
+		if (entity instanceof EntityMinecartComputer) {
+			EntityMinecartComputer computer = ((EntityMinecartComputer) entity);
+
+			if (hasStack()) computer.itemHandler.setStackInSlot(slot, stack);
+			if (hasTag()) computer.accesses[slot].compound = tag;
+		}
 	}
 }

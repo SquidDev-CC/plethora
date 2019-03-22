@@ -15,7 +15,7 @@ import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.gameplay.TileBase;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -60,7 +60,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 
 	public EnumFacing getFacing() {
 		IBlockState state = getWorld().getBlockState(getPos());
-		return state.getBlock() == Registry.blockManipulator
+		return state.getBlock() == Registration.blockManipulator
 			? state.getValue(BlockManipulator.FACING)
 			: EnumFacing.DOWN;
 	}

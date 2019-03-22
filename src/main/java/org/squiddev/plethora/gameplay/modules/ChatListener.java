@@ -2,14 +2,18 @@ package org.squiddev.plethora.gameplay.modules;
 
 import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.ConstantReference;
+import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
-import org.squiddev.plethora.gameplay.registry.Module;
+import org.squiddev.plethora.gameplay.registry.Registration;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.LuaPattern;
 
 import javax.annotation.Nonnull;
@@ -19,16 +23,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ChatListener extends Module {
+@Mod.EventBusSubscriber(modid = Plethora.ID)
+public class ChatListener {
 	private static Set<Listener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-	@Override
-	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
+	private ChatListener() {
 	}
 
 	@SubscribeEvent
-	public void onServerChat(ServerChatEvent event) {
+	public static void onServerChat(ServerChatEvent event) {
 		Entity sender = event.getPlayer();
 		if (sender instanceof PlethoraFakePlayer) {
 			Entity owner = ((PlethoraFakePlayer) sender).getOwner();
@@ -46,6 +49,21 @@ public class ChatListener extends Module {
 		// Handle chat messages for everyone
 		for (Listener listener : listeners) {
 			listener.handleMessage(sender, event.getMessage());
+		}
+
+		// And send a message to every player in range holding a chat recorder.
+		PlayerList players = event.getPlayer().server.getPlayerList();
+		int distance = (players.getViewDistance() * 16);
+		distance *= distance;
+		ChatMessage message = new ChatMessage(sender, event.getComponent());
+
+		for (EntityPlayerMP player : players.getPlayers()) {
+			if (Helpers.isHolding(player, Registration.itemModule, PlethoraModules.CHAT_ID) ||
+				Helpers.isHolding(player, Registration.itemModule, PlethoraModules.CHAT_CREATIVE_ID)) {
+				if (player != sender && player.getEntityWorld() == sender.getEntityWorld() && player.getDistanceSq(sender) <= distance) {
+					Plethora.network.sendTo(message, player);
+				}
+			}
 		}
 	}
 

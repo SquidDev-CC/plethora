@@ -8,7 +8,7 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.core.PlethoraCore;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -17,9 +17,9 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 	private static final String ID = "modules";
 
 	private static final ItemStack[] STACKS = new ItemStack[]{
-		new ItemStack(Registry.itemNeuralInterface),
-		new ItemStack(Registry.blockManipulator, 1, 0),
-		new ItemStack(Registry.blockManipulator, 1, 1),
+		new ItemStack(Registration.itemNeuralInterface),
+		new ItemStack(Registration.blockManipulator, 1, 0),
+		new ItemStack(Registration.blockManipulator, 1, 1),
 	};
 
 	private ModulesWrapper(@Nonnull ItemStack stack, @Nonnull IGuiHelper helper) {

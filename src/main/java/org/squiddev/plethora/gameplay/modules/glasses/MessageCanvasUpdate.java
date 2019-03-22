@@ -1,15 +1,14 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
+import org.squiddev.plethora.gameplay.registry.BasicMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageCanvasUpdate implements IMessage {
+public class MessageCanvasUpdate implements BasicMessage {
 	private int canvasId;
 	private List<BaseObject> changed;
 	private int[] removed;
@@ -58,18 +57,14 @@ public class MessageCanvasUpdate implements IMessage {
 		}
 	}
 
-	public static class Handler implements IMessageHandler<MessageCanvasUpdate, IMessage> {
-		@Override
-		public IMessage onMessage(MessageCanvasUpdate message, MessageContext context) {
-			CanvasClient canvas = CanvasHandler.getClient(message.canvasId);
-			if (canvas == null) return null;
+	@Override
+	public void onMessage(MessageContext context) {
+		CanvasClient canvas = CanvasHandler.getClient(canvasId);
+		if (canvas == null) return;
 
-			synchronized (canvas) {
-				for (BaseObject obj : message.changed) canvas.updateObject(obj);
-				for (int id : message.removed) canvas.remove(id);
-			}
-
-			return null;
+		synchronized (canvas) {
+			for (BaseObject obj : changed) canvas.updateObject(obj);
+			for (int id : removed) canvas.remove(id);
 		}
 	}
 }

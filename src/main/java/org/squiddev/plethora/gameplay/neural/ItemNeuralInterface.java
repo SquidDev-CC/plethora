@@ -20,23 +20,20 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ISpecialArmor;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,7 +43,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.ModelInterface;
-import org.squiddev.plethora.gameplay.registry.IClientModule;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.LoadedCache;
 import org.squiddev.plethora.utils.PlayerHelpers;
@@ -65,7 +62,8 @@ import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
 	@Optional.Interface(iface = "baubles.api.IBauble", modid = Baubles.MODID),
 	@Optional.Interface(iface = "vazkii.botania.api.item.ICosmeticAttachable", modid = LibMisc.MOD_ID)
 })
-public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISpecialArmor, IComputerItem, IMedia, IBauble, ICosmeticAttachable {
+@Mod.EventBusSubscriber(modid = Plethora.ID)
+public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, IComputerItem, IMedia, IBauble, ICosmeticAttachable {
 	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
@@ -73,6 +71,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	public ItemNeuralInterface() {
 		super(FAKE_ARMOUR, 0, ARMOR_SLOT);
 
+		setRegistryName(new ResourceLocation(Plethora.ID, NAME));
 		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + NAME);
 		setCreativeTab(Plethora.getCreativeTab());
 	}
@@ -132,7 +131,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 		return super.onItemRightClick(world, player, hand);
 	}
 
-	private void onUpdate(ItemStack stack, TinySlot inventory, EntityLivingBase player, boolean forceActive) {
+	private static void onUpdate(ItemStack stack, TinySlot inventory, EntityLivingBase player, boolean forceActive) {
 		if (player.getEntityWorld().isRemote) {
 			if (forceActive && player instanceof EntityPlayer) ItemComputerHandler.getClient(stack);
 		} else {
@@ -424,7 +423,7 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	 * @param event Entity armor ticks
 	 */
 	@SubscribeEvent
-	public void onEntityLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+	public static void onEntityLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.getEntityLiving() instanceof EntityPlayer) return;
 
 		TinySlot slot = NeuralHelpers.getSlot(event.getEntityLiving());
@@ -439,50 +438,10 @@ public class ItemNeuralInterface extends ItemArmor implements IClientModule, ISp
 	 * @param event The event to handle
 	 */
 	@SubscribeEvent
-	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
-		if (!event.isCanceled() && Helpers.onEntityInteract(this, event.getEntityPlayer(), event.getTarget(), event.getHand())) {
+	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
+		if (!event.isCanceled() && Helpers.onEntityInteract(Registration.itemNeuralInterface, event.getEntityPlayer(), event.getTarget(), event.getHand())) {
 			event.setCanceled(true);
 		}
-	}
-	//endregion
-
-	@Override
-	public boolean canLoad() {
-		return true;
-	}
-
-	@Override
-	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	@SubscribeEvent
-	public void registerItems(RegistryEvent.Register<Item> event) {
-		event.getRegistry().register(this.setRegistryName(new ResourceLocation(Plethora.RESOURCE_DOMAIN, NAME)));
-	}
-
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void postInit() {
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientInit() {
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
-	}
-
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void registerModels(ModelRegistryEvent event) {
-		Helpers.setupModel(this, 0, NAME);
 	}
 	//endregion
 }

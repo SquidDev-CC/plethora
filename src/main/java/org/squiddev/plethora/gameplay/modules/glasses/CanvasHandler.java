@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static net.minecraftforge.common.util.Constants.NBT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_DATA;
 
+@Mod.EventBusSubscriber(modid = Plethora.ID)
 public class CanvasHandler {
 	public static final int ID_2D = 0;
 	public static final int ID_3D = 1;
@@ -83,7 +85,7 @@ public class CanvasHandler {
 	}
 
 	@SubscribeEvent
-	public void update(TickEvent.ServerTickEvent event) {
+	public static void update(TickEvent.ServerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
 
 		synchronized (server) {
@@ -120,7 +122,7 @@ public class CanvasHandler {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void render2DOverlay(RenderGameOverlayEvent.Post event) {
+	public static void render2DOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.getType() != RenderGameOverlayEvent.ElementType.HELMET) return;
 
 		CanvasClient canvas = getCanvas();
@@ -151,7 +153,7 @@ public class CanvasHandler {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onWorldRender(RenderWorldLastEvent event) {
+	public static void onWorldRender(RenderWorldLastEvent event) {
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
 

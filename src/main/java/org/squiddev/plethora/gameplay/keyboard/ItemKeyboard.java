@@ -19,7 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -28,7 +27,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IAttachable;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -38,8 +36,7 @@ import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.gameplay.registry.Packets;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.TinySlot;
 
@@ -201,22 +198,6 @@ public class ItemKeyboard extends ItemBase {
 		return KeyboardModule.INSTANCE;
 	}
 
-	@Override
-	public void preInit() {
-		super.preInit();
-
-		ClientKeyListener listener = new ClientKeyListener();
-		MinecraftForge.EVENT_BUS.register(listener);
-		Plethora.network.registerMessage(listener, ListenMessage.class, Packets.LISTEN_MESSAGE, Side.CLIENT);
-		Plethora.network.registerMessage(new ServerKeyListener(), KeyMessage.class, Packets.KEY_MESSAGE, Side.SERVER);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		PlethoraAPI.instance().moduleRegistry().registerPocketUpgrade(new ItemStack(this));
-	}
-
 	@SubscribeEvent
 	public void onPlayerClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		if (!Helpers.isHolding(event.getEntityLiving(), this)) return;
@@ -231,7 +212,7 @@ public class ItemKeyboard extends ItemBase {
 		public static final KeyboardModule INSTANCE = new KeyboardModule();
 
 		private KeyboardModule() {
-			super(new ResourceLocation(Plethora.ID, "keyboard"), Registry.itemKeyboard);
+			super(new ResourceLocation(Plethora.ID, "keyboard"), Registration.itemKeyboard);
 		}
 
 		@Override

@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -116,7 +116,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	public ItemStack getPickedItem() {
-		return new ItemStack(Registry.blockRedstoneIntegrator);
+		return new ItemStack(Registration.blockRedstoneIntegrator);
 	}
 
 	public void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
