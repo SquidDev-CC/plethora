@@ -102,13 +102,11 @@ public class Plethora {
 
 	@EventHandler
 	public static void onServerStopping(FMLServerStoppedEvent e) {
-		RenderOverlay.clearChatMessages();
 		ServerKeyListener.clear();
 	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartedEvent e) {
-		RenderOverlay.clearChatMessages();
 		ServerKeyListener.clear();
 	}
 

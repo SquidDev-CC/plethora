@@ -25,8 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -54,12 +54,11 @@ public class RenderOverlay {
 
 	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<>();
 
-	@SideOnly(Side.CLIENT)
 	public static void addMessage(ChatMessage message) {
 		chatMessages.add(message);
 	}
 
-	public static void clearChatMessages() {
+	private static void clearChatMessages() {
 		chatMessages.clear();
 	}
 
@@ -101,6 +100,16 @@ public class RenderOverlay {
 		for (EnumHand hand : EnumHand.values()) {
 			renderOverlay(event, player.getHeldItem(hand));
 		}
+	}
+
+	@SubscribeEvent
+	public static void onConnectionOpened(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+		clearChatMessages();
+	}
+
+	@SubscribeEvent
+	public static void onConnectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+		clearChatMessages();
 	}
 
 	private static void renderOverlay(RenderWorldLastEvent event, ItemStack stack) {

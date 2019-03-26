@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
-		EntitySelectors.NOT_SPECTATING::apply,
+		EntitySelectors.NOT_SPECTATING,
 		Entity::canBeCollidedWith
 	);
 
