@@ -1,22 +1,26 @@
 package org.squiddev.plethora.integration.chickens;
 
-import com.google.common.collect.Maps;
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.config.ConfigHandler;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
-import net.minecraft.entity.Entity;
+import dan200.computercraft.api.lua.ILuaObject;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.core.ContextFactory;
+import org.squiddev.plethora.core.executor.BasicExecutor;
+import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects(ChickensMod.MODID)
@@ -24,12 +28,8 @@ public final class MetaChickens {
 	private MetaChickens() {
 	}
 
-	@Nullable
-	public static final DynamicConverter<Entity, EntityChickensChicken> GET_CHICKEN_FROM_ENTITY =
-		entity -> entity instanceof EntityChickensChicken ? (EntityChickensChicken) entity : null;
-
 	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", context -> {
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 		EntityChickensChicken chicken = context.getTarget();
 
 		// Growth, gain, strength, layProgress, analyzed, tier
@@ -42,18 +42,17 @@ public final class MetaChickens {
 			out.put("strength", chicken.getStrength());
 		}
 
-		//TODO Submit a PR for Chickens to expose this via getter
 		NBTTagCompound nbt = new NBTTagCompound();
 		chicken.writeEntityToNBT(nbt);
 		String chickenType = nbt.getString("Type");
 		out.put("type", chickenType);
 
 		//Replicating Chickens internal code...
-		//REFINE Should this be directly associated, or require a lookup against the registry?
+		//Exposing these two fields directly for now; hardly warrants the player having to call `getSpecies`
 		ChickensRegistryItem chickenDesc = ChickensRegistry.getByRegistryName(chickenType);
 		if (chickenDesc != null) {
-			out.put("layItem", context.makePartialChild(chickenDesc.createLayItem()).getMeta());
-			out.put("dropItem", context.makePartialChild(chickenDesc.createDropItem()).getMeta());
+			out.put("layItem", wrapStack(context, chickenDesc.createLayItem()));
+			out.put("dropItem", wrapStack(context, chickenDesc.createDropItem()));
 		}
 
 		return out;
@@ -64,29 +63,27 @@ public final class MetaChickens {
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ChickensRegistryItem> context) {
-			Map<Object, Object> out = Maps.newHashMap();
+			Map<Object, Object> out = new HashMap<>();
 			ChickensRegistryItem chicken = context.getTarget();
 
 			//Using key "type" for consistency
 			out.put("type", chicken.getRegistryName().toString());
 			//out.put("entityName", chicken.getEntityName());
 
-			//REFINE This is a bit TOO verbose; determine the proper data to expose (e.g. display name or resource location)
-			out.put("layItem", context.makePartialChild(chicken.createLayItem()).getMeta());
-			out.put("dropItem", context.makePartialChild(chicken.createDropItem()).getMeta());
+			//While a mix of verbosity and indirection, this avoids issues with
+			//items identified by values such as "thermalfoundation:material:132" or similar,
+			//and allows a user to potentially filter based on OreDict entries
+			out.put("layItem", wrapStack(context, chicken.createLayItem()));
+			out.put("dropItem", wrapStack(context, chicken.createDropItem()));
 
 			out.put("tier", chicken.getTier());
 
-			//REFINE Check if this is the value that we want here
-			// We could put the full parent reference, but that could get a bit messy
-			// in terms of reference management/GC, and data structure size
 			ChickensRegistryItem parent1 = chicken.getParent1();
 			out.put("parent1", parent1 == null ? null : parent1.getRegistryName().toString());
 
 			ChickensRegistryItem parent2 = chicken.getParent2();
 			out.put("parent2", parent2 == null ? null : parent2.getRegistryName().toString());
 
-			//REFINE Do we want any more fields exposed?
 			return out;
 		}
 
@@ -97,5 +94,18 @@ public final class MetaChickens {
 			return ChickensRegistry.getSmartChicken();
 		}
 	};
+
+	//Copied from integration.vanilla.meta.MetaEntityLiving
+	@Nullable
+	private static ILuaObject wrapStack(IPartialContext<?> context, @Nullable ItemStack object) {
+		if (object == null || object.isEmpty()) return null;
+
+		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
+		if (context instanceof IContext) {
+			return ((IContext<?>) context).makeChildId(wrapper).getObject();
+		} else {
+			return ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
+		}
+	}
 
 }

@@ -14,10 +14,7 @@ import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 
-public class IntegrationChickens {
-
-	//REFINE Some integration classes have explicit private constructors,
-	// others have implicit default public constructors...
+public final class IntegrationChickens {
 	private IntegrationChickens() {
 	}
 

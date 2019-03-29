@@ -14,6 +14,7 @@ import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects(Roost.MODID)
@@ -26,34 +27,32 @@ public final class IntegrationRoost {
 	public static final DynamicConverter<Entity, DataChicken> GET_DATA_CHICKEN_FROM_ENTITY = DataChicken::getDataFromEntity;
 
 	public static final IMetaProvider<DataChicken> META_DATA_CHICKEN = new NamespacedMetaProvider<>("roost", context -> {
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 		DataChicken chicken = context.getTarget();
 		out.put("name", chicken.getName());
 
-		//TODO Submit a PR to Roost to add getters...
-		// Once the PR is accepted, Plethora can default to the more annoying method,
-		// with a version check for the 'cleaner' method.
-		// The NBT parsing version can then be dropped when migrating to 1.13
-
 		if (chicken instanceof DataChickenModded) {
 			DataChickenModded moddedChicken = (DataChickenModded) chicken;
-			ItemStack chickenStack = moddedChicken.buildChickenStack();
-			NBTTagCompound nbt = chickenStack.getTagCompound();
+			NBTTagCompound nbt = moddedChicken.buildChickenStack().getTagCompound();
 
-			out.put("growth", nbt.getInteger("Growth"));
-			out.put("gain", nbt.getInteger("Gain"));
-			out.put("strength", nbt.getInteger("Strength"));
+			if (nbt != null) {
+				out.put("growth", nbt.getInteger("Growth"));
 
-			//Using key "type" for consistency with Chickens Mod
-			out.put("type", nbt.getString("Chicken"));
+				out.put("gain", nbt.getInteger("Gain"));
+				out.put("strength", nbt.getInteger("Strength"));
+
+				//Using key "type" for consistency with Chickens Mod
+				out.put("type", nbt.getString("Chicken"));
+			}
 		}
 		else if (chicken instanceof DataChickenVanilla) {
 			DataChickenVanilla vanillaChicken = (DataChickenVanilla) chicken;
-			ItemStack chickenStack = vanillaChicken.buildChickenStack();
-			NBTTagCompound nbt = chickenStack.getTagCompound();
+			NBTTagCompound nbt = vanillaChicken.buildChickenStack().getTagCompound();
 
 			//Using key "type" for consistency with Chickens Mod
-			out.put("type", nbt.getString("Chicken"));
+			if (nbt != null) {
+				out.put("type", nbt.getString("Chicken"));
+			}
 		}
 
 		return out;
