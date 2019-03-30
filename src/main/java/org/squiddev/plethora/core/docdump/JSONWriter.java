@@ -28,14 +28,14 @@ public class JSONWriter implements IDocWriter {
 		Multimap<Class<?>, IMethod<?>> methods,
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
-		this.writer = new JsonWriter(new OutputStreamWriter(stream));
+		writer = new JsonWriter(new OutputStreamWriter(stream));
 
 		List<DocumentedMethod> methodData = this.methodData = new ArrayList<>(methods.size());
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methods.entries()) {
 			methodData.add(new DocumentedMethod(entry.getKey(), entry.getValue()));
 		}
 
-		List<DocumentedMetaProvider> data = this.metaData = new ArrayList<>();
+		List<DocumentedMetaProvider> data = metaData = new ArrayList<>();
 		for (Map.Entry<Class<?>, Collection<IMetaProvider<?>>> entry : metaProviders.items().entrySet()) {
 			for (IMetaProvider<?> provider : entry.getValue()) {
 				data.add(new DocumentedMetaProvider(entry.getKey(), provider));

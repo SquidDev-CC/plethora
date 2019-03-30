@@ -45,8 +45,8 @@ public class HTMLWriter implements IDocWriter {
 		Multimap<Class<?>, IMethod<?>> methodLookup,
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
-		this.writer = new PrintStream(stream);
-		this.objectWriter = new ObjectWriter(this.writer, formatter);
+		writer = new PrintStream(stream);
+		objectWriter = new ObjectWriter(writer, formatter);
 
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methodLookup.entries()) {
 			IMethod<?> method = entry.getValue();
@@ -91,15 +91,15 @@ public class HTMLWriter implements IDocWriter {
 
 	@Override
 	public void write() throws IOException {
-		if (moduleMethodLookup.size() > 0) writeGroupHeader("Module methods", moduleMethodLookup);
-		if (methodLookup.size() > 0) writeGroupHeader("Targeted methods", methodLookup);
-		if (metaLookup.size() > 0) writeGroupHeader("Metadata providers", metaLookup);
+		if (!moduleMethodLookup.isEmpty()) writeGroupHeader("Module methods", moduleMethodLookup);
+		if (!methodLookup.isEmpty()) writeGroupHeader("Targeted methods", methodLookup);
+		if (!metaLookup.isEmpty()) writeGroupHeader("Metadata providers", metaLookup);
 
-		if (moduleMethodLookup.size() > 0) {
+		if (!moduleMethodLookup.isEmpty()) {
 			writeGroupElements("Module methods", moduleMethodLookup, this::writeMethodTarget);
 		}
-		if (methodLookup.size() > 0) writeGroupElements("Targeted methods", methodLookup, this::writeMethodTarget);
-		if (metaLookup.size() > 0) writeGroupElements("Metadata providers", metaLookup, this::writeMetaTarget);
+		if (!methodLookup.isEmpty()) writeGroupElements("Targeted methods", methodLookup, this::writeMethodTarget);
+		if (!metaLookup.isEmpty()) writeGroupElements("Metadata providers", metaLookup, this::writeMetaTarget);
 	}
 
 	private <T extends DocumentedItem<?>> void writeGroupHeader(String title, ListMultimap<String, T> lookup) {
@@ -178,7 +178,7 @@ public class HTMLWriter implements IDocWriter {
 			Class<?> targetClass = docs.get(0).getTarget();
 			List<String> parents = new ArrayList<>();
 			for (Class<?> superclass : new ClassIteratorIterable(targetClass)) {
-				if (!superclass.equals(targetClass) && !metaLookup.get(superclass.getName()).isEmpty()) {
+				if (superclass != targetClass && !metaLookup.get(superclass.getName()).isEmpty()) {
 					parents.add(superclass.getName());
 				}
 			}
@@ -255,11 +255,11 @@ public class HTMLWriter implements IDocWriter {
 		return String.format("<a href=\"#%s\" class=\"doc-name\">%s</a>", uniqueIdent(data), data.getFriendlyName());
 	}
 
-	private String linkToTarget(String group, String name) {
+	private static String linkToTarget(String group, String name) {
 		return String.format("<a href=\"#%s-%s\" class=\"target-name\">%s</a>", group, ident(name), name);
 	}
 
-	private String linkToShortTarget(String group, String name) {
+	private static String linkToShortTarget(String group, String name) {
 		return String.format("<a href=\"#%s-%s\" class=\"target-name\">%s</a>", group, ident(name), shortName(name));
 	}
 
@@ -281,6 +281,7 @@ public class HTMLWriter implements IDocWriter {
 		writer.close();
 	}
 
+	@FunctionalInterface
 	private interface DocEmitter<T> {
 		void emit(String groupId, String target, T object) throws IOException;
 	}

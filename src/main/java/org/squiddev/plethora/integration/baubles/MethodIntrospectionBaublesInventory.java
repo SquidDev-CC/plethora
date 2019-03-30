@@ -16,6 +16,9 @@ import org.squiddev.plethora.integration.EntityIdentifier;
  * Allows getting the player's baubles inventory
  */
 public final class MethodIntrospectionBaublesInventory {
+	private MethodIntrospectionBaublesInventory() {
+	}
+
 	@PlethoraMethod(
 		module = PlethoraModules.INTROSPECTION_S, modId = Baubles.MODID,
 		doc = "-- Get this player's baubles inventory"

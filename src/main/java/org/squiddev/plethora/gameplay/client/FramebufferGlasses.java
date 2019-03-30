@@ -93,7 +93,7 @@ public class FramebufferGlasses {
 		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, buffer);
 	}
 
-	public void clear() {
+	public static void clear() {
 		GlStateManager.colorMask(true, true, true, true);
 		GlStateManager.clearColor(255.0f, 0, 0, 0);
 		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

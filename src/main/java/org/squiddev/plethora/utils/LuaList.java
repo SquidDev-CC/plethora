@@ -1,8 +1,7 @@
 package org.squiddev.plethora.utils;
 
-import com.google.common.collect.Maps;
-
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collector;
 
@@ -32,7 +31,7 @@ public class LuaList<T> {
 	 * Creates a new, empty list
 	 */
 	public LuaList() {
-		map = Maps.newHashMap();
+		map = new HashMap<>();
 	}
 
 	/**
@@ -41,7 +40,7 @@ public class LuaList<T> {
 	 * @param expectedSize The expected size of this list
 	 */
 	public LuaList(int expectedSize) {
-		map = Maps.newHashMapWithExpectedSize(expectedSize);
+		map = new HashMap<>(expectedSize);
 	}
 
 	/**

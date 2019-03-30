@@ -1,9 +1,7 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Sets;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
 import org.squiddev.plethora.api.transfer.ITransferRegistry;
@@ -13,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public final class TransferRegistry implements ITransferRegistry {
@@ -25,15 +24,15 @@ public final class TransferRegistry implements ITransferRegistry {
 	}
 
 	<T> void registerPrimary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
-		Preconditions.checkNotNull(provider, "provider cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
+		Objects.requireNonNull(provider, "provider cannot be null");
 
 		primary.put(klass, provider);
 	}
 
 	<T> void registerSecondary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
-		Preconditions.checkNotNull(provider, "provider cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
+		Objects.requireNonNull(provider, "provider cannot be null");
 
 		secondary.put(klass, provider);
 	}
@@ -61,11 +60,11 @@ public final class TransferRegistry implements ITransferRegistry {
 	@Nullable
 	@Override
 	public Object getTransferPart(@Nonnull Object object, @Nonnull String part, boolean secondary) {
-		return getTransferPart(object, part, secondary ? this.secondary : this.primary);
+		return getTransferPart(object, part, secondary ? this.secondary : primary);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object getTransferPart(Object object, String key, Multimap<Class<?>, ITransferProvider<?>> providers) {
+	private static Object getTransferPart(Object object, String key, Multimap<Class<?>, ITransferProvider<?>> providers) {
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
 			Class<?> target = converted.getClass();
 			for (Class<?> klass : new ClassIteratorIterable(target)) {
@@ -83,9 +82,9 @@ public final class TransferRegistry implements ITransferRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Set<String> getTransferLocations(@Nonnull Object object, boolean primary) {
-		HashSet<String> parts = Sets.newHashSet();
+		HashSet<String> parts = new HashSet<>();
 
-		Multimap<Class<?>, ITransferProvider<?>> lookup = primary ? this.primary : this.secondary;
+		Multimap<Class<?>, ITransferProvider<?>> lookup = primary ? this.primary : secondary;
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(object)) {
 			Class<?> target = converted.getClass();
 			for (Class<?> klass : new ClassIteratorIterable(target)) {

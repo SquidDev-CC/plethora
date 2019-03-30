@@ -17,8 +17,11 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.UUID;
 
-public class RenderSquidOverlay {
+public final class RenderSquidOverlay {
 	private static final UUID uuid = UUID.fromString("d3156e4b-c712-4fd3-87b0-b24b8ca94209");
+
+	private RenderSquidOverlay() {
+	}
 
 	public static void init() {
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();

@@ -17,7 +17,10 @@ import java.util.Map;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
 
-public class MethodsVanillaTileEntities {
+public final class MethodsVanillaTileEntities {
+	private MethodsVanillaTileEntities() {
+	}
+
 	@PlethoraMethod(
 		doc = "function():int -- Number of ticks of fuel left",
 		worldThread = false

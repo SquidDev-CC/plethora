@@ -118,7 +118,7 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		RenderState state = RenderState.get();
 		if (OpenGlHelper.framebufferSupported) {
 			FramebufferGlasses.ITEM_2D.bindBuffer();
-			FramebufferGlasses.ITEM_2D.clear();
+			FramebufferGlasses.clear();
 			FramebufferGlasses.ITEM_2D.setupViewport();
 
 			// Setup the projection matrix (seeEntityRenderer.setupOverlayRendering)

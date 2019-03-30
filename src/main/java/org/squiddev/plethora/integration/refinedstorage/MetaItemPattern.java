@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
-import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.RSItems;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
@@ -13,10 +12,7 @@ import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 
@@ -34,7 +30,7 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 			ICraftingPattern pattern = ItemPattern.getPatternFromCache(position.getWorld(), stack);
 			return context.makePartialChild(pattern).getMeta();
 		} else {
-			Map<Object, Object> out = Maps.newHashMap();
+			Map<Object, Object> out = new HashMap<>();
 
 			out.put("id", "normal");
 			out.put("outputs", getMetaItems(context, stack, ItemPattern::getOutputSlot));
@@ -58,6 +54,7 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 		return getMetaList(context, out);
 	}
 
+	@FunctionalInterface
 	public interface IntStackFunction<T> {
 		T apply(ItemStack stack, int slot);
 	}

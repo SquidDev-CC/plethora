@@ -55,9 +55,7 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 	public Object convert(@Nonnull IPeripheral from) {
 		fetchReflection();
 
-		Object to;
-
-		to = getTarget(from);
+		Object to = getTarget(from);
 		if (from != to) return to;
 
 		// Try to unwrap Computronics's multi-peripherals

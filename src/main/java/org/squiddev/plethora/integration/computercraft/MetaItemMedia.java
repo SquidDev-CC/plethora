@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.computercraft;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.media.items.ItemDiskExpanded;
@@ -13,6 +12,7 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +26,7 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 		IMedia media = object.getItem() instanceof IMedia ? (IMedia) object.getItem() : ComputerCraft.getMedia(object);
 		if (media == null) return Collections.emptyMap();
 
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 		out.put("label", media.getLabel(object));
 		out.put("recordTitle", media.getAudioTitle(object));
 

@@ -14,6 +14,7 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.Constants;
 import org.squiddev.plethora.api.IPlayerOwnable;
 
 import javax.annotation.Nonnull;
@@ -21,11 +22,14 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class PlayerHelpers {
+public final class PlayerHelpers {
 	private static final Predicate<Entity> collidablePredicate = Predicates.and(
 		EntitySelectors.NOT_SPECTATING,
 		Entity::canBeCollidedWith
 	);
+
+	private PlayerHelpers() {
+	}
 
 	@Nonnull
 	public static RayTraceResult findHitGuess(EntityPlayer player) {
@@ -121,7 +125,7 @@ public class PlayerHelpers {
 
 	@Nullable
 	public static GameProfile readProfile(@Nonnull NBTTagCompound tag) {
-		if (!tag.hasKey("owner", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND)) {
+		if (!tag.hasKey("owner", Constants.NBT.TAG_COMPOUND)) {
 			return null;
 		}
 

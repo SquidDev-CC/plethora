@@ -19,7 +19,10 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.PlayerInteractionHelpers;
 import org.squiddev.plethora.utils.PlayerHelpers;
 
-public class MethodsKineticTurtle {
+public final class MethodsKineticTurtle {
+	private MethodsKineticTurtle() {
+	}
+
 	@PlethoraMethod(
 		module = PlethoraModules.KINETIC_S,
 		doc = "function([duration:integer]):boolean, string|nil -- Right click with this item. The duration is in " +

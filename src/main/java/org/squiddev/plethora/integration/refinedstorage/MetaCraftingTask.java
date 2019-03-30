@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
-import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingRequestInfo;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
@@ -9,6 +8,7 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects(RS.ID)
@@ -17,7 +17,7 @@ public final class MetaCraftingTask extends BaseMetaProvider<ICraftingTask> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingTask> context) {
 		ICraftingTask task = context.getTarget();
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		ICraftingRequestInfo requested = task.getRequested();
 		if (requested != null) out.put("requested", context.makePartialChild(requested));

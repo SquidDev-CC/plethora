@@ -11,6 +11,7 @@ import java.util.Map;
  *
  * @param <T> The type of object this provider handles.
  */
+@FunctionalInterface
 public interface SimpleMetaProvider<T> extends IMetaProvider<T> {
 	@Nonnull
 	@Override

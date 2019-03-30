@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.tconstruct;
 
-import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,10 +20,7 @@ import slimeknights.tconstruct.library.utils.TinkerUtil;
 import slimeknights.tconstruct.library.utils.ToolHelper;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @IMetaProvider.Inject(value = ItemStack.class, modId = TConstruct.modID, namespace = "tool")
 public class MetaToolCore extends BaseMetaProvider<ItemStack> {
@@ -36,7 +32,7 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 
 		ToolCore tool = (ToolCore) stack.getItem();
 
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		if (tool.hasCategory(Category.HARVEST)) {
 			out.put("miningSpeed", ToolHelper.getActualMiningSpeed(stack));
@@ -51,7 +47,7 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 
 		{
 			// Gather a list of all modifiers. We don't provide what they do, but this should be enough.
-			Map<Integer, Map<String, String>> modifiers = Maps.newHashMap();
+			Map<Integer, Map<String, String>> modifiers = new HashMap<>();
 			int modIndex = 0;
 
 			NBTTagList tagList = TagUtil.getModifiersTagList(stack);
@@ -63,7 +59,7 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 				IModifier modifier = TinkerRegistry.getModifier(data.identifier);
 				if (modifier == null || modifier.isHidden()) continue;
 
-				Map<String, String> modifierData = Maps.newHashMap();
+				Map<String, String> modifierData = new HashMap<>();
 				modifierData.put("id", modifier.getIdentifier());
 				modifierData.put("name", modifier.getLocalizedName());
 
@@ -74,13 +70,13 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 
 		{
 			// Gather a list of all parts for this tool
-			int partIdx = 0;
-			Map<Integer, Object> parts = Maps.newHashMap();
+			Map<Integer, Object> parts = new HashMap<>();
 
 			List<Material> materials = TinkerUtil.getMaterialsFromTagList(TagUtil.getBaseMaterialsTagList(stack));
 			List<PartMaterialType> component = tool.getRequiredComponents();
 
 			if (materials.size() >= component.size()) {
+				int partIdx = 0;
 				for (int i = 0; i < component.size(); i++) {
 					PartMaterialType pmt = component.get(i);
 					Material material = materials.get(i);

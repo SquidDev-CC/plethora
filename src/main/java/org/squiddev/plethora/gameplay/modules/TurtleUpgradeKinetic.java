@@ -46,10 +46,8 @@ public class TurtleUpgradeKinetic extends TurtleUpgradeModule {
 					Pair<Boolean, String> result = fakePlayer.dig(hit.getBlockPos(), hit.sideHit);
 					if (result.getLeft()) {
 						previous = result;
-					} else if (previous != null) {
-						return toResult(previous);
 					} else {
-						return toResult(result);
+						return previous != null ? toResult(previous) : toResult(result);
 					}
 				}
 
@@ -68,10 +66,8 @@ public class TurtleUpgradeKinetic extends TurtleUpgradeModule {
 	}
 
 	private static TurtleCommandResult toResult(Pair<Boolean, String> result) {
-		if (result.getLeft()) {
-			return TurtleCommandResult.success(new Object[]{result.getRight()});
-		} else {
-			return TurtleCommandResult.failure(result.getRight());
-		}
+		return result.getLeft()
+			? TurtleCommandResult.success(new Object[]{result.getRight()})
+			: TurtleCommandResult.failure(result.getRight());
 	}
 }

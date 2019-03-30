@@ -1,12 +1,12 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.block.material.Material;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects
@@ -14,7 +14,7 @@ public final class MetaMaterial extends BasicMetaProvider<Material> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull Material material) {
-		Map<Object, Object> data = Maps.newHashMap();
+		Map<Object, Object> data = new HashMap<>();
 
 		data.put("replaceable", material.isReplaceable());
 		data.put("liquid", material.isLiquid());

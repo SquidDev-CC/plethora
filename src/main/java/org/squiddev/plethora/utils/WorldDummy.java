@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("NullableProblems")
-public class WorldDummy extends World {
+public final class WorldDummy extends World {
 	public static final WorldDummy INSTANCE = new WorldDummy();
 
 	private WorldDummy() {

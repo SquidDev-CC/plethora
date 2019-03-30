@@ -13,7 +13,10 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 /**
  * Provide access to a turtle's inventory via an introspection module
  */
-public class MethodsIntrospectionTurtle {
+public final class MethodsIntrospectionTurtle {
+	private MethodsIntrospectionTurtle() {
+	}
+
 	@PlethoraMethod(
 		module = PlethoraModules.INTROSPECTION_S, worldThread = false,
 		doc = "-- Get this turtle's inventory"

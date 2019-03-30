@@ -83,9 +83,9 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 			GlStateManager.rotate(MathHelper.sin(roll) * roll * damage / 10.0f * (float) entity.getRollingDirection(), 1.0f, 0.0f, 0.0f);
 		}
 
-		if (this.renderOutlines) {
+		if (renderOutlines) {
 			GlStateManager.enableColorMaterial();
-			GlStateManager.enableOutlineMode(this.getTeamColor(entity));
+			GlStateManager.enableOutlineMode(getTeamColor(entity));
 		}
 
 		// Render block
@@ -155,11 +155,11 @@ public class RenderMinecartComputer extends RenderMinecart<EntityMinecartCompute
 
 		GlStateManager.popMatrix();
 
-		if (this.renderOutlines) {
+		if (renderOutlines) {
 			GlStateManager.disableOutlineMode();
 			GlStateManager.disableColorMaterial();
 		}
 
-		this.renderName(entity, x, y, z);
+		renderName(entity, x, y, z);
 	}
 }

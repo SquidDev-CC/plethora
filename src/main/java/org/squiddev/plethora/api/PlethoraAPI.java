@@ -9,7 +9,10 @@ import org.squiddev.plethora.api.transfer.ITransferRegistry;
 /**
  * API entry point for Plethora
  */
-public class PlethoraAPI {
+public final class PlethoraAPI {
+	private PlethoraAPI() {
+	}
+
 	public interface IPlethoraAPI {
 		IMethodRegistry methodRegistry();
 

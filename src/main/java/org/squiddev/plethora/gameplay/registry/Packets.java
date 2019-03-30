@@ -10,8 +10,8 @@ public final class Packets {
 	}
 
 	/**
-	 * @see org.squiddev.plethora.gameplay.modules.ChatVisualiser
-	 * @see org.squiddev.plethora.gameplay.modules.ChatVisualiser.ChatMessage
+	 * @see org.squiddev.plethora.gameplay.client.RenderOverlay
+	 * @see org.squiddev.plethora.gameplay.modules.ChatMessage
 	 */
 	public static final int CHAT_MESSAGE = 0;
 

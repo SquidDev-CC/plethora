@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +19,7 @@ import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,10 +31,10 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityLivingBase> context) {
 		EntityLivingBase target = context.getTarget();
-		Map<Object, Object> map = Maps.newHashMap();
+		Map<Object, Object> map = new HashMap<>();
 
 		{
-			Map<String, Object> armor = Maps.newHashMap();
+			Map<String, Object> armor = new HashMap<>();
 			armor.put("boots", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
 			armor.put("leggings", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
 			armor.put("chestplate", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
@@ -46,7 +46,7 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		map.put("offhandItem", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
 
 		{
-			Map<Object, String> potionEffects = Maps.newHashMap();
+			Map<Object, String> potionEffects = new HashMap<>();
 			Collection<PotionEffect> effects = target.getActivePotionEffects();
 
 			int count = 1;

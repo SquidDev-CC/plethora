@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
@@ -19,12 +18,13 @@ import org.squiddev.plethora.utils.LuaPattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Mod.EventBusSubscriber(modid = Plethora.ID)
-public class ChatListener {
+public final class ChatListener {
 	private static Set<Listener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private ChatListener() {
@@ -53,7 +53,7 @@ public class ChatListener {
 
 		// And send a message to every player in range holding a chat recorder.
 		PlayerList players = event.getPlayer().server.getPlayerList();
-		int distance = (players.getViewDistance() * 16);
+		int distance = players.getViewDistance() * 16;
 		distance *= distance;
 		ChatMessage message = new ChatMessage(sender, event.getComponent());
 
@@ -70,7 +70,7 @@ public class ChatListener {
 	public static class Listener extends ConstantReference<Listener> implements IAttachable {
 		private final IModuleAccess access;
 		private final UUID owner;
-		private final Set<String> patterns = Sets.newHashSet();
+		private final Set<String> patterns = new HashSet<>();
 
 		public Listener(@Nonnull IModuleAccess access, @Nullable UUID owner) {
 			this.access = access;

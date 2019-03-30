@@ -155,14 +155,14 @@ public class ContainerNeuralInterface extends Container implements IContainerCom
 		return ItemComputerHandler.tryGetServer(stack);
 	}
 
-	private final class NeuralSlot extends SlotItemHandler {
+	private static final class NeuralSlot extends SlotItemHandler {
 		private final int index;
 		private final NeuralItemHandler handler;
 
-		public NeuralSlot(NeuralItemHandler itemHandler, int index, int xPosition, int yPosition) {
+		NeuralSlot(NeuralItemHandler itemHandler, int index, int xPosition, int yPosition) {
 			super(itemHandler, index, xPosition, yPosition);
 			this.index = index;
-			this.handler = itemHandler;
+			handler = itemHandler;
 		}
 
 		@Override

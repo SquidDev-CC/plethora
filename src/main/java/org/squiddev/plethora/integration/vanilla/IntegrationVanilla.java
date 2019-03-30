@@ -28,7 +28,7 @@ import org.squiddev.plethora.core.modules.VehicleModuleHandlerTransform;
 import javax.vecmath.Matrix4f;
 
 @Mod.EventBusSubscriber(modid = PlethoraCore.ID)
-public class IntegrationVanilla {
+public final class IntegrationVanilla {
 	public static final String daylightSensor = "minecraft:daylight_detector";
 	public static final String clock = "minecraft:clock";
 	public static final String noteblock = "minecraft:noteblock";
@@ -36,6 +36,9 @@ public class IntegrationVanilla {
 	public static final ResourceLocation daylightSensorMod = new ResourceLocation(daylightSensor);
 	public static final ResourceLocation clockMod = new ResourceLocation(clock);
 	public static final ResourceLocation noteblockMod = new ResourceLocation(noteblock);
+
+	private IntegrationVanilla() {
+	}
 
 	public static void setup() {
 		DisableAI.register();

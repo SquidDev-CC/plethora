@@ -11,7 +11,7 @@ import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
 import javax.annotation.Nonnull;
 
 public class LayerInterface implements LayerRenderer<EntityLivingBase> {
-	private final static float PIXEL = 0.0625f;
+	private static final float PIXEL = 0.0625f;
 	private final ModelRenderer renderer;
 	private final ModelInterface iface;
 

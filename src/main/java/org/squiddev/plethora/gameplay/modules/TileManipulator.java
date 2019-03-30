@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +19,7 @@ import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.modules.BlockManipulator.BOX_EXPAND;
@@ -32,7 +32,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 	private GameProfile profile;
 	private int stackHash;
 
-	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
+	private final Map<ResourceLocation, NBTTagCompound> moduleData = new HashMap<>();
 
 	private final TaskRunner runner = new TaskRunner();
 
@@ -118,7 +118,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 			tag.removeTag("data");
 		} else {
 			NBTTagCompound data = tag.getCompoundTag("data");
-			for (Map.Entry<ResourceLocation, NBTTagCompound> entry : this.moduleData.entrySet()) {
+			for (Map.Entry<ResourceLocation, NBTTagCompound> entry : moduleData.entrySet()) {
 				data.setTag(entry.getKey().toString(), entry.getValue());
 			}
 		}
@@ -134,11 +134,7 @@ public final class TileManipulator extends TileBase implements ITickable, IPlaye
 		if (type == null) return;
 
 		for (int i = 0; i < stacks.size(); i++) {
-			if (tag.hasKey("stack" + i)) {
-				stacks.set(i, new ItemStack(tag.getCompoundTag("stack" + i)));
-			} else {
-				stacks.set(i, ItemStack.EMPTY);
-			}
+			stacks.set(i, tag.hasKey("stack" + i) ? new ItemStack(tag.getCompoundTag("stack" + i)) : ItemStack.EMPTY);
 		}
 
 		stackHash = Helpers.hashStacks(stacks);

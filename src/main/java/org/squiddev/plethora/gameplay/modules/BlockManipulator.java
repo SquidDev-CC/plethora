@@ -1,7 +1,5 @@
 package org.squiddev.plethora.gameplay.modules;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -49,9 +47,7 @@ import org.squiddev.plethora.utils.RenderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.squiddev.plethora.api.reference.Reference.tile;
 import static org.squiddev.plethora.gameplay.modules.ManipulatorType.VALUES;
@@ -198,8 +194,8 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		final int stackHash = manipulator.getStackHash();
 
 		final ItemStack[] stacks = new ItemStack[size];
-		Set<ResourceLocation> modules = Sets.newHashSet();
-		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
+		Set<ResourceLocation> modules = new HashSet<>();
+		Set<IModuleHandler> moduleHandlers = new HashSet<>();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = manipulator.getStack(i);
 			if (stack.isEmpty()) continue;
@@ -219,7 +215,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		if (modules.isEmpty()) return null;
 
 		final IModuleContainer container = new BasicModuleContainer(modules);
-		Map<ResourceLocation, ManipulatorAccess> accessMap = Maps.newHashMap();
+		Map<ResourceLocation, ManipulatorAccess> accessMap = new HashMap<>();
 
 		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
 			@Nonnull
@@ -269,15 +265,13 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 		}
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(factory.getBaked());
-		if (paired.getLeft().size() > 0) {
-			ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getRunner(), factory.getAttachments(), stackHash);
-			for (ManipulatorAccess access : accessMap.values()) {
-				access.wrapper = peripheral;
-			}
-			return peripheral;
-		} else {
-			return null;
+		if (paired.getLeft().isEmpty()) return null;
+
+		ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getRunner(), factory.getAttachments(), stackHash);
+		for (ManipulatorAccess access : accessMap.values()) {
+			access.wrapper = peripheral;
 		}
+		return peripheral;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -313,7 +307,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 
 		private ManipulatorAccess(TileManipulator tile, IModuleHandler module, IModuleContainer container) {
 			this.tile = tile;
-			this.location = new WorldLocation(tile.getWorld(), tile.getPos());
+			location = new WorldLocation(tile.getWorld(), tile.getPos());
 			this.module = module.getModule();
 			this.container = container;
 		}

@@ -12,6 +12,9 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 public final class MethodsIntrospection {
+	private MethodsIntrospection() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this entity's UUID.")
 	public static String getID(@FromSubtarget EntityIdentifier identifier) {
 		return identifier.getId().toString();

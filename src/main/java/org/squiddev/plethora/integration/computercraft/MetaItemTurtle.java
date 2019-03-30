@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.computercraft;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
@@ -24,7 +23,7 @@ public final class MetaItemTurtle extends ItemStackMetaProvider<ITurtleItem> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ITurtleItem turtle) {
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		int colour = turtle.getColour(object);
 		if (colour != -1) {

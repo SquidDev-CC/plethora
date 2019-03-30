@@ -19,7 +19,9 @@ import org.squiddev.plethora.api.method.MethodResult;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class PlayerInteractionHelpers {
+public final class PlayerInteractionHelpers {
+	private PlayerInteractionHelpers() {
+	}
 	//region Use
 
 	/**

@@ -1,7 +1,6 @@
 package org.squiddev.plethora.core.collections;
 
 import com.google.common.collect.Queues;
-import com.google.common.collect.Sets;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -12,7 +11,7 @@ import java.util.Queue;
  * A iterator which loops through all the subclasses/subinterfaces of an object.
  */
 public class ClassIteratorIterable implements Iterable<Class<?>>, Iterator<Class<?>> {
-	private final HashSet<Class<?>> visited = Sets.newHashSet();
+	private final HashSet<Class<?>> visited = new HashSet<>();
 	private final Queue<Class<?>> toVisit = Queues.newArrayDeque();
 
 	public ClassIteratorIterable(Class<?> root) {
@@ -29,7 +28,7 @@ public class ClassIteratorIterable implements Iterable<Class<?>>, Iterator<Class
 
 	@Override
 	public boolean hasNext() {
-		return toVisit.size() > 0;
+		return !toVisit.isEmpty();
 	}
 
 	@Override

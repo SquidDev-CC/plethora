@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -19,8 +18,8 @@ public class ConverterRegistry implements IConverterRegistry {
 	private final Multimap<Class<?>, IConverter<?, ?>> converters = MultimapBuilder.hashKeys().hashSetValues().build();
 
 	<TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter) {
-		Preconditions.checkNotNull(source, "source cannot be null");
-		Preconditions.checkNotNull(converter, "converter cannot be null");
+		Objects.requireNonNull(source, "source cannot be null");
+		Objects.requireNonNull(converter, "converter cannot be null");
 
 		converters.put(source, converter);
 	}
@@ -29,7 +28,7 @@ public class ConverterRegistry implements IConverterRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Iterable<Object> convertAll(@Nonnull final Object input) {
-		Preconditions.checkNotNull(input, "input cannot be null");
+		Objects.requireNonNull(input, "input cannot be null");
 
 		return new Iterable<Object>() {
 			@Nonnull
@@ -42,9 +41,9 @@ public class ConverterRegistry implements IConverterRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void extendConverted(@Nonnull List<String> keys, @Nonnull List<Object> values, @Nonnull List<Object> references, int startPoint) {
-		Preconditions.checkNotNull(keys, "keys cannot be null");
-		Preconditions.checkNotNull(values, "values cannot be null");
-		Preconditions.checkNotNull(references, "references in cannot be null");
+		Objects.requireNonNull(keys, "keys cannot be null");
+		Objects.requireNonNull(values, "values cannot be null");
+		Objects.requireNonNull(references, "references in cannot be null");
 
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 		if (keys.size() != references.size()) throw new IllegalStateException("lists must be of the same size");
@@ -85,11 +84,8 @@ public class ConverterRegistry implements IConverterRegistry {
 						values.add(converted);
 
 						Object reference = references.get(existing);
-						if (reference instanceof ConverterReference && ((ConverterReference) reference).isIdentity()) {
-							references.add(reference);
-						} else {
-							references.add(ConverterReference.identity(existing));
-						}
+						references.add(reference instanceof ConverterReference && ((ConverterReference) reference).isIdentity()
+							? reference : ConverterReference.identity(existing));
 					}
 				}
 			}
@@ -98,8 +94,8 @@ public class ConverterRegistry implements IConverterRegistry {
 
 	@SuppressWarnings("unchecked")
 	public void extendConverted(@Nonnull List<String> keys, @Nonnull List<Object> values, int startPoint) {
-		Preconditions.checkNotNull(keys, "keys cannot be null");
-		Preconditions.checkNotNull(values, "values cannot be null");
+		Objects.requireNonNull(keys, "keys cannot be null");
+		Objects.requireNonNull(values, "values cannot be null");
 
 		if (keys.size() != values.size()) throw new IllegalStateException("lists must be of the same size");
 
@@ -147,7 +143,7 @@ public class ConverterRegistry implements IConverterRegistry {
 
 		@Override
 		public boolean hasNext() {
-			return queue.size() > 0;
+			return !queue.isEmpty();
 		}
 
 		@Override

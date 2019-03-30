@@ -73,10 +73,10 @@ public final class ItemModule extends ItemBase {
 	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack stack) {
-		return super.getTranslationKey() + ".module_" + getName(stack.getItemDamage());
+		return getTranslationKey() + ".module_" + getName(stack.getItemDamage());
 	}
 
-	private boolean isBlacklisted(ItemStack stack) {
+	private static boolean isBlacklisted(ItemStack stack) {
 		return ConfigCore.Blacklist.blacklistModules.contains(Plethora.RESOURCE_DOMAIN + ":" + getName(stack.getItemDamage()));
 	}
 
@@ -176,20 +176,16 @@ public final class ItemModule extends ItemBase {
 	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
-			return EnumAction.BOW;
-		} else {
-			return super.getItemUseAction(stack);
-		}
+		return stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID
+			? EnumAction.BOW
+			: super.getItemUseAction(stack);
 	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
-			return MAX_TICKS;
-		} else {
-			return super.getMaxItemUseDuration(stack);
-		}
+		return stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID
+			? MAX_TICKS
+			: super.getMaxItemUseDuration(stack);
 	}
 
 	@Override
@@ -256,7 +252,7 @@ public final class ItemModule extends ItemBase {
 			// Cache the ID
 			ResourceLocation id = moduleId;
 			if (id == null) {
-				return this.moduleId = new ResourceLocation(Plethora.RESOURCE_DOMAIN, getName(stack.getItemDamage()));
+				return moduleId = new ResourceLocation(Plethora.RESOURCE_DOMAIN, getName(stack.getItemDamage()));
 			} else {
 				return id;
 			}

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -39,7 +38,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 		fillBasicMeta(data, stack);
 
 		String display = stack.getDisplayName();
-		data.put("displayName", display == null || display.length() == 0 ? stack.getTranslationKey() : display);
+		data.put("displayName", display == null || display.isEmpty() ? stack.getTranslationKey() : display);
 		data.put("rawName", stack.getTranslationKey());
 
 		data.put("maxCount", stack.getMaxStackSize());
@@ -66,7 +65,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 
 	@Nonnull
 	public static HashMap<Object, Object> getBasicMeta(@Nonnull ItemStack stack) {
-		HashMap<Object, Object> data = Maps.newHashMap();
+		HashMap<Object, Object> data = new HashMap<>();
 		fillBasicMeta(data, stack);
 		return data;
 	}

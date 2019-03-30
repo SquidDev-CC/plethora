@@ -26,7 +26,7 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 	 *
 	 * This is used in the rendering to simulate tabs.
 	 */
-	private static final String[][] EMPTY_LINES = {};
+	private static final String[][] EMPTY_LINES = new String[][]{};
 
 	/**
 	 * A tab is 4 spaces and one space is 4 pixels wide -> 1 tab is 4*4 (16) pixels wide.
@@ -69,8 +69,8 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 
 	@Override
 	public void setScale(float scale) {
-		if (this.size != scale) {
-			this.size = scale;
+		if (size != scale) {
+			size = scale;
 			setDirty();
 		}
 	}
@@ -170,13 +170,13 @@ public class Text extends ColourableObject implements Positionable2D, Scalable, 
 				x = (x / TAB_WIDTH) * TAB_WIDTH + TAB_WIDTH;
 			}
 
-			y += this.lineHeight;
+			y += lineHeight;
 		}
 
 		GlStateManager.popMatrix();
 	}
 
-	private String[][] splitText(String text) {
+	private static String[][] splitText(String text) {
 		String[] lines = SPLIT_PATTERN.split(text);
 
 		String[][] splitLines = new String[lines.length][];

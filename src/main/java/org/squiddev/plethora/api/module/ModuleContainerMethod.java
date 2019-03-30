@@ -17,7 +17,7 @@ public abstract class ModuleContainerMethod extends BasicMethod<IModuleContainer
 
 	public ModuleContainerMethod(String name, Set<ResourceLocation> modules, int priority, String doc) {
 		super(name, priority, doc);
-		Preconditions.checkArgument(modules.size() > 0, "modules must be non-empty");
+		Preconditions.checkArgument(!modules.isEmpty(), "modules must be non-empty");
 		this.modules = modules;
 	}
 

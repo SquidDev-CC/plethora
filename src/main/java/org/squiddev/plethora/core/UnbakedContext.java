@@ -13,13 +13,13 @@ import javax.annotation.Nonnull;
  * A context which doesn't have solidified references.
  */
 public final class UnbakedContext<T> implements IUnbakedContext<T> {
-	protected final int target;
-	protected final String[] keys;
-	protected final Object[] references;
+	final int target;
+	final String[] keys;
+	final Object[] references;
 
-	protected final ICostHandler handler;
-	protected final IReference<IModuleContainer> modules;
-	protected final IResultExecutor executor;
+	final ICostHandler handler;
+	final IReference<IModuleContainer> modules;
+	final IResultExecutor executor;
 
 	UnbakedContext(int target, String[] keys, Object[] references, ICostHandler handler, IReference<IModuleContainer> modules, IResultExecutor executor) {
 		this.target = target;

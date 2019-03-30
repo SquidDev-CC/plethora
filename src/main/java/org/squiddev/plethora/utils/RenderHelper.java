@@ -12,8 +12,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderHelper {
+public final class RenderHelper {
 	public static final float EXPAND = 0.002f;
+
+	private RenderHelper() {
+	}
 
 	public static void renderBoundingBox(EntityPlayer player, AxisAlignedBB box, BlockPos pos, double partialTicks) {
 		renderBoundingBox(player, box.offset(pos.getX(), pos.getY(), pos.getZ()), partialTicks);

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -8,6 +7,7 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * A world position for an entity
@@ -16,7 +16,7 @@ public class EntityWorldLocation extends ConstantReference<IWorldLocation> imple
 	private final Entity entity;
 
 	public EntityWorldLocation(@Nonnull Entity entity) {
-		Preconditions.checkNotNull(entity, "entity cannot be null");
+		Objects.requireNonNull(entity, "entity cannot be null");
 		this.entity = entity;
 	}
 

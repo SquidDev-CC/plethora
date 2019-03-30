@@ -21,7 +21,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 /**
  * Various methods for inventory transfer
  */
-public class MethodsInventoryTransfer {
+public final class MethodsInventoryTransfer {
+	private MethodsInventoryTransfer() {
+	}
+
 	@PlethoraMethod(doc = "-- Push items from this inventory to another inventory. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
 	public static int pushItems(

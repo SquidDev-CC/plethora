@@ -21,7 +21,7 @@ import net.minecraftforge.common.crafting.JsonContext;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class IngredientBrew extends Ingredient {
+public final class IngredientBrew extends Ingredient {
 	private final Potion potion;
 
 	private final ItemStack[] basicStacks;
@@ -30,7 +30,7 @@ public class IngredientBrew extends Ingredient {
 	private IngredientBrew(Potion potion, PotionType potionType) {
 		this.potion = potion;
 
-		this.basicStacks = new ItemStack[3];
+		basicStacks = new ItemStack[3];
 		basicStacks[0] = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), potionType);
 		basicStacks[1] = PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType);
 		basicStacks[2] = PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType);

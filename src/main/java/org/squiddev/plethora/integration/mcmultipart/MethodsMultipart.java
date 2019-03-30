@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.mcmultipart;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import mcmultipart.MCMultiPart;
@@ -13,18 +12,22 @@ import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import static org.squiddev.plethora.integration.mcmultipart.IntegrationMcMultipart.getBasicMeta;
 
-public class MethodsMultipart {
+public final class MethodsMultipart {
+	private MethodsMultipart() {
+	}
+
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a list of all parts in the multipart.")
 	public static Map<Integer, ?> listParts(@FromTarget IMultipartContainer container) {
 		Collection<? extends IPartInfo> parts = container.getParts().values();
 
 		int i = 0;
-		Map<Integer, Map<Object, Object>> out = Maps.newHashMap();
+		Map<Integer, Map<Object, Object>> out = new HashMap<>();
 		for (IPartInfo part : parts) {
 			out.put(++i, getBasicMeta(part));
 		}
@@ -34,7 +37,7 @@ public class MethodsMultipart {
 
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a lookup of slot to parts.")
 	public static Map<String, ?> listSlottedParts(@FromTarget IMultipartContainer container) {
-		Map<String, Map<Object, Object>> parts = Maps.newHashMap();
+		Map<String, Map<Object, Object>> parts = new HashMap<>();
 
 		for (Map.Entry<IPartSlot, ? extends IPartInfo> slot : container.getParts().entrySet()) {
 			parts.put(slot.getKey().getRegistryName().toString().toLowerCase(Locale.ENGLISH), getBasicMeta(slot.getValue()));

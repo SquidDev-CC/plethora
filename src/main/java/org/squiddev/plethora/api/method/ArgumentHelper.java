@@ -14,6 +14,9 @@ import static dan200.computercraft.core.apis.ArgumentHelper.*;
  * @see dan200.computercraft.core.apis.ArgumentHelper
  */
 public final class ArgumentHelper {
+	private ArgumentHelper() {
+	}
+
 	@Nonnull
 	public static LuaException badObjectType(@Nonnull String key, @Nonnull String expected, @Nullable Object object) {
 		return badObject(key, expected, getType(object));
@@ -57,11 +60,7 @@ public final class ArgumentHelper {
 
 	@Nonnull
 	public static <T extends Enum<T>> T optEnum(@Nonnull Object[] args, int index, Class<T> klass, T def) throws LuaException {
-		if (index >= args.length || args[index] == null) {
-			return def;
-		} else {
-			return getEnum(args, index, klass);
-		}
+		return index >= args.length || args[index] == null ? def : getEnum(args, index, klass);
 	}
 
 	public static void assertBetween(double value, double min, double max, String message) throws LuaException {

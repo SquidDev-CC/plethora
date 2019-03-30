@@ -6,7 +6,7 @@ import org.squiddev.plethora.gameplay.Plethora;
 /**
  * List of modules built in to plethora
  */
-public class PlethoraModules {
+public final class PlethoraModules {
 	public static final String INTROSPECTION = "introspection";
 	public static final String LASER = "laser";
 	public static final String SCANNER = "scanner";
@@ -75,6 +75,9 @@ public class PlethoraModules {
 	public static final ResourceLocation CHAT_M = new ResourceLocation(Plethora.RESOURCE_DOMAIN, CHAT);
 	public static final ResourceLocation GLASSES_M = new ResourceLocation(Plethora.RESOURCE_DOMAIN, GLASSES);
 	public static final ResourceLocation CHAT_CREATIVE_M = new ResourceLocation(Plethora.RESOURCE_DOMAIN, CHAT_CREATIVE);
+
+	private PlethoraModules() {
+	}
 
 	public static String getName(int id) {
 		return id >= 0 && id < MODULES ? NAMES[id] : "unknown";

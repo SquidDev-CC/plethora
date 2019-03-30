@@ -32,6 +32,9 @@ import javax.annotation.Nullable;
 import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 
 public final class MethodsChat {
+	private MethodsChat() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.CHAT_S, doc = "-- Send a message to everyone")
 	public static void say(
 		@Nonnull IContext<IModuleContainer> context,

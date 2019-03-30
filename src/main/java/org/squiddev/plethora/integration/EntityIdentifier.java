@@ -24,8 +24,8 @@ public class EntityIdentifier extends ConstantReference<EntityIdentifier> {
 	}
 
 	public EntityIdentifier(Entity entity) {
-		this.uuid = entity.getPersistentID();
-		this.name = null;
+		uuid = entity.getPersistentID();
+		name = null;
 	}
 
 	@Nonnull

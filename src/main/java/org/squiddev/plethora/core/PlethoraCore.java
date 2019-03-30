@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.crafting.IRecipe;
@@ -28,6 +27,8 @@ import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.Helpers;
+
+import java.util.Objects;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
@@ -64,7 +65,7 @@ public class PlethoraCore {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
+		Objects.requireNonNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
 		// Load various objects from annotations
 		long start = System.currentTimeMillis();
@@ -84,17 +85,17 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event) {
+	public static void loadComplete(FMLLoadCompleteEvent event) {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 
 	@Mod.EventHandler
-	public void onServerStarting(FMLServerStartingEvent event) {
+	public static void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandPlethora());
 	}
 
 	@Mod.EventHandler
-	public void onServerStart(FMLServerStartedEvent event) {
+	public static void onServerStart(FMLServerStartedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
 			TaskRunner.SHARED.reset();
@@ -102,7 +103,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void onServerStopped(FMLServerStoppedEvent event) {
+	public static void onServerStopped(FMLServerStoppedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
 			TaskRunner.SHARED.reset();
@@ -110,7 +111,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void onMessageReceived(FMLInterModComms.IMCEvent event) {
+	public static void onMessageReceived(FMLInterModComms.IMCEvent event) {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
 			if (m.isStringMessage()) {
 				if (Constants.IMC_BLACKLIST_PERIPHERAL.equalsIgnoreCase(m.key)) {

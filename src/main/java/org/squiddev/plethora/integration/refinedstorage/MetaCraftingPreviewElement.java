@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
-import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.preview.ICraftingPreviewElement;
 import org.squiddev.plethora.api.Injects;
@@ -8,6 +7,7 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects(RS.ID)
@@ -17,7 +17,7 @@ public final class MetaCraftingPreviewElement extends BaseMetaProvider<ICrafting
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingPreviewElement> context) {
 		ICraftingPreviewElement preview = context.getTarget();
 
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 		out.put("id", preview.getId());
 		out.put("available", preview.getAvailable());
 		out.put("toCraft", preview.getToCraft());

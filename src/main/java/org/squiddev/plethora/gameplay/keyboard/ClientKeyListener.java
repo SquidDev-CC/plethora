@@ -83,7 +83,7 @@ public final class ClientKeyListener {
 			}
 		}
 
-		if (keyPresses.size() > 0 || keysUp.size() > 0) {
+		if (!keyPresses.isEmpty() || !keysUp.isEmpty()) {
 			Plethora.network.sendToServer(new KeyMessage(keyPresses, keysUp));
 			keyPresses.clear();
 			keysUp.clear();
@@ -100,7 +100,7 @@ public final class ClientKeyListener {
 		private KeyDown(int key, char character) {
 			this.key = key;
 			this.character = character;
-			this.lastTime = Minecraft.getSystemTime();
+			lastTime = Minecraft.getSystemTime();
 		}
 	}
 }

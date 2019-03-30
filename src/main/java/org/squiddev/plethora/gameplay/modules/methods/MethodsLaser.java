@@ -30,6 +30,9 @@ public final class MethodsLaser {
 		MethodsLaser::fire
 	);
 
+	private MethodsLaser() {
+	}
+
 	@Nonnull
 	private static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
 		final double yaw = getReal(args, 0) % 360;
@@ -63,8 +66,6 @@ public final class MethodsLaser {
 				laser.setShooter(entity, profile);
 			}
 			if (context.hasContext(TileEntity.class) || context.hasContext(ITurtleAccess.class)) {
-				double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
-				double hOff = 0.9; // The laser is 0.25 wide, the offset from the centre is 0.5.
 				double vOff = 0.3; // The laser is 0.25 high, so we add a little more.
 
 				// Offset positions to be around the edge of the manipulator. Avoids breaking the manipulator and
@@ -81,6 +82,9 @@ public final class MethodsLaser {
 					yOffset = -0.5 - vOff;
 					zOffset = 0;
 				} else {
+					// The laser is 0.25 wide, the offset from the centre is 0.5.
+					double hOff = 0.9;
+					double length = Math.sqrt(motionX * motionX + motionZ * motionZ);
 					xOffset = motionX / length * hOff;
 					yOffset = 0;
 					zOffset = motionZ / length * hOff;

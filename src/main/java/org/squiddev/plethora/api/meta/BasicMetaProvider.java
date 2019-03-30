@@ -22,7 +22,6 @@ public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> implement
 	}
 
 	public BasicMetaProvider() {
-		super();
 	}
 
 	@Nonnull

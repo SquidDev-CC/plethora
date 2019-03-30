@@ -60,4 +60,7 @@ public final class MetaTConstruct {
 			return Collections.singletonMap("cost", toolPart.getCost());
 		}
 	};
+
+	private MetaTConstruct() {
+	}
 }

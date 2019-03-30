@@ -15,7 +15,10 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 /**
  * Various methods for interacting with IC2's energy net
  */
-public class MethodsEnergy {
+public final class MethodsEnergy {
+	private MethodsEnergy() {
+	}
+
 	@PlethoraMethod(modId = IC2.MODID, doc = "-- The amount of EU currently stored")
 	public static int getEUStored(@FromTarget IEnergyStorage storage) {
 		return storage.getStored();

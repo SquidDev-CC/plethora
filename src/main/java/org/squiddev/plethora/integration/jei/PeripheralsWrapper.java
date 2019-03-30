@@ -13,7 +13,7 @@ import org.squiddev.plethora.gameplay.registry.Registration;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class PeripheralsWrapper extends UseInRecipeWrapper {
+public final class PeripheralsWrapper extends UseInRecipeWrapper {
 	private static final String ID = "peripherals";
 
 	private static final ItemStack[] STACKS = new ItemStack[]{

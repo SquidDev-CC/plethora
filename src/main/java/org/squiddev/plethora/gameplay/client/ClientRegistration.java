@@ -22,7 +22,10 @@ import org.squiddev.plethora.utils.Helpers;
 import static org.squiddev.plethora.gameplay.registry.Registration.*;
 
 @Mod.EventBusSubscriber(modid = Plethora.ID)
-public class ClientRegistration {
+public final class ClientRegistration {
+	private ClientRegistration() {
+	}
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public static void registerModels(ModelRegistryEvent event) {

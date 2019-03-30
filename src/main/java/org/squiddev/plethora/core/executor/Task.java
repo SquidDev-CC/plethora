@@ -51,9 +51,9 @@ public abstract class Task {
 				markFinished();
 				finish(e);
 				return true;
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				markFinished();
-				finish(new LuaException("Java Exception Thrown: " + e.toString()));
+				finish(new LuaException("Java Exception Thrown: " + e));
 				PlethoraCore.LOG.error("Unexpected error", e);
 				return true;
 			} finally {

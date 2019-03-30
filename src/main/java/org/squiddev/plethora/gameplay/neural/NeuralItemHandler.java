@@ -2,7 +2,6 @@ package org.squiddev.plethora.gameplay.neural;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.squiddev.plethora.gameplay.ItemBase;
@@ -17,7 +16,7 @@ import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.ITEMS;
  * A horrible item handler implementation that saves to the item's NBT
  * rather than the capability. See #12
  */
-public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
+public class NeuralItemHandler implements IItemHandlerModifiable {
 	private final ItemStack stack;
 
 	public NeuralItemHandler(ItemStack stack) {
@@ -67,13 +66,9 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 	public ItemStack getStackInSlot(int slot) {
 		validateSlotIndex(slot);
 
-		NBTTagCompound tag = ItemBase.getTag(this.stack);
+		NBTTagCompound tag = ItemBase.getTag(stack);
 		NBTTagCompound items = getItems(tag);
-		if (items.hasKey("item" + slot, 10)) {
-			return new ItemStack(items.getCompoundTag("item" + slot));
-		} else {
-			return ItemStack.EMPTY;
-		}
+		return items.hasKey("item" + slot, 10) ? new ItemStack(items.getCompoundTag("item" + slot)) : ItemStack.EMPTY;
 	}
 
 	@Nonnull
@@ -81,11 +76,7 @@ public class NeuralItemHandler implements IItemHandler, IItemHandlerModifiable {
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (stack.isEmpty() || !getStackInSlot(slot).isEmpty()) return stack;
 
-		if (isItemValid(slot, stack)) {
-			return doInsert(slot, stack, simulate);
-		} else {
-			return stack;
-		}
+		return isItemValid(slot, stack) ? doInsert(slot, stack, simulate) : stack;
 	}
 
 	@Nonnull

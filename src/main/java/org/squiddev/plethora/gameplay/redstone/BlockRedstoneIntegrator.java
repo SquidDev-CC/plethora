@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.redstone;
 
-import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -21,8 +20,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * We extends {@link BlockGeneric} as the bundled redstone provider requires it:
@@ -30,7 +31,7 @@ import java.util.Set;
  */
 @Mod.EventBusSubscriber(modid = Plethora.ID)
 public class BlockRedstoneIntegrator extends BlockGeneric implements IPeripheralProvider {
-	private static final Set<TileRedstoneIntegrator> toTick = Sets.newConcurrentHashSet();
+	private static final Set<TileRedstoneIntegrator> toTick = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private static final String NAME = "redstone_integrator";
 
@@ -70,7 +71,7 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IPeripheral
 	}
 
 	@SubscribeEvent
-	public void handleTick(TickEvent.ServerTickEvent e) {
+	public static void handleTick(TickEvent.ServerTickEvent e) {
 		if (e.phase == TickEvent.Phase.START) {
 			Iterator<TileRedstoneIntegrator> iterator = toTick.iterator();
 			while (iterator.hasNext()) {

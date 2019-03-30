@@ -35,9 +35,9 @@ public class GuiKeyboard extends GuiScreen {
 
 	public GuiKeyboard(IComputer computer) {
 		this.computer = computer;
-		this.container = new ContainerKeyboard(computer);
+		container = new ContainerKeyboard(computer);
 
-		this.glassesMouse = new MouseHandler("glasses", CanvasHandler.WIDTH, CanvasHandler.HEIGHT);
+		glassesMouse = new MouseHandler("glasses", CanvasHandler.WIDTH, CanvasHandler.HEIGHT);
 	}
 
 	@Override
@@ -157,13 +157,13 @@ public class GuiKeyboard extends GuiScreen {
 
 		MouseHandler(String prefix, int width, int height) {
 			this.prefix = prefix;
-			this.termWidth = width;
-			this.termHeight = height;
+			termWidth = width;
+			termHeight = height;
 		}
 
 		void setSize(int width, int height) {
-			this.termWidth = width;
-			this.termHeight = height;
+			termWidth = width;
+			termHeight = height;
 		}
 
 		void click(int x, int y, int button) {

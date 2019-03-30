@@ -9,6 +9,9 @@ import java.io.File;
 public final class ConfigGameplay {
 	public static Configuration configuration;
 
+	private ConfigGameplay() {
+	}
+
 	public static void init(File file) {
 		ConfigGameplayForgeLoader.init(file);
 		configuration = ConfigGameplayForgeLoader.getConfiguration();
@@ -21,7 +24,7 @@ public final class ConfigGameplay {
 	/**
 	 * Config options for the laser module
 	 */
-	public static class Laser {
+	public static final class Laser {
 		/**
 		 * The minimum power of a laser.
 		 */
@@ -57,9 +60,12 @@ public final class ConfigGameplay {
 		@DefaultInt(5 * 20)
 		@Range(min = 0)
 		public static int lifetime;
+
+		private Laser() {
+		}
 	}
 
-	public static class Kinetic {
+	public static final class Kinetic {
 		/**
 		 * The maximum velocity the kinetic manipulator can apply to you.
 		 */
@@ -162,27 +168,36 @@ public final class ConfigGameplay {
 		@DefaultDouble(0)
 		@Range(min = 0)
 		public static double propelCost;
+
+		private Kinetic() {
+		}
 	}
 
-	public static class Scanner {
+	public static final class Scanner {
 		/**
 		 * The radius scanners can get blocks in
 		 */
 		@DefaultInt(8)
 		@Range(min = 0)
 		public static int radius;
+
+		private Scanner() {
+		}
 	}
 
-	public static class Sensor {
+	public static final class Sensor {
 		/**
 		 * The radius sensors can get entities in
 		 */
 		@DefaultInt(16)
 		@Range(min = 0)
 		public static int radius;
+
+		private Sensor() {
+		}
 	}
 
-	public static class Chat {
+	public static final class Chat {
 		/**
 		 * The maximum length a chat message can be.
 		 *
@@ -219,9 +234,12 @@ public final class ConfigGameplay {
 		 */
 		@DefaultBoolean(true)
 		public static boolean allowMobs;
+
+		private Chat() {
+		}
 	}
 
-	public static class Glasses {
+	public static final class Glasses {
 		/**
 		 * The dimensions with which to scale the framebuffer texture.
 		 * Higher scales result in cleaner renders, with the cost of
@@ -230,17 +248,23 @@ public final class ConfigGameplay {
 		@DefaultInt(1)
 		@Range(min = 1)
 		public static int framebufferScale;
+
+		private Glasses() {
+		}
 	}
 
 	/**
 	 * Various options that don't belong to anything
 	 */
-	public static class Miscellaneous {
+	public static final class Miscellaneous {
 		/**
 		 * Fun rendering overlay for various objects.
 		 * Basically I'm slightly vain.
 		 */
 		@DefaultBoolean(true)
 		public static boolean funRender;
+
+		private Miscellaneous() {
+		}
 	}
 }

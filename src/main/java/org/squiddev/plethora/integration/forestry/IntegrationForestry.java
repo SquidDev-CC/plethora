@@ -15,10 +15,13 @@ import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 
 @Mod.EventBusSubscriber(modid = PlethoraCore.ID)
-public class IntegrationForestry {
+public final class IntegrationForestry {
 	public static final String analyzerMod = "forestry:analyzer";
 
 	private static BasicModuleHandler analyzerCap;
+
+	private IntegrationForestry() {
+	}
 
 	@Optional.Method(modid = Constants.MOD_ID)
 	private static BasicModuleHandler getAnalyzerCap() {

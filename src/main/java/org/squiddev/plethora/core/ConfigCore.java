@@ -14,6 +14,9 @@ public final class ConfigCore {
 
 	public static ConfigCategory baseCosts;
 
+	private ConfigCore() {
+	}
+
 	public static void init(File file) {
 		ConfigCoreForgeLoader.init(file);
 		configuration = ConfigCoreForgeLoader.getConfiguration();
@@ -33,7 +36,7 @@ public final class ConfigCore {
 	 * *Note:* These values only apply to the default handler.
 	 * Other mods may add custom handlers.
 	 */
-	public static class CostSystem {
+	public static final class CostSystem {
 		/**
 		 * The energy level all systems start at
 		 */
@@ -75,12 +78,15 @@ public final class ConfigCore {
 		@DefaultBoolean(true)
 		@RequiresRestart(mc = false)
 		public static boolean awaitRegen;
+
+		private CostSystem() {
+		}
 	}
 
 	/**
 	 * Blacklist various providers
 	 */
-	public static class Blacklist {
+	public static final class Blacklist {
 		/**
 		 * List of provider classes, packages or methods which are blacklisted.
 		 * This will blacklist all converters, methods and transfer and meta providers
@@ -148,12 +154,15 @@ public final class ConfigCore {
 		 * This includes all blacklisted modules.
 		 */
 		public static HashSet<String> blacklistModulesTile;
+
+		private Blacklist() {
+		}
 	}
 
 	/**
 	 * Various options for debugging and testing this mod
 	 */
-	public static class Testing {
+	public static final class Testing {
 		/**
 		 * Enable strict loading mode. This will ensure non-lazy
 		 * loading of methods, and crash when an error is encountered
@@ -169,6 +178,9 @@ public final class ConfigCore {
 		 */
 		@DefaultBoolean(false)
 		public static boolean bytecodeVerify;
+
+		private Testing() {
+		}
 	}
 
 	/**

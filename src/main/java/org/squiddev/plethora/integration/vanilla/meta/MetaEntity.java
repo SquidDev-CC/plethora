@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.util.math.MathHelper;
@@ -46,7 +45,7 @@ public final class MetaEntity extends BaseMetaProvider<Entity> {
 	}
 
 	public static HashMap<Object, Object> getBasicProperties(@Nonnull Entity entity, @Nullable IWorldLocation location) {
-		HashMap<Object, Object> result = Maps.newHashMap();
+		HashMap<Object, Object> result = new HashMap<>();
 		result.put("id", entity.getUniqueID().toString());
 
 		result.put("name", Helpers.getName(entity));

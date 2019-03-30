@@ -33,7 +33,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 
 	public ComputerAccessExecutor(IComputerAccess access, TaskRunner runner) {
 		this.access = access;
-		this.attachmentName = access.getAttachmentName();
+		attachmentName = access.getAttachmentName();
 		this.runner = runner;
 	}
 
@@ -107,7 +107,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 
 		@Override
 		protected void finish(@Nonnull LuaException e) {
-			this.error = e;
+			error = e;
 			try {
 				access.queueEvent(EVENT_NAME, null);
 			} catch (RuntimeException ignored) {

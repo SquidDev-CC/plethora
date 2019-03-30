@@ -19,7 +19,10 @@ import org.squiddev.plethora.gameplay.Plethora;
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getMonocle;
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getNormal;
 
-public class RenderInterfaceLiving {
+public final class RenderInterfaceLiving {
+	private RenderInterfaceLiving() {
+	}
+
 	public static void init() {
 		/**
 		 * Anything small looks stupid. We don't allow attaching to baby animals.

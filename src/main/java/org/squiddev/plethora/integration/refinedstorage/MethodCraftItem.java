@@ -15,6 +15,9 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.vanilla.NullableItemStack;
 
 public final class MethodCraftItem {
+	private MethodCraftItem() {
+	}
+
 	@PlethoraMethod(
 		modId = RS.ID,
 		doc = "function(count:int):boolean, table -- Craft this item, returning if the item could be crafted and a " +

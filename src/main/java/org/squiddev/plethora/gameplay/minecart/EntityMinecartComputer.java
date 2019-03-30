@@ -683,7 +683,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 
 		public UpgradeItemHandler(int slots) {
 			super(slots);
-			this.handlers = new IVehicleUpgradeHandler[6];
+			handlers = new IVehicleUpgradeHandler[6];
 		}
 
 		@Override

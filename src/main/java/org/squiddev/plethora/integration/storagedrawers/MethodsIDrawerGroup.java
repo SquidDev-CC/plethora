@@ -13,7 +13,10 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
-public class MethodsIDrawerGroup {
+public final class MethodsIDrawerGroup {
+	private MethodsIDrawerGroup() {
+	}
+
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- Return the number of drawers inside this draw group")
 	public static int getDrawerCount(@FromTarget IDrawerGroup drawer) {
 		return drawer.getDrawerCount();
@@ -27,8 +30,7 @@ public class MethodsIDrawerGroup {
 		assertBetween(slot, 1, group.getDrawerCount(), "Index out of range (%s)");
 
 		IDrawer drawer = group.getDrawer(slot - 1);
-		if (drawer == Drawers.DISABLED) return null;
+		return drawer == Drawers.DISABLED ? null : context.makeChildId(drawer).getObject();
 
-		return context.makeChildId(drawer).getObject();
 	}
 }

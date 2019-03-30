@@ -50,7 +50,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 					.addContext(ContextKeys.ORIGIN, location);
 
 				Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
-				if (paired.getLeft().size() > 0) {
+				if (!paired.getLeft().isEmpty()) {
 					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
 				}
 			} catch (RuntimeException e) {

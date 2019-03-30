@@ -16,7 +16,7 @@ import static org.squiddev.plethora.core.ConfigCore.CostSystem;
 /**
  * A basic {@link ICostHandler} implementation. Every object registered with it is updated every tick.
  *
- * @see org.squiddev.plethora.core.PlethoraCore#onServerTick(TickEvent.ServerTickEvent)
+ * @see PlethoraCore#onServerTick(TickEvent.ServerTickEvent)
  */
 public final class DefaultCostHandler implements ICostHandler {
 	public static final DefaultCostHandler EMPTY = new DefaultCostHandler(0, 0, 0, false, false);
@@ -90,7 +90,7 @@ public final class DefaultCostHandler implements ICostHandler {
 				throw e;
 			} catch (Throwable e) {
 				PlethoraCore.LOG.error("Unexpected error", e);
-				throw new LuaException("Java Exception Thrown: " + e.toString());
+				throw new LuaException("Java Exception Thrown: " + e);
 			}
 		}
 

@@ -23,12 +23,15 @@ import org.lwjgl.opengl.GL11;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
-public class RenderHelpers {
+public final class RenderHelpers {
 	private static final Matrix4f identity;
 
 	static {
 		identity = new Matrix4f();
 		identity.setIdentity();
+	}
+
+	private RenderHelpers() {
 	}
 
 	public static void renderModel(IBakedModel model) {

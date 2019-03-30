@@ -1,9 +1,7 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.meta.IMetaProvider;
@@ -24,8 +22,8 @@ public final class MetaRegistry implements IMetaRegistry {
 	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(Comparator.comparingInt(IMetaProvider::getPriority));
 
 	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(provider, "provider cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
+		Objects.requireNonNull(provider, "provider cannot be null");
 
 		providers.put(target, provider);
 	}
@@ -38,16 +36,16 @@ public final class MetaRegistry implements IMetaRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<?> context) {
-		Preconditions.checkNotNull(context, "context cannot be null");
+		Objects.requireNonNull(context, "context cannot be null");
 		if (!(context instanceof PartialContext)) throw new IllegalStateException("Unknown context class");
 
-		PartialContext partial = (PartialContext<?>) context;
+		PartialContext<?> partial = (PartialContext<?>) context;
 		String[] keys = partial.keys;
 		Object[] values = partial.values;
 
 		// TODO: Handle priority across each conversion correctly
 
-		HashMap<Object, Object> out = Maps.newHashMap();
+		HashMap<Object, Object> out = new HashMap<>();
 		for (int i = values.length - 1; i >= 0; i--) {
 			if (!ContextKeys.TARGET.equals(keys[i])) continue;
 
@@ -65,7 +63,7 @@ public final class MetaRegistry implements IMetaRegistry {
 	@Nonnull
 	@Override
 	public List<IMetaProvider<?>> getMetaProviders(@Nonnull Class<?> target) {
-		Preconditions.checkNotNull(target, "target cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
 
 		List<IMetaProvider<?>> result = Lists.newArrayList();
 

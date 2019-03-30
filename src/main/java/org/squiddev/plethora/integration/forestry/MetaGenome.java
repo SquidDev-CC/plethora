@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.forestry;
 
-import com.google.common.collect.Maps;
 import forestry.api.genetics.*;
 import forestry.core.config.Constants;
 import net.minecraft.util.math.Vec3i;
@@ -8,6 +7,7 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,15 +18,15 @@ public final class MetaGenome extends BasicMetaProvider<IGenome> {
 	public Map<Object, Object> getMeta(@Nonnull IGenome genome) {
 		IChromosomeType[] types = genome.getSpeciesRoot().getKaryotype();
 
-		Map<String, Object> active = Maps.newHashMapWithExpectedSize(types.length);
-		Map<String, Object> inactive = Maps.newHashMapWithExpectedSize(types.length);
+		Map<String, Object> active = new HashMap<>(types.length);
+		Map<String, Object> inactive = new HashMap<>(types.length);
 
 		for (IChromosomeType type : types) {
 			active.put(type.getName(), getAlleleMeta(genome.getActiveAllele(type)));
 			inactive.put(type.getName(), getAlleleMeta(genome.getInactiveAllele(type)));
 		}
 
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>(2);
 		out.put("active", active);
 		out.put("inactive", inactive);
 		return out;
@@ -38,7 +38,7 @@ public final class MetaGenome extends BasicMetaProvider<IGenome> {
 		} else if (allele instanceof IAlleleArea) {
 			Vec3i vec = ((IAlleleArea) allele).getValue();
 
-			Map<String, Integer> out = Maps.newHashMap();
+			Map<String, Integer> out = new HashMap<>();
 			out.put("width", vec.getX());
 			out.put("height", vec.getY());
 			out.put("depth", vec.getZ());
@@ -54,7 +54,7 @@ public final class MetaGenome extends BasicMetaProvider<IGenome> {
 		} else if (allele instanceof IAlleleSpecies) {
 			IAlleleSpecies species = (IAlleleSpecies) allele;
 
-			Map<String, Object> data = Maps.newHashMap();
+			Map<String, Object> data = new HashMap<>();
 			data.put("id", allele.getUID());
 			data.put("displayName", allele.getAlleleName());
 			data.put("authority", species.getAuthority());

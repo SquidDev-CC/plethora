@@ -97,6 +97,7 @@ public interface ArgumentType<T> {
 	 * @param <T> The type to convert from.
 	 * @param <U> The type to convert to.
 	 */
+	@FunctionalInterface
 	interface ArgumentFunction<T, U> {
 		@Nonnull
 		U apply(@Nonnull T value) throws LuaException;

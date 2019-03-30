@@ -10,7 +10,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
@@ -19,11 +18,15 @@ import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.integration.appliedenergistics.MetaAppliedEnergistics.getItemStackProperties;
 
-public class MethodsGrid {
+public final class MethodsGrid {
+	private MethodsGrid() {
+	}
+
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- Get the energy usage of this AE node")
 	public static double getNodeEnergyUsage(@FromTarget IGridBlock grid) {
 		return grid.getIdlePowerUsage();
@@ -49,7 +52,7 @@ public class MethodsGrid {
 		IItemList<IAEItemStack> items = storageGrid.getInventory(channel).getStorageList();
 
 		int i = 0;
-		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
+		Map<Integer, Map<Object, Object>> output = new HashMap<>(items.size());
 		for (IAEItemStack stack : items) output.put(++i, getItemStackProperties(stack));
 		return output;
 	}
@@ -79,7 +82,7 @@ public class MethodsGrid {
 		IStorageGrid grid = context.getTarget().getCache(IStorageGrid.class);
 
 		int i = 0;
-		Map<Integer, ILuaObject> out = Maps.newHashMap();
+		Map<Integer, ILuaObject> out = new HashMap<>();
 		for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
 			if (item.matches(aeStack.getDefinition())) {
 				out.put(++i, context.makeChildId(aeStack).getObject());

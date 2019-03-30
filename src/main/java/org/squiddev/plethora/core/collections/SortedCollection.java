@@ -36,6 +36,7 @@ public class SortedCollection<E> implements Collection<E> {
 
 	@Nonnull
 	@Override
+	@SuppressWarnings("SuspiciousToArrayCall")
 	public <T> T[] toArray(@Nonnull T[] array) {
 		return list.toArray(array);
 	}

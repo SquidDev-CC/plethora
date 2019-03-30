@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -45,7 +44,7 @@ public final class MetaBlockState extends BaseMetaProvider<IBlockState> {
 
 		data.put("metadata", block.getMetaFromState(state));
 
-		HashMap<Object, Object> stateProperties = Maps.newHashMap();
+		HashMap<Object, Object> stateProperties = new HashMap<>();
 		data.put("state", stateProperties);
 		for (Map.Entry<IProperty<?>, Comparable<?>> item : state.getProperties().entrySet()) {
 			Object value = item.getValue();

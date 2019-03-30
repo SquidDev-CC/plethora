@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +24,9 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
+	private MethodsScanner() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Scan all blocks in the vicinity")
 	public static Map<Integer, Object> scan(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		final World world = location.getWorld();
@@ -32,7 +34,7 @@ public final class MethodsScanner {
 		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
 		int i = 0;
-		HashMap<Integer, Object> map = Maps.newHashMap();
+		HashMap<Integer, Object> map = new HashMap<>();
 		for (int oX = x - radius; oX <= x + radius; oX++) {
 			for (int oY = y - radius; oY <= y + radius; oY++) {
 				for (int oZ = z - radius; oZ <= z + radius; oZ++) {

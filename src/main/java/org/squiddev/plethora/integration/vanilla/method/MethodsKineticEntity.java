@@ -46,6 +46,9 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
  */
 @Injects
 public final class MethodsKineticEntity {
+	private MethodsKineticEntity() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Look in a set direction")
 	public static void look(@FromSubtarget EntityLivingBase target, double yaw, double pitch) {
 		yaw %= 360;
@@ -119,9 +122,9 @@ public final class MethodsKineticEntity {
 
 			float rotationYaw = skeleton.rotationYaw;
 			float rotationPitch = skeleton.rotationPitch;
-			float motionX = (-MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-			float motionZ = (MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI));
-			float motionY = (-MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI));
+			float motionX = -MathHelper.sin(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+			float motionZ = MathHelper.cos(rotationYaw / 180.0f * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0f * (float) Math.PI);
+			float motionY = -MathHelper.sin(rotationPitch / 180.0f * (float) Math.PI);
 
 			arrow.shoot(motionX, motionY, motionZ, 1.6f, (float) (potency * 2));
 
@@ -169,7 +172,7 @@ public final class MethodsKineticEntity {
 		}));
 	}
 
-	private static final PotionType[] WITCH_POTIONS = {
+	private static final PotionType[] WITCH_POTIONS = new PotionType[]{
 		PotionTypes.HARMING,
 		PotionTypes.SLOWNESS,
 		PotionTypes.POISON,

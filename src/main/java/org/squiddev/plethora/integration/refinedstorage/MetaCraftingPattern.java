@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
-import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ public final class MetaCraftingPattern extends BaseMetaProvider<ICraftingPattern
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingPattern> context) {
 		ICraftingPattern pattern = context.getTarget();
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		out.put("id", pattern.getId());
 		out.put("outputs", getMetaList(context, pattern.getOutputs()));

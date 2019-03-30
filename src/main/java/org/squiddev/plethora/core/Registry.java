@@ -76,7 +76,9 @@ final class Registry {
 		if (!Modifier.isPublic(modifiers)) {
 			LOG.error("@Injects class {} should be public final, but is {}", name, Modifier.toString(modifiers));
 			return Result.ERROR;
-		} else if (!Modifier.isFinal(modifiers)) {
+		}
+
+		if (!Modifier.isFinal(modifiers)) {
 			LOG.warn("@Injects class {} should be public final, but is only {}", name, Modifier.toString(modifiers));
 		}
 

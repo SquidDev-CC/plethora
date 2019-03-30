@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -15,10 +14,7 @@ import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public final class MethodRegistry implements IMethodRegistry {
 	public static final MethodRegistry instance = new MethodRegistry();
@@ -26,8 +22,8 @@ public final class MethodRegistry implements IMethodRegistry {
 	final Multimap<Class<?>, IMethod<?>> providers = MultimapBuilder.hashKeys().arrayListValues().build();
 
 	public <T> void registerMethod(@Nonnull Class<T> target, @Nonnull IMethod<T> method) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(method, "method cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
+		Objects.requireNonNull(method, "method cannot be null");
 
 		String comment = method.getName() + ": " + method.getDocString();
 
@@ -54,7 +50,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> List<IMethod<T>> getMethods(@Nonnull IPartialContext<T> context) {
-		Preconditions.checkNotNull(context, "context cannot be null");
+		Objects.requireNonNull(context, "context cannot be null");
 
 		List<IMethod<T>> methods = Lists.newArrayList();
 
@@ -69,7 +65,7 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Nonnull
 	@Override
 	public List<IMethod<?>> getMethods(@Nonnull Class<?> target) {
-		Preconditions.checkNotNull(target, "target cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
 
 		List<IMethod<?>> result = Lists.newArrayList();
 
@@ -83,13 +79,13 @@ public final class MethodRegistry implements IMethodRegistry {
 	@Nonnull
 	@Override
 	public ICostHandler getCostHandler(@Nonnull ICapabilityProvider object, @Nullable EnumFacing side) {
-		Preconditions.checkNotNull(object, "object cannot be null");
+		Objects.requireNonNull(object, "object cannot be null");
 		ICostHandler handler = object.getCapability(Constants.COST_HANDLER_CAPABILITY, side);
 		return handler != null ? handler : DefaultCostHandler.get(object);
 	}
 
 	@Override
-	public int getBaseMethodCost(IMethod method) {
+	public int getBaseMethodCost(IMethod<?> method) {
 		Property property = ConfigCore.baseCosts.get(method.getId());
 		if (property == null) {
 			PlethoraCore.LOG.warn("Cannot find cost for " + method.getId() + ", this may have been registered incorrectly");
@@ -132,7 +128,7 @@ public final class MethodRegistry implements IMethodRegistry {
 			}
 		}
 
-		if (methods.size() > 0) {
+		if (!methods.isEmpty()) {
 			IMethodCollection collection = new MethodCollection(methods);
 
 			Context<IMethodCollection> baked = builder.makeChildId(collection);

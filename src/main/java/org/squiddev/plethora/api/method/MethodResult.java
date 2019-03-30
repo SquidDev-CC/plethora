@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.method;
 
-import com.google.common.base.Preconditions;
-
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 /**
@@ -16,15 +15,15 @@ public final class MethodResult {
 
 	private MethodResult(Object[] result) {
 		this.result = result;
-		this.next = null;
-		this.resolver = IMMEDIATE;
+		next = null;
+		resolver = IMMEDIATE;
 	}
 
 	private MethodResult(Callable<MethodResult> next, Resolver resolver) {
-		Preconditions.checkNotNull(next, "next cannot be null");
-		Preconditions.checkNotNull(resolver, "resolver cannot be null");
+		Objects.requireNonNull(next, "next cannot be null");
+		Objects.requireNonNull(resolver, "resolver cannot be null");
 
-		this.result = null;
+		result = null;
 		this.next = next;
 		this.resolver = resolver;
 	}
@@ -164,6 +163,7 @@ public final class MethodResult {
 		};
 	}
 
+	@FunctionalInterface
 	public interface Resolver {
 		boolean update();
 	}

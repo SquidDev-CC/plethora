@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
-import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,7 @@ import static net.minecraftforge.common.util.Constants.NBT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_DATA;
 
 @Mod.EventBusSubscriber(modid = Plethora.ID)
-public class CanvasHandler {
+public final class CanvasHandler {
 	public static final int ID_2D = 0;
 	public static final int ID_3D = 1;
 
@@ -35,9 +34,12 @@ public class CanvasHandler {
 	public static final int HEIGHT = 512 / 16 * 9;
 
 	private static final AtomicInteger id = new AtomicInteger(0);
-	private static final HashSet<CanvasServer> server = Sets.newHashSet();
+	private static final HashSet<CanvasServer> server = new HashSet<>();
 
 	private static final Int2ObjectMap<CanvasClient> client = new Int2ObjectOpenHashMap<>();
+
+	private CanvasHandler() {
+	}
 
 	public static int nextId() {
 		return id.getAndIncrement();

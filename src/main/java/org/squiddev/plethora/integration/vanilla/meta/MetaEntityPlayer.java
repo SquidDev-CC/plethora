@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.util.FoodStats;
@@ -21,7 +20,7 @@ public final class MetaEntityPlayer extends BasicMetaProvider<EntityPlayer> {
 		Map<Object, Object> result = new HashMap<>();
 
 		FoodStats stats = object.getFoodStats();
-		Map<String, Object> foodMap = Maps.newHashMap();
+		Map<String, Object> foodMap = new HashMap<>();
 		result.put("food", foodMap);
 		foodMap.put("hunger", stats.getFoodLevel());
 		foodMap.put("saturation", stats.getSaturationLevel());

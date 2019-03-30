@@ -13,13 +13,10 @@ import org.squiddev.plethora.utils.Helpers;
 import java.util.List;
 
 public abstract class ItemBase extends Item {
-	private final String name;
 
 	public ItemBase(String itemName, int stackSize) {
-		name = itemName;
-
-		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + name);
-		setRegistryName(new ResourceLocation(Plethora.ID, name));
+		setTranslationKey(Plethora.RESOURCE_DOMAIN + "." + itemName);
+		setRegistryName(new ResourceLocation(Plethora.ID, itemName));
 
 		setCreativeTab(Plethora.getCreativeTab());
 		setMaxStackSize(stackSize);

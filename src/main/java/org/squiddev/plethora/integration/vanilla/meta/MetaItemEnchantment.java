@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Enchantments;
@@ -26,12 +25,12 @@ public class MetaItemEnchantment extends BasicMetaProvider<ItemStack> {
 		Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
 		if (!enchants.isEmpty()) {
-			HashMap<Object, Object> items = Maps.newHashMap();
+			HashMap<Object, Object> items = new HashMap<>();
 
 			int i = 0;
 			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
 				Enchantment enchantment = entry.getKey();
-				HashMap<String, Object> enchant = Maps.newHashMap();
+				HashMap<String, Object> enchant = new HashMap<>();
 				enchant.put("name", enchantment.getName());
 
 				int level = entry.getValue();

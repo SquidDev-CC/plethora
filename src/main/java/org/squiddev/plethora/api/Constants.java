@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Various constants for working with Plethora
  */
-public class Constants {
+public final class Constants {
 	/**
 	 * IMC command for blacklisting a tile entity or package (must have a trailing '.').
 	 *
@@ -90,4 +90,7 @@ public class Constants {
 	 */
 	@CapabilityInject(IVehicleUpgradeHandler.class)
 	public static Capability<IVehicleUpgradeHandler> VEHICLE_UPGRADE_HANDLER_CAPABILITY = null;
+
+	private Constants() {
+	}
 }

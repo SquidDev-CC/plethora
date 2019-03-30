@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.IAttachable;
@@ -15,11 +14,12 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Concrete implementation of {@link IContextBuilder} and {@link IContextFactory}.
  */
-public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
+public final class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	private final Object targetValue;
 	private final Object targetReference;
 
@@ -39,7 +39,7 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	private Object[] combinedReferences;
 
 	private ContextFactory(T target, IReference<T> targetReference) {
-		this.targetValue = target;
+		targetValue = target;
 		this.targetReference = targetReference;
 	}
 
@@ -60,9 +60,9 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Nonnull
 	@Override
 	public <U> ContextFactory<T> addContext(@Nonnull String key, @Nonnull U baked, @Nonnull IReference<U> reference) {
-		Preconditions.checkNotNull(key, "key cannot be null");
-		Preconditions.checkNotNull(reference, "reference cannot be null");
-		Preconditions.checkNotNull(baked, "baked cannot be null");
+		Objects.requireNonNull(key, "key cannot be null");
+		Objects.requireNonNull(reference, "reference cannot be null");
+		Objects.requireNonNull(baked, "baked cannot be null");
 
 		keys.add(key);
 		values.add(baked);
@@ -76,8 +76,8 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Nonnull
 	@Override
 	public <U extends IReference<U>> ContextFactory<T> addContext(@Nonnull String key, @Nonnull U object) {
-		Preconditions.checkNotNull(key, "key cannot be null");
-		Preconditions.checkNotNull(object, "object cannot be null");
+		Objects.requireNonNull(key, "key cannot be null");
+		Objects.requireNonNull(object, "object cannot be null");
 
 		keys.add(key);
 		values.add(object);
@@ -91,7 +91,7 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Nonnull
 	@Override
 	public ContextFactory<T> withCostHandler(@Nonnull ICostHandler handler) {
-		Preconditions.checkNotNull(handler, "cost handler cannot be null");
+		Objects.requireNonNull(handler, "cost handler cannot be null");
 		this.handler = handler;
 
 		dirty();
@@ -101,7 +101,7 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Nonnull
 	@Override
 	public ContextFactory<T> withExecutor(@Nonnull IResultExecutor executor) {
-		Preconditions.checkNotNull(executor, "executor cannot be null");
+		Objects.requireNonNull(executor, "executor cannot be null");
 		this.executor = executor;
 
 		dirty();
@@ -111,10 +111,10 @@ public class ContextFactory<T> implements IContextFactory<T>, IContextBuilder {
 	@Nonnull
 	@Override
 	public ContextFactory<T> withModules(@Nonnull IModuleContainer modules, @Nonnull IReference<IModuleContainer> reference) {
-		Preconditions.checkNotNull(modules, "modules cannot be null");
-		Preconditions.checkNotNull(reference, "reference cannot be null");
+		Objects.requireNonNull(modules, "modules cannot be null");
+		Objects.requireNonNull(reference, "reference cannot be null");
 		this.modules = modules;
-		this.moduleReference = reference;
+		moduleReference = reference;
 
 		dirty();
 		return this;

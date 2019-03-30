@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.reference.Reference;
 
@@ -8,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class ContextHelpers {
@@ -26,7 +26,7 @@ public final class ContextHelpers {
 		if (list == null) return Collections.emptyMap();
 
 		int i = 0;
-		Map<Integer, Map<Object, Object>> map = Maps.newHashMapWithExpectedSize(list.size());
+		Map<Integer, Map<Object, Object>> map = new HashMap<>(list.size());
 		for (Object element : list) {
 			if (element == null) {
 				++i;
@@ -49,7 +49,7 @@ public final class ContextHelpers {
 	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Object[] list) {
 		if (list == null) return Collections.emptyMap();
 
-		Map<Integer, Map<Object, Object>> map = Maps.newHashMapWithExpectedSize(list.length);
+		Map<Integer, Map<Object, Object>> map = new HashMap<>(list.length);
 		for (int i = 0; i < list.length; i++) {
 			Object element = list[i];
 			if (element != null) {
@@ -74,7 +74,7 @@ public final class ContextHelpers {
 		if (list == null) return Collections.emptyMap();
 
 		int i = 0;
-		Map<Integer, ILuaObject> map = Maps.newHashMapWithExpectedSize(list.size());
+		Map<Integer, ILuaObject> map = new HashMap<>(list.size());
 		for (Object element : list) {
 			if (element == null) {
 				++i;

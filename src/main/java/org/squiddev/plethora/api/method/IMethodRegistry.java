@@ -48,5 +48,5 @@ public interface IMethodRegistry {
 	 * @return The base cost of the method.
 	 * @see ICostHandler
 	 */
-	int getBaseMethodCost(IMethod method);
+	int getBaseMethodCost(IMethod<?> method);
 }

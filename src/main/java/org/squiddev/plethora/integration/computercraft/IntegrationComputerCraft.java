@@ -25,7 +25,10 @@ import javax.annotation.Nonnull;
  * Provides various peripherals for ComputerCraft items
  */
 @Mod.EventBusSubscriber(modid = PlethoraCore.ID)
-public class IntegrationComputerCraft {
+public final class IntegrationComputerCraft {
+	private IntegrationComputerCraft() {
+	}
+
 	@SubscribeEvent
 	@Optional.Method(modid = ComputerCraft.MOD_ID)
 	public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {

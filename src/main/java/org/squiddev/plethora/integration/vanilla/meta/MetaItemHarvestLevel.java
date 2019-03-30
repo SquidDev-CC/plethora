@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,7 @@ public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (!item.getToolClasses(stack).isEmpty()) {
-			HashMap<Object, Object> types = Maps.newHashMap();
+			HashMap<Object, Object> types = new HashMap<>();
 
 			for (String tool : item.getToolClasses(stack)) {
 				types.put(tool, item.getHarvestLevel(stack, tool, null, null));

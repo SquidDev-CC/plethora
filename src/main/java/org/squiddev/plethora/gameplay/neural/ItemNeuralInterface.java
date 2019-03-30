@@ -216,29 +216,20 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 	@Override
 	public IMount createDataMount(@Nonnull ItemStack stack, @Nonnull World world) {
 		int id = getComputerID(stack);
-		if (id >= 0) {
-			return ComputerCraftAPI.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit);
-		}
+		return id >= 0 ? ComputerCraftAPI.createSaveDirMount(world, "computer/" + id, (long) ComputerCraft.computerSpaceLimit) : null;
 
-		return null;
 	}
 
 	@Override
 	public int getComputerID(@Nonnull ItemStack stack) {
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(COMPUTER_ID)) {
-			return stack.getTagCompound().getInteger(COMPUTER_ID);
-		} else {
-			return -1;
-		}
+		NBTTagCompound tag = stack.getTagCompound();
+		return tag != null && tag.hasKey(COMPUTER_ID) ? tag.getInteger(COMPUTER_ID) : -1;
 	}
 
 	@Override
 	public String getLabel(@Nonnull ItemStack stack) {
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("display", 10)) {
-			NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
-			if (nbttagcompound.hasKey("Name", 8)) return nbttagcompound.getString("Name");
-		}
-		return null;
+		NBTTagCompound tag = stack.getTagCompound();
+		return stack.hasDisplayName() ? stack.getDisplayName() : null;
 	}
 
 	@Override
@@ -246,8 +237,8 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 		return ComputerFamily.Advanced;
 	}
 
+	@Override
 	public ItemStack withFamily(@Nonnull ItemStack stack, @Nonnull ComputerFamily family) {
-		// For CC:T's IComputerItem
 		return stack;
 	}
 
@@ -302,12 +293,10 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 	@Nonnull
 	@Override
 	public ItemStack getCosmeticItem(@Nonnull ItemStack stack) {
-		if (!stack.hasTagCompound()) return ItemStack.EMPTY;
-
 		NBTTagCompound tag = stack.getTagCompound();
-		if (!tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)) return ItemStack.EMPTY;
-
-		return new ItemStack(tag.getCompoundTag("cosmetic"));
+		return tag != null && tag.hasKey("cosmetic", Constants.NBT.TAG_COMPOUND)
+			? new ItemStack(tag.getCompoundTag("cosmetic"))
+			: ItemStack.EMPTY;
 	}
 
 	@Override
@@ -322,11 +311,11 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 		}
 	}
 
-	private static class InvProvider implements ICapabilityProvider {
+	private static final class InvProvider implements ICapabilityProvider {
 		private final IItemHandler inv;
 
 		private InvProvider(ItemStack stack) {
-			this.inv = new NeuralItemHandler(stack);
+			inv = new NeuralItemHandler(stack);
 		}
 
 		@Override
@@ -393,12 +382,9 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 	public void onUpdate(ItemStack stack, World world, Entity entity, int um1, boolean um2) {
 		super.onUpdate(stack, world, entity, um1, um2);
 		if (entity instanceof EntityLivingBase) {
-			TinySlot slot;
-			if (entity instanceof EntityPlayer) {
-				slot = new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
-			} else {
-				slot = new TinySlot(stack);
-			}
+			TinySlot slot = entity instanceof EntityPlayer
+				? new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory)
+				: new TinySlot(stack);
 			onUpdate(stack, slot, (EntityLivingBase) entity, false);
 		}
 	}

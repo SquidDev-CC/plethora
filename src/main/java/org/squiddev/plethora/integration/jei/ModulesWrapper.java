@@ -13,7 +13,7 @@ import org.squiddev.plethora.gameplay.registry.Registration;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ModulesWrapper extends UseInRecipeWrapper {
+public final class ModulesWrapper extends UseInRecipeWrapper {
 	private static final String ID = "modules";
 
 	private static final ItemStack[] STACKS = new ItemStack[]{
@@ -32,9 +32,7 @@ public class ModulesWrapper extends UseInRecipeWrapper {
 	}
 
 	private static boolean isValid(@Nonnull ItemStack stack) {
-		if (stack.isEmpty()) return false;
-
-		return stack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
+		return !stack.isEmpty() && stack.hasCapability(Constants.MODULE_HANDLER_CAPABILITY, null);
 	}
 
 	public static void setup(IModRegistry registry) {

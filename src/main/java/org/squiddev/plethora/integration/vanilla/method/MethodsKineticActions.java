@@ -23,6 +23,9 @@ import org.squiddev.plethora.utils.PlayerHelpers;
 import java.util.Locale;
 
 public final class MethodsKineticActions {
+	private MethodsKineticActions() {
+	}
+
 	@PlethoraMethod(
 		module = PlethoraModules.KINETIC_S,
 		doc = "function([duration:integer], [hand:string]):boolean, string|nil -- Right click with this item using a " +

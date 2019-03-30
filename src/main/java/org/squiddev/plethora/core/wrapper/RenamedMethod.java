@@ -2,13 +2,16 @@ package org.squiddev.plethora.core.wrapper;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.ISubTargetedMethod;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleMethod;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-class RenamedMethod<T, U> implements IMethod<T>, IModuleMethod<T>, ISubTargetedMethod<T, U> {
+class RenamedMethod<T, U> implements IModuleMethod<T>, ISubTargetedMethod<T, U> {
 	private final String name;
 	private final MethodInstance<T, U> instance;
 

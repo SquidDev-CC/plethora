@@ -116,13 +116,11 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 		handler.getAdditionalContext(access, factory);
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
-		if (paired.getLeft().size() > 0) {
-			AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(handler.getModule().toString(), this, paired, new TaskRunner(), factory.getAttachments());
-			access.wrapper = peripheral;
-			return peripheral;
-		} else {
-			return null;
-		}
+		if (paired.getLeft().isEmpty()) return null;
+
+		AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(handler.getModule().toString(), this, paired, new TaskRunner(), factory.getAttachments());
+		access.wrapper = peripheral;
+		return peripheral;
 	}
 
 	@Nonnull
@@ -184,8 +182,8 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 		private TurtleModuleAccess(ITurtleAccess access, TurtleSide side, IModuleHandler handler) {
 			this.access = access;
 			this.side = side;
-			this.location = new TurtleWorldLocation(access);
-			this.container = new SingletonModuleContainer(handler.getModule());
+			location = new TurtleWorldLocation(access);
+			container = new SingletonModuleContainer(handler.getModule());
 		}
 
 		@Nonnull

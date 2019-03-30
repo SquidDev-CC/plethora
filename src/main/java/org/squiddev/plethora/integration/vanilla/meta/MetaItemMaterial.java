@@ -19,9 +19,8 @@ public final class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		String name = getName(stack);
-		if (name == null) return Collections.emptyMap();
+		return name != null ? Collections.singletonMap("material", name) : Collections.emptyMap();
 
-		return Collections.singletonMap("material", name);
 	}
 
 	private static String getName(@Nonnull ItemStack stack) {

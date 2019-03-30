@@ -10,7 +10,10 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import java.util.Map;
 
-public class MethodsIDrawer {
+public final class MethodsIDrawer {
+	private MethodsIDrawer() {
+	}
+
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The maximum number of items in this drawer.")
 	public static int getCapacity(@FromTarget IDrawer drawer) {
 		return drawer.getMaxCapacity();

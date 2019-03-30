@@ -47,12 +47,15 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
  * Renders overlays for various modules
  */
 @Mod.EventBusSubscriber(modid = Plethora.ID, value = Side.CLIENT)
-public class RenderOverlay {
+public final class RenderOverlay {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/misc/flare.png");
 
 	private static int ticks;
 
 	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<>();
+
+	private RenderOverlay() {
+	}
 
 	public static void addMessage(ChatMessage message) {
 		chatMessages.add(message);

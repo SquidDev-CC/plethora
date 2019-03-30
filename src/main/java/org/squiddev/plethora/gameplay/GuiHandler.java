@@ -75,7 +75,7 @@ public class GuiHandler implements IGuiHandler {
 		return null;
 	}
 
-	private EntityLivingBase getEntity(EntityPlayer player, World world, int flag, int id) {
+	private static EntityLivingBase getEntity(EntityPlayer player, World world, int flag, int id) {
 		switch (flag) {
 			case GUI_FLAG_PLAYER:
 				return player;
@@ -89,7 +89,7 @@ public class GuiHandler implements IGuiHandler {
 		}
 	}
 
-	private ContainerNeuralInterface getNeuralContainer(EntityPlayer player, World world, int flag, int id) {
+	private static ContainerNeuralInterface getNeuralContainer(EntityPlayer player, World world, int flag, int id) {
 		EntityLivingBase entity = getEntity(player, world, flag, id);
 		if (entity == null) return null;
 

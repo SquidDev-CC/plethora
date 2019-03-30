@@ -5,7 +5,10 @@ import org.squiddev.plethora.api.neural.INeuralRegistry;
 /**
  * API entry point for Plethora
  */
-public class PlethoraGameplayAPI {
+public final class PlethoraGameplayAPI {
+	private PlethoraGameplayAPI() {
+	}
+
 	public interface IPlethoraGameplayAPI {
 		INeuralRegistry neuralRegistry();
 	}

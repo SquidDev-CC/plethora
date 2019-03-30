@@ -1,6 +1,5 @@
 package org.squiddev.plethora.utils;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +10,7 @@ import net.minecraftforge.common.DimensionManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 public final class WorldPosition {
 	private final int dimension;
@@ -18,25 +18,25 @@ public final class WorldPosition {
 	private final Vec3d pos;
 
 	public WorldPosition(@Nonnull World world, @Nonnull Vec3d pos) {
-		Preconditions.checkNotNull(world, "world cannot be null");
-		Preconditions.checkNotNull(pos, "pos cannot be null");
+		Objects.requireNonNull(world, "world cannot be null");
+		Objects.requireNonNull(pos, "pos cannot be null");
 
-		this.dimension = world.provider.getDimension();
+		dimension = world.provider.getDimension();
 		this.world = new WeakReference<>(world);
 		this.pos = pos;
 	}
 
 	private WorldPosition(int dimension, @Nonnull Vec3d pos) {
 		this.dimension = dimension;
-		this.world = new WeakReference<>(null);
+		world = new WeakReference<>(null);
 		this.pos = pos;
 	}
 
 	public WorldPosition(@Nonnull World world, @Nonnull BlockPos pos) {
-		Preconditions.checkNotNull(world, "world cannot be null");
-		Preconditions.checkNotNull(pos, "pos cannot be null");
+		Objects.requireNonNull(world, "world cannot be null");
+		Objects.requireNonNull(pos, "pos cannot be null");
 
-		this.dimension = world.provider.getDimension();
+		dimension = world.provider.getDimension();
 		this.world = new WeakReference<>(world);
 		this.pos = new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 	}

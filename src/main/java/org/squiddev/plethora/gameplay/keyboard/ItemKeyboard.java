@@ -30,7 +30,6 @@ import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
-import org.squiddev.plethora.api.module.IModuleHandler;
 import org.squiddev.plethora.gameplay.GuiHandler;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
@@ -140,7 +139,7 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
-	private EnumActionResult onItemUse(ItemStack stack, World world, EntityPlayer player) {
+	private static EnumActionResult onItemUse(ItemStack stack, World world, EntityPlayer player) {
 		if (player.isSneaking()) return EnumActionResult.PASS;
 		if (world.isRemote) return EnumActionResult.SUCCESS;
 
@@ -184,11 +183,7 @@ public class ItemKeyboard extends ItemBase {
 		if (tag != null && tag.hasKey("x", 99)) {
 			ClientComputer computer = getBlockComputer(ComputerCraft.clientComputerRegistry, tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
-			if (computer != null) {
-				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.binding", position));
-			} else {
-				out.add(Helpers.translateToLocalFormatted("item.plethora.keyboard.broken", position));
-			}
+			out.add(Helpers.translateToLocalFormatted(computer != null ? "item.plethora.keyboard.binding" : "item.plethora.keyboard.broken", position));
 		}
 	}
 
@@ -208,7 +203,7 @@ public class ItemKeyboard extends ItemBase {
 		}
 	}
 
-	private static class KeyboardModule extends BasicModuleHandler implements ICapabilityProvider, IModuleHandler {
+	private static final class KeyboardModule extends BasicModuleHandler {
 		public static final KeyboardModule INSTANCE = new KeyboardModule();
 
 		private KeyboardModule() {

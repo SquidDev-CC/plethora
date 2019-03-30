@@ -75,7 +75,7 @@ public class MessageMinecartSlot implements BasicMessage {
 		// After all, this is what the S0EPacketSpawnObject packet does.
 		Minecraft mc = Minecraft.getMinecraft();
 		if (!mc.isCallingFromMinecraftThread()) {
-			mc.addScheduledTask(() -> this.onMessage(ctx));
+			mc.addScheduledTask(() -> onMessage(ctx));
 			return;
 		}
 
@@ -84,7 +84,7 @@ public class MessageMinecartSlot implements BasicMessage {
 
 		Entity entity = world.getEntityByID(entityId);
 		if (entity instanceof EntityMinecartComputer) {
-			EntityMinecartComputer computer = ((EntityMinecartComputer) entity);
+			EntityMinecartComputer computer = (EntityMinecartComputer) entity;
 
 			if (hasStack()) computer.itemHandler.setStackInSlot(slot, stack);
 			if (hasTag()) computer.accesses[slot].compound = tag;

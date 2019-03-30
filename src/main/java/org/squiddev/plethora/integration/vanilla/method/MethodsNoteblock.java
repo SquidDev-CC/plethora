@@ -28,8 +28,11 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 /**
  * Various methods for playing sounds in world
  */
-public class MethodsNoteblock {
+public final class MethodsNoteblock {
 	private static List<SoundEvent> instruments;
+
+	private MethodsNoteblock() {
+	}
 
 	private static List<SoundEvent> getInstruments() {
 		if (instruments == null) {
@@ -61,10 +64,10 @@ public class MethodsNoteblock {
 	) throws LuaException {
 		List<SoundEvent> instruments = getInstruments();
 
+		if (arguments.length == 0) throw badArgument(0, "string|number", "no value");
+
 		final SoundEvent sound;
-		if (arguments.length == 0) {
-			throw badArgument(0, "string|number", "no value");
-		} else if (arguments[0] instanceof Number) {
+		if (arguments[0] instanceof Number) {
 			int instrument = ((Number) arguments[0]).intValue();
 			assertBetween(instrument, 0, instruments.size() - 1, "Instrument out of bounds (%s)");
 

@@ -3,7 +3,6 @@ package org.squiddev.plethora.utils;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -41,6 +40,7 @@ import java.lang.reflect.TypeVariable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -48,7 +48,10 @@ import java.util.Set;
 /**
  * Helper methods for various things
  */
-public class Helpers {
+public final class Helpers {
+	private Helpers() {
+	}
+
 	/**
 	 * Translate any variant of a string
 	 *
@@ -147,7 +150,7 @@ public class Helpers {
 	}
 
 	public static Set<String> getContainingMods(File file) {
-		Set<String> modIds = Sets.newHashSet();
+		Set<String> modIds = new HashSet<>();
 
 		for (ModContainer container : Loader.instance().getModList()) {
 			if (container.getSource().equals(file)) {
@@ -161,7 +164,7 @@ public class Helpers {
 	public static File getContainingJar(Class<?> klass) {
 		String path = klass.getProtectionDomain().getCodeSource().getLocation().getPath();
 
-		int bangIndex = path.indexOf("!");
+		int bangIndex = path.indexOf('!');
 		if (bangIndex >= 0) {
 			path = path.substring(0, bangIndex);
 		}
@@ -202,7 +205,7 @@ public class Helpers {
 		return false;
 	}
 
-	private static final Set<String> blacklistedMods = Sets.newHashSet();
+	private static final Set<String> blacklistedMods = new HashSet<>();
 
 	public static boolean modLoaded(String mod) {
 		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod) && !blacklistedMods.contains(mod);
@@ -262,11 +265,7 @@ public class Helpers {
 			Block block = te.getBlockType();
 			int meta = te.getBlockMetadata();
 
-			if (block != null) {
-				return getName(new ItemStack(block, 1, meta));
-			} else {
-				return te.getClass().getSimpleName();
-			}
+			return block != null ? getName(new ItemStack(block, 1, meta)) : te.getClass().getSimpleName();
 		} else {
 			return owner.getClass().getSimpleName();
 		}
@@ -336,14 +335,14 @@ public class Helpers {
 
 		if (allTargets != null) {
 			boolean valid = false;
-			for (java.lang.reflect.Type arg : allTargets) {
+			for (Type arg : allTargets) {
 				// If the type argument is a subtype then work correctly.
 				if (arg instanceof Class<?> && ((Class<?>) arg).isAssignableFrom(target)) {
 					PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got superclass" + arg + " for " + klass.getName());
 					valid |= !ConfigCore.Testing.strict;
 				} else if (arg instanceof TypeVariable) {
 					// Try to find something limited by this arg
-					TypeVariable var = (TypeVariable) arg;
+					TypeVariable<?> var = (TypeVariable) arg;
 					for (Type bound : var.getBounds()) {
 						if (bound instanceof Class<?> && ((Class<?>) bound).isAssignableFrom(target)) {
 							PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got generic parameter with matching bound " + var.getName() + " extends " + ((Class<?>) bound).getName() + " for " + klass.getName());
@@ -356,11 +355,7 @@ public class Helpers {
 		}
 
 		String message = "Annotation target " + target.getName() + " does not match type parameters";
-		if (allTargets == null) {
-			message += " (cannot find any type parameters)";
-		} else {
-			message += " (specified parameters are " + allTargets + ")";
-		}
+		message += allTargets == null ? " (cannot find any type parameters)" : " (specified parameters are " + allTargets + ")";
 
 		if (ConfigCore.Testing.strict) {
 			throw new IllegalStateException(message);
@@ -369,7 +364,7 @@ public class Helpers {
 		}
 	}
 
-	public static int hashStack(@Nonnull ItemStack stack) {
+	private static int hashStack(@Nonnull ItemStack stack) {
 		int hash = stack.getItem().hashCode() * 31 + stack.getItemDamage();
 		if (stack.hasTagCompound()) hash = hash * 31 + stack.getTagCompound().hashCode();
 		return hash;

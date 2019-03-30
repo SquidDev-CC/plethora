@@ -1,12 +1,12 @@
 package org.squiddev.plethora.api.module;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -19,7 +19,7 @@ public class BasicModuleContainer implements IModuleContainer {
 	private final Set<ResourceLocation> modules;
 
 	public BasicModuleContainer(@Nonnull Set<ResourceLocation> modules) {
-		Preconditions.checkNotNull(modules, "modules cannot be null");
+		Objects.requireNonNull(modules, "modules cannot be null");
 		this.modules = Collections.unmodifiableSet(modules);
 	}
 

@@ -33,13 +33,16 @@ import static org.squiddev.plethora.gameplay.modules.PlethoraModules.*;
  * The proxy class
  */
 @Mod.EventBusSubscriber(modid = Plethora.ID)
-public class Registration {
+public final class Registration {
 	public static ItemNeuralInterface itemNeuralInterface;
 	public static ItemNeuralConnector itemNeuralConnector;
 	public static ItemModule itemModule;
 	public static ItemKeyboard itemKeyboard;
 	public static BlockManipulator blockManipulator;
 	public static BlockRedstoneIntegrator blockRedstoneIntegrator;
+
+	private Registration() {
+	}
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event) {

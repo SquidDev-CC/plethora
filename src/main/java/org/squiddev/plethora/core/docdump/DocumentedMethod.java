@@ -25,9 +25,9 @@ public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
 	public DocumentedMethod(@Nonnull Class<?> target, @Nonnull IMethod<?> method) {
 		super(method, method.getId(), method.getName(), getDescription(method.getDocString()));
 
-		this.args = getArgs(method.getDocString());
+		args = getArgs(method.getDocString());
 		this.target = target;
-		this.subtarget = method instanceof ISubTargetedMethod
+		subtarget = method instanceof ISubTargetedMethod
 			? ((ISubTargetedMethod<?, ?>) method).getSubTarget()
 			: null;
 
@@ -38,7 +38,7 @@ public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
 			moduleList.sort(Comparator.naturalOrder());
 			this.modules = Collections.unmodifiableList(moduleList);
 		} else {
-			this.modules = Collections.emptyList();
+			modules = Collections.emptyList();
 		}
 	}
 

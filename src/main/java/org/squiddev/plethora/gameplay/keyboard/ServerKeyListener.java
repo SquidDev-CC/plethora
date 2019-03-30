@@ -52,7 +52,7 @@ public final class ServerKeyListener {
 	static void process(EntityPlayerMP player, List<KeyPress> presses, List<Integer> releases) {
 		synchronized (listeners) {
 			Set<IModuleAccess> accesses = listeners.get(player);
-			if (accesses != null && accesses.size() > 0) {
+			if (accesses != null && !accesses.isEmpty()) {
 				for (IModuleAccess access : accesses) {
 					for (KeyPress press : presses) {
 						if (press.key > 0) access.queueEvent("key", press.key, press.repeat);

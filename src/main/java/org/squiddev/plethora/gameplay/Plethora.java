@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.squiddev.plethora.gameplay.client.ClientRegistration;
-import org.squiddev.plethora.gameplay.client.RenderOverlay;
 import org.squiddev.plethora.gameplay.keyboard.KeyMessage;
 import org.squiddev.plethora.gameplay.keyboard.ListenMessage;
 import org.squiddev.plethora.gameplay.keyboard.ServerKeyListener;
@@ -62,7 +61,7 @@ public class Plethora {
 	public static SimpleNetworkWrapper network;
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
+	public static void preInit(FMLPreInitializationEvent event) {
 		ConfigGameplay.init(event.getSuggestedConfigurationFile());
 
 		// Set up entities
@@ -106,7 +105,7 @@ public class Plethora {
 	}
 
 	@EventHandler
-	public void onServerStarting(FMLServerStartedEvent e) {
+	public static void onServerStarting(FMLServerStartedEvent e) {
 		ServerKeyListener.clear();
 	}
 

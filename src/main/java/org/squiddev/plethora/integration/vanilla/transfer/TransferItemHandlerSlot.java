@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
-import com.google.common.collect.Sets;
 import net.minecraftforge.items.IItemHandler;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
@@ -8,6 +7,7 @@ import org.squiddev.plethora.api.transfer.ITransferProvider;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,7 +36,7 @@ public final class TransferItemHandlerSlot implements ITransferProvider<IItemHan
 	public Set<String> getTransferLocations(@Nonnull IItemHandler object) {
 		final int size = object.getSlots();
 		if (size == 0) return Collections.emptySet();
-		Set<String> slots = Sets.newHashSet();
+		Set<String> slots = new HashSet<>();
 		for (int i = 0; i < size; i++) {
 			if (!object.getStackInSlot(i).isEmpty()) slots.add(Integer.toString(i));
 		}

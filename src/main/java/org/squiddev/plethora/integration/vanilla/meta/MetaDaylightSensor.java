@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -13,6 +12,7 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,7 +29,7 @@ public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 		World world = location.getWorld();
 		BlockPos pos = location.getPos();
 
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 		if (!world.provider.hasSkyLight()) {
 			out.put("sky", world.getLightFor(EnumSkyBlock.SKY, pos) - world.getSkylightSubtracted());
 		}
