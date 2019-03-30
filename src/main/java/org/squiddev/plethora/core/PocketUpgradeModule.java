@@ -166,11 +166,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		handler.getAdditionalContext(access, factory);
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
-		if (paired.getLeft().size() > 0) {
-			return new PocketPeripheral(this, access, paired, factory.getAttachments());
-		} else {
-			return null;
-		}
+		return paired.getLeft().isEmpty() ? null : new PocketPeripheral(this, access, paired, factory.getAttachments());
 	}
 
 	@Override
@@ -202,7 +198,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			List<IAttachable> attachments
 		) {
 			super(owner.getUpgradeID().toString(), owner, methods, new TaskRunner(), attachments);
-			this.entity = access.entity;
+			entity = access.entity;
 			access.wrapper = this;
 		}
 
@@ -225,10 +221,10 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		private final IModuleContainer container;
 
 		private PocketModuleAccess(IPocketAccess access, IModuleHandler handler) {
-			this.entity = access.getEntity();
-			this.location = new EntityWorldLocation(entity);
+			entity = access.getEntity();
+			location = new EntityWorldLocation(entity);
 			this.access = access;
-			this.container = new SingletonModuleContainer(handler.getModule());
+			container = new SingletonModuleContainer(handler.getModule());
 		}
 
 		@Nonnull

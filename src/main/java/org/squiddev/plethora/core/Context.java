@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
@@ -11,6 +10,7 @@ import org.squiddev.plethora.api.reference.Reference;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public final class Context<T> extends PartialContext<T> implements IContext<T> {
 	private final UnbakedContext<T> parent;
@@ -29,15 +29,15 @@ public final class Context<T> extends PartialContext<T> implements IContext<T> {
 	@Nonnull
 	@Override
 	public <U> Context<U> makeChild(U target, @Nonnull IReference<U> targetReference) {
-		Preconditions.checkNotNull(target, "target cannot be null");
-		Preconditions.checkNotNull(targetReference, "targetReference cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
+		Objects.requireNonNull(targetReference, "targetReference cannot be null");
 
 		ArrayList<String> keys = new ArrayList<>(this.keys.length + 1);
-		ArrayList<Object> references = new ArrayList<>(this.parent.references.length + 1);
+		ArrayList<Object> references = new ArrayList<>(parent.references.length + 1);
 		ArrayList<Object> values = new ArrayList<>(this.values.length + 1);
 
 		Collections.addAll(keys, this.keys);
-		Collections.addAll(references, this.parent.references);
+		Collections.addAll(references, parent.references);
 		Collections.addAll(values, this.values);
 
 		for (int i = keys.size() - 1; i >= 0; i--) {

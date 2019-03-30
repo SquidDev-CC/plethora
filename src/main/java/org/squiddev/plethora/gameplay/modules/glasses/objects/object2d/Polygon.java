@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
-public class Polygon extends ColourableObject implements MultiPoint2D, MultiPointResizable2D {
+public class Polygon extends ColourableObject implements MultiPointResizable2D {
 	protected final ArrayList<Vec2d> points = new ArrayList<>();
 
 	protected Polygon(int id, int parent, byte type) {

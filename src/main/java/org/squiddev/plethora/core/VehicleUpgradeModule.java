@@ -105,13 +105,11 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 		handler.getAdditionalContext(access, factory);
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
-		if (paired.getLeft().size() > 0) {
-			AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(moduleName, this, paired, new TaskRunner(), factory.getAttachments());
-			access.wrapper = peripheral;
-			return peripheral;
-		} else {
-			return null;
-		}
+		if (paired.getLeft().isEmpty()) return null;
+
+		AttachableWrapperPeripheral peripheral = new AttachableWrapperPeripheral(moduleName, this, paired, new TaskRunner(), factory.getAttachments());
+		access.wrapper = peripheral;
+		return peripheral;
 	}
 
 	private static final class VehicleModuleAccess implements IModuleAccess {
@@ -123,8 +121,8 @@ public class VehicleUpgradeModule implements IVehicleUpgradeHandler {
 
 		private VehicleModuleAccess(IVehicleAccess access, IModuleHandler handler) {
 			this.access = access;
-			this.location = new EntityWorldLocation(access.getVehicle());
-			this.container = new SingletonModuleContainer(handler.getModule());
+			location = new EntityWorldLocation(access.getVehicle());
+			container = new SingletonModuleContainer(handler.getModule());
 		}
 
 		@Nonnull

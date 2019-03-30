@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -14,6 +13,7 @@ import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects
@@ -21,7 +21,7 @@ public final class MetaBlockReference extends BasicMetaProvider<BlockReference> 
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull BlockReference reference) {
-		Map<Object, Object> data = Maps.newHashMap();
+		Map<Object, Object> data = new HashMap<>();
 
 		IBlockState state = reference.getState();
 		World world = reference.getLocation().getWorld();

@@ -74,12 +74,12 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 
 	public EntityLaser(World world, Vec3d shooter) {
 		this(world);
-		this.shooterPos = new WorldPosition(world, shooter);
+		shooterPos = new WorldPosition(world, shooter);
 	}
 
 	public void setShooter(@Nullable Entity shooter, @Nullable GameProfile profile) {
 		this.shooter = shooter;
-		this.shooterOwner = profile;
+		shooterOwner = profile;
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 	}
 
 	private void syncPositions(boolean force) {
-		EntityPlayer fakePlayer = this.shooterPlayer;
+		EntityPlayer fakePlayer = shooterPlayer;
 		Entity shooter = this.shooter;
 		if (!(fakePlayer instanceof PlethoraFakePlayer)) return;
 

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
@@ -19,9 +18,12 @@ import java.util.Map;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 public final class MethodsInventory {
+	private MethodsInventory() {
+	}
+
 	@PlethoraMethod(doc = "-- List all items in this inventory")
 	public static Map<Integer, Object> list(@Nonnull @FromTarget IItemHandler inventory) {
-		HashMap<Integer, Object> items = Maps.newHashMap();
+		HashMap<Integer, Object> items = new HashMap<>();
 		int size = inventory.getSlots();
 		for (int i = 0; i < size; i++) {
 			ItemStack stack = inventory.getStackInSlot(i);

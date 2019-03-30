@@ -33,7 +33,7 @@ public enum ManipulatorType implements IStringSerializable {
 		name = name().toLowerCase();
 		this.scale = scale;
 		this.boxes = boxes;
-		this.facingBoxes = new AxisAlignedBB[6][];
+		facingBoxes = new AxisAlignedBB[6][];
 	}
 
 	@Nonnull

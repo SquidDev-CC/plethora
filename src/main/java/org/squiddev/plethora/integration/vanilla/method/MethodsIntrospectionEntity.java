@@ -16,7 +16,10 @@ import org.squiddev.plethora.utils.EquipmentInvWrapper;
 /**
  * Various introspection modules which rely on Vanilla classes.
  */
-public class MethodsIntrospectionEntity {
+public final class MethodsIntrospectionEntity {
+	private MethodsIntrospectionEntity() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this player's inventory")
 	public static ILuaObject getInventory(IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player player) throws LuaException {
 		IItemHandler inventory = new PlayerMainInvWrapper(player.getPlayer().inventory);

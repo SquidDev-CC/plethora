@@ -4,8 +4,6 @@ import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
@@ -34,15 +32,13 @@ import org.squiddev.plethora.api.reference.ConstantReference;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.core.*;
 import org.squiddev.plethora.gameplay.modules.ModulePeripheral;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.LoadedCache;
 import org.squiddev.plethora.utils.TinySlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.squiddev.plethora.api.reference.Reference.entity;
 
@@ -64,12 +60,10 @@ public final class NeuralHelpers {
 	public static TinySlot getSlot(EntityLivingBase entity) {
 		ItemStack stack = entity.getItemStackFromSlot(ARMOR_SLOT);
 
-		if (!stack.isEmpty() && stack.getItem() == Registry.itemNeuralInterface) {
-			if (entity instanceof EntityPlayer) {
-				return new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory);
-			} else {
-				return new TinySlot(stack);
-			}
+		if (!stack.isEmpty() && stack.getItem() == Registration.itemNeuralInterface) {
+			return entity instanceof EntityPlayer
+				? new TinySlot.InventorySlot(stack, ((EntityPlayer) entity).inventory)
+				: new TinySlot(stack);
 		}
 
 		if (LoadedCache.hasBaubles() && entity instanceof EntityPlayer) {
@@ -92,7 +86,7 @@ public final class NeuralHelpers {
 		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
 		for (int slot : getBaubleType().getValidSlots()) {
 			ItemStack stack = handler.getStackInSlot(slot);
-			if (stack.getItem() == Registry.itemNeuralInterface) {
+			if (stack.getItem() == Registration.itemNeuralInterface) {
 				return new TinySlot.BaublesSlot(stack, handler, slot);
 			}
 		}
@@ -120,8 +114,8 @@ public final class NeuralHelpers {
 
 	public static IPeripheral buildModules(final NeuralComputer computer, final NonNullList<ItemStack> inventory, Entity owner) {
 		final NonNullList<ItemStack> stacks = NonNullList.withSize(MODULE_SIZE, ItemStack.EMPTY);
-		Set<ResourceLocation> modules = Sets.newHashSet();
-		Set<IModuleHandler> moduleHandlers = Sets.newHashSet();
+		Set<ResourceLocation> modules = new HashSet<>();
+		Set<IModuleHandler> moduleHandlers = new HashSet<>();
 		final int moduleHash = computer.getModuleHash();
 
 		for (int i = 0; i < MODULE_SIZE; i++) {
@@ -143,7 +137,7 @@ public final class NeuralHelpers {
 		if (modules.isEmpty()) return null;
 
 		final IModuleContainer container = new BasicModuleContainer(modules);
-		Map<ResourceLocation, NeuralAccess> accessMap = Maps.newHashMap();
+		Map<ResourceLocation, NeuralAccess> accessMap = new HashMap<>();
 
 		ICostHandler cost = CostHelpers.getCostHandler(owner);
 		IReference<IModuleContainer> containerRef = new ConstantReference<IModuleContainer>() {
@@ -189,15 +183,13 @@ public final class NeuralHelpers {
 		}
 
 		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(builder.getBaked());
-		if (paired.getLeft().size() > 0) {
-			ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), moduleHash);
-			for (NeuralAccess access : accessMap.values()) {
-				access.wrapper = peripheral;
-			}
-			return peripheral;
-		} else {
-			return null;
+		if (paired.getLeft().isEmpty()) return null;
+
+		ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), moduleHash);
+		for (NeuralAccess access : accessMap.values()) {
+			access.wrapper = peripheral;
 		}
+		return peripheral;
 	}
 
 	private static final class NeuralAccess implements IModuleAccess {
@@ -214,7 +206,7 @@ public final class NeuralHelpers {
 			this.computer = computer;
 			this.module = module.getModule();
 			this.container = container;
-			this.location = new EntityWorldLocation(owner);
+			location = new EntityWorldLocation(owner);
 		}
 
 		@Nonnull

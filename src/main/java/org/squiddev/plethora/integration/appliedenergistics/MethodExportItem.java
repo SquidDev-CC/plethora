@@ -24,6 +24,9 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.integration.vanilla.method.MethodsInventoryTransfer.extractHandler;
 
 public final class MethodExportItem {
+	private MethodExportItem() {
+	}
+
 	@PlethoraMethod(
 		modId = AppEng.MOD_ID,
 		doc = "-- Export this item from the AE network to an inventory. Returns the amount transferred."

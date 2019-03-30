@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBanner;
 import net.minecraft.item.ItemStack;
@@ -12,6 +11,7 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects
@@ -23,13 +23,13 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemBanner banner) {
-		int idx = 0;
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		NBTTagCompound tag = stack.getSubCompound("BlockEntityTag");
 		if (tag != null && tag.hasKey("Patterns")) {
 			NBTTagList nbttaglist = tag.getTagList("Patterns", 10);
 
+			int idx = 0;
 			for (int i = 0; i < nbttaglist.tagCount() && i < 6; ++i) {
 				NBTTagCompound patternTag = nbttaglist.getCompoundTagAt(i);
 
@@ -37,7 +37,7 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 				BannerPattern pattern = getPatternByID(patternTag.getString("Pattern"));
 
 				if (pattern != null) {
-					Map<String, String> entry = Maps.newHashMap();
+					Map<String, String> entry = new HashMap<>();
 					entry.put("id", pattern.getHashname());
 
 					// patternName

@@ -9,7 +9,10 @@ import org.squiddev.plethora.utils.LuaList;
 
 import java.util.Map;
 
-public class MethodsErrorLogicSource {
+public final class MethodsErrorLogicSource {
+	private MethodsErrorLogicSource() {
+	}
+
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get any errors preventing operation")
 	public static Map<Integer, String> getErrors(@FromTarget IErrorLogicSource source) {
 		return source.getErrorLogic().getErrorStates().stream()

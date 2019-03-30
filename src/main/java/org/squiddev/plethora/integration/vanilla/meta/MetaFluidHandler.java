@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -14,6 +13,7 @@ import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,7 +25,7 @@ public class MetaFluidHandler extends BaseMetaProvider<IFluidHandler> {
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IFluidHandler> context) {
 		IFluidHandler handler = context.getTarget();
-		Map<Object, Object> tanks = Maps.newHashMap();
+		Map<Object, Object> tanks = new HashMap<>();
 		int i = 0;
 
 		for (IFluidTankProperties tank : handler.getTankProperties()) {

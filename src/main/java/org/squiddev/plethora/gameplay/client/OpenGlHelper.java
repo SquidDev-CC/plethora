@@ -18,11 +18,7 @@ public class OpenGlHelper extends net.minecraft.client.renderer.OpenGlHelper {
 
 	public static int getCurrentBuffer() {
 		setup();
-		if (GL_DRAW_FRAMEBUFFER_BINDING == -1) {
-			return 0;
-		} else {
-			return GlStateManager.glGetInteger(GL30.GL_DRAW_FRAMEBUFFER_BINDING);
-		}
+		return GL_DRAW_FRAMEBUFFER_BINDING == -1 ? 0 : GlStateManager.glGetInteger(GL30.GL_DRAW_FRAMEBUFFER_BINDING);
 	}
 
 	public static FloatBuffer getProjectionMatrix() {

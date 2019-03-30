@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
-import com.google.common.collect.Maps;
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
@@ -21,7 +20,10 @@ import java.util.*;
  * Whilst these methods could be implemented on {@link INetwork}, we have to implement them on
  * {@link INetworkNode} instead as the converter may fail.
  */
-public class MethodsNetworkNode {
+public final class MethodsNetworkNode {
+	private MethodsNetworkNode() {
+	}
+
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the energy usage of this RefinedStorage node")
 	public static int getNodeEnergyUsage(@FromTarget INetworkNode node) {
 		return node.getEnergyUsage();
@@ -46,7 +48,7 @@ public class MethodsNetworkNode {
 
 		Collection<ItemStack> items = network.getItemStorageCache().getList().getStacks();
 		HashMap<ItemIdentity, Map<Object, Object>> seen = new HashMap<>();
-		Map<Integer, Map<Object, Object>> output = Maps.newHashMapWithExpectedSize(items.size());
+		Map<Integer, Map<Object, Object>> output = new HashMap<>(items.size());
 
 		int i = 0;
 		for (ItemStack stack : items) {
@@ -115,7 +117,7 @@ public class MethodsNetworkNode {
 		Set<ItemIdentity> seen = new HashSet<>();
 
 		int i = 0;
-		Map<Integer, ILuaObject> out = Maps.newHashMap();
+		Map<Integer, ILuaObject> out = new HashMap<>();
 		for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
 			if (item.matches(stack)) {
 				seen.add(new ItemIdentity(stack));
@@ -142,7 +144,7 @@ public class MethodsNetworkNode {
 		Collection<ICraftingTask> tasks = network.getCraftingManager().getTasks();
 
 		int i = 0;
-		Map<Integer, Object> output = Maps.newHashMapWithExpectedSize(tasks.size());
+		Map<Integer, Object> output = new HashMap<>(tasks.size());
 		for (ICraftingTask task : tasks) {
 			output.put(++i, context.makeChildId(task).getObject());
 		}

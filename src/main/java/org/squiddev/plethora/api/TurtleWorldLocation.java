@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api;
 
-import com.google.common.base.Preconditions;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -8,6 +7,7 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.reference.ConstantReference;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * A world location for turtles
@@ -16,7 +16,7 @@ public class TurtleWorldLocation extends ConstantReference<IWorldLocation> imple
 	private final ITurtleAccess turtle;
 
 	public TurtleWorldLocation(@Nonnull ITurtleAccess turtle) {
-		Preconditions.checkNotNull(turtle, "entity cannot be null");
+		Objects.requireNonNull(turtle, "entity cannot be null");
 		this.turtle = turtle;
 	}
 

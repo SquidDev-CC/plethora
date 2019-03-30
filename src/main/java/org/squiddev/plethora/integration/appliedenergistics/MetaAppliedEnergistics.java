@@ -4,7 +4,6 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
-import com.google.common.collect.Maps;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.SimpleMetaProvider;
@@ -48,9 +47,12 @@ public final class MetaAppliedEnergistics {
 		}
 	};
 
+	private MetaAppliedEnergistics() {
+	}
+
 	@Nonnull
 	static HashMap<Object, Object> getItemStackProperties(@Nonnull IAEItemStack stack) {
-		HashMap<Object, Object> data = Maps.newHashMap();
+		HashMap<Object, Object> data = new HashMap<>();
 		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
 		data.put("count", stack.getStackSize());
 		data.put("isCraftable", stack.isCraftable());

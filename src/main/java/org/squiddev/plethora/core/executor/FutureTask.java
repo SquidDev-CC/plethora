@@ -17,7 +17,7 @@ public class FutureTask extends Task {
 
 	public FutureTask(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
 		super(callback, resolver);
-		this.future = new DirectFuture<>();
+		future = new DirectFuture<>();
 	}
 
 	@Override

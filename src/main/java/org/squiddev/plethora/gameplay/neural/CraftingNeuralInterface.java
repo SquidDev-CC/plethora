@@ -1,7 +1,5 @@
 package org.squiddev.plethora.gameplay.neural;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +20,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.squiddev.plethora.gameplay.ItemBase;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,7 +60,7 @@ public class CraftingNeuralInterface extends ShapedOreRecipe {
 		public IRecipe parse(JsonContext context, JsonObject json) {
 			String group = JsonUtils.getString(json, "group", "");
 
-			Map<Character, Ingredient> ingMap = Maps.newHashMap();
+			Map<Character, Ingredient> ingMap = new HashMap<>();
 			for (Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {
 				if (entry.getKey().length() != 1) {
 					throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 character only).");
@@ -95,7 +95,7 @@ public class CraftingNeuralInterface extends ShapedOreRecipe {
 			primer.mirrored = JsonUtils.getBoolean(json, "mirrored", true);
 			primer.input = NonNullList.withSize(primer.width * primer.height, Ingredient.EMPTY);
 
-			Set<Character> keys = Sets.newHashSet(ingMap.keySet());
+			Set<Character> keys = new HashSet<>(ingMap.keySet());
 			keys.remove(' ');
 
 			int x = 0;

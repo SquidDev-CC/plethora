@@ -92,4 +92,7 @@ public final class ArgumentTypes {
 			return optTable(args, index, null);
 		}
 	};
+
+	private ArgumentTypes() {
+	}
 }

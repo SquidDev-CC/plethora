@@ -18,11 +18,11 @@ public final class MethodMeta extends BasicMethod<Object> implements IConverterE
 		IMetaRegistry registry = PlethoraAPI.instance().metaRegistry();
 		Object target = context.getTarget();
 
-		if (registry.getMetaProviders(target.getClass()).size() > 0) return true;
+		if (!registry.getMetaProviders(target.getClass()).isEmpty()) return true;
 
 		// Convert all and check if any matches
 		for (Object converted : PlethoraAPI.instance().converterRegistry().convertAll(target)) {
-			if (registry.getMetaProviders(converted.getClass()).size() > 0) return true;
+			if (!registry.getMetaProviders(converted.getClass()).isEmpty()) return true;
 		}
 
 		return false;

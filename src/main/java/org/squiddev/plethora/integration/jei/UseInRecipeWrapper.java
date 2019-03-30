@@ -30,7 +30,7 @@ public abstract class UseInRecipeWrapper implements IRecipeWrapper {
 
 	public UseInRecipeWrapper(@Nonnull ItemStack stack, String id, @Nonnull ItemStack[] useIn, @Nonnull IGuiHelper helper) {
 		this.stack = stack;
-		this.slotDrawable = helper.getSlotDrawable();
+		slotDrawable = helper.getSlotDrawable();
 		this.id = id;
 
 		for (ItemStack use : useIn) usable.add(use.getDisplayName());

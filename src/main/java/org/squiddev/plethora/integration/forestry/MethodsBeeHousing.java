@@ -10,7 +10,10 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import java.util.Map;
 
-public class MethodsBeeHousing {
+public final class MethodsBeeHousing {
+	private MethodsBeeHousing() {
+	}
+
 	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current queen for this bee housing.")
 	public static Map<Object, Object> getQueen(IContext<IBeeHousing> context) {

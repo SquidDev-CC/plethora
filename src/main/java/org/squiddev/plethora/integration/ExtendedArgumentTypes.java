@@ -20,4 +20,7 @@ public final class ExtendedArgumentTypes {
 			return ItemFingerprint.fromLua(args, index);
 		}
 	};
+
+	private ExtendedArgumentTypes() {
+	}
 }

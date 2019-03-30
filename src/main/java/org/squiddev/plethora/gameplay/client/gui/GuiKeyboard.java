@@ -17,7 +17,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler;
 import org.squiddev.plethora.gameplay.neural.ItemComputerHandler;
 import org.squiddev.plethora.gameplay.neural.NeuralHelpers;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 
 import java.io.IOException;
@@ -35,9 +35,9 @@ public class GuiKeyboard extends GuiScreen {
 
 	public GuiKeyboard(IComputer computer) {
 		this.computer = computer;
-		this.container = new ContainerKeyboard(computer);
+		container = new ContainerKeyboard(computer);
 
-		this.glassesMouse = new MouseHandler("glasses", CanvasHandler.WIDTH, CanvasHandler.HEIGHT);
+		glassesMouse = new MouseHandler("glasses", CanvasHandler.WIDTH, CanvasHandler.HEIGHT);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class GuiKeyboard extends GuiScreen {
 
 		for (int i = 0; i < handler.getSlots(); i++) {
 			ItemStack module = handler.getStackInSlot(i);
-			if (module.getItem() == Registry.itemModule && module.getMetadata() == PlethoraModules.GLASSES_ID) {
+			if (module.getItem() == Registration.itemModule && module.getMetadata() == PlethoraModules.GLASSES_ID) {
 				return true;
 			}
 		}
@@ -157,13 +157,13 @@ public class GuiKeyboard extends GuiScreen {
 
 		MouseHandler(String prefix, int width, int height) {
 			this.prefix = prefix;
-			this.termWidth = width;
-			this.termHeight = height;
+			termWidth = width;
+			termHeight = height;
 		}
 
 		void setSize(int width, int height) {
-			this.termWidth = width;
-			this.termHeight = height;
+			termWidth = width;
+			termHeight = height;
 		}
 
 		void click(int x, int y, int button) {

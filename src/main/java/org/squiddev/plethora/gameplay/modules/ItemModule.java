@@ -1,7 +1,6 @@
 package org.squiddev.plethora.gameplay.modules;
 
 import com.mojang.authlib.GameProfile;
-import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -18,16 +17,11 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,7 +30,6 @@ import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
 import org.squiddev.plethora.api.module.AbstractModuleHandler;
 import org.squiddev.plethora.api.module.IModuleAccess;
-import org.squiddev.plethora.api.module.IModuleRegistry;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.ConfigCore;
@@ -44,8 +37,7 @@ import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.ItemBase;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
-import org.squiddev.plethora.gameplay.client.entity.RenderLaser;
-import org.squiddev.plethora.gameplay.modules.glasses.*;
+import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.integration.EntityIdentifier;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -60,7 +52,6 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic.launchMax;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.maximumPotency;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.minimumPotency;
 import static org.squiddev.plethora.gameplay.modules.PlethoraModules.*;
-import static org.squiddev.plethora.gameplay.registry.Packets.*;
 
 public final class ItemModule extends ItemBase {
 	private static final int MAX_TICKS = 72000;
@@ -82,10 +73,10 @@ public final class ItemModule extends ItemBase {
 	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack stack) {
-		return super.getTranslationKey() + ".module_" + getName(stack.getItemDamage());
+		return getTranslationKey() + ".module_" + getName(stack.getItemDamage());
 	}
 
-	private boolean isBlacklisted(ItemStack stack) {
+	private static boolean isBlacklisted(ItemStack stack) {
 		return ConfigCore.Blacklist.blacklistModules.contains(Plethora.RESOURCE_DOMAIN + ":" + getName(stack.getItemDamage()));
 	}
 
@@ -185,20 +176,16 @@ public final class ItemModule extends ItemBase {
 	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
-			return EnumAction.BOW;
-		} else {
-			return super.getItemUseAction(stack);
-		}
+		return stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID
+			? EnumAction.BOW
+			: super.getItemUseAction(stack);
 	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		if (stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID) {
-			return MAX_TICKS;
-		} else {
-			return super.getMaxItemUseDuration(stack);
-		}
+		return stack.getItemDamage() == LASER_ID || stack.getItemDamage() == KINETIC_ID
+			? MAX_TICKS
+			: super.getMaxItemUseDuration(stack);
 	}
 
 	@Override
@@ -211,61 +198,6 @@ public final class ItemModule extends ItemBase {
 			out.add(Helpers.translateToLocalFormatted("item.plethora.module.module_" + getName(stack.getItemDamage()) + ".binding", entity));
 		}
 	}
-
-	//region Registering
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, RenderLaser::new);
-	}
-
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerModels(ModelRegistryEvent event) {
-		for (int i = 0; i < MODULES; i++) {
-			Helpers.setupModel(this, i, "module_" + getName(i));
-		}
-	}
-
-	@Override
-	public void preInit() {
-		super.preInit();
-		EntityRegistry.registerModEntity(new ResourceLocation(Plethora.ID, "laser"), EntityLaser.class, Plethora.ID + ":laser", 0, Plethora.instance, 64, 10, true);
-
-		MinecraftForge.EVENT_BUS.register(new CanvasHandler());
-
-		Plethora.network.registerMessage(new MessageCanvasAdd.Handler(), MessageCanvasAdd.class, CANVAS_ADD_MESSAGE, Side.CLIENT);
-		Plethora.network.registerMessage(new MessageCanvasRemove.Handler(), MessageCanvasRemove.class, CANVAS_REMOVE_MESSAGE, Side.CLIENT);
-		Plethora.network.registerMessage(new MessageCanvasUpdate.Handler(), MessageCanvasUpdate.class, CANVAS_UPDATE_MESSAGE, Side.CLIENT);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-
-		IModuleRegistry registry = PlethoraAPI.instance().moduleRegistry();
-		for (int id : TURTLE_MODULES) {
-			ItemStack stack = new ItemStack(this, 1, id);
-			registry.registerTurtleUpgrade(stack);
-		}
-
-		{
-			ItemStack stack = new ItemStack(this, 1, KINETIC_ID);
-			ComputerCraftAPI.registerTurtleUpgrade(new TurtleUpgradeKinetic(
-				stack,
-				stack.getCapability(Constants.MODULE_HANDLER_CAPABILITY, null),
-				stack.getTranslationKey() + ".adjective")
-			);
-		}
-
-		for (int id : POCKET_MODULES) {
-			ItemStack stack = new ItemStack(this, 1, id);
-			registry.registerPocketUpgrade(stack);
-		}
-	}
-
-	//endregion
 
 	@Nonnull
 	@Override
@@ -320,7 +252,7 @@ public final class ItemModule extends ItemBase {
 			// Cache the ID
 			ResourceLocation id = moduleId;
 			if (id == null) {
-				return this.moduleId = new ResourceLocation(Plethora.RESOURCE_DOMAIN, getName(stack.getItemDamage()));
+				return moduleId = new ResourceLocation(Plethora.RESOURCE_DOMAIN, getName(stack.getItemDamage()));
 			} else {
 				return id;
 			}

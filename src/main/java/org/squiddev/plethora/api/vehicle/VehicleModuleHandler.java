@@ -35,7 +35,7 @@ public class VehicleModuleHandler extends BasicModuleHandler {
 		if (capability == Constants.VEHICLE_UPGRADE_HANDLER_CAPABILITY) {
 			IVehicleUpgradeHandler upgrade = handler;
 			if (upgrade == null) {
-				upgrade = this.handler = createVehicle();
+				upgrade = handler = createVehicle();
 			}
 			return (T) upgrade;
 		}

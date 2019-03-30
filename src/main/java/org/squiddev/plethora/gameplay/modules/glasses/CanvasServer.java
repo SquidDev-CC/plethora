@@ -33,12 +33,12 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 	private final ObjectGroup.Origin3D origin3D = () -> ID_3D;
 
 	public CanvasServer(@Nonnull IModuleAccess access, @Nonnull EntityPlayerMP player) {
-		this.canvasId = CanvasHandler.nextId();
+		canvasId = CanvasHandler.nextId();
 		this.access = access;
 		this.player = player;
 
-		this.childrenOf.put(ID_2D, new IntOpenHashSet());
-		this.childrenOf.put(ID_3D, new IntOpenHashSet());
+		childrenOf.put(ID_2D, new IntOpenHashSet());
+		childrenOf.put(ID_3D, new IntOpenHashSet());
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 			}
 		}
 
-		if (changed == null && removed.size() == 0) return null;
+		if (changed == null && removed.isEmpty()) return null;
 
 		if (changed == null) changed = Collections.emptyList();
 		MessageCanvasUpdate message = new MessageCanvasUpdate(
@@ -122,7 +122,7 @@ public final class CanvasServer extends ConstantReference<CanvasServer> implemen
 	}
 
 	public synchronized void clear(ObjectGroup object) {
-		IntSet children = this.childrenOf.get(object.id());
+		IntSet children = childrenOf.get(object.id());
 		if (children == null) throw new IllegalStateException("Object has no children");
 
 		clearImpl(children);

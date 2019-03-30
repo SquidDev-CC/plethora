@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
@@ -87,6 +89,7 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
 		setupFlat();
 		if (depthTest) {

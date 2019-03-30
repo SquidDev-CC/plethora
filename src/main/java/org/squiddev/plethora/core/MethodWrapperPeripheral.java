@@ -34,7 +34,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	) {
 		super(methods, contexts);
 		this.owner = owner;
-		this.type = name;
+		type = name;
 		this.runner = runner;
 	}
 
@@ -61,8 +61,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 
 		int totalSize = context.keys.length + extraRef.length;
 		String[] keys = new String[totalSize];
-		Object[] references = new Object[totalSize];
 		System.arraycopy(context.keys, 0, keys, 0, context.keys.length);
+		Object[] references = new Object[totalSize];
 		System.arraycopy(context.references, 0, references, 0, context.references.length);
 
 		for (int i = 0; i < extraRef.length; i++) {
@@ -113,6 +113,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	 *
 	 * @return The current object's owner
 	 */
+	@Override
 	@Nonnull
 	public Object getTarget() {
 		return owner;

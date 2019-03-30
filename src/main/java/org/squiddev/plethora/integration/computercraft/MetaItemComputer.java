@@ -1,7 +1,6 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
@@ -12,6 +11,7 @@ import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +26,7 @@ public final class MetaItemComputer extends ItemStackMetaProvider<IComputerItem>
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull IComputerItem item) {
-		Map<Object, Object> data = Maps.newHashMap();
+		Map<Object, Object> data = new HashMap<>();
 
 		int id = item.getComputerID(stack);
 		if (id >= 0) data.put("id", id);

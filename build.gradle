@@ -84,8 +84,8 @@ def curseMod(String mod, int id, String version) {
 }
 
 dependencies {
-	deobfCompile "dan200.computercraft:ComputerCraft:${cc_version}-build5"
-	deobfProvided "org.squiddev:cc-tweaked:1.12.2-1.81.1"
+	// deobfCompile "dan200.computercraft:ComputerCraft:${cc_version}-build5"
+	deobfCompile "org.squiddev:cc-tweaked:1.12.2-1.81.1"
 
 	compile "mezz.jei:jei_1.12.2:4.15.0.268"
 

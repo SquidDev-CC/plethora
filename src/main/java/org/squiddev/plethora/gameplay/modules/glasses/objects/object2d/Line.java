@@ -35,8 +35,8 @@ public class Line extends ColourableObject implements Scalable, MultiPoint2D {
 
 	@Override
 	public void setScale(float scale) {
-		if (this.thickness != scale) {
-			this.thickness = scale;
+		if (thickness != scale) {
+			thickness = scale;
 			setDirty();
 		}
 	}

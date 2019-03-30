@@ -14,7 +14,10 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
  * Various methods for interacting with the daylight sensor module.
  * Providers information about light levels in the area.
  */
-public class MethodsDaylightSensor {
+public final class MethodsDaylightSensor {
+	private MethodsDaylightSensor() {
+	}
+
 	@PlethoraMethod(module = IntegrationVanilla.daylightSensor, worldThread = false, doc = "-- Whether this world has a sky.")
 	public static boolean hasSky(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		return location.getWorld().provider.hasSkyLight();
@@ -40,11 +43,7 @@ public class MethodsDaylightSensor {
 	public static String getWeather(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		World world = location.getWorld();
 		if (world.isRaining()) {
-			if (world.isThundering()) {
-				return "thunder";
-			} else {
-				return "rain";
-			}
+			return world.isThundering() ? "thunder" : "rain";
 		} else {
 			return "clear";
 		}

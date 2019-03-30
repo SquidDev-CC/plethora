@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
-import com.google.common.collect.Maps;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -9,6 +8,7 @@ import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +23,7 @@ public final class TransferSidedCapability implements ITransferProvider<ICapabil
 	private final Map<String, EnumFacing> mappings;
 
 	public TransferSidedCapability() {
-		Map<String, EnumFacing> mappings = this.mappings = Maps.newHashMap();
+		Map<String, EnumFacing> mappings = this.mappings = new HashMap<>();
 		mappings.put("bottom_side", EnumFacing.DOWN);
 		mappings.put("top_side", EnumFacing.UP);
 		for (EnumFacing facing : EnumFacing.VALUES) {
@@ -33,24 +33,22 @@ public final class TransferSidedCapability implements ITransferProvider<ICapabil
 
 	@Nullable
 	@Override
-	public Object getTransferLocation(final @Nonnull ICapabilityProvider object, @Nonnull String key) {
+	public Object getTransferLocation(@Nonnull ICapabilityProvider object, @Nonnull String key) {
 		final EnumFacing facing = mappings.get(key.toLowerCase());
 
-		if (facing != null) {
-			return new ICapabilityProvider() {
-				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
-					return (enumFacing == facing || enumFacing == null) && object.hasCapability(capability, facing);
-				}
+		if (facing == null) return null;
+		return new ICapabilityProvider() {
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
+				return (enumFacing == facing || enumFacing == null) && object.hasCapability(capability, facing);
+			}
 
-				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
-					return (enumFacing == facing || enumFacing == null) ? object.getCapability(capability, facing) : null;
-				}
-			};
-		}
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
+				return (enumFacing == facing || enumFacing == null) ? object.getCapability(capability, facing) : null;
+			}
+		};
 
-		return null;
 	}
 
 	@Nonnull

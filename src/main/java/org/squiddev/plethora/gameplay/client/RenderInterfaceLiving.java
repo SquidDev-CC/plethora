@@ -15,16 +15,15 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.gameplay.registry.IClientModule;
-import org.squiddev.plethora.gameplay.registry.Module;
 
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getMonocle;
 import static org.squiddev.plethora.gameplay.client.ModelInterface.getNormal;
 
-public class RenderInterfaceLiving extends Module implements IClientModule {
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientInit() {
+public final class RenderInterfaceLiving {
+	private RenderInterfaceLiving() {
+	}
+
+	public static void init() {
 		/**
 		 * Anything small looks stupid. We don't allow attaching to baby animals.
 		 *
@@ -95,19 +94,19 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void inject(Class<? extends EntityLivingBase> klass, float dx, float dy, float dz) {
+	private static void inject(Class<? extends EntityLivingBase> klass, float dx, float dy, float dz) {
 		RenderManager manager = Minecraft.getMinecraft().getRenderManager();
 		inject(manager.getEntityClassRenderObject(klass), getNormal(), dx, dy, dz, 0, 0, 0);
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void injectMonocle(Class<? extends EntityLivingBase> klass, float dx, float dy, float dz, float rx, float ry, float rz) {
+	private static void injectMonocle(Class<? extends EntityLivingBase> klass, float dx, float dy, float dz, float rx, float ry, float rz) {
 		RenderManager manager = Minecraft.getMinecraft().getRenderManager();
 		inject(manager.getEntityClassRenderObject(klass), getMonocle(), dx, dy, dz, rx, ry, rz);
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void inject(Render<?> render, ModelInterface iface, float dx, float dy, float dz, float rx, float ry, float rz) {
+	private static void inject(Render<?> render, ModelInterface iface, float dx, float dy, float dz, float rx, float ry, float rz) {
 		if (render instanceof RenderLiving<?>) {
 			RenderLiving<?> living = (RenderLiving) render;
 			ModelRenderer head = getHead(living.getMainModel());
@@ -122,7 +121,7 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private ModelRenderer getHead(ModelBase model) {
+	private static ModelRenderer getHead(ModelBase model) {
 		if (model instanceof ModelQuadruped) {
 			return ((ModelQuadruped) model).head;
 		} else if (model instanceof ModelChicken) {
@@ -188,10 +187,5 @@ public class RenderInterfaceLiving extends Module implements IClientModule {
 		} else {
 			return null;
 		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
 	}
 }

@@ -1,11 +1,9 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -27,15 +25,15 @@ import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.integration.chickens.IntegrationChickens;
-import org.squiddev.plethora.integration.computercraft.IntegrationComputerCraft;
-import org.squiddev.plethora.integration.forestry.IntegrationForestry;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.Helpers;
+
+import java.util.Objects;
 
 import static org.squiddev.plethora.core.PlethoraCore.*;
 
 @Mod(modid = ID, name = NAME, version = VERSION, dependencies = DEPENDENCIES, guiFactory = "org.squiddev.plethora.core.client.gui.GuiConfigCore")
+@Mod.EventBusSubscriber(modid = ID)
 public class PlethoraCore {
 	public static final String ID = "plethora-core";
 	public static final String NAME = "Plethora Core";
@@ -61,20 +59,13 @@ public class PlethoraCore {
 		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral::new);
 		CapabilityManager.INSTANCE.register(IVehicleUpgradeHandler.class, new DefaultStorage<>(), DefaultVehicleUpgradeHandler::new);
 
-		// Various event handlers
-		MinecraftForge.EVENT_BUS.register(this);
-
 		// Integration modules. Generally just listen to capability events
-		IntegrationComputerCraft.setup();
 		IntegrationVanilla.setup();
-		IntegrationForestry.setup();
-		//REFINE Would we benefit from a generalized handler for defining new modules?
-		IntegrationChickens.setup();
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		Preconditions.checkNotNull(asmData, "asmData table cannot be null: this means preInit was not fired");
+		Objects.requireNonNull(asmData, "asmData table cannot be null: this means preInit was not fired");
 
 		// Load various objects from annotations
 		long start = System.currentTimeMillis();
@@ -94,17 +85,17 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event) {
+	public static void loadComplete(FMLLoadCompleteEvent event) {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 
 	@Mod.EventHandler
-	public void onServerStarting(FMLServerStartingEvent event) {
+	public static void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandPlethora());
 	}
 
 	@Mod.EventHandler
-	public void onServerStart(FMLServerStartedEvent event) {
+	public static void onServerStart(FMLServerStartedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
 			TaskRunner.SHARED.reset();
@@ -112,7 +103,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void onServerStopped(FMLServerStoppedEvent event) {
+	public static void onServerStopped(FMLServerStoppedEvent event) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			DefaultCostHandler.reset();
 			TaskRunner.SHARED.reset();
@@ -120,7 +111,7 @@ public class PlethoraCore {
 	}
 
 	@Mod.EventHandler
-	public void onMessageReceived(FMLInterModComms.IMCEvent event) {
+	public static void onMessageReceived(FMLInterModComms.IMCEvent event) {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
 			if (m.isStringMessage()) {
 				if (Constants.IMC_BLACKLIST_PERIPHERAL.equalsIgnoreCase(m.key)) {
@@ -135,7 +126,7 @@ public class PlethoraCore {
 	}
 
 	@SubscribeEvent
-	public void onServerTick(TickEvent.ServerTickEvent event) {
+	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
 			DefaultCostHandler.update();
 			TaskRunner.SHARED.update();
@@ -143,14 +134,14 @@ public class PlethoraCore {
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.getModID().equals(PlethoraCore.ID)) {
 			ConfigCore.sync();
 		}
 	}
 
 	@SubscribeEvent
-	public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+	public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 		ModuleRegistry.instance.addRecipes(event.getRegistry());
 	}
 }

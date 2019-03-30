@@ -27,10 +27,13 @@ package org.squiddev.plethora.utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class LuaPattern {
+public final class LuaPattern {
+	private LuaPattern() {
+	}
+
 	@Nullable
 	public static String[] match(@Nonnull String string, @Nonnull String pattern) {
-		if (pattern.equals("")) return new String[0];
+		if (pattern.isEmpty()) return new String[0];
 
 		MatchState ms = new MatchState(string, pattern);
 
@@ -43,8 +46,8 @@ public class LuaPattern {
 
 		int stringOffset = 0;
 		do {
-			int res;
 			ms.reset();
+			int res;
 			if ((res = ms.match(stringOffset, patternOffset)) != -1) {
 				return ms.getCaptures(stringOffset, res);
 			}
@@ -53,7 +56,7 @@ public class LuaPattern {
 	}
 
 	public static boolean matches(@Nonnull String string, @Nonnull String pattern) {
-		if (pattern.equals("")) return true;
+		if (pattern.isEmpty()) return true;
 
 		MatchState ms = new MatchState(string, pattern);
 
@@ -74,7 +77,7 @@ public class LuaPattern {
 	// Pattern matching implementation
 
 	private static final int L_ESC = '%';
-	private static final String SPECIALS = ("^$*+?.([%-");
+	private static final String SPECIALS = "^$*+?.([%-";
 	private static final int MAX_CAPTURES = 32;
 
 	private static final int CAP_UNFINISHED = -1;
@@ -153,7 +156,7 @@ public class LuaPattern {
 				res = (cdata & MASK_HEXDIGIT) != 0;
 				break;
 			case 'z':
-				res = (character == 0);
+				res = character == 0;
 				break;
 			default:
 				return matchClass == character;
@@ -171,7 +174,7 @@ public class LuaPattern {
 		MatchState(String string, String pattern) {
 			this.string = string;
 			this.pattern = pattern;
-			this.level = 0;
+			level = 0;
 		}
 
 		/**
@@ -206,7 +209,7 @@ public class LuaPattern {
 		 * @return The specific capture
 		 */
 		private String getCapture(int index, int offset, int end) {
-			if (index >= this.level) {
+			if (index >= level) {
 				if (index == 0) {
 					return string.substring(offset, end);
 				} else {
@@ -227,7 +230,7 @@ public class LuaPattern {
 		}
 
 		private int captureToClose() {
-			int index = this.level;
+			int index = level;
 			for (index--; index >= 0; index--) {
 				if (captureLength[index] == CAP_UNFINISHED) {
 					return index;
@@ -392,7 +395,7 @@ public class LuaPattern {
 					case '*':
 						return maxExpand(stringOffset, patternOffset, patternEnd);
 					case '+':
-						return (m ? maxExpand(stringOffset + 1, patternOffset, patternEnd) : -1);
+						return m ? maxExpand(stringOffset + 1, patternOffset, patternEnd) : -1;
 					case '-':
 						return minExpand(stringOffset, patternOffset, patternEnd);
 					default:
@@ -507,16 +510,16 @@ public class LuaPattern {
 
 			if (stringOffset >= string.length() || string.charAt(stringOffset) != pattern.charAt(patternOffset)) {
 				return -1;
-			} else {
-				int begin = pattern.charAt(patternOffset);
-				int end = pattern.charAt(patternOffset + 1);
-				int count = 1;
-				while (++stringOffset < string.length()) {
-					if (string.charAt(stringOffset) == end) {
-						if (--count == 0) return stringOffset + 1;
-					} else if (string.charAt(stringOffset) == begin) {
-						count++;
-					}
+			}
+
+			int begin = pattern.charAt(patternOffset);
+			int end = pattern.charAt(patternOffset + 1);
+			int count = 1;
+			while (++stringOffset < string.length()) {
+				if (string.charAt(stringOffset) == end) {
+					if (--count == 0) return stringOffset + 1;
+				} else if (string.charAt(stringOffset) == begin) {
+					count++;
 				}
 			}
 

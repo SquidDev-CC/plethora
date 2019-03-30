@@ -1,7 +1,6 @@
 package org.squiddev.plethora.gameplay.modules.methods;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,6 +27,9 @@ import java.util.UUID;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor.radius;
 
 public final class MethodsSensor {
+	private MethodsSensor() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Scan for entities in the vicinity")
 	public static Map<Integer, Object> sense(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		final World world = location.getWorld();
@@ -36,7 +38,7 @@ public final class MethodsSensor {
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos), DEFAULT_PREDICATE::test);
 
 		int i = 0;
-		HashMap<Integer, Object> map = Maps.newHashMap();
+		HashMap<Integer, Object> map = new HashMap<>();
 		for (Entity entity : entities) {
 			Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
 			map.put(++i, data);
@@ -77,7 +79,7 @@ public final class MethodsSensor {
 	private static Entity findEntityByUUID(IWorldLocation location, UUID uuid) {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
 			entity -> DEFAULT_PREDICATE.test(entity) && entity.getUniqueID().equals(uuid));
-		return entities.size() > 0 ? entities.get(0) : null;
+		return entities.isEmpty() ? null : entities.get(0);
 	}
 
 	@Nullable
@@ -85,7 +87,7 @@ public final class MethodsSensor {
 		List<Entity> entities = location.getWorld().getEntitiesWithinAABB(Entity.class, getBox(location.getPos()),
 			entity -> DEFAULT_PREDICATE.test(entity) && Helpers.getName(entity).equals(name));
 
-		return entities.size() > 0 ? entities.get(0) : null;
+		return entities.isEmpty() ? null : entities.get(0);
 	}
 
 	private static final Predicate<Entity> DEFAULT_PREDICATE = entity ->

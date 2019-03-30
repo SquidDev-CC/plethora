@@ -10,13 +10,11 @@ public final class MatrixHelpers {
 	private MatrixHelpers() {
 	}
 
-	public static final Matrix4f IDENTITY;
+	private static final Matrix4f IDENTITY = new Matrix4f();
 
-	public static final Matrix4f[] FACINGS;
+	private static final Matrix4f[] FACINGS;
 
 	static {
-		IDENTITY = new Matrix4f();
-
 		FACINGS = new Matrix4f[EnumFacing.VALUES.length];
 		for (EnumFacing facing : EnumFacing.VALUES) {
 			int x, y;

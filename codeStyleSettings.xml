@@ -1,0 +1,40 @@
+<code_scheme name="Project" version="173">
+  <CssCodeStyleSettings>
+    <option name="HEX_COLOR_LOWER_CASE" value="true" />
+    <option name="HEX_COLOR_SHORT_FORMAT" value="true" />
+    <option name="BLANK_LINES_BETWEEN_BLOCKS" value="0" />
+    <option name="KEEP_SINGLE_LINE_BLOCKS" value="true" />
+  </CssCodeStyleSettings>
+  <JSON>
+    <option name="OBJECT_WRAPPING" value="1" />
+    <option name="ARRAY_WRAPPING" value="1" />
+  </JSON>
+  <JavaCodeStyleSettings>
+    <option name="JD_P_AT_EMPTY_LINES" value="false" />
+  </JavaCodeStyleSettings>
+  <codeStyleSettings language="CSS">
+    <indentOptions>
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="JAVA">
+    <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true" />
+    <option name="IF_BRACE_FORCE" value="1" />
+    <option name="DOWHILE_BRACE_FORCE" value="1" />
+    <option name="WHILE_BRACE_FORCE" value="1" />
+    <option name="FOR_BRACE_FORCE" value="1" />
+    <indentOptions>
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="JSON">
+    <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+    <option name="SPACE_WITHIN_BRACKETS" value="true" />
+    <option name="SPACE_WITHIN_BRACES" value="true" />
+    <indentOptions>
+      <option name="INDENT_SIZE" value="4" />
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="USE_TAB_CHARACTER" value="true" />
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

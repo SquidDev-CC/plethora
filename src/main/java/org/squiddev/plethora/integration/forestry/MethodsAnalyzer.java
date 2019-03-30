@@ -13,7 +13,10 @@ import java.util.Map;
 
 import static forestry.api.genetics.AlleleManager.alleleRegistry;
 
-public class MethodsAnalyzer {
+public final class MethodsAnalyzer {
+	private MethodsAnalyzer() {
+	}
+
 	@PlethoraMethod(
 		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 		doc = "-- Get a list of all species roots"

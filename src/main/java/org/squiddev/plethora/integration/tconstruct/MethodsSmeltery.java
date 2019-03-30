@@ -31,7 +31,10 @@ import java.util.Map;
 import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
-public class MethodsSmeltery {
+public final class MethodsSmeltery {
+	private MethodsSmeltery() {
+	}
+
 	@PlethoraMethod(
 		modId = TConstruct.modID,
 		doc = "function(fluid: number|string) -- Select which fluid will be extracted by drains in the smeltery. One can specify a fluid name or an index in list of molten fluids."
@@ -112,7 +115,7 @@ public class MethodsSmeltery {
 		return context.makeChild((TileMultiblock) te, new ControllerReference(component, (TileMultiblock) te)).getObject();
 	}
 
-	private static class ControllerReference extends DynamicReference<TileMultiblock> {
+	private static final class ControllerReference extends DynamicReference<TileMultiblock> {
 		private final TileSmelteryComponent origin;
 		private final TileMultiblock<?> expected;
 

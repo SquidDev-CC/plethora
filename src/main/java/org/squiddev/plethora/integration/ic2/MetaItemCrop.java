@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.ic2;
 
-import com.google.common.collect.Maps;
 import ic2.api.crops.CropCard;
 import ic2.api.crops.CropProperties;
 import ic2.api.crops.Crops;
@@ -12,6 +11,7 @@ import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @Injects(IC2.MODID)
@@ -40,7 +40,7 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 	}
 
 	public static Map<Object, Object> getMeta(CropCard card, int level) {
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		out.put("scanLevel", level);
 
@@ -55,7 +55,7 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 			out.put("discoverer", card.getDiscoveredBy());
 			out.put("tier", properties.getTier());
 
-			Map<String, Object> props = Maps.newHashMap();
+			Map<String, Object> props = new HashMap<>();
 			out.put("props", props);
 			props.put("chemistry", properties.getChemistry());
 			props.put("weed", properties.getWeed());
@@ -69,7 +69,7 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 
 		if (level >= 3) {
 			String[] attributes = card.getAttributes();
-			Map<Integer, String> list = Maps.newHashMap();
+			Map<Integer, String> list = new HashMap<>();
 			for (int i = 0; i < attributes.length; i++) {
 				list.put(i + 1, attributes[i]);
 			}

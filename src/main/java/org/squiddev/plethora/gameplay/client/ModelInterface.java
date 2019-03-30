@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 /**
  * Model for the neural interface
  */
-public class ModelInterface extends ModelBiped {
+public final class ModelInterface extends ModelBiped {
 	public static final String TEXTURE = Plethora.RESOURCE_DOMAIN + ":textures/models/neural_interface.png";
 	public static final ResourceLocation TEXTURE_RESOURCE = new ResourceLocation(TEXTURE);
 

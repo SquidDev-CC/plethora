@@ -17,6 +17,9 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import javax.annotation.Nonnull;
 
 public final class MethodCraftItem {
+	private MethodCraftItem() {
+	}
+
 	@Nonnull
 	@PlethoraMethod(
 		modId = AppEng.MOD_ID,

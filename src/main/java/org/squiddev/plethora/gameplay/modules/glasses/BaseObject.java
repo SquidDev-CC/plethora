@@ -101,7 +101,7 @@ public abstract class BaseObject {
 
 		public BaseObjectReference(CanvasServer canvas, BaseObject object) {
 			this.canvas = canvas;
-			this.id = object.id;
+			id = object.id;
 		}
 
 		@Nonnull
@@ -132,6 +132,7 @@ public abstract class BaseObject {
 		GlStateManager.disableLighting();
 	}
 
+	@FunctionalInterface
 	public interface Factory {
 		BaseObject create(int id, int parent);
 	}

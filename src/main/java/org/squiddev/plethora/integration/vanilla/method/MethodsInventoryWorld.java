@@ -26,7 +26,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 /**
  * Various inventory methods which require interact with the world
  */
-public class MethodsInventoryWorld {
+public final class MethodsInventoryWorld {
+	private MethodsInventoryWorld() {
+	}
+
 	@PlethoraMethod(doc = "-- Drop an item on the ground. Returns the number of items dropped")
 	public static int drop(
 		@FromTarget IItemHandler handler, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,

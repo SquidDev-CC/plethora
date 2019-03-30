@@ -80,7 +80,7 @@ public final class BasicExecutor implements IResultExecutor {
 					throw e;
 				} catch (Throwable e) {
 					PlethoraCore.LOG.error("Unexpected error", e);
-					throw new LuaException("Java Exception Thrown: " + e.toString());
+					throw new LuaException("Java Exception Thrown: " + e);
 				}
 			}
 

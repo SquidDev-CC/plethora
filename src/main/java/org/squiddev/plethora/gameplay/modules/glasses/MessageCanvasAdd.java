@@ -1,14 +1,13 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
+import org.squiddev.plethora.gameplay.registry.BasicMessage;
 
 import java.util.Arrays;
 
-public class MessageCanvasAdd implements IMessage {
+public class MessageCanvasAdd implements BasicMessage {
 	private int canvasId;
 	private BaseObject[] objects;
 
@@ -44,15 +43,12 @@ public class MessageCanvasAdd implements IMessage {
 		}
 	}
 
-	public static class Handler implements IMessageHandler<MessageCanvasAdd, IMessage> {
 
-		@Override
-		public IMessage onMessage(MessageCanvasAdd message, MessageContext context) {
-			CanvasClient canvas = new CanvasClient(message.canvasId);
+	@Override
+	public void onMessage(MessageContext context) {
+		CanvasClient canvas = new CanvasClient(canvasId);
 
-			for (BaseObject obj : message.objects) canvas.updateObject(obj);
-			CanvasHandler.addClient(canvas);
-			return null;
-		}
+		for (BaseObject obj : objects) canvas.updateObject(obj);
+		CanvasHandler.addClient(canvas);
 	}
 }

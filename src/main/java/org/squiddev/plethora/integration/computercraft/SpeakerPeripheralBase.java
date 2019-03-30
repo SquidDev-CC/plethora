@@ -41,6 +41,7 @@ public class SpeakerPeripheralBase extends SpeakerPeripheral {
 		return new BlockPos(position);
 	}
 
+	@Override
 	public Vec3d getPosition() {
 		return position;
 	}

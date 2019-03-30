@@ -28,6 +28,9 @@ public final class PlethoraMethodRegistry {
 
 	private static final Type PARTIAL_CONTEXT_T = IPartialContext.class.getTypeParameters()[0];
 
+	private PlethoraMethodRegistry() {
+	}
+
 	static boolean add(Method method) {
 		PlethoraMethod annotation = method.getAnnotation(PlethoraMethod.class);
 		String name = method.getDeclaringClass().getName() + "." + method.getName();
@@ -35,8 +38,6 @@ public final class PlethoraMethodRegistry {
 			PlethoraCore.LOG.error("@PlethoraMethod method {} is not actually annotated", name);
 			return false;
 		}
-
-		boolean ok = true;
 
 		// Ensure we have permissions to call this method
 		int modifiers = method.getModifiers();
@@ -63,6 +64,7 @@ public final class PlethoraMethodRegistry {
 
 		// First scan all "context" arguments. Look, I'm sorry - this is ugly as anything.
 		int contextIndex;
+		boolean ok = true;
 		for (contextIndex = 0; contextIndex < parameters.length; contextIndex++) {
 			Parameter parameter = parameters[contextIndex];
 			FromContext fromContext = parameter.getAnnotation(FromContext.class);

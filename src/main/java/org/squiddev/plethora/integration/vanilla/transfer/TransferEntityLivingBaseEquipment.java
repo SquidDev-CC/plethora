@@ -18,8 +18,7 @@ public final class TransferEntityLivingBaseEquipment implements ITransferProvide
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull EntityLivingBase object, @Nonnull String key) {
-		if (key.equals("equipment")) return new EquipmentInvWrapper(object);
-		return null;
+		return key.equals("equipment") ? new EquipmentInvWrapper(object) : null;
 	}
 
 	@Nonnull

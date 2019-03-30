@@ -2,12 +2,10 @@ package org.squiddev.plethora.gameplay.keyboard;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -18,17 +16,21 @@ import java.util.List;
 
 import static org.squiddev.plethora.gameplay.keyboard.KeyMessage.KeyPress;
 
-public class ClientKeyListener implements IMessageHandler<ListenMessage, IMessage> {
-	private boolean listen;
-	private final ArrayList<KeyDown> keysDown = Lists.newArrayList();
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = Plethora.ID)
+public final class ClientKeyListener {
+	static boolean listening;
+	private static final ArrayList<KeyDown> keysDown = Lists.newArrayList();
 
-	private final List<KeyPress> keyPresses = Lists.newArrayList();
-	private final List<Integer> keysUp = Lists.newArrayList();
+	private static final List<KeyPress> keyPresses = Lists.newArrayList();
+	private static final List<Integer> keysUp = Lists.newArrayList();
+
+	private ClientKeyListener() {
+	}
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onInputEvent(InputEvent.KeyInputEvent event) {
-		if (!listen) {
+	public static void onInputEvent(InputEvent.KeyInputEvent event) {
+		if (!listening) {
 			// If we're not listening then clear the lookup of keys which are down and exit.
 			keysDown.clear();
 			return;
@@ -61,7 +63,7 @@ public class ClientKeyListener implements IMessageHandler<ListenMessage, IMessag
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onClientTick(TickEvent.ClientTickEvent event) {
+	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
 
 		for (int i = keysDown.size() - 1; i >= 0; --i) {
@@ -81,17 +83,11 @@ public class ClientKeyListener implements IMessageHandler<ListenMessage, IMessag
 			}
 		}
 
-		if (keyPresses.size() > 0 || keysUp.size() > 0) {
+		if (!keyPresses.isEmpty() || !keysUp.isEmpty()) {
 			Plethora.network.sendToServer(new KeyMessage(keyPresses, keysUp));
 			keyPresses.clear();
 			keysUp.clear();
 		}
-	}
-
-	@Override
-	public IMessage onMessage(ListenMessage message, MessageContext ctx) {
-		listen = message.listen;
-		return null;
 	}
 
 	private static final class KeyDown {
@@ -104,7 +100,7 @@ public class ClientKeyListener implements IMessageHandler<ListenMessage, IMessag
 		private KeyDown(int key, char character) {
 			this.key = key;
 			this.character = character;
-			this.lastTime = Minecraft.getSystemTime();
+			lastTime = Minecraft.getSystemTime();
 		}
 	}
 }

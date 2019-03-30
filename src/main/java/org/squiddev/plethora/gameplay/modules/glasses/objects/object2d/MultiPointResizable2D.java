@@ -31,13 +31,14 @@ public interface MultiPointResizable2D extends MultiPoint2D {
 
 	@PlethoraMethod(doc = "function([idx:int, ]x:number, y:number) -- Add a specified vertex to this object.", worldThread = false)
 	static void insertPoint(@FromTarget MultiPointResizable2D object, Object[] args) throws LuaException {
-		float x, y;
-		int idx;
 
 		if (object.getVertices() > MultiPointResizable2D.MAX_SIZE) {
 			throw new LuaException("To many vertices");
 		}
 
+		int idx;
+		float y;
+		float x;
 		if (args.length >= 3) {
 			idx = getInt(args, 0);
 			x = getFloat(args, 1);

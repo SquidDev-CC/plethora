@@ -33,6 +33,9 @@ public final class MethodsKinetic {
 		MethodsKinetic::launch
 	);
 
+	private MethodsKinetic() {
+	}
+
 	private static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		final float yaw = (float) getReal(args, 0) % 360;
 		final float pitch = (float) getReal(args, 1) % 360;

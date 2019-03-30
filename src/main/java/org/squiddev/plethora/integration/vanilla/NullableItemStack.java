@@ -11,13 +11,13 @@ import java.util.Map;
 /**
  * An item stack which may have a count of 0 but still represent an item.
  */
-public class NullableItemStack {
+public final class NullableItemStack {
 	private final int count;
 	private final ItemStack filledStack;
 
 	private NullableItemStack(ItemStack stack, int count) {
 		this.count = count;
-		this.filledStack = stack;
+		filledStack = stack;
 	}
 
 	public static NullableItemStack normal(@Nonnull ItemStack stack) {

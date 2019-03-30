@@ -17,8 +17,8 @@ public class CanvasClient {
 
 	public CanvasClient(int id) {
 		this.id = id;
-		this.childrenOf.put(ID_2D, new IntAVLTreeSet());
-		this.childrenOf.put(ID_3D, new IntAVLTreeSet());
+		childrenOf.put(ID_2D, new IntAVLTreeSet());
+		childrenOf.put(ID_3D, new IntAVLTreeSet());
 	}
 
 	public void updateObject(BaseObject object) {

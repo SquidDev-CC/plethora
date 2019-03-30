@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,7 @@ public final class MetaItemArmor extends ItemStackMetaProvider<ItemArmor> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemArmor armor) {
-		HashMap<Object, Object> data = Maps.newHashMap();
+		HashMap<Object, Object> data = new HashMap<>();
 		data.put("armorType", armor.armorType.getName());
 
 		int color = armor.getColor(stack);

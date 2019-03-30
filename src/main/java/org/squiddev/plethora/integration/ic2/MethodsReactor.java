@@ -12,14 +12,17 @@ import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 
-public class MethodsReactor {
+public final class MethodsReactor {
+	private MethodsReactor() {
+	}
+
 	private static class ReactorReference extends DynamicReference<IReactor> {
 		private final IReactor core;
 		private final TileEntity expected;
 
 		ReactorReference(IReactor core) {
 			this.core = core;
-			this.expected = core.getCoreTe();
+			expected = core.getCoreTe();
 		}
 
 		@Nonnull

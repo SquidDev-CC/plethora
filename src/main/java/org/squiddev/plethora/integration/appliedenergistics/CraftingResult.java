@@ -15,7 +15,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
 import appeng.me.helpers.MachineSource;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.IContext;
@@ -25,6 +24,7 @@ import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CraftingResult {
@@ -165,9 +165,9 @@ public class CraftingResult {
 		IActionSource source = new MachineSource(result.source);
 
 		int i = 0;
-		Map<Integer, Map<String, Object>> out = Maps.newHashMapWithExpectedSize(plan.size());
+		Map<Integer, Map<String, Object>> out = new HashMap<>(plan.size());
 		for (IAEItemStack needed : plan) {
-			Map<String, Object> component = Maps.newHashMap();
+			Map<String, Object> component = new HashMap<>();
 
 			IAEItemStack toExtract = needed.copy();
 			toExtract.reset();

@@ -29,19 +29,19 @@ public class Vec2d {
 		} else {
 			Vec2d other = (Vec2d) object;
 
-			return Double.compare(other.x, this.x) == 0 && Double.compare(other.y, this.y) == 0;
+			return Double.compare(other.x, x) == 0 && Double.compare(other.y, y) == 0;
 		}
 	}
 
 	public int hashCode() {
-		long j = Double.doubleToLongBits(this.x);
+		long j = Double.doubleToLongBits(x);
 		int i = (int) (j ^ j >>> 32);
-		j = Double.doubleToLongBits(this.y);
+		j = Double.doubleToLongBits(y);
 		i = 31 * i + (int) (j ^ j >>> 32);
 		return i;
 	}
 
 	public String toString() {
-		return "(" + this.x + ", " + this.y + ")";
+		return "(" + x + ", " + y + ")";
 	}
 }

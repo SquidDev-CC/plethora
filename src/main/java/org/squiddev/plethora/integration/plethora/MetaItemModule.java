@@ -6,7 +6,7 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ItemModule;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -38,6 +38,6 @@ public final class MetaItemModule extends ItemStackMetaProvider<ItemModule> {
 	@Nonnull
 	@Override
 	public ItemStack getExample() {
-		return new ItemStack(Registry.itemModule);
+		return new ItemStack(Registration.itemModule);
 	}
 }

@@ -1,13 +1,15 @@
 package org.squiddev.plethora.integration.computercraft;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,23 +18,20 @@ import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
-import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 
 /**
  * Provides various peripherals for ComputerCraft items
  */
-public class IntegrationComputerCraft {
-	public static void setup() {
-		if (Helpers.modLoaded("computercraft")) {
-			IntegrationComputerCraft instance = new IntegrationComputerCraft();
-			MinecraftForge.EVENT_BUS.register(instance);
-		}
+@Mod.EventBusSubscriber(modid = PlethoraCore.ID)
+public final class IntegrationComputerCraft {
+	private IntegrationComputerCraft() {
 	}
 
 	@SubscribeEvent
-	public void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+	@Optional.Method(modid = ComputerCraft.MOD_ID)
+	public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
 		ItemStack stack = event.getObject();
 
 		if (stack.getItem() instanceof ItemPeripheralBase) {
@@ -42,7 +41,8 @@ public class IntegrationComputerCraft {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onModelBakeEvent(ModelBakeEvent event) {
+	@Optional.Method(modid = ComputerCraft.MOD_ID)
+	public static void onModelBakeEvent(ModelBakeEvent event) {
 		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_off");
 		RenderHelpers.loadModel(event, "computercraft", "wireless_modem_on");
 		RenderHelpers.loadModel(event, "computercraft", "advanced_modem_off");

@@ -11,7 +11,10 @@ import java.io.StringWriter;
 
 import static org.objectweb.asm.Opcodes.*;
 
-class ClassWriterHelpers {
+final class ClassWriterHelpers {
+	private ClassWriterHelpers() {
+	}
+
 	static void loadInt(MethodVisitor visitor, int value) {
 		if (value >= -1 && value <= 5) {
 			visitor.visitInsn(ICONST_0 + value);
@@ -81,7 +84,7 @@ class ClassWriterHelpers {
 		}
 
 		String contents = writer.toString();
-		if (error != null || contents.length() > 0) {
+		if (error != null || !contents.isEmpty()) {
 			reader.accept(new TraceClassVisitor(printWriter), 0);
 			throw new IllegalStateException(writer.toString(), error);
 		}

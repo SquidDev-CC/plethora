@@ -23,17 +23,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.gameplay.modules.ChatMessage;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
-import org.squiddev.plethora.gameplay.registry.IClientModule;
-import org.squiddev.plethora.gameplay.registry.Module;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -43,24 +42,26 @@ import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
-import static org.squiddev.plethora.gameplay.modules.ChatVisualiser.ChatMessage;
 
 /**
  * Renders overlays for various modules
  */
-public class RenderOverlay extends Module implements IClientModule {
+@Mod.EventBusSubscriber(modid = Plethora.ID, value = Side.CLIENT)
+public final class RenderOverlay {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Plethora.RESOURCE_DOMAIN, "textures/misc/flare.png");
 
-	private int ticks;
+	private static int ticks;
 
 	private static final LinkedList<ChatMessage> chatMessages = new LinkedList<>();
 
-	@SideOnly(Side.CLIENT)
+	private RenderOverlay() {
+	}
+
 	public static void addMessage(ChatMessage message) {
 		chatMessages.add(message);
 	}
 
-	public static void clearChatMessages() {
+	private static void clearChatMessages() {
 		chatMessages.clear();
 	}
 
@@ -92,20 +93,8 @@ public class RenderOverlay extends Module implements IClientModule {
 
 	private static final Map<BlockStack, Boolean> oreBlockCache = new HashMap<>();
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientInit() {
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void clientPreInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
 	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void renderOverlay(RenderWorldLastEvent event) {
+	public static void renderOverlay(RenderWorldLastEvent event) {
 		ticks += 1;
 		if (ticks > Math.PI * 2 * 1000) ticks = 0;
 
@@ -116,8 +105,17 @@ public class RenderOverlay extends Module implements IClientModule {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void renderOverlay(RenderWorldLastEvent event, ItemStack stack) {
+	@SubscribeEvent
+	public static void onConnectionOpened(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+		clearChatMessages();
+	}
+
+	@SubscribeEvent
+	public static void onConnectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+		clearChatMessages();
+	}
+
+	private static void renderOverlay(RenderWorldLastEvent event, ItemStack stack) {
 		Minecraft minecraft = Minecraft.getMinecraft();
 		EntityPlayer player = minecraft.player;
 		World world = player.getEntityWorld();
@@ -125,7 +123,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		// "Tick" each iterator and remove them.
 		chatMessages.removeIf(ChatMessage::decrement);
 
-		if (stack != null && stack.getItem() == Registry.itemModule) {
+		if (stack != null && stack.getItem() == Registration.itemModule) {
 			minecraft.getTextureManager().bindTexture(TEXTURE);
 
 			GlStateManager.disableDepth();
@@ -232,8 +230,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void renderFlare(double x, double y, double z, int id, float size, RenderManager manager) {
+	private static void renderFlare(double x, double y, double z, int id, float size, RenderManager manager) {
 		// Generate an offset based off the hash code
 		float offset = (float) (id % (Math.PI * 2));
 
@@ -269,8 +266,7 @@ public class RenderOverlay extends Module implements IClientModule {
 		GlStateManager.popMatrix();
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void renderQuad(Tessellator tessellator, float size) {
+	private static void renderQuad(Tessellator tessellator, float size) {
 		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 

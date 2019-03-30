@@ -1,17 +1,17 @@
 package org.squiddev.plethora.utils;
 
 import baubles.api.cap.IBaublesItemHandler;
-import com.google.common.base.Preconditions;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class TinySlot {
 	private final ItemStack stack;
 
 	public TinySlot(@Nonnull ItemStack stack) {
-		Preconditions.checkNotNull(stack, "stack cannot be null");
+		Objects.requireNonNull(stack, "stack cannot be null");
 		this.stack = stack;
 	}
 

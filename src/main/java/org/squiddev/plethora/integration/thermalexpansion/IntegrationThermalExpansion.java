@@ -71,4 +71,7 @@ public final class IntegrationThermalExpansion {
 			return ItemMorb.morbList.isEmpty() ? null : ItemMorb.morbList.get(0);
 		}
 	};
+
+	private IntegrationThermalExpansion() {
+	}
 }

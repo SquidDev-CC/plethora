@@ -1,7 +1,5 @@
 package org.squiddev.plethora.gameplay.redstone;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -14,13 +12,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 
 import javax.annotation.Nonnull;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -34,7 +30,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	private boolean outputDirty = false;
 	private boolean inputDirty = false;
 
-	private final Set<IComputerAccess> computers = Sets.newConcurrentHashSet();
+	private final Set<IComputerAccess> computers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private void updateInput() {
 		World world = getWorld();
@@ -115,11 +111,11 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		updateInput();
 	}
 
-	public ItemStack getPickedItem() {
-		return new ItemStack(Registry.blockRedstoneIntegrator);
+	public static ItemStack getPickedItem() {
+		return new ItemStack(Registration.blockRedstoneIntegrator);
 	}
 
-	public void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
+	public static void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
 		if (!creative) drops.add(getPickedItem());
 	}
 
@@ -167,7 +163,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] args) throws LuaException {
 		switch (method) {
 			case 0: { // getSides
-				Map<Integer, String> result = Maps.newHashMap();
+				Map<Integer, String> result = new HashMap<>();
 
 				for (int i = 0; i < EnumFacing.VALUES.length; i++) {
 					result.put(i + 1, EnumFacing.VALUES[i].getName());

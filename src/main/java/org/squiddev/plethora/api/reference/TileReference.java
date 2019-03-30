@@ -40,7 +40,7 @@ public class TileReference<T extends TileEntity> extends ConstantReference<T> {
 	@Override
 	public T safeGet() throws LuaException {
 		if (!valid) throw new LuaException("The block is no longer there");
-		T value = this.tile.get();
+		T value = tile.get();
 
 		if (value == null) throw new LuaException("The block is no longer there");
 		if (value.isInvalid()) throw new LuaException("The block is no longer there");

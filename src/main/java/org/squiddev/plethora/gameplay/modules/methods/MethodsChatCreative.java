@@ -16,6 +16,9 @@ import static org.squiddev.plethora.gameplay.modules.ChatListener.Listener;
 import static org.squiddev.plethora.gameplay.modules.methods.MethodsChat.validateMessage;
 
 public final class MethodsChatCreative {
+	private MethodsChatCreative() {
+	}
+
 	@PlethoraMethod(module = PlethoraModules.CHAT_CREATIVE_S, doc = "-- Send a message to everyone")
 	public static void say(@Optional @FromContext(ContextKeys.ORIGIN) IWorldLocation location, String message) throws LuaException {
 		validateMessage(message);

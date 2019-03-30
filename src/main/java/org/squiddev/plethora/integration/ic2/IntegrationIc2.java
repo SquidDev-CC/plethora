@@ -28,6 +28,9 @@ public final class IntegrationIc2 {
 
 	public static final ConstantConverter<ItemStack, IElectricItemManager> GET_MANAGER = IntegrationIc2::getManager;
 
+	private IntegrationIc2() {
+	}
+
 	static IElectricItemManager getManager(ItemStack stack) {
 		Item item = stack.getItem();
 		if (item instanceof ISpecialElectricItem) {

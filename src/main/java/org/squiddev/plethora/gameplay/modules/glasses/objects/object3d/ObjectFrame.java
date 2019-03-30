@@ -124,7 +124,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 		if (OpenGlHelper.framebufferSupported) {
 			FramebufferGlasses.FRAME_3D.bindBuffer();
 			FramebufferGlasses.FRAME_3D.setupViewport();
-			FramebufferGlasses.FRAME_3D.clear();
+			FramebufferGlasses.clear();
 
 			// Setup the projection matrix (seeEntityRenderer.setupOverlayRendering)
 			GlStateManager.matrixMode(GL11.GL_PROJECTION);

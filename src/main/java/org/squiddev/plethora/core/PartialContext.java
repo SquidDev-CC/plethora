@@ -1,7 +1,5 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.ICostHandler;
@@ -11,10 +9,7 @@ import org.squiddev.plethora.api.transfer.ITransferRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class PartialContext<T> implements IPartialContext<T> {
 	protected final int target;
@@ -45,7 +40,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getContext(@Nonnull Class<V> klass) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
 
 		for (int i = values.length - 1; i >= 0; i--) {
 			Object obj = values[i];
@@ -57,7 +52,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Override
 	public <V> boolean hasContext(@Nonnull Class<V> klass) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
 
 		for (int i = values.length - 1; i >= 0; i--) {
 			Object obj = values[i];
@@ -70,8 +65,8 @@ public class PartialContext<T> implements IPartialContext<T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getContext(@Nonnull String contextKey, @Nonnull Class<V> klass) {
-		Preconditions.checkNotNull(contextKey, "contextKey cannot be null");
-		Preconditions.checkNotNull(klass, "klass cannot be null");
+		Objects.requireNonNull(contextKey, "contextKey cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
 
 		for (int i = values.length - 1; i >= 0; i--) {
 			Object obj = values[i];
@@ -83,7 +78,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Override
 	public <V> boolean hasContext(@Nonnull String contextKey, @Nonnull Class<V> klass) {
-		Preconditions.checkNotNull(klass, "klass cannot be null");
+		Objects.requireNonNull(klass, "klass cannot be null");
 
 		for (int i = values.length - 1; i >= 0; i--) {
 			Object obj = values[i];
@@ -96,7 +91,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 	@Nonnull
 	@Override
 	public <U> PartialContext<U> makePartialChild(@Nonnull U target) {
-		Preconditions.checkNotNull(target, "target cannot be null");
+		Objects.requireNonNull(target, "target cannot be null");
 
 		ArrayList<String> keys = new ArrayList<>(this.keys.length + 1);
 		ArrayList<Object> values = new ArrayList<>(this.values.length + 1);
@@ -126,7 +121,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull String key) {
-		Preconditions.checkNotNull(key, "key cannot be null");
+		Objects.requireNonNull(key, "key cannot be null");
 
 		String[] parts = key.split("\\.");
 		String primary = parts[0];
@@ -155,11 +150,10 @@ public class PartialContext<T> implements IPartialContext<T> {
 	@Nonnull
 	@Override
 	public Set<String> getTransferLocations() {
-		Set<String> out = Sets.newHashSet();
 
 		ITransferRegistry registry = PlethoraAPI.instance().transferRegistry();
 
-		out.addAll(registry.getTransferLocations(target, true));
+		Set<String> out = new HashSet<>(registry.getTransferLocations(target, true));
 		for (int i = values.length - 1; i >= 0; i--) {
 			out.addAll(registry.getTransferLocations(values[i], true));
 		}

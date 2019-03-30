@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
  *
  * This is intended for cases where you will replace the executor before evaluating it (such as on peripherals).
  */
-public class NeverExecutor implements IResultExecutor {
+public final class NeverExecutor implements IResultExecutor {
 	public static final IResultExecutor INSTANCE = new NeverExecutor();
 
 	private NeverExecutor() {

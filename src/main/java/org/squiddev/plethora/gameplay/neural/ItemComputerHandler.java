@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay.neural;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
@@ -28,6 +29,9 @@ public final class ItemComputerHandler {
 	public static final String DIRTY = "dirty";
 	public static final String MODULE_DATA = "module_data";
 
+	private ItemComputerHandler() {
+	}
+
 	public static NeuralComputer getServer(@Nonnull ItemStack stack, EntityLivingBase owner, TinySlot inventory) {
 		NBTTagCompound tag = getTag(stack);
 
@@ -48,12 +52,9 @@ public final class ItemComputerHandler {
 		if (neural == null) {
 			int instanceId = manager.getUnusedInstanceID();
 
-			int computerId;
-			if (tag.hasKey(COMPUTER_ID)) {
-				computerId = tag.getInteger(COMPUTER_ID);
-			} else {
-				computerId = ComputerCraft.createUniqueNumberedSaveDir(owner.getEntityWorld(), "computer");
-			}
+			int computerId = tag.hasKey(COMPUTER_ID)
+				? tag.getInteger(COMPUTER_ID)
+				: ComputerCraftAPI.createUniqueNumberedSaveDir(owner.getEntityWorld(), "computer");
 
 			String label = stack.hasDisplayName() ? stack.getDisplayName() : null;
 			neural = new NeuralComputer(owner.getEntityWorld(), computerId, label, instanceId);

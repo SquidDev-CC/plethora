@@ -10,7 +10,10 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 /**
  * Various methods for interacting with the clock module
  */
-public class MethodsClock {
+public final class MethodsClock {
+	private MethodsClock() {
+	}
+
 	@PlethoraMethod(module = IntegrationVanilla.clock, worldThread = false, doc = "-- The game time in ticks")
 	public static long getTime(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		return location.getWorld().getWorldTime() % 24000;

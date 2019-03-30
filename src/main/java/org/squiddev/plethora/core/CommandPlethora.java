@@ -84,7 +84,7 @@ public class CommandPlethora extends CommandBase {
 		return 4;
 	}
 
-	private String getArg(String[] args, int i) {
+	private static String getArg(String[] args, int i) {
 		return args.length > i ? args[i] : null;
 	}
 }

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.tconstruct;
 
-import com.google.common.collect.Maps;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
@@ -15,6 +14,7 @@ import slimeknights.tconstruct.library.traits.ITrait;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @IMetaProvider.Inject(value = ItemStack.class, namespace = "toolMaterial", modId = TConstruct.modID)
@@ -27,7 +27,7 @@ public class MetaMaterial extends BaseMetaProvider<ItemStack> {
 		if (!(item instanceof IMaterialItem)) return Collections.emptyMap();
 
 		IMaterialItem materialItem = (IMaterialItem) item;
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		Material material = materialItem.getMaterial(stack);
 		out.put("id", material.getIdentifier());
@@ -38,7 +38,7 @@ public class MetaMaterial extends BaseMetaProvider<ItemStack> {
 
 			// Gather a list of all stats. We don't provide what they do, but this should be enough.
 			int i = 0;
-			Map<Integer, Object> stats = Maps.newHashMap();
+			Map<Integer, Object> stats = new HashMap<>();
 			for (IMaterialStats stat : material.getAllStats()) {
 				if (pmt == null || pmt.usesStat(stat.getIdentifier())) {
 					stats.put(++i, context.makePartialChild(stat).getMeta());
@@ -51,7 +51,7 @@ public class MetaMaterial extends BaseMetaProvider<ItemStack> {
 		{
 			// Gather a list of all traits. We don't provide what they do, but this should be enough.
 			int i = 0;
-			Map<Integer, Object> traits = Maps.newHashMap();
+			Map<Integer, Object> traits = new HashMap<>();
 			for (ITrait trait : material.getAllTraits()) {
 				if (!trait.isHidden()) {
 					traits.put(++i, context.makePartialChild(trait).getMeta());

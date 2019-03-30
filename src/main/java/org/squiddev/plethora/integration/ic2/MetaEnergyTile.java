@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.ic2;
 
-import com.google.common.collect.Maps;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
@@ -10,6 +9,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ public class MetaEnergyTile extends BasicMetaProvider<IEnergyTile> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IEnergyTile object) {
-		Map<Object, Object> out = Maps.newHashMap();
+		Map<Object, Object> out = new HashMap<>();
 
 		if (object instanceof IEnergySink) {
 			IEnergySink sink = (IEnergySink) object;

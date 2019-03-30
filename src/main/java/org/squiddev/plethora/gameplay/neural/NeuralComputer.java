@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.neural;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,6 +18,7 @@ import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.*;
@@ -30,7 +30,7 @@ public class NeuralComputer extends ServerComputer {
 	private final NonNullList<ItemStack> stacks = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
 	private int moduleHash;
 
-	private final Map<ResourceLocation, NBTTagCompound> moduleData = Maps.newHashMap();
+	private final Map<ResourceLocation, NBTTagCompound> moduleData = new HashMap<>();
 	private boolean moduleDataDirty = false;
 
 	private final TaskRunner runner = new TaskRunner();
@@ -75,11 +75,7 @@ public class NeuralComputer extends ServerComputer {
 		if (existing != owner) {
 			dirtyStatus = -1;
 
-			if (!owner.isEntityAlive()) {
-				entity = null;
-			} else {
-				entity = new WeakReference<>(owner);
-			}
+			entity = owner.isEntityAlive() ? new WeakReference<>(owner) : null;
 		}
 
 		setWorld(owner.getEntityWorld());

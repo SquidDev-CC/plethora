@@ -20,7 +20,6 @@ public class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
 		this.name = name;
 
 		if (doc != null) {
-			String synopsis, detail;
 
 			// Get minimum position
 			int position = -1;
@@ -29,6 +28,8 @@ public class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
 				if (position == -1 || (newPos > -1 && newPos < position)) position = newPos;
 			}
 
+			String detail;
+			String synopsis;
 			if (position > -1) {
 				synopsis = doc.substring(0, position + 1).trim();
 				detail = doc.substring(position + 1).trim();
@@ -44,8 +45,8 @@ public class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
 			this.detail = Strings.isNullOrEmpty(detail) ? null : detail;
 
 		} else {
-			this.synopsis = null;
-			this.detail = null;
+			synopsis = null;
+			detail = null;
 		}
 	}
 

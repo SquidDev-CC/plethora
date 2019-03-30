@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.modules.glasses;
 
-import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,7 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static net.minecraftforge.common.util.Constants.NBT;
 import static org.squiddev.plethora.gameplay.neural.ItemComputerHandler.MODULE_DATA;
 
-public class CanvasHandler {
+@Mod.EventBusSubscriber(modid = Plethora.ID)
+public final class CanvasHandler {
 	public static final int ID_2D = 0;
 	public static final int ID_3D = 1;
 
@@ -33,9 +34,12 @@ public class CanvasHandler {
 	public static final int HEIGHT = 512 / 16 * 9;
 
 	private static final AtomicInteger id = new AtomicInteger(0);
-	private static final HashSet<CanvasServer> server = Sets.newHashSet();
+	private static final HashSet<CanvasServer> server = new HashSet<>();
 
 	private static final Int2ObjectMap<CanvasClient> client = new Int2ObjectOpenHashMap<>();
+
+	private CanvasHandler() {
+	}
 
 	public static int nextId() {
 		return id.getAndIncrement();
@@ -83,7 +87,7 @@ public class CanvasHandler {
 	}
 
 	@SubscribeEvent
-	public void update(TickEvent.ServerTickEvent event) {
+	public static void update(TickEvent.ServerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
 
 		synchronized (server) {
@@ -120,7 +124,7 @@ public class CanvasHandler {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void render2DOverlay(RenderGameOverlayEvent.Post event) {
+	public static void render2DOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.getType() != RenderGameOverlayEvent.ElementType.HELMET) return;
 
 		CanvasClient canvas = getCanvas();
@@ -151,7 +155,7 @@ public class CanvasHandler {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onWorldRender(RenderWorldLastEvent event) {
+	public static void onWorldRender(RenderWorldLastEvent event) {
 		CanvasClient canvas = getCanvas();
 		if (canvas == null) return;
 

@@ -18,17 +18,20 @@ import org.squiddev.plethora.gameplay.Plethora;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class DisableAI {
+public final class DisableAI {
 	public static final ResourceLocation DISABLE_AI = new ResourceLocation(Plethora.ID, "disableAI");
 
 	@CapabilityInject(IDisableAIHandler.class)
 	public static Capability<IDisableAIHandler> DISABLE_AI_CAPABILITY = null;
 
+	private DisableAI() {
+	}
+
 	public static void register() {
 		CapabilityManager.INSTANCE.register(IDisableAIHandler.class, new Capability.IStorage<IDisableAIHandler>() {
 			@Override
 			public NBTBase writeNBT(Capability<IDisableAIHandler> capability, IDisableAIHandler instance, EnumFacing side) {
-				return new NBTTagByte(instance.isDisabled() ? (byte) 1 : (byte) 0);
+				return new NBTTagByte((byte) (instance.isDisabled() ? 1 : 0));
 			}
 
 			@Override

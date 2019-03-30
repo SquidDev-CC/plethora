@@ -11,6 +11,9 @@ import java.util.Map;
 import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 
 public final class MethodsCraftingTask {
+	private MethodsCraftingTask() {
+	}
+
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the items which are missing for this task.")
 	public static Map<Integer, ?> getMissing(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getMissing().getStacks());

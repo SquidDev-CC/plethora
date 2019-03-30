@@ -15,7 +15,7 @@ public class ObjectWriter {
 	private final ObjectFormatter formatter;
 
 	public ObjectWriter(Appendable stream, ObjectFormatter formatter) {
-		this.output = stream;
+		output = stream;
 		this.formatter = formatter;
 	}
 
@@ -28,11 +28,9 @@ public class ObjectWriter {
 			output.append(formatter.formatString((String) value));
 		} else if (value instanceof Number) {
 			Number number = (Number) value;
-			if (number.intValue() == number.doubleValue()) {
-				output.append(formatter.formatInteger(number.intValue()));
-			} else {
-				output.append(formatter.formatDouble(number.doubleValue()));
-			}
+			output.append(number.intValue() == number.doubleValue()
+				? formatter.formatInteger(number.intValue())
+				: formatter.formatDouble(number.doubleValue()));
 		} else if (value == null) {
 			output.append(formatter.formatNil());
 		} else if (value instanceof Boolean) {
@@ -65,9 +63,9 @@ public class ObjectWriter {
 
 			if (arrayLike && max / 2 > map.size()) arrayLike = false;
 
-			String childIndent = indent + "  ";
 			output.append("{");
 
+			String childIndent = indent + "  ";
 			if (arrayLike) {
 				Object[] values = new Object[max];
 				for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -124,11 +122,9 @@ public class ObjectWriter {
 				target = ((MetaWrapper) target).value();
 			}
 
-			if (target != null) {
-				output.append(formatter.formatSpecial("\u00abreference to " + target.getClass().getName() + "\u00bb"));
-			} else {
-				output.append(formatter.formatSpecial("\u00abobject " + value.getClass().getName() + "\u00bb"));
-			}
+			output.append(target != null
+				? formatter.formatSpecial("\u00abreference to " + target.getClass().getName() + "\u00bb")
+				: formatter.formatSpecial("\u00abobject " + value.getClass().getName() + "\u00bb"));
 		} else if (value instanceof ILuaObject) {
 			output.append(formatter.formatSpecial("\u00abobject " + value.getClass().getName() + "\u00bb"));
 		} else {

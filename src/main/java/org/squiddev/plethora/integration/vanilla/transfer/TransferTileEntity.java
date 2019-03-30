@@ -1,7 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +9,7 @@ import org.squiddev.plethora.api.transfer.ITransferProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +24,7 @@ public final class TransferTileEntity implements ITransferProvider<TileEntity> {
 	private final Map<String, EnumFacing> mappings;
 
 	public TransferTileEntity() {
-		Map<String, EnumFacing> mappings = this.mappings = Maps.newHashMap();
+		Map<String, EnumFacing> mappings = this.mappings = new HashMap<>();
 		mappings.put("below", EnumFacing.DOWN);
 		mappings.put("above", EnumFacing.UP);
 		for (EnumFacing facing : EnumFacing.VALUES) {
@@ -50,7 +49,7 @@ public final class TransferTileEntity implements ITransferProvider<TileEntity> {
 	@Nonnull
 	@Override
 	public Set<String> getTransferLocations(@Nonnull TileEntity object) {
-		HashSet<String> out = Sets.newHashSet();
+		HashSet<String> out = new HashSet<>();
 		out.add("self");
 
 		World world = object.getWorld();

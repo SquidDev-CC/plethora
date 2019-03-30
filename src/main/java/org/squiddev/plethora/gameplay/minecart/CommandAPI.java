@@ -1,6 +1,5 @@
 package org.squiddev.plethora.gameplay.minecart;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.ILuaAPI;
@@ -25,6 +24,7 @@ import org.squiddev.plethora.gameplay.Plethora;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,11 +34,11 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	private final Entity entity;
 	private final MinecraftServer server;
 
-	private final Map<Integer, String> output = Maps.newHashMap();
+	private final Map<Integer, String> output = new HashMap<>();
 
 	public CommandAPI(Entity entity) {
 		this.entity = entity;
-		this.server = entity.getEntityWorld().getMinecraftServer();
+		server = entity.getEntityWorld().getMinecraftServer();
 	}
 
 	@Override
@@ -59,37 +59,37 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				output.clear();
 
 				int result = commandManager.executeCommand(this, command);
-				return new Object[]{result > 0, Maps.newHashMap(output)};
+				return new Object[]{result > 0, new HashMap<>(output)};
 			} catch (Throwable t) {
 				return new Object[]{false, Collections.singletonMap(1, "Java Exception Thrown: " + t)};
 			}
 		}
-		return new Object[]{false, Collections.singletonMap(1, ("Command blocks disabled by server"))};
+		return new Object[]{false, Collections.singletonMap(1, "Command blocks disabled by server")};
 	}
 
-	private Object getBlockInfo(World world, BlockPos pos) {
+	private static Object getBlockInfo(World world, BlockPos pos) {
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		String name = Block.REGISTRY.getNameForObject(block).toString();
 		int metadata = block.getMetaFromState(state);
 
-		Map<Object, Object> table = Maps.newHashMap();
+		Map<Object, Object> table = new HashMap<>();
 		table.put("name", name);
 		table.put("metadata", metadata);
 
-		Map<Object, Object> stateTable = Maps.newHashMap();
-		for (Map.Entry<IProperty<?>, ?> entry : state.getActualState(world, pos).getProperties().entrySet()) {
-			String propertyName = entry.getKey().getName();
-			Object value = entry.getValue();
-			if (value instanceof String || value instanceof Number || value instanceof Boolean) {
-				stateTable.put(propertyName, value);
-			} else {
-				stateTable.put(propertyName, value.toString());
-			}
+		Map<Object, Object> stateTable = new HashMap<>();
+		for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState(world, pos).getProperties().entrySet()) {
+			IProperty<?> property = entry.getKey();
+			stateTable.put(property.getName(), getPropertyValue(property, entry.getValue()));
 		}
 		table.put("state", stateTable);
 
 		return table;
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static Object getPropertyValue(IProperty property, Comparable value) {
+		return value instanceof String || value instanceof Number || value instanceof Boolean ? value : property.getName(value);
 	}
 
 	@Override
@@ -111,21 +111,16 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 				long taskID = context.issueMainThreadTask(() -> doCommand(command));
 				return new Object[]{taskID};
 			}
-			case 2: { // list
+			case 2:  // list
 				return context.executeMainThreadTask(() -> {
-					int i = 1;
-					Map<Object, Object> result = Maps.newHashMap();
+					Map<Object, Object> result = new HashMap<>();
 					if (server != null) {
 						ICommandManager commandManager = server.getCommandManager();
-						Map commands = commandManager.getCommands();
-						for (Object entryObject : commands.entrySet()) {
-							Map.Entry entry = (Map.Entry) entryObject;
-							String name = (String) entry.getKey();
-							ICommand command = (ICommand) entry.getValue();
+						Map<String, ICommand> commands = commandManager.getCommands();
+						int i = 1;
+						for (Map.Entry<String, ICommand> entry : commands.entrySet()) {
 							try {
-								if (command.checkPermission(server, CommandAPI.this)) {
-									result.put(i++, name);
-								}
+								if (entry.getValue().checkPermission(server, this)) result.put(i++, entry.getKey());
 							} catch (RuntimeException e) {
 								Plethora.LOG.error("Error executing command", e);
 							}
@@ -133,7 +128,6 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 					}
 					return new Object[]{result};
 				});
-			}
 			case 3: // getBlockPosition
 				BlockPos pos = getPosition();
 				return new Object[]{pos.getX(), pos.getY(), pos.getZ()};
@@ -159,7 +153,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 						throw new LuaException("Too many blocks");
 					}
 					int i = 1;
-					Map<Object, Object> results = Maps.newHashMap();
+					Map<Object, Object> results = new HashMap<>();
 					for (int y = min.getY(); y <= max.getY(); y++) {
 						for (int z = min.getZ(); z <= max.getZ(); z++) {
 							for (int x = min.getX(); x <= max.getX(); x++) {

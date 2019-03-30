@@ -12,7 +12,10 @@ import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-public class MethodsEnergy {
+public final class MethodsEnergy {
+	private MethodsEnergy() {
+	}
+
 	@PlethoraMethod(modId = RedstoneFluxProps.MOD_ID, doc = "-- The amount of RF currently stored")
 	public static int getRFStored(@FromTarget IEnergyStorage storage) {
 		return storage.getEnergyStored();

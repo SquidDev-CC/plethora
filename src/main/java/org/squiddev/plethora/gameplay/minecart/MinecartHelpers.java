@@ -8,8 +8,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class MinecartHelpers {
+public final class MinecartHelpers {
 	private static int[][][] matrix;
+
+	private MinecartHelpers() {
+	}
 
 	private static int[][][] getMatrix() {
 		if (matrix == null) {
@@ -49,10 +52,10 @@ public class MinecartHelpers {
 			double dx = (double) (transformed[1][0] - transformed[0][0]);
 			double dz = (double) (transformed[1][2] - transformed[0][2]);
 			double len = Math.sqrt(dx * dx + dz * dz);
-			dx = dx / len;
-			dz = dz / len;
-			x = x + dx * offset;
-			z = z + dz * offset;
+			dx /= len;
+			dz /= len;
+			x += dx * offset;
+			z += dz * offset;
 
 			if (transformed[0][1] != 0 && MathHelper.floor(x) - xf == transformed[0][0] && MathHelper.floor(z) - zf == transformed[0][2]) {
 				y += (double) transformed[0][1];

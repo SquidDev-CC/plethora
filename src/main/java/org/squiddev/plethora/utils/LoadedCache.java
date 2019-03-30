@@ -4,10 +4,13 @@ import baubles.common.Baubles;
 import net.minecraftforge.fml.common.Loader;
 import vazkii.botania.common.lib.LibMisc;
 
-public class LoadedCache {
+public final class LoadedCache {
 	private static boolean loaded;
 	private static boolean hasBotania;
 	private static boolean hasBaubles;
+
+	private LoadedCache() {
+	}
 
 	private static void load() {
 		hasBotania = Loader.isModLoaded(LibMisc.MOD_ID);

@@ -19,7 +19,10 @@ import javax.annotation.Nullable;
 /**
  * Various methods for fluid transfer
  */
-public class MethodsFluidTransfer {
+public final class MethodsFluidTransfer {
+	private MethodsFluidTransfer() {
+	}
+
 	@PlethoraMethod(doc = "-- Push fluid from this tank to another tank. Returns the amount transferred.")
 	@MarkerInterfaces(ITransferMethod.class)
 	public static int pushFluid(

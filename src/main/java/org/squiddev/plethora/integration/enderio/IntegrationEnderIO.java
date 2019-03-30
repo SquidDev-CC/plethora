@@ -58,4 +58,7 @@ public final class IntegrationEnderIO {
 			return mob != null && item != null ? mob.toStack(item, 1, 1) : null;
 		}
 	};
+
+	private IntegrationEnderIO() {
+	}
 }

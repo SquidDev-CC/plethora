@@ -19,7 +19,7 @@ import static org.objectweb.asm.Opcodes.*;
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
 import static org.squiddev.plethora.core.wrapper.ClassWriterHelpers.*;
 
-class MethodClassLoader extends ClassLoader {
+final class MethodClassLoader extends ClassLoader {
 	public static final MethodClassLoader INSTANCE = new MethodClassLoader();
 
 	private static final String INTERNAL_OBJECT = Type.getInternalName(Object.class);
@@ -89,8 +89,6 @@ class MethodClassLoader extends ClassLoader {
 			runDescBuilder.append(Type.getDescriptor(parameters[i].getType()));
 		}
 		String runDescPre = runDescBuilder.append(")L").toString();
-		String runDesc = runDescPre + INTERNAL_METHOD_RESULT + ";";
-		String runDescDynamic = runDescPre + "java/util/concurrent/Callable;";
 
 		{ // Constructor just invokes super.
 			MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -102,6 +100,7 @@ class MethodClassLoader extends ClassLoader {
 			mw.visitEnd();
 		}
 
+		String runDesc = runDescPre + INTERNAL_METHOD_RESULT + ";";
 		{ // The main apply method validates arguments and delegates to the static invoker.
 			MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "apply", "(Lorg/squiddev/plethora/api/method/IUnbakedContext;[Ljava/lang/Object;)Lorg/squiddev/plethora/api/method/MethodResult;", null, null);
 			mw.visitCode();
@@ -125,6 +124,7 @@ class MethodClassLoader extends ClassLoader {
 
 			// And dispatch
 			if (methodInstance.worldThread) {
+				String runDescDynamic = runDescPre + "java/util/concurrent/Callable;";
 				mw.visitInvokeDynamicInsn(
 					"call", runDescDynamic, ID_HANDLE,
 					ID_CALL_SIG, new Handle(Opcodes.H_INVOKESTATIC, internalName, "run", runDesc, false), ID_CALL_SPECIAL_SIG

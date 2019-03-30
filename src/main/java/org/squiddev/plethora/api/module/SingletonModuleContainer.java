@@ -1,10 +1,10 @@
 package org.squiddev.plethora.api.module;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,8 +15,8 @@ public class SingletonModuleContainer implements IModuleContainer {
 	private final Set<ResourceLocation> modules;
 
 	public SingletonModuleContainer(@Nonnull ResourceLocation module) {
-		Preconditions.checkNotNull(module, "module cannot be null");
-		this.thisModule = module;
+		Objects.requireNonNull(module, "module cannot be null");
+		thisModule = module;
 		modules = Collections.singleton(module);
 	}
 

@@ -36,7 +36,7 @@ public abstract class ColourableObject extends BaseObject implements Colourable 
 	}
 
 	protected int getAlpha() {
-		return (colour) & 0xFF;
+		return colour & 0xFF;
 	}
 
 	@Override

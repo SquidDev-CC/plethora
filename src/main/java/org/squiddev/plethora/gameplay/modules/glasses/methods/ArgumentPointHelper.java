@@ -20,6 +20,9 @@ public final class ArgumentPointHelper {
 
 	public static final ArgumentType<Vec3d> VEC3D = ArgumentTypes.TABLE.map(ArgumentPointHelper::getVec3d);
 
+	private ArgumentPointHelper() {
+	}
+
 	public static Vec2d getVec2d(@Nonnull Object[] args, int index) throws LuaException {
 		return getVec2d(getTable(args, index));
 	}

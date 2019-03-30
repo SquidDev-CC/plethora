@@ -20,7 +20,10 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.optFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.getVec2d;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
-public class MethodsCanvas2D {
+public final class MethodsCanvas2D {
+	private MethodsCanvas2D() {
+	}
+
 	@PlethoraMethod(doc = "-- Create a new rectangle.", worldThread = false)
 	public static ILuaObject addRectangle(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,

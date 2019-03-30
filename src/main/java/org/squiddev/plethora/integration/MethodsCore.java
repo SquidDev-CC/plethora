@@ -19,7 +19,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MethodsCore {
+public final class MethodsCore {
+	private MethodsCore() {
+	}
+
 	@PlethoraMethod(doc = "-- Lists all modules available")
 	public static Map<Integer, String> listModules(@FromTarget IModuleContainer container) {
 		Map<Integer, String> modules = new HashMap<>();
@@ -45,7 +48,7 @@ public class MethodsCore {
 			if (oldModules.contains(module)) newModules.add(module);
 		}
 
-		if (newModules.size() == 0) return null;
+		if (newModules.isEmpty()) return null;
 
 		ILuaObject object = context
 			.makeChildId(new BasicModuleContainer(newModules))

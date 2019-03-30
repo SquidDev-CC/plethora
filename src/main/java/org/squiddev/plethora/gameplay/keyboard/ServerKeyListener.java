@@ -1,26 +1,26 @@
 package org.squiddev.plethora.gameplay.keyboard;
 
-import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 
 import static org.squiddev.plethora.gameplay.keyboard.KeyMessage.KeyPress;
 
-public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> {
+public final class ServerKeyListener {
 	private static final WeakHashMap<EntityPlayerMP, Set<IModuleAccess>> listeners = new WeakHashMap<>();
+
+	private ServerKeyListener() {
+	}
 
 	public static void add(@Nonnull EntityPlayerMP player, @Nonnull IModuleAccess access) {
 		synchronized (listeners) {
-			Set<IModuleAccess> accesses = listeners.get(player);
-			if (accesses == null) listeners.put(player, accesses = Sets.newHashSet());
+			Set<IModuleAccess> accesses = listeners.computeIfAbsent(player, k -> new HashSet<>(1));
 
 			// Notify the client to start listening
 			if (accesses.isEmpty()) {
@@ -49,26 +49,21 @@ public class ServerKeyListener implements IMessageHandler<KeyMessage, IMessage> 
 		}
 	}
 
-	@Override
-	public IMessage onMessage(KeyMessage message, MessageContext ctx) {
-		EntityPlayerMP player = ctx.getServerHandler().player;
-
+	static void process(EntityPlayerMP player, List<KeyPress> presses, List<Integer> releases) {
 		synchronized (listeners) {
 			Set<IModuleAccess> accesses = listeners.get(player);
-			if (accesses != null && accesses.size() > 0) {
+			if (accesses != null && !accesses.isEmpty()) {
 				for (IModuleAccess access : accesses) {
-					for (KeyPress press : message.presses) {
+					for (KeyPress press : presses) {
 						if (press.key > 0) access.queueEvent("key", press.key, press.repeat);
 						if (press.ch != '\0') access.queueEvent("char", Character.toString(press.ch));
 					}
 
-					for (Integer up : message.ups) {
+					for (Integer up : releases) {
 						access.queueEvent("key_up", up);
 					}
 				}
 			}
 		}
-
-		return null;
 	}
 }

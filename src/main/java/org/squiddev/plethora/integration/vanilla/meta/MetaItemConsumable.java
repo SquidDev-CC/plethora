@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
@@ -28,14 +27,14 @@ public final class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (item instanceof ItemFood) {
-			HashMap<Object, Object> data = Maps.newHashMap();
+			HashMap<Object, Object> data = new HashMap<>();
 			ItemFood food = (ItemFood) item;
 			data.put("heal", food.getHealAmount(stack));
 			data.put("saturation", food.getSaturationModifier(stack));
 
 			return data;
 		} else if (item instanceof ItemPotion) {
-			HashMap<Object, Object> data = Maps.newHashMap();
+			HashMap<Object, Object> data = new HashMap<>();
 			ItemPotion itemPotion = (ItemPotion) item;
 
 			if (itemPotion instanceof ItemSplashPotion) {
@@ -48,13 +47,13 @@ public final class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 				data.put("type", "normal");
 			}
 
-			Map<Integer, Map<String, Object>> effectsInfo = Maps.newHashMap();
+			Map<Integer, Map<String, Object>> effectsInfo = new HashMap<>();
 
 			PotionType effects = PotionUtils.getPotionFromItem(stack);
-			if (effects.getEffects().size() > 0) {
+			if (!effects.getEffects().isEmpty()) {
 				int i = 0;
 				for (PotionEffect effect : effects.getEffects()) {
-					Map<String, Object> entry = Maps.newHashMap();
+					Map<String, Object> entry = new HashMap<>();
 
 					entry.put("duration", effect.getDuration() / 20); // ticks!
 					entry.put("amplifier", effect.getAmplifier());

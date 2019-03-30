@@ -17,8 +17,8 @@ public class EntityReference<T extends Entity> extends ConstantReference<T> {
 	private WeakReference<T> entity;
 
 	EntityReference(T entity) {
-		this.server = entity.getServer();
-		this.id = entity.getUniqueID();
+		server = entity.getServer();
+		id = entity.getUniqueID();
 		this.entity = new WeakReference<>(entity);
 	}
 

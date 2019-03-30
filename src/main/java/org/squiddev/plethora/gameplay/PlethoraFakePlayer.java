@@ -56,7 +56,7 @@ public class PlethoraFakePlayer extends FakePlayer {
 	@Deprecated
 	public PlethoraFakePlayer(World world) {
 		super((WorldServer) world, PROFILE);
-		this.owner = null;
+		owner = null;
 	}
 
 	@Nonnull

@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import com.google.common.collect.Maps;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -26,7 +25,7 @@ public class MetaItemOreDict extends BasicMetaProvider<ItemStack> {
 		int[] oreIds = OreDictionary.getOreIDs(stack);
 		if (oreIds.length <= 0) return Collections.emptyMap();
 
-		HashMap<Object, Object> list = Maps.newHashMap();
+		HashMap<Object, Object> list = new HashMap<>();
 
 		for (int id : oreIds) {
 			list.put(OreDictionary.getOreName(id), true);

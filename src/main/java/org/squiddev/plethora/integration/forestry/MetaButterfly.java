@@ -14,10 +14,6 @@ public class MetaButterfly extends BasicMetaProvider<IButterfly> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IButterfly butterfly) {
-		if (butterfly.isAnalyzed()) {
-			return Collections.singletonMap("size", butterfly.getSize());
-		} else {
-			return Collections.emptyMap();
-		}
+		return butterfly.isAnalyzed() ? Collections.singletonMap("size", butterfly.getSize()) : Collections.emptyMap();
 	}
 }

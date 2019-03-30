@@ -7,24 +7,21 @@ import forestry.core.tiles.TileAnalyzer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
 import org.squiddev.plethora.core.PlethoraCore;
 
-public class IntegrationForestry {
+@Mod.EventBusSubscriber(modid = PlethoraCore.ID)
+public final class IntegrationForestry {
 	public static final String analyzerMod = "forestry:analyzer";
 
-	public static void setup() {
-		if (Loader.isModLoaded(Constants.MOD_ID)) {
-			MinecraftForge.EVENT_BUS.register(new IntegrationForestry());
-		}
-	}
-
 	private static BasicModuleHandler analyzerCap;
+
+	private IntegrationForestry() {
+	}
 
 	@Optional.Method(modid = Constants.MOD_ID)
 	private static BasicModuleHandler getAnalyzerCap() {
@@ -37,7 +34,7 @@ public class IntegrationForestry {
 
 	@SubscribeEvent
 	@Optional.Method(modid = Constants.MOD_ID)
-	public void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
+	public static void attachCapabilitiesItem(AttachCapabilitiesEvent<ItemStack> event) {
 		if (event.getObject().getItem() instanceof ItemAlyzer) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, getAnalyzerCap());
 		}
@@ -45,7 +42,7 @@ public class IntegrationForestry {
 
 	@SubscribeEvent
 	@Optional.Method(modid = Constants.MOD_ID)
-	public void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
+	public static void attachCapabilitiesTile(AttachCapabilitiesEvent<TileEntity> event) {
 		if (event.getObject() instanceof TileAnalyzer) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, getAnalyzerCap());
 		}

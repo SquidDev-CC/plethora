@@ -13,7 +13,10 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 
 import static org.squiddev.plethora.gameplay.modules.PlethoraModules.GLASSES_S;
 
-public class MethodsCanvas {
+public final class MethodsCanvas {
+	private MethodsCanvas() {
+	}
+
 	@PlethoraMethod(module = GLASSES_S, doc = "-- Get the 2D canvas for these glasses.", worldThread = false)
 	public static ILuaObject canvas(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
 		return context.makeChildId(server.canvas2d()).getObject();

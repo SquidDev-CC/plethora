@@ -1,12 +1,12 @@
 package org.squiddev.plethora.integration;
 
-import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +41,7 @@ public final class MethodTransferLocations extends BasicMethod<IMethodCollection
 
 				locations = PlethoraAPI.instance().transferRegistry().getTransferLocations(found, false);
 			}
-			Map<Integer, String> result = Maps.newHashMap();
+			Map<Integer, String> result = new HashMap<>();
 
 			int i = 1;
 			for (String location1 : locations) {

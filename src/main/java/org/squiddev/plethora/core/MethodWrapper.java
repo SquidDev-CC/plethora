@@ -47,7 +47,7 @@ public class MethodWrapper {
 		return contexts.get(i);
 	}
 
-	protected Object[] getReferences(IComputerAccess access, ILuaContext context) {
+	protected static Object[] getReferences(IComputerAccess access, ILuaContext context) {
 		return new Object[]{access, context};
 	}
 
@@ -92,7 +92,7 @@ public class MethodWrapper {
 			throw e;
 		} catch (Throwable e) {
 			PlethoraCore.LOG.error("Unexpected error calling " + method.getName(), e);
-			throw new LuaException("Java Exception Thrown: " + e.toString());
+			throw new LuaException("Java Exception Thrown: " + e);
 		}
 	}
 }

@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.squiddev.plethora.gameplay.registry.Registry;
+import org.squiddev.plethora.gameplay.registry.Registration;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class ContainerKeyboard extends Container implements IContainerComputer {
 
 	@Override
 	public boolean canInteractWith(@Nonnull EntityPlayer player) {
-		if (!Helpers.isHolding(player, Registry.itemKeyboard)) return false;
+		if (!Helpers.isHolding(player, Registration.itemKeyboard)) return false;
 
 		if (computer instanceof ServerComputer) {
 			ServerComputer computer = (ServerComputer) this.computer;

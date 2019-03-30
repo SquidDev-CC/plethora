@@ -22,18 +22,14 @@ public final class SortedMultimap<K, V> {
 
 	public Collection<V> get(K key) {
 		Collection<V> result = items.get(key);
-		if (result == null) {
-			return Collections.emptyList();
-		} else {
-			return result;
-		}
+		return result == null ? Collections.emptyList() : result;
 	}
 
 	public static <K, V> SortedMultimap<K, V> create(Comparator<V> comparator) {
 		return new SortedMultimap<>(comparator);
 	}
 
-	public final Map<K, Collection<V>> items() {
+	public Map<K, Collection<V>> items() {
 		return Collections.unmodifiableMap(items);
 	}
 

@@ -1,25 +1,31 @@
 package org.squiddev.plethora.gameplay.keyboard;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.squiddev.plethora.gameplay.registry.BasicMessage;
 
-public class ListenMessage implements IMessage {
-	public boolean listen;
+public class ListenMessage implements BasicMessage {
+	private boolean listening;
 
 	public ListenMessage() {
 	}
 
-	public ListenMessage(boolean listen) {
-		this.listen = listen;
+	public ListenMessage(boolean listening) {
+		this.listening = listening;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		listen = buf.readBoolean();
+		listening = buf.readBoolean();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeBoolean(listen);
+		buf.writeBoolean(listening);
+	}
+
+	@Override
+	public void onMessage(MessageContext context) {
+		ClientKeyListener.listening = listening;
 	}
 }

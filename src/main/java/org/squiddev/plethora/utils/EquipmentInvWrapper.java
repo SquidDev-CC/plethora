@@ -118,7 +118,7 @@ public final class EquipmentInvWrapper implements IItemHandlerModifiable {
 		return 64;
 	}
 
-	private void validateSlotIndex(int slot) {
+	private static void validateSlotIndex(int slot) {
 		if (slot < 0 || slot >= SLOTS) {
 			throw new RuntimeException("Slot " + slot + " not in valid range - [0, " + SLOTS + "]");
 		}
