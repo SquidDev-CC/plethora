@@ -22,10 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
-import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.meta.*;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.utils.EntityPlayerDummy;
@@ -176,71 +173,55 @@ public final class IntegrationHatchery {
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			//REFINE What are the trade-offs between this technique and `new ResourceLocation("minecraft:chicken")`?
 			ResourceLocation chickenLocation = EntityList.getKey(EntityChicken.class);
 			if (chickenLocation == null) return null;
 
-			//REFINE Similarly, how does this compare with `new EntityChicken(WorldDummy.INSTANCE)`
+			//TODO Will this work okay if we directly instantiate the Chicken?
 			Entity chicken = EntityList.createEntityByIDFromName(chickenLocation, WorldDummy.INSTANCE);
-			if (!(chicken instanceof EntityAgeable)) return null;
+			return !(chicken instanceof EntityAgeable) ? null : HatcheryEgg.createEggFromEntity(WorldDummy.INSTANCE, (EntityAgeable) chicken);
 
-			return HatcheryEgg.createEggFromEntity(WorldDummy.INSTANCE, (EntityAgeable) chicken);
 		}
 	};
 
-	public static final IMetaProvider<EntityRooster> META_ROOSTER = new BaseMetaProvider<EntityRooster>() {
+	public static final IMetaProvider<EntityRooster> META_ROOSTER = new BasicMetaProvider<EntityRooster>() {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityRooster> context) {
-			Map<Object, Object> out = new HashMap<>();
-			EntityRooster rooster = context.getTarget();
+		public Map<Object, Object> getMeta(EntityRooster target) {
+			//We are not exposing the actual inventory at this time;
+			//if `seeds` drops below 98, then there are no items left in the inventory.
 
 			//Somewhat of a misnomer; this is the 'energy' level, comparable to a furnace's remaining burn ticks
 			//The actual 'temptation items' (Hatchery's term, not mine) is exposed via the Item Handler Capability,
-			//TODO How can I expose the Rooster's inventory in a manner consistent with the rest of the code?
-			// I can't bind an Introspection Module to it...
-			out.put("seeds", rooster.getSeeds());
-
-			return out;
+			return Collections.singletonMap("seeds", target.getSeeds());
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public EntityRooster getExample() {
-			//REFINE See META_HATCHERY_EGG#getExample's task
-			ResourceLocation roosterLocation = EntityList.getKey(EntityRooster.class);
-			if (roosterLocation == null) return null;
-
-			Entity rooster = EntityList.createEntityByIDFromName(roosterLocation, WorldDummy.INSTANCE);
-			if (!(rooster instanceof EntityRooster)) return null;
-
-			return (EntityRooster) rooster;
+			return new EntityRooster(WorldDummy.INSTANCE);
 		}
 	};
 
-	public static final IMetaProvider<NestPenTileEntity> META_NESTPEN = new BaseMetaProvider<NestPenTileEntity>() {
+	public static final IMetaProvider<NestPenTileEntity> META_NEST_PEN = new BaseMetaProvider<NestPenTileEntity>() {
 
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull IPartialContext<NestPenTileEntity> context) {
-			Map<Object, Object> out = new HashMap<>();
 			NestPenTileEntity target = context.getTarget();
-
-			//Get the stored entity
-			EntityAgeable storedEntity = target.storedEntity();
-			if (storedEntity != null) out.put("storedEntity", context.makePartialChild(storedEntity).getMeta());
 
 			//The stored entity and the inventory are straightforward
 			//The only other data that we _may_ want to expose would be the time to next drop
 
-			return out;
-
+			//Get the stored entity
+			EntityAgeable storedEntity = target.storedEntity();
+			return storedEntity != null ? Collections.singletonMap("storedEntity", context.makePartialChild(storedEntity).getMeta()) : Collections.emptyMap();
 		}
 
 		@Nonnull
 		@Override
 		public NestPenTileEntity getExample() {
+			//FIXME Needs an associated NestingPenBlock, or we get an NPE when trying to dump the examples
 			NestPenTileEntity te = new NestPenTileEntity();
 			Entity chicken = EntityList.createEntityByIDFromName(new ResourceLocation("minecraft:chicken"), WorldDummy.INSTANCE);
 
@@ -254,7 +235,7 @@ public final class IntegrationHatchery {
 		@Nonnull
 		@Override
 		public Map<Object, Object> getMeta(@Nonnull IPartialContext<EggNestTileEntity> context) {
-			Map<Object, Object> out = new HashMap<>();
+			Map<Object, Object> out = new HashMap<>(2);
 			EggNestTileEntity target = context.getTarget();
 
 			//The 'hasEgg' property is exposed as part of the BlockState
@@ -278,9 +259,7 @@ public final class IntegrationHatchery {
 		@Override
 		public EggNestTileEntity getExample() {
 			EggNestTileEntity te = new EggNestTileEntity();
-			ItemStack egg = new ItemStack(Items.EGG);
-
-			te.insertEgg(egg);
+			te.insertEgg(new ItemStack(Items.EGG));
 			return te;
 		}
 	};

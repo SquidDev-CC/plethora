@@ -4,9 +4,8 @@ import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.item.ItemAnalyzer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.squiddev.plethora.api.module.BasicModuleHandler;
@@ -14,6 +13,7 @@ import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 
+@Mod.EventBusSubscriber(modid = PlethoraCore.ID)
 public final class IntegrationChickens {
 	private IntegrationChickens() {
 	}
@@ -28,12 +28,6 @@ public final class IntegrationChickens {
 
 	public static final String ANALYZER_S = "chickens:analyzer";
 	public static final ResourceLocation ANALYZER_MOD = new ResourceLocation(ANALYZER_S);
-
-	public static void setup() {
-		if (Loader.isModLoaded(ChickensMod.MODID)) {
-			MinecraftForge.EVENT_BUS.register(new IntegrationChickens());
-		}
-	}
 
 	private static BasicModuleHandler analyzerCap;
 
