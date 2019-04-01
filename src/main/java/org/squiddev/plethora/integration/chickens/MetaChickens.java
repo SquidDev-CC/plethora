@@ -5,18 +5,13 @@ import com.setycz.chickens.config.ConfigHandler;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
-import dan200.computercraft.api.lua.ILuaObject;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
-import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.core.ContextFactory;
-import org.squiddev.plethora.core.executor.BasicExecutor;
-import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,8 +46,8 @@ public final class MetaChickens {
 		//Exposing these two fields directly for now; hardly warrants the player having to call `getSpecies`
 		ChickensRegistryItem chickenDesc = ChickensRegistry.getByRegistryName(chickenType);
 		if (chickenDesc != null) {
-			out.put("layItem", wrapStack(context, chickenDesc.createLayItem()));
-			out.put("dropItem", wrapStack(context, chickenDesc.createDropItem()));
+			out.put("layItem", ContextHelpers.wrapStack(context, chickenDesc.createLayItem()));
+			out.put("dropItem", ContextHelpers.wrapStack(context, chickenDesc.createDropItem()));
 		}
 
 		return out;
@@ -73,8 +68,8 @@ public final class MetaChickens {
 			//While a mix of verbosity and indirection, this avoids issues with
 			//items identified by values such as "thermalfoundation:material:132" or similar,
 			//and allows a user to potentially filter based on OreDict entries
-			out.put("layItem", wrapStack(context, chicken.createLayItem()));
-			out.put("dropItem", wrapStack(context, chicken.createDropItem()));
+			out.put("layItem", ContextHelpers.wrapStack(context, chicken.createLayItem()));
+			out.put("dropItem", ContextHelpers.wrapStack(context, chicken.createDropItem()));
 
 			out.put("tier", chicken.getTier());
 
@@ -94,18 +89,5 @@ public final class MetaChickens {
 			return ChickensRegistry.getSmartChicken();
 		}
 	};
-
-	//Copied from integration.vanilla.meta.MetaEntityLiving
-	@Nullable
-	private static ILuaObject wrapStack(IPartialContext<?> context, @Nullable ItemStack object) {
-		if (object == null || object.isEmpty()) return null;
-
-		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
-		if (context instanceof IContext) {
-			return ((IContext<?>) context).makeChildId(wrapper).getObject();
-		} else {
-			return ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
-		}
-	}
 
 }

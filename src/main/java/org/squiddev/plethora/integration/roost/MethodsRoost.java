@@ -5,19 +5,15 @@ import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 import com.timwoodcreates.roost.Roost;
 import com.timwoodcreates.roost.tileentity.TileEntityBreeder;
-import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
+import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.core.ContextFactory;
-import org.squiddev.plethora.core.executor.BasicExecutor;
-import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +77,7 @@ public final class MethodsRoost {
 		out.put("tier", 0);
 
 		//Technically, it has a chance for either eggs or feathers...
-		out.put("layItem", wrapStack(context, new ItemStack(Items.FEATHER)));
+		out.put("layItem", ContextHelpers.wrapStack(context, new ItemStack(Items.FEATHER)));
 
 		//Leaving `null` for now
 		out.put("dropItem", null);
@@ -90,19 +86,6 @@ public final class MethodsRoost {
 		out.put("parent2", null);
 
 		return out;
-	}
-
-	//Copied from integration.vanilla.meta.MetaEntityLiving
-	@Nullable
-	private static ILuaObject wrapStack(IPartialContext<?> context, @Nullable ItemStack object) {
-		if (object == null || object.isEmpty()) return null;
-
-		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
-		if (context instanceof IContext) {
-			return ((IContext<?>) context).makeChildId(wrapper).getObject();
-		} else {
-			return ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
-		}
 	}
 
 }
