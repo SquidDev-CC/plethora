@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * When working on this class, ensure that getSpecies and getSpeciesList from roost/MethodsRoost are kept in lock-step!
  */
 public final class MethodsAnalyzer {
-	private MethodsAnalyzer(){
+	private MethodsAnalyzer() {
 	}
 
 	@PlethoraMethod(

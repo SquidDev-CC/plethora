@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.hatchery;
 import com.gendeathrow.hatchery.Hatchery;
 import com.gendeathrow.hatchery.block.nest.EggNestTileEntity;
 import com.gendeathrow.hatchery.block.nestpen.NestPenTileEntity;
+import com.gendeathrow.hatchery.core.init.ModBlocks;
 import com.gendeathrow.hatchery.core.init.ModItems;
 import com.gendeathrow.hatchery.entities.EntityRooster;
 import com.gendeathrow.hatchery.item.AnimalNet;
@@ -12,17 +13,20 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.meta.*;
+import org.squiddev.plethora.api.meta.BaseMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.utils.EntityPlayerDummy;
@@ -64,7 +68,7 @@ public final class IntegrationHatchery {
 		"Provides the entity captured inside this Animal Net."
 	) {
 
-		//TODO All three (so far) classes that expose captured entity data have many of the same checks;
+		//TODO All of the classes (so far) that expose captured entity data have many of the same checks;
 		// Is there any way that we can abstract the complexity/deduplicate the code?
 		@Nonnull
 		@Override
@@ -79,44 +83,21 @@ public final class IntegrationHatchery {
 
 			//Check if we have a location
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			if (location == null) return getBasicDetails(entityData);
+			if (location == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "capturedEntity");
 
 			//Only the empty AnimalNet is registered, so we don't need to check for a generic
 			Entity entity = EntityList.createEntityFromNBT(entityData, location.getWorld());
-			if (entity == null) return getBasicDetails(entityData);
+			if (entity == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "capturedEntity");
 
 			Vec3d loc = location.getLoc();
 			entity.setPositionAndRotation(loc.x, loc.y, loc.z, 0, 0);
 			return Collections.singletonMap("capturedEntity", context.makePartialChild(entity).getMeta());
 		}
 
-		//Copied wholesale from IntegrationThermalExpansion.META_MORB
-		private Map<Object, Object> getBasicDetails(NBTTagCompound entityData) {
-			String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
-			if (translationKey == null) return Collections.emptyMap();
-
-			String translated = Helpers.translateToLocal("entity." + translationKey + ".name");
-
-			Map<Object, Object> details = new HashMap<>(2);
-			details.put("name", translated);
-			details.put("displayName",
-				entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
-					? entityData.getString("CustomName")
-					: translated
-			);
-			return Collections.singletonMap("capturedEntity", details);
-		}
-
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			EntityPlayer dummyPlayer = new EntityPlayerDummy(WorldDummy.INSTANCE);
-			ItemStack netStack = ModItems.animalNet.getDefaultInstance();
-			ResourceLocation cowLocation = EntityList.getKey(EntityCow.class);
-			if (cowLocation == null) return null;
-
-			Entity cow = EntityList.createEntityByIDFromName(cowLocation, WorldDummy.INSTANCE);
-			return cow == null ? null : AnimalNet.addEntitytoNet(dummyPlayer, netStack, cow);
+			return AnimalNet.addEntitytoNet(new EntityPlayerDummy(WorldDummy.INSTANCE), ModItems.animalNet.getDefaultInstance(), new EntityCow(WorldDummy.INSTANCE));
 		}
 	};
 
@@ -138,48 +119,26 @@ public final class IntegrationHatchery {
 
 			//Check if we have a location
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			if (location == null) return getBasicDetails(entityData);
+			if (location == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "spawnEntity");
 
 			//Due to Hatchery's `ItemStackEntityNBTHelper` having a `saveAll` param, we may need to
 			// handle a generic egg.  Unfortunately, they don't provide a convenient analogue to TE's `ItemMorb.GENERIC`,
 			// so this will have to suffice...
 			Entity entity = EntityList.createEntityFromNBT(entityData, location.getWorld());
-			if (entity == null)
+			if (entity == null) {
 				entity = EntityList.createEntityByIDFromName(new ResourceLocation(entityData.getString("id")), location.getWorld());
-			if (entity == null) return getBasicDetails(entityData);
+			}
+			if (entity == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "spawnEntity");
 
 			Vec3d loc = location.getLoc();
 			entity.setPositionAndRotation(loc.x, loc.y, loc.z, 0, 0);
 			return Collections.singletonMap("spawnEntity", context.makePartialChild(entity).getMeta());
 		}
 
-		//Copied wholesale from IntegrationThermalExpansion.META_MORB
-		private Map<Object, Object> getBasicDetails(NBTTagCompound entityData) {
-			String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
-			if (translationKey == null) return Collections.emptyMap();
-
-			String translated = Helpers.translateToLocal("entity." + translationKey + ".name");
-
-			Map<Object, Object> details = new HashMap<>(2);
-			details.put("name", translated);
-			details.put("displayName",
-				entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
-					? entityData.getString("CustomName")
-					: translated
-			);
-			return Collections.singletonMap("spawnEntity", details);
-		}
-
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			ResourceLocation chickenLocation = EntityList.getKey(EntityChicken.class);
-			if (chickenLocation == null) return null;
-
-			//TODO Will this work okay if we directly instantiate the Chicken?
-			Entity chicken = EntityList.createEntityByIDFromName(chickenLocation, WorldDummy.INSTANCE);
-			return !(chicken instanceof EntityAgeable) ? null : HatcheryEgg.createEggFromEntity(WorldDummy.INSTANCE, (EntityAgeable) chicken);
-
+			return HatcheryEgg.createEggFromEntity(WorldDummy.INSTANCE, new EntityChicken(WorldDummy.INSTANCE));
 		}
 	};
 
@@ -215,18 +174,23 @@ public final class IntegrationHatchery {
 
 			//Get the stored entity
 			EntityAgeable storedEntity = target.storedEntity();
-			return storedEntity != null ? Collections.singletonMap("storedEntity", context.makePartialChild(storedEntity).getMeta()) : Collections.emptyMap();
+			return storedEntity != null
+				? Collections.singletonMap("storedEntity", context.makePartialChild(storedEntity).getMeta())
+				: Collections.emptyMap();
 		}
 
-		@Nonnull
+		@Nullable
 		@Override
 		public NestPenTileEntity getExample() {
-			//FIXME Needs an associated NestingPenBlock, or we get an NPE when trying to dump the examples
-			NestPenTileEntity te = new NestPenTileEntity();
-			Entity chicken = EntityList.createEntityByIDFromName(new ResourceLocation("minecraft:chicken"), WorldDummy.INSTANCE);
+			//This mess is unfortunately necessary, as `trySetEntity` updates the block's state
+			//If we don't first set the BlockState, we get an NPE.
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, ModBlocks.pen.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof NestPenTileEntity)) return null;
 
-			te.trySetEntity(chicken);
-			return te;
+			NestPenTileEntity pen = (NestPenTileEntity) te;
+			pen.trySetEntity(new EntityChicken(WorldDummy.INSTANCE));
+			return pen;
 		}
 	};
 
@@ -263,4 +227,23 @@ public final class IntegrationHatchery {
 			return te;
 		}
 	};
+
+	//TODO Do we want to move this (and the duplicates) into ContextHelpers, or somewhere else?
+	// Partially depends on how we refactor the rest of the captured entity code
+	private static Map<Object, Object> getBasicEntityDetails(NBTTagCompound entityData, String namespace) {
+		String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
+		if (translationKey == null) return Collections.emptyMap();
+
+		String translated = Helpers.translateToLocal("entity." + translationKey + ".name");
+
+		Map<Object, Object> details = new HashMap<>(2);
+		details.put("name", translated);
+		details.put("displayName",
+			entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
+				? entityData.getString("CustomName")
+				: translated
+		);
+
+		return Collections.singletonMap(namespace, details);
+	}
 }

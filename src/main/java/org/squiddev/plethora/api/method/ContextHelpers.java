@@ -91,6 +91,13 @@ public final class ContextHelpers {
 		return map;
 	}
 
+	/**
+	 * Wrap an {@link ItemStack} so that its metadata is exposed by an in-game call to {@code getMetadata()}
+	 *
+	 * @param context The base context to use in getting metadata
+	 * @param object The stack to wrap
+	 * @return The wrapped stack
+	 */
 	@Nullable
 	public static ILuaObject wrapStack(@Nonnull IPartialContext<?> context, @Nullable ItemStack object) {
 		if (object == null || object.isEmpty()) return null;

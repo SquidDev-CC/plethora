@@ -71,7 +71,7 @@ public final class MethodsRoost {
 	}
 
 	private static Map<Object, Object> getVanillaChicken(@Nonnull IPartialContext<?> context) {
-		Map<Object, Object> out = new HashMap<>();
+		Map<Object, Object> out = new HashMap<>(6);
 
 		out.put("type", MINECRAFT_CHICKEN);
 		out.put("tier", 0);

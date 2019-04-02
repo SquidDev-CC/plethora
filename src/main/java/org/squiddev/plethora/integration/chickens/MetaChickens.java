@@ -9,12 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,35 +24,51 @@ public final class MetaChickens {
 	private MetaChickens() {
 	}
 
-	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new NamespacedMetaProvider<>("chickens", context -> {
-		Map<Object, Object> out = new HashMap<>();
-		EntityChickensChicken chicken = context.getTarget();
+	public static final IMetaProvider<EntityChickensChicken> META_ENTITY_CHICKEN = new BaseMetaProvider<EntityChickensChicken>() {
 
-		// Growth, gain, strength, layProgress, analyzed, tier
-		out.put("analyzed", chicken.getStatsAnalyzed());
-		out.put("tier", chicken.getTier());
+		@Nonnull
+		@Override
+		public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityChickensChicken> context) {
+			Map<Object, Object> out = new HashMap<>();
+			EntityChickensChicken chicken = context.getTarget();
 
-		if (ConfigHandler.alwaysShowStats || chicken.getStatsAnalyzed() || context.getModules().hasModule(IntegrationChickens.ANALYZER_MOD)) {
-			out.put("growth", chicken.getGrowth());
-			out.put("gain", chicken.getGain());
-			out.put("strength", chicken.getStrength());
+			// Growth, gain, strength, layProgress, analyzed, tier
+			out.put("analyzed", chicken.getStatsAnalyzed());
+			out.put("tier", chicken.getTier());
+
+			//Unfortunately, captured chickens will only show their stats if already analyzed;
+			// doubtful that we could show the Analyzer as being present from an attached
+			// manipulator, at least without very messy hacks... calling it an intended challenge.
+			if (ConfigHandler.alwaysShowStats || chicken.getStatsAnalyzed() || context.getModules().hasModule(IntegrationChickens.ANALYZER_MOD)) {
+				out.put("growth", chicken.getGrowth());
+				out.put("gain", chicken.getGain());
+				out.put("strength", chicken.getStrength());
+			}
+
+			NBTTagCompound nbt = new NBTTagCompound();
+			chicken.writeEntityToNBT(nbt);
+			String chickenType = nbt.getString("Type");
+			out.put("type", chickenType);
+
+			//Replicating Chickens internal code...
+			//Exposing these two fields directly for now; hardly warrants the player having to call `getSpecies`
+			ChickensRegistryItem chickenDesc = ChickensRegistry.getByRegistryName(chickenType);
+			if (chickenDesc != null) {
+				out.put("layItem", ContextHelpers.wrapStack(context, chickenDesc.createLayItem()));
+				out.put("dropItem", ContextHelpers.wrapStack(context, chickenDesc.createDropItem()));
+			}
+
+			return Collections.singletonMap("chickens", out);
 		}
 
-		NBTTagCompound nbt = new NBTTagCompound();
-		chicken.writeEntityToNBT(nbt);
-		String chickenType = nbt.getString("Type");
-		out.put("type", chickenType);
-
-		//Replicating Chickens internal code...
-		//Exposing these two fields directly for now; hardly warrants the player having to call `getSpecies`
-		ChickensRegistryItem chickenDesc = ChickensRegistry.getByRegistryName(chickenType);
-		if (chickenDesc != null) {
-			out.put("layItem", ContextHelpers.wrapStack(context, chickenDesc.createLayItem()));
-			out.put("dropItem", ContextHelpers.wrapStack(context, chickenDesc.createDropItem()));
+		@Nonnull
+		@Override
+		public EntityChickensChicken getExample() {
+			EntityChickensChicken chicken = new EntityChickensChicken(WorldDummy.INSTANCE);
+			chicken.setChickenType(ChickensRegistry.SMART_CHICKEN_ID.toString());
+			return chicken;
 		}
-
-		return out;
-	});
+	};
 
 	//When modifying this provider, ensure that MethodsRoost.getVanillaChicken is also updated
 	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new BaseMetaProvider<ChickensRegistryItem>() {

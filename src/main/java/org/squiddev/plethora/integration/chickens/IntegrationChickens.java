@@ -42,7 +42,7 @@ public final class IntegrationChickens {
 
 	@SubscribeEvent
 	@Optional.Method(modid = ChickensMod.MODID)
-	public void attachCapabilitiesItem(@Nonnull AttachCapabilitiesEvent<ItemStack> event) {
+	public static void attachCapabilitiesItem(@Nonnull AttachCapabilitiesEvent<ItemStack> event) {
 		if (event.getObject().getItem() instanceof ItemAnalyzer) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, getAnalyzerCap());
 		}
