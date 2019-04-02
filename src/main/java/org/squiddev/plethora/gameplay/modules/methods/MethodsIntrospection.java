@@ -20,7 +20,7 @@ public final class MethodsIntrospection {
 		return identifier.getId().toString();
 	}
 
-	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this entity's UUID.")
+	@PlethoraMethod(module = PlethoraModules.INTROSPECTION_S, doc = "-- Get this entity's name.")
 	public static String getName(@FromSubtarget EntityIdentifier identifier) {
 		return identifier.getName();
 	}
