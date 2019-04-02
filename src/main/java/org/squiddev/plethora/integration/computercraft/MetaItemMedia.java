@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.media.IMedia;
+import dan200.computercraft.shared.MediaProviders;
 import dan200.computercraft.shared.media.items.ItemDiskExpanded;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
@@ -23,7 +24,7 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
-		IMedia media = object.getItem() instanceof IMedia ? (IMedia) object.getItem() : ComputerCraft.getMedia(object);
+		IMedia media = MediaProviders.get(object);
 		if (media == null) return Collections.emptyMap();
 
 		Map<Object, Object> out = new HashMap<>();

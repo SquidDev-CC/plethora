@@ -1,7 +1,5 @@
 package org.squiddev.plethora.core.executor;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
@@ -37,19 +35,16 @@ public final class BasicExecutor implements IResultExecutor {
 		return task.returnValue;
 	}
 
-	@Nonnull
 	@Override
-	public ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException {
-		if (result.isFinal()) return Futures.immediateFuture(result.getResult());
+	public void executeAsync(@Nonnull MethodResult result) throws LuaException {
+		if (result.isFinal()) return;
 
-		FutureTask task = new FutureTask(result.getCallback(), result.getResolver());
+		Task task = new Task(result.getCallback(), result.getResolver());
 		boolean ok = TaskRunner.SHARED.submit(task);
 		if (!ok) {
-			task.getFuture().cancel(true);
+			task.cancel();
 			throw new LuaException("Task limit exceeded");
 		}
-
-		return task.getFuture();
 	}
 
 	private static class BlockingTask implements ILuaTask {
@@ -78,7 +73,7 @@ public final class BasicExecutor implements IResultExecutor {
 					}
 				} catch (LuaException e) {
 					throw e;
-				} catch (Throwable e) {
+				} catch (Exception | LinkageError e) {
 					PlethoraCore.LOG.error("Unexpected error", e);
 					throw new LuaException("Java Exception Thrown: " + e);
 				}

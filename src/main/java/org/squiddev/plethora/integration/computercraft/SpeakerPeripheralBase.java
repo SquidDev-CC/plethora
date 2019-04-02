@@ -37,6 +37,7 @@ public class SpeakerPeripheralBase extends SpeakerPeripheral {
 	}
 
 	@Override
+	@Deprecated
 	public BlockPos getPos() {
 		return new BlockPos(position);
 	}
@@ -54,7 +55,7 @@ public class SpeakerPeripheralBase extends SpeakerPeripheral {
 	public static final class PeripheralHandler extends SpeakerPeripheralBase implements IPeripheralHandler {
 		private final ItemStack stack;
 
-		public PeripheralHandler(ItemStack stack) {
+		PeripheralHandler(ItemStack stack) {
 			this.stack = stack;
 		}
 
@@ -78,7 +79,7 @@ public class SpeakerPeripheralBase extends SpeakerPeripheral {
 	public static final class VehicleUpgradeHandler extends SpeakerPeripheralBase implements IVehicleUpgradeHandler {
 		private final ItemStack stack;
 
-		public VehicleUpgradeHandler(ItemStack stack) {
+		VehicleUpgradeHandler(ItemStack stack) {
 			this.stack = stack;
 		}
 

@@ -30,8 +30,6 @@ import org.squiddev.plethora.core.executor.TaskRunner;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -222,9 +220,6 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 	}
 
 	public static class TurtlePlayerOwnable extends ConstantReference<TurtlePlayerOwnable> implements IPlayerOwnable {
-		private static boolean checkedField;
-		private static Method getProfile;
-
 		private final ITurtleAccess access;
 
 		public TurtlePlayerOwnable(ITurtleAccess access) {
@@ -234,22 +229,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 		@Nullable
 		@Override
 		public GameProfile getOwningProfile() {
-			if (!checkedField) {
-				try {
-					getProfile = ITurtleAccess.class.getMethod("getOwningPlayer");
-				} catch (NoSuchMethodException ignored) {
-				}
-				checkedField = true;
-			}
-
-			if (getProfile != null) {
-				try {
-					return (GameProfile) getProfile.invoke(access);
-				} catch (IllegalAccessException | InvocationTargetException ignored) {
-				}
-			}
-
-			return null;
+			return access.getOwningPlayer();
 		}
 
 		@Nonnull

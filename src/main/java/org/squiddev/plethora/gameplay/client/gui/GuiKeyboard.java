@@ -73,14 +73,14 @@ public class GuiKeyboard extends GuiScreen {
 		if (keyCode == Keyboard.KEY_ESCAPE) {
 			super.keyTyped(typedChar, keyCode);
 		} else {
-			terminalGui.keyTyped(typedChar, keyCode);
+			keyHandled |= terminalGui.onKeyTyped(typedChar, keyCode);
 		}
 	}
 
 	@Override
 	public void handleKeyboardInput() throws IOException {
 		super.handleKeyboardInput();
-		terminalGui.handleKeyboardInput();
+		keyHandled |= terminalGui.onKeyboardInput();
 	}
 
 	/**

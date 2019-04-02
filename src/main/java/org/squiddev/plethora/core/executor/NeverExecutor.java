@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core.executor;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.IResultExecutor;
@@ -26,9 +25,8 @@ public final class NeverExecutor implements IResultExecutor {
 		throw new LuaException("Cannot execute method");
 	}
 
-	@Nonnull
 	@Override
-	public ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException {
+	public void executeAsync(@Nonnull MethodResult result) throws LuaException {
 		throw new LuaException("Cannot execute method");
 	}
 }

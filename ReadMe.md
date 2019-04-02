@@ -1,7 +1,7 @@
 # Plethora [![Build Status](https://travis-ci.org/SquidDev-CC/plethora.svg?branch=minecraft-1.12)](https://travis-ci.org/SquidDev-CC/plethora)
 
-Plethora is a ComputerCraft peripheral provider for Minecraft 1.8.9+. It aims to provide both metadata and peripherals
-for vanilla Minecraft and most mainstream mods.
+Plethora is a ComputerCraft/CC:Tweaked peripheral provider for Minecraft 1.8.9+. It aims to provide both metadata and
+peripherals for vanilla Minecraft and most mainstream mods.
 
 Plethora also adds a series of "modules" to the game. These modules can be used by the player with varying success.
 They really come in to their element when put in a manipulator, providing a series of methods which allow
@@ -22,11 +22,11 @@ You can also add a kinetic augment to the neural interface. This allows controll
 
 ## Requirements
  - Minecraft with recent version of Forge
- - [ComputerCraft](http://minecraft.curseforge.com/projects/computercraft)
+ - [CC: Tweaked](http://minecraft.curseforge.com/projects/cc-tweaked)
 
 ## Documentation
 There is pretty comprehensive documentation on [the Plethora website](https://squiddev-cc.github.io/plethora/). This
-contains tutorials, explanations of several fundamental concepts and thoroughly explained examples. 
+contains tutorials, explanations of several fundamental concepts and thoroughly explained examples.
 
 You can also create a HTML dump of all methods by running the command `/plethora dump out.html`. When run in a single
 player world this will save a file in the active directory (normally `.minecraft` or your modpack's folder). This

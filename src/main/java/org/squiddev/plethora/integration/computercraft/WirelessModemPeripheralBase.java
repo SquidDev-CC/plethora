@@ -2,7 +2,8 @@ package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.peripheral.modem.ModemPeripheral;
-import dan200.computercraft.shared.peripheral.modem.WirelessModemPeripheral;
+import dan200.computercraft.shared.peripheral.modem.ModemState;
+import dan200.computercraft.shared.peripheral.modem.wireless.WirelessModemPeripheral;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -28,7 +29,7 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 	private Vec3d position;
 
 	public WirelessModemPeripheralBase(boolean advanced) {
-		super(advanced);
+		super(new ModemState(), advanced);
 	}
 
 	@Nonnull
@@ -55,7 +56,7 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 	public static final class PeripheralHandler extends WirelessModemPeripheralBase implements IPeripheralHandler {
 		private final ItemStack stack;
 
-		public PeripheralHandler(boolean advanced, ItemStack stack) {
+		PeripheralHandler(boolean advanced, ItemStack stack) {
 			super(advanced);
 			this.stack = stack;
 		}
@@ -85,7 +86,7 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 
 		private final ItemStack stack;
 
-		public VehicleUpgradeHandler(boolean advanced, ItemStack stack) {
+		VehicleUpgradeHandler(boolean advanced, ItemStack stack) {
 			super(advanced);
 			this.stack = stack;
 		}
@@ -102,8 +103,8 @@ public abstract class WirelessModemPeripheralBase extends WirelessModemPeriphera
 
 			if (peripheral instanceof ModemPeripheral) {
 				ModemPeripheral modem = (ModemPeripheral) peripheral;
-				if (modem.pollChanged()) {
-					vehicle.getData().setBoolean("active", modem.isActive());
+				if (modem.getModemState().pollChanged()) {
+					vehicle.getData().setBoolean("active", modem.getModemState().isOpen());
 					vehicle.markDataDirty();
 				}
 			}

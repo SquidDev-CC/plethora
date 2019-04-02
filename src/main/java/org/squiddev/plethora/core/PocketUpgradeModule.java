@@ -13,7 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.api.*;
+import org.squiddev.plethora.api.EntityWorldLocation;
+import org.squiddev.plethora.api.IAttachable;
+import org.squiddev.plethora.api.IPlayerOwnable;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
@@ -73,7 +76,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		MethodRegistry registry = MethodRegistry.instance;
 
-		final Entity entity = pocket.getEntity();
+		final Entity entity = pocket.getValidEntity();
 
 		final PocketModuleAccess access = new PocketModuleAccess(pocket, handler);
 		final IModuleContainer container = access.getContainer();
@@ -94,51 +97,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			}
 		};
 
-		IWorldLocation location = new IWorldLocation() {
-			@Nonnull
-			@Override
-			public World getWorld() {
-				return pocket.getEntity().getEntityWorld();
-			}
-
-			@Nonnull
-			@Override
-			public BlockPos getPos() {
-				return pocket.getEntity().getPosition();
-			}
-
-			@Nonnull
-			@Override
-			public Vec3d getLoc() {
-				return pocket.getEntity().getPositionVector();
-			}
-
-			@Nonnull
-			@Override
-			public IWorldLocation get() throws LuaException {
-				if (pocket.getEntity() == null) {
-					throw new LuaException("Entity is not there");
-				} else {
-					return this;
-				}
-			}
-
-			@Nonnull
-			@Override
-			public IWorldLocation safeGet() throws LuaException {
-				Entity entity = pocket.getEntity();
-				if (entity == null) {
-					throw new LuaException("Entity is not there");
-				} else {
-					return new WorldLocation(entity.getEntityWorld(), entity.getPosition());
-				}
-			}
-
-			@Override
-			public boolean isConstant() {
-				return true;
-			}
-		};
+		IWorldLocation location = new LastEntityLocation(pocket);
 
 		ContextFactory<IModuleContainer> factory = ContextFactory.of(container, containerRef)
 			.withCostHandler(DefaultCostHandler.get(pocket))
@@ -149,7 +108,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 				@Nonnull
 				@Override
 				public Entity get() throws LuaException {
-					Entity accessEntity = pocket.getEntity();
+					Entity accessEntity = pocket.getValidEntity();
 
 					// TODO: Just do a null check?
 					if (accessEntity != entity || accessEntity == null) throw new LuaException("Entity has changed");
@@ -175,7 +134,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 			PocketPeripheral methodWrapper = (PocketPeripheral) peripheral;
 
 			// Invalidate peripheral
-			if (methodWrapper.getEntity() != access.getEntity()) {
+			if (methodWrapper.getEntity() != access.getValidEntity()) {
 				access.invalidatePeripheral();
 			}
 
@@ -221,7 +180,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		private final IModuleContainer container;
 
 		private PocketModuleAccess(IPocketAccess access, IModuleHandler handler) {
-			entity = access.getEntity();
+			entity = access.getValidEntity();
 			location = new EntityWorldLocation(entity);
 			this.access = access;
 			container = new SingletonModuleContainer(handler.getModule());
@@ -285,6 +244,54 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		@Override
 		public PocketPlayerOwnable safeGet() {
 			return this;
+		}
+	}
+
+	private static class LastEntityLocation implements IWorldLocation {
+		private final IPocketAccess pocket;
+		private Entity lastEntity;
+
+		LastEntityLocation(IPocketAccess pocket) {
+			this.pocket = pocket;
+			lastEntity = pocket.getValidEntity();
+		}
+
+		@Nonnull
+		@Override
+		public World getWorld() {
+			return lastEntity.getEntityWorld();
+		}
+
+		@Nonnull
+		@Override
+		public BlockPos getPos() {
+			return lastEntity.getPosition();
+		}
+
+		@Nonnull
+		@Override
+		public Vec3d getLoc() {
+			return lastEntity.getPositionVector();
+		}
+
+		@Nonnull
+		@Override
+		public IWorldLocation get() throws LuaException {
+			Entity entity = pocket.getValidEntity();
+			if (entity == null) throw new LuaException("Entity is not there");
+			lastEntity = entity;
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public IWorldLocation safeGet() {
+			return this;
+		}
+
+		@Override
+		public boolean isConstant() {
+			return true;
 		}
 	}
 }

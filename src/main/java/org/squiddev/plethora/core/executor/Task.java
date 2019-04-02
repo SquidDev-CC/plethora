@@ -15,32 +15,38 @@ import java.util.concurrent.Callable;
  * or continue to unwrap the next {@link MethodResult}.
  *
  * @see TaskRunner
- * @see FutureTask
  */
-public abstract class Task {
+public class Task {
 	private volatile boolean done = false;
 	private Callable<MethodResult> callback;
 	private MethodResult.Resolver resolver;
 
-	public Task(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
+	Object[] result;
+	LuaException error;
+
+	Task(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
 		this.callback = callback;
 		this.resolver = resolver;
 	}
 
-	protected abstract void finish(@Nullable Object[] result);
+	private void finish(@Nullable Object[] result) {
+		done = true;
+		this.result = result;
+		whenDone();
+	}
 
-	protected abstract void finish(@Nonnull LuaException e);
-
-	protected void submitTiming(long time) {
+	private void finish(@Nonnull LuaException error) {
+		done = true;
+		this.error = error;
+		whenDone();
 	}
 
 	public boolean update() {
-		while (resolver.update()) {
+		while (!done && resolver.update()) {
 			long start = System.nanoTime();
 			try {
 				MethodResult next = callback.call();
 				if (next.isFinal()) {
-					markFinished();
 					finish(next.getResult());
 					return true;
 				} else {
@@ -48,27 +54,50 @@ public abstract class Task {
 					callback = next.getCallback();
 				}
 			} catch (LuaException e) {
-				markFinished();
 				finish(e);
 				return true;
-			} catch (Exception e) {
-				markFinished();
+			} catch (Exception | LinkageError e) {
 				finish(new LuaException("Java Exception Thrown: " + e));
 				PlethoraCore.LOG.error("Unexpected error", e);
 				return true;
 			} finally {
 				submitTiming(System.nanoTime() - start);
 			}
+
+			if (!canContinue()) break;
 		}
 
 		return false;
 	}
 
-	protected final void markFinished() {
+	final void cancel() {
 		done = true;
 	}
 
-	public boolean finished() {
+	final boolean isDone() {
 		return done;
+	}
+
+	/**
+	 * Finalise the task (fire events, etc...)
+	 */
+	void whenDone() {
+	}
+
+	/**
+	 * Submit some timings for a task
+	 *
+	 * @param time How long this task took
+	 */
+	void submitTiming(long time) {
+	}
+
+	/**
+	 * Determine we should continue to work after executing a task
+	 *
+	 * @return If we should continue to work
+	 */
+	boolean canContinue() {
+		return true;
 	}
 }

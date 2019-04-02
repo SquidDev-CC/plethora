@@ -32,7 +32,7 @@ minecraft {
 
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
-	replace '${cc_version}', project.cc_version
+	replace '${cct_version}', project.cct_version
 }
 
 jar {
@@ -47,6 +47,7 @@ jar {
 
 repositories {
 	jcenter()
+	mavenLocal()
 
 	maven { url 'http://chickenbones.net/maven' } // CBMP
 	maven { url 'http://dvs1.progwml6.com/files/maven' } // JEI + Tinker's
@@ -84,8 +85,7 @@ def curseMod(String mod, int id, String version) {
 }
 
 dependencies {
-	// deobfCompile "dan200.computercraft:ComputerCraft:${cc_version}-build5"
-	deobfCompile "org.squiddev:cc-tweaked:1.12.2-1.81.1"
+	deobfCompile "org.squiddev:cc-tweaked-${mc_version}:${cct_version}"
 
 	compile "mezz.jei:jei_1.12.2:4.15.0.268"
 

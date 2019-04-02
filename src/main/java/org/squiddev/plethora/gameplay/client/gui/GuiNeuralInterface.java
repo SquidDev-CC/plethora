@@ -82,7 +82,7 @@ public class GuiNeuralInterface extends GuiContainer {
 		if (code == Keyboard.KEY_ESCAPE) {
 			super.keyTyped(chr, code);
 		} else {
-			terminalGui.keyTyped(chr, code);
+			keyHandled |= terminalGui.onKeyTyped(chr, code);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class GuiNeuralInterface extends GuiContainer {
 	@Override
 	public void handleKeyboardInput() throws IOException {
 		super.handleKeyboardInput();
-		terminalGui.handleKeyboardInput();
+		keyHandled |= terminalGui.onKeyboardInput();
 	}
 
 	@Override

@@ -1,8 +1,9 @@
 package org.squiddev.plethora.gameplay.minecart;
 
+import com.google.common.collect.ImmutableMap;
+import dan200.computercraft.api.lua.ILuaAPI;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.core.apis.ILuaAPI;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -26,6 +27,9 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.core.apis.ArgumentHelper.getString;
 
 /**
  * Copy of {@link CommandAPI} but with the Minecart Computer instead.
@@ -52,33 +56,37 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return new String[]{"exec", "execAsync", "list", "getBlockPosition", "getBlockInfos", "getBlockInfo"};
 	}
 
-	private Object[] doCommand(String command) {
-		if (server != null && server.isCommandBlockEnabled()) {
-			ICommandManager commandManager = server.getCommandManager();
-			try {
-				output.clear();
+	private static Map<Object, Object> createOutput(String output) {
+		return Collections.singletonMap(1, output);
+	}
 
-				int result = commandManager.executeCommand(this, command);
-				return new Object[]{result > 0, new HashMap<>(output)};
-			} catch (Throwable t) {
-				return new Object[]{false, Collections.singletonMap(1, "Java Exception Thrown: " + t)};
-			}
+	private Object[] doCommand(String command) {
+		if (server == null || !server.isCommandBlockEnabled()) {
+			return new Object[]{false, Collections.singletonMap(1, "Command blocks disabled by server")};
 		}
-		return new Object[]{false, Collections.singletonMap(1, "Command blocks disabled by server")};
+
+		ICommandManager commandManager = server.getCommandManager();
+		try {
+			output.clear();
+
+			int result = commandManager.executeCommand(this, command);
+			return new Object[]{result > 0, new HashMap<>(output)};
+		} catch (Exception | LinkageError t) {
+			return new Object[]{false, Collections.singletonMap(1, "Java Exception Thrown: " + t)};
+		}
 	}
 
 	private static Object getBlockInfo(World world, BlockPos pos) {
+		// Get the details of the block
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		String name = Block.REGISTRY.getNameForObject(block).toString();
-		int metadata = block.getMetaFromState(state);
 
-		Map<Object, Object> table = new HashMap<>();
-		table.put("name", name);
-		table.put("metadata", metadata);
+		Map<Object, Object> table = new HashMap<>(3);
+		table.put("name", Block.REGISTRY.getNameForObject(block).toString());
+		table.put("metadata", block.getMetaFromState(state));
 
 		Map<Object, Object> stateTable = new HashMap<>();
-		for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState(world, pos).getProperties().entrySet()) {
+		for (ImmutableMap.Entry<IProperty<?>, Comparable<?>> entry : state.getActualState(world, pos).getProperties().entrySet()) {
 			IProperty<?> property = entry.getKey();
 			stateTable.put(property.getName(), getPropertyValue(property, entry.getValue()));
 		}
@@ -89,63 +97,61 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static Object getPropertyValue(IProperty property, Comparable value) {
-		return value instanceof String || value instanceof Number || value instanceof Boolean ? value : property.getName(value);
+		if (value instanceof String || value instanceof Number || value instanceof Boolean) return value;
+		return property.getName(value);
 	}
 
 	@Override
-	public Object[] callMethod(@Nonnull ILuaContext context, int method, @Nonnull Object[] arguments)
-		throws LuaException, InterruptedException {
+	public Object[] callMethod(@Nonnull ILuaContext context, int method, @Nonnull Object[] arguments) throws LuaException, InterruptedException {
 		switch (method) {
 			case 0: { // exec
-				if (arguments.length < 1 || !(arguments[0] instanceof String)) {
-					throw new LuaException("Expected string");
-				}
-				final String command = (String) arguments[0];
+				final String command = getString(arguments, 0);
 				return context.executeMainThreadTask(() -> doCommand(command));
 			}
 			case 1: { // execAsync
-				if (arguments.length < 1 || !(arguments[0] instanceof String)) {
-					throw new LuaException("Expected string");
-				}
-				final String command = (String) arguments[0];
+				final String command = getString(arguments, 0);
 				long taskID = context.issueMainThreadTask(() -> doCommand(command));
 				return new Object[]{taskID};
 			}
-			case 2:  // list
-				return context.executeMainThreadTask(() -> {
+			case 2: // list
+				return context.executeMainThreadTask(() ->
+				{
+					int i = 1;
 					Map<Object, Object> result = new HashMap<>();
 					if (server != null) {
 						ICommandManager commandManager = server.getCommandManager();
 						Map<String, ICommand> commands = commandManager.getCommands();
-						int i = 1;
 						for (Map.Entry<String, ICommand> entry : commands.entrySet()) {
+							String name = entry.getKey();
+							ICommand command = entry.getValue();
 							try {
-								if (entry.getValue().checkPermission(server, this)) result.put(i++, entry.getKey());
-							} catch (RuntimeException e) {
-								Plethora.LOG.error("Error executing command", e);
+								if (command.checkPermission(server, entity)) {
+									result.put(i++, name);
+								}
+							} catch (Throwable t) {
+								Plethora.LOG.error("Error checking permissions of command.", t);
 							}
 						}
 					}
 					return new Object[]{result};
 				});
-			case 3: // getBlockPosition
-				BlockPos pos = getPosition();
+			case 3: { // getBlockPosition
+				// This is probably safe to do on the Lua thread. Probably.
+				BlockPos pos = entity.getPosition();
 				return new Object[]{pos.getX(), pos.getY(), pos.getZ()};
-			case 4: // getBlockInfos
-				if (arguments.length < 6 || !(arguments[0] instanceof Number) || !(arguments[1] instanceof Number) || !(arguments[2] instanceof Number) || !(arguments[3] instanceof Number) || !(arguments[4] instanceof Number) || !(arguments[5] instanceof Number)) {
-					throw new LuaException("Expected number, number, number, number, number, number");
-				}
-				final int minx = ((Number) arguments[0]).intValue();
-				final int miny = ((Number) arguments[1]).intValue();
-				final int minz = ((Number) arguments[2]).intValue();
-				final int maxx = ((Number) arguments[3]).intValue();
-				final int maxy = ((Number) arguments[4]).intValue();
-				final int maxz = ((Number) arguments[5]).intValue();
-				return context.executeMainThreadTask(() -> {
-					World world = entity.getEntityWorld();
-					BlockPos min = new BlockPos(Math.min(minx, maxx), Math.min(miny, maxy), Math.min(minz, maxz));
-
-					BlockPos max = new BlockPos(Math.max(minx, maxx), Math.max(miny, maxy), Math.max(minz, maxz));
+			}
+			case 4: { // getBlockInfos
+				final int minX = getInt(arguments, 0);
+				final int minY = getInt(arguments, 1);
+				final int minZ = getInt(arguments, 2);
+				final int maxX = getInt(arguments, 3);
+				final int maxY = getInt(arguments, 4);
+				final int maxZ = getInt(arguments, 5);
+				return context.executeMainThreadTask(() ->
+				{
+					World world = getEntityWorld();
+					BlockPos min = new BlockPos(Math.min(minX, maxX), Math.min(minY, maxY), Math.min(minZ, maxZ));
+					BlockPos max = new BlockPos(Math.max(minX, maxX), Math.max(minY, maxY), Math.max(minZ, maxZ));
 					if (!world.isValid(min) || !world.isValid(max)) {
 						throw new LuaException("Co-ordinates out or range");
 					}
@@ -157,30 +163,31 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 					for (int y = min.getY(); y <= max.getY(); y++) {
 						for (int z = min.getZ(); z <= max.getZ(); z++) {
 							for (int x = min.getX(); x <= max.getX(); x++) {
-								BlockPos pos1 = new BlockPos(x, y, z);
-								results.put(i++, getBlockInfo(world, pos1));
+								BlockPos pos = new BlockPos(x, y, z);
+								results.put(i++, getBlockInfo(world, pos));
 							}
 						}
 					}
 					return new Object[]{results};
 				});
-			case 5: // getBlockInfo
-				if (arguments.length < 3 || !(arguments[0] instanceof Number) || !(arguments[1] instanceof Number) || !(arguments[2] instanceof Number)) {
-					throw new LuaException("Expected number, number, number");
-				}
-				final int x = ((Number) arguments[0]).intValue();
-				final int y = ((Number) arguments[1]).intValue();
-				final int z = ((Number) arguments[2]).intValue();
-				context.executeMainThreadTask(() -> {
-					World world = entity.getEntityWorld();
+			}
+			case 5: { // getBlockInfo
+				final int x = getInt(arguments, 0);
+				final int y = getInt(arguments, 1);
+				final int z = getInt(arguments, 2);
+				return context.executeMainThreadTask(() ->
+				{
+					// Get the details of the block
+					World world = getEntityWorld();
 					BlockPos position = new BlockPos(x, y, z);
-					if (world.isValid(position)) {
-						return new Object[]{getBlockInfo(world, position)};
-					}
-					throw new LuaException("Co-ordinates out or range");
+					if (!world.isValid(position)) throw new LuaException("co-ordinates out or range");
+					return new Object[]{getBlockInfo(world, position)};
 				});
+			}
+			default: {
+				return null;
+			}
 		}
-		return null;
 	}
 
 	@Nonnull
@@ -251,17 +258,5 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 	@Override
 	public MinecraftServer getServer() {
 		return server;
-	}
-
-	@Override
-	public void startup() {
-	}
-
-	@Override
-	public void shutdown() {
-	}
-
-	@Override
-	public void advance(double v) {
 	}
 }

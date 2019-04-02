@@ -34,12 +34,11 @@ public class TaskRunner implements ITickable {
 		}
 	}
 
-	public boolean submit(Task task) {
+	boolean submit(Task task) {
 		return tasks.size() <= MAX_TASKS_TOTAL && tasks.add(task);
 	}
 
 	public void reset() {
 		tasks.clear();
 	}
-
 }

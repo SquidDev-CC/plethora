@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,12 +45,12 @@ public final class MetaItemPocketComputer extends ItemStackMetaProvider<ItemPock
 		return out;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return PocketComputerItemFactory.create(
 			2, "My pocket computer", 0xFF0000, ComputerFamily.Advanced,
-			ComputerCraft.PocketUpgrades.pocketSpeaker
+			ComputerCraft.PocketUpgrades.speaker
 		);
 	}
 }

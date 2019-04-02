@@ -1,13 +1,10 @@
 package org.squiddev.plethora.gameplay.redstone;
 
 import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.shared.common.BlockGeneric;
 import dan200.computercraft.shared.common.TileGeneric;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@link ComputerCraftAPI#getBundledRedstoneOutput(World, BlockPos, EnumFacing)}.
  */
 @Mod.EventBusSubscriber(modid = Plethora.ID)
-public class BlockRedstoneIntegrator extends BlockGeneric implements IPeripheralProvider {
+public class BlockRedstoneIntegrator extends BlockGeneric {
 	private static final Set<TileRedstoneIntegrator> toTick = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 	private static final String NAME = "redstone_integrator";
@@ -92,11 +89,5 @@ public class BlockRedstoneIntegrator extends BlockGeneric implements IPeripheral
 				if (world == null || world == eventWorld) iterator.remove();
 			}
 		}
-	}
-
-	@Override
-	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
-		TileEntity te = world.getTileEntity(blockPos);
-		return te instanceof TileRedstoneIntegrator ? (IPeripheral) te : null;
 	}
 }

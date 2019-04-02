@@ -432,24 +432,22 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	public boolean isUsable(EntityPlayer player) {
 		if (isDead || player.getDistanceSq(this) > 64.0D) return false;
 
-		if (getFamily() == ComputerFamily.Command) {
-			if (getEntityWorld().isRemote) return true;
+		if (getFamily() != ComputerFamily.Command) return true;
 
-			MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).server : null;
-			if (server == null || !server.isCommandBlockEnabled()) {
-				player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
-				return false;
-			}
+		if (getEntityWorld().isRemote) return true;
 
-			if (ComputerCraft.canPlayerUseCommands(player) && player.capabilities.isCreativeMode) {
-				return true;
-			} else {
-				player.sendMessage(new TextComponentTranslation("advMode.notAllowed"));
-				return false;
-			}
-		} else {
-			return true;
+		MinecraftServer server = player instanceof EntityPlayerMP ? ((EntityPlayerMP) player).server : null;
+		if (server == null || !server.isCommandBlockEnabled()) {
+			player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
+			return false;
 		}
+
+		if (!player.canUseCommandBlock() || !player.capabilities.isCreativeMode) {
+			player.sendMessage(new TextComponentTranslation("advMode.notAllowed"));
+			return false;
+		}
+
+		return true;
 	}
 
 	@Nullable
@@ -518,7 +516,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 		temp.rotZ((float) Math.toRadians(-pitch));
 		trans.mul(temp);
 
-		float amplitude = (float) getRollingAmplitude() - partialTicks;
+		float amplitude = getRollingAmplitude() - partialTicks;
 		float roll = getDamage() - partialTicks;
 
 		if (roll < 0.0F) roll = 0.0F;
@@ -533,7 +531,7 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 
 		int offset = getDisplayTileOffset();
 		temp.setIdentity();
-		temp.setTranslation(new Vector3f(-0.5F, (float) (offset - 8) / 16.0F, 0.5F));
+		temp.setTranslation(new Vector3f(-0.5F, (offset - 8) / 16.0F, 0.5F));
 		trans.mul(temp);
 
 		return trans;
