@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
@@ -10,11 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.core.ContextFactory;
-import org.squiddev.plethora.core.executor.BasicExecutor;
-import org.squiddev.plethora.integration.MetaWrapper;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -35,15 +31,15 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 
 		{
 			Map<String, Object> armor = new HashMap<>();
-			armor.put("boots", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
-			armor.put("leggings", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
-			armor.put("chestplate", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
-			armor.put("helmet", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
+			armor.put("boots", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.FEET)));
+			armor.put("leggings", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.LEGS)));
+			armor.put("chestplate", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.CHEST)));
+			armor.put("helmet", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.HEAD)));
 			map.put("armor", armor);
 		}
 
-		map.put("heldItem", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
-		map.put("offhandItem", wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
+		map.put("heldItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
+		map.put("offhandItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
 
 		{
 			Map<Object, String> potionEffects = new HashMap<>();
@@ -85,14 +81,4 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 		return entity;
 	}
 
-	private static ILuaObject wrapStack(IPartialContext<?> context, ItemStack object) {
-		if (object == null || object.isEmpty()) return null;
-
-		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
-		if (context instanceof IContext) {
-			return ((IContext<?>) context).makeChildId(wrapper).getObject();
-		} else {
-			return ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
-		}
-	}
 }

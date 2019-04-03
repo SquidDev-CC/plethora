@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * parse it ourselves. Otherwise we will delegate to a suitable {@link ArgumentType}. Note, if a parameter is annotated
  * as {@link Optional}, we will default to {@code null}, or the specified default value for primitives.
  *
- * If you specify one argument of type {@link Object[}}, all arguments will be parsed as is.</li>
+ * If you specify one argument of type {@link Object[]}, all arguments will be parsed as is.</li>
  * </ul>
  *
  * {@link PlethoraMethod} annotated methods may return a {@link MethodResult}, {@link Object[]}, {@link Object} or any

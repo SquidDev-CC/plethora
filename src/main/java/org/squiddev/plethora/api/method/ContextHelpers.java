@@ -1,7 +1,11 @@
 package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.ILuaObject;
+import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.reference.Reference;
+import org.squiddev.plethora.core.ContextFactory;
+import org.squiddev.plethora.core.executor.BasicExecutor;
+import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,5 +89,22 @@ public final class ContextHelpers {
 		}
 
 		return map;
+	}
+
+	/**
+	 * Wrap an {@link ItemStack} so that its metadata is exposed by an in-game call to {@code getMetadata()}
+	 *
+	 * @param context The base context to use in getting metadata
+	 * @param object The stack to wrap
+	 * @return The wrapped stack
+	 */
+	@Nullable
+	public static ILuaObject wrapStack(@Nonnull IPartialContext<?> context, @Nullable ItemStack object) {
+		if (object == null || object.isEmpty()) return null;
+
+		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());
+		return context instanceof IContext
+			? ((IContext<?>) context).makeChildId(wrapper).getObject()
+			: ContextFactory.of(wrapper).withExecutor(BasicExecutor.INSTANCE).getObject();
 	}
 }
