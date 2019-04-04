@@ -1,7 +1,13 @@
 package org.squiddev.plethora.integration.computercraft;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.api.turtle.TurtleSide;
+import dan200.computercraft.api.turtle.event.TurtleBlockEvent;
+import dan200.computercraft.api.turtle.event.TurtleInspectItemEvent;
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -15,11 +21,23 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
+import org.squiddev.plethora.api.TurtleWorldLocation;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.module.IModuleContainer;
+import org.squiddev.plethora.api.module.SingletonModuleContainer;
 import org.squiddev.plethora.api.vehicle.IVehicleUpgradeHandler;
+import org.squiddev.plethora.core.ContextFactory;
 import org.squiddev.plethora.core.PlethoraCore;
+import org.squiddev.plethora.core.TurtleUpgradeModule;
+import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
+
+import static org.squiddev.plethora.api.reference.Reference.id;
 
 /**
  * Provides various peripherals for ComputerCraft items
@@ -36,6 +54,45 @@ public final class IntegrationComputerCraft {
 
 		if (stack.getItem() instanceof ItemPeripheralBase) {
 			event.addCapability(PlethoraCore.PERIPHERAL_HANDLER_KEY, new PeripheralCapabilityProvider(stack));
+		}
+	}
+
+	@SubscribeEvent
+	@Optional.Method(modid = ComputerCraft.MOD_ID)
+	public static void onItemInspect(TurtleInspectItemEvent event) {
+		ITurtleAccess turtle = event.getTurtle();
+		ItemStack stack = event.getStack();
+
+		// Expose the basic metadata to the computer. We can't do any more than this, as this is run on the computer
+		// thread
+		event.addData(MetaItemBasic.getBasicMeta(event.getStack()));
+	}
+
+	@SubscribeEvent
+	@Optional.Method(modid = ComputerCraft.MOD_ID)
+	public static void onBlockInspect(TurtleBlockEvent.Inspect event) {
+		ITurtleAccess turtle = event.getTurtle();
+
+		// If we've got a scanner, expose all metadata.
+		ITurtleUpgrade left = turtle.getUpgrade(TurtleSide.Left);
+		ITurtleUpgrade right = turtle.getUpgrade(TurtleSide.Right);
+		if ((left != null && left.getUpgradeID().equals(PlethoraModules.SCANNER_M))
+			|| (right != null && right.getUpgradeID().equals(PlethoraModules.SCANNER_M))) {
+
+			IBlockState state = event.getState();
+			IModuleContainer container = new SingletonModuleContainer(PlethoraModules.SCANNER_M);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> metadata = (Map) ContextFactory
+				.of(state, id(state))
+				.withCostHandler(DefaultCostHandler.get(turtle))
+				.withModules(container, id(container))
+				.addContext(ContextKeys.ORIGIN, new TurtleUpgradeModule.TurtlePlayerOwnable(turtle))
+				.addContext(ContextKeys.ORIGIN, new TurtleWorldLocation(turtle))
+				.addContext(ContextKeys.ORIGIN, turtle, id(turtle))
+				.getBaked()
+				.getMeta();
+
+			event.addData(metadata);
 		}
 	}
 

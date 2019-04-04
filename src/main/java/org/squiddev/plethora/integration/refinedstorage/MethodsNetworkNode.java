@@ -47,12 +47,12 @@ public final class MethodsNetworkNode {
 		if (network == null) return Collections.emptyMap();
 
 		Collection<ItemStack> items = network.getItemStorageCache().getList().getStacks();
-		HashMap<ItemIdentity, Map<Object, Object>> seen = new HashMap<>();
-		Map<Integer, Map<Object, Object>> output = new HashMap<>(items.size());
+		HashMap<ItemIdentity, Map<String, Object>> seen = new HashMap<>();
+		Map<Integer, Map<String, Object>> output = new HashMap<>(items.size());
 
 		int i = 0;
 		for (ItemStack stack : items) {
-			Map<Object, Object> basic = MetaItemBasic.getBasicMeta(stack);
+			Map<String, Object> basic = MetaItemBasic.getBasicMeta(stack);
 			seen.put(new ItemIdentity(stack), basic);
 			output.put(++i, basic);
 		}
@@ -61,7 +61,7 @@ public final class MethodsNetworkNode {
 			for (ItemStack stack : pattern.getOutputs()) {
 				if (stack == null || stack.isEmpty()) continue;
 				ItemIdentity key = new ItemIdentity(stack);
-				Map<Object, Object> basic = seen.get(key);
+				Map<String, Object> basic = seen.get(key);
 				if (basic == null) {
 					basic = MetaItemBasic.getBasicMeta(stack);
 					basic.put("count", 0);

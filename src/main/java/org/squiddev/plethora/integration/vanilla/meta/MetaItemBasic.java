@@ -64,13 +64,13 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	}
 
 	@Nonnull
-	public static HashMap<Object, Object> getBasicMeta(@Nonnull ItemStack stack) {
-		HashMap<Object, Object> data = new HashMap<>();
+	public static HashMap<String, Object> getBasicMeta(@Nonnull ItemStack stack) {
+		HashMap<String, Object> data = new HashMap<>();
 		fillBasicMeta(data, stack);
 		return data;
 	}
 
-	public static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull ItemStack stack) {
+	private static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull ItemStack stack) {
 		data.put("name", stack.getItem().getRegistryName().toString());
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.getCount());
