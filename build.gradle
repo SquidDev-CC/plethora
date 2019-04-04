@@ -157,10 +157,10 @@ curseforge {
 	project {
 		id = '248425'
 		releaseType = 'release'
-		changelog = ''
+		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
 
-		// relations {
-			// requiredLibrary 'computercraft'
-		// }
+		 relations {
+			 requiredLibrary 'cctweaked'
+		 }
 	}
 }
