@@ -9,15 +9,11 @@ import org.squiddev.plethora.integration.PlethoraIntegration;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @Injects(ComputerCraft.MOD_ID)
 public final class ConverterTargetedPeripheral implements ConstantConverter<IPeripheral, Object> {
 	private boolean fetched;
-
-	// IPeripheral
-	private Method getTarget;
 
 	// Computronics multiperipheral
 	private Class<?> multiPeripheral;
@@ -28,11 +24,6 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 
 	private void fetchReflection() {
 		if (fetched) return;
-
-		try {
-			getTarget = IPeripheral.class.getMethod("getTarget");
-		} catch (ReflectiveOperationException ignored) {
-		}
 
 		try {
 			multiPeripheral = Class.forName("pl.asie.computronics.cc.multiperipheral.MultiPeripheral");
@@ -55,7 +46,7 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 	public Object convert(@Nonnull IPeripheral from) {
 		fetchReflection();
 
-		Object to = getTarget(from);
+		Object to = from.getTarget();
 		if (from != to) return to;
 
 		// Try to unwrap Computronics's multi-peripherals
@@ -63,13 +54,13 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 			try {
 				List<IPeripheral> peripherals = (List<IPeripheral>) multiPeripheralPeripherals.get(from);
 				for (IPeripheral child : peripherals) {
-					to = getTarget(child);
+					to = child.getTarget();
 					if (child != to) return to;
 
 					if (wrappedMultiPeripheral != null && wrappedMultiPeripheralPeripheral != null && wrappedMultiPeripheral.isInstance(child)) {
 						IPeripheral wrapped = (IPeripheral) wrappedMultiPeripheralPeripheral.get(child);
 
-						to = getTarget(wrapped);
+						to = wrapped.getTarget();
 						if (wrapped != to) return to;
 					}
 				}
@@ -83,7 +74,7 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 			try {
 				IPeripheral wrapped = (IPeripheral) wrappedMultiPeripheralPeripheral.get(from);
 
-				to = getTarget(wrapped);
+				to = wrapped.getTarget();
 				if (wrapped != to) return to;
 			} catch (ReflectiveOperationException e) {
 				PlethoraIntegration.LOG.error("Cannot extract peripherals from multi-peripheral", e);
@@ -91,18 +82,5 @@ public final class ConverterTargetedPeripheral implements ConstantConverter<IPer
 		}
 
 		return null;
-	}
-
-	@Nullable
-	private Object getTarget(@Nonnull IPeripheral peripheral) {
-		if (getTarget != null) {
-			try {
-				return getTarget.invoke(peripheral);
-			} catch (ReflectiveOperationException e) {
-				PlethoraIntegration.LOG.error("Cannot call IPeripheral.getTarget", e);
-			}
-		}
-
-		return peripheral;
 	}
 }
