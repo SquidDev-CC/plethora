@@ -56,10 +56,14 @@ public class Task {
 			} catch (LuaException e) {
 				finish(e);
 				return true;
-			} catch (Exception | LinkageError e) {
+			} catch (Exception | LinkageError | VirtualMachineError e) {
 				finish(new LuaException("Java Exception Thrown: " + e));
 				PlethoraCore.LOG.error("Unexpected error", e);
 				return true;
+			} catch (Error e) {
+				finish(new LuaException("Java Exception Thrown: " + e));
+				PlethoraCore.LOG.error("Unexpected error", e);
+				throw e;
 			} finally {
 				submitTiming(System.nanoTime() - start);
 			}

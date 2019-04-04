@@ -7,35 +7,37 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.utils.LuaList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
  * Displays fluids contained inside a container
  */
-@IMetaProvider.Inject(value = IFluidHandler.class, namespace = "tanks")
-public class MetaFluidHandler extends BaseMetaProvider<IFluidHandler> {
+@Injects
+public final class MetaFluidHandler extends BaseMetaProvider<IFluidHandler> {
 	@Nonnull
 	@Override
 	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IFluidHandler> context) {
 		IFluidHandler handler = context.getTarget();
-		Map<Object, Object> tanks = new HashMap<>();
-		int i = 0;
 
+		LuaList<Map<Object, Object>> tanks = new LuaList<>();
 		for (IFluidTankProperties tank : handler.getTankProperties()) {
-			tanks.put(++i, context.makePartialChild(tank).getMeta());
+			if (handler.equals(tank)) continue;
+			// Add any tanks which are not part of this one.
+			tanks.add(context.makePartialChild(tank).getMeta());
 		}
 
-		return tanks;
+		return tanks.isEmpty() ? Collections.emptyMap() : Collections.singletonMap("tanks", tanks.asMap());
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public IFluidHandler getExample() {
 		return new FluidHandlerItemStack(new ItemStack(Items.WATER_BUCKET), 1000) {

@@ -66,6 +66,15 @@ public class LuaList<T> {
 	}
 
 	/**
+	 * Determine if this list is empty
+	 *
+	 * @return If this list is empty
+	 */
+	public boolean isEmpty() {
+		return map.isEmpty();
+	}
+
+	/**
 	 * Returns this list as a {@link Map} of 1-indexed integer keys to values
 	 */
 	public Map<Integer, T> asMap() {

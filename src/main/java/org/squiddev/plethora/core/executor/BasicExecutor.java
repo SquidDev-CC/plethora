@@ -73,7 +73,7 @@ public final class BasicExecutor implements IResultExecutor {
 					}
 				} catch (LuaException e) {
 					throw e;
-				} catch (Exception | LinkageError e) {
+				} catch (Exception | LinkageError | VirtualMachineError e) {
 					PlethoraCore.LOG.error("Unexpected error", e);
 					throw new LuaException("Java Exception Thrown: " + e);
 				}
