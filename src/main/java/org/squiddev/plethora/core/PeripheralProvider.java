@@ -2,7 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import dan200.computercraft.shared.peripheral.common.IPeripheralTile;
+import dan200.computercraft.api.peripheral.IPeripheralTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -61,7 +61,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 		return null;
 	}
 
-	private static final Map<Class, Boolean> blacklistCache = new HashMap<>();
+	private static final Map<Class<?>, Boolean> blacklistCache = new HashMap<>();
 	private static final Set<String> blacklistedNames = new HashSet<>();
 
 	static void addToBlacklist(String klass) {

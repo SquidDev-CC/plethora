@@ -1,17 +1,16 @@
 package org.squiddev.plethora.core.executor;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IWorkMonitor;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.utils.PlethoraTimings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A result executor which attempts to run through {@link IComputerAccess#queueEvent(String, Object[])}
@@ -43,7 +42,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		assertAttached();
 		if (result.isFinal()) return result.getResult();
 
-		BlockingTask task = new BlockingTask(result.getCallback(), result.getResolver());
+		ComputerTask task = new ComputerTask(this, result.getCallback(), result.getResolver(), true);
 		boolean ok = runner.submit(task);
 		if (!ok) throw new LuaException("Task limit exceeded");
 
@@ -51,27 +50,24 @@ public class ComputerAccessExecutor implements IResultExecutor {
 			Object[] response = context.pullEvent(null);
 			assertAttached();
 
-			if (response.length >= 1 && EVENT_NAME.equals(response[0]) && task.finished()) break;
+			if (response.length >= 1 && EVENT_NAME.equals(response[0]) && task.isDone()) break;
 		}
 
 		if (task.error != null) throw task.error;
 		return task.result;
 	}
 
-	@Nonnull
 	@Override
-	public ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException {
+	public void executeAsync(@Nonnull MethodResult result) throws LuaException {
 		assertAttached();
-		if (result.isFinal()) return Futures.immediateFuture(result.getResult());
+		if (result.isFinal()) return;
 
-		AsyncTask task = new AsyncTask(result.getCallback(), result.getResolver());
+		ComputerTask task = new ComputerTask(this, result.getCallback(), result.getResolver(), false);
 		boolean ok = runner.submit(task);
 		if (!ok) {
-			task.getFuture().cancel(true);
+			task.cancel();
 			throw new LuaException("Task limit exceeded");
 		}
-
-		return task.getFuture();
 	}
 
 	private void assertAttached() throws LuaException {
@@ -86,19 +82,25 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		attached = false;
 	}
 
-	private class BlockingTask extends Task {
-		Object[] result;
-		LuaException error;
+	private static class ComputerTask extends Task {
+		private final IWorkMonitor monitor;
+		private final ComputerAccessExecutor executor;
+		private final boolean shouldQueue;
 
-		BlockingTask(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
+		ComputerTask(ComputerAccessExecutor executor, Callable<MethodResult> callback, MethodResult.Resolver resolver, boolean shouldQueue) {
 			super(callback, resolver);
+			this.executor = executor;
+			this.shouldQueue = shouldQueue;
+			monitor = executor.access.getMainThreadMonitor();
 		}
 
 		@Override
-		protected void finish(Object[] result) {
-			this.result = result;
+		void whenDone() {
+			super.whenDone();
+			if (!executor.attached || !shouldQueue) return;
+
 			try {
-				access.queueEvent(EVENT_NAME, null);
+				executor.access.queueEvent(EVENT_NAME, null);
 			} catch (RuntimeException ignored) {
 				// There is sadly nothing we can do about this, as there's always a slight
 				// chance of a race condition.
@@ -106,49 +108,24 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		}
 
 		@Override
-		protected void finish(@Nonnull LuaException e) {
-			error = e;
-			try {
-				access.queueEvent(EVENT_NAME, null);
-			} catch (RuntimeException ignored) {
-			}
+		boolean canContinue() {
+			return monitor == null || monitor.shouldWork();
 		}
 
 		@Override
 		protected void submitTiming(long time) {
-			PlethoraTimings.addServerTiming(access, time);
+			super.submitTiming(time);
+			monitor.trackWork(time, TimeUnit.NANOSECONDS);
 		}
 
 		@Override
 		public boolean update() {
-			if (!attached) {
-				markFinished();
+			if (!executor.attached) {
+				cancel();
 				return true;
 			}
 
-			return super.update();
-		}
-	}
-
-	private class AsyncTask extends FutureTask {
-		AsyncTask(Callable<MethodResult> callback, MethodResult.Resolver resolver) {
-			super(callback, resolver);
-		}
-
-		@Override
-		protected void submitTiming(long time) {
-			PlethoraTimings.addServerTiming(access, time);
-		}
-
-		@Override
-		public boolean update() {
-			if (!attached) {
-				markFinished();
-				getFuture().cancel(true);
-				return true;
-			}
-
-			return super.update();
+			return (monitor == null || monitor.canWork()) && super.update();
 		}
 	}
 }

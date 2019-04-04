@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.jei;
 
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.PocketUpgrades;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredients;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class UseInRecipeWrapper implements IRecipeWrapper {
-	protected static final String MINECART_COMPUTER = "entity.plethora.plethora:minecartComputer.name";
+	private static final String MINECART_COMPUTER = "entity.plethora.plethora:minecartComputer.name";
 
 	protected final ItemStack stack;
 	private final IDrawable slotDrawable;
@@ -39,11 +40,11 @@ public abstract class UseInRecipeWrapper implements IRecipeWrapper {
 			usable.add(Helpers.translateToLocal(MINECART_COMPUTER));
 		}
 
-		if (ComputerCraft.getPocketUpgrade(stack) != null) {
+		if (PocketUpgrades.get(stack) != null) {
 			usable.add(new ItemStack(ComputerCraft.Items.pocketComputer).getDisplayName());
 		}
 
-		if (ComputerCraft.getTurtleUpgrade(stack) != null) {
+		if (PocketUpgrades.get(stack) != null) {
 			usable.add(new ItemStack(ComputerCraft.Blocks.turtle).getDisplayName());
 		}
 	}

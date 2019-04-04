@@ -4,7 +4,6 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
-import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
@@ -113,8 +112,8 @@ public final class Helpers {
 		return builder.toString();
 	}
 
-	public static int nextId(World world, String type) {
-		return IDAssigner.getNextIDFromFile(new File(ComputerCraft.getWorldDir(world), "computer/lastid_" + type + ".txt"));
+	private static int nextId(World world, String type) {
+		return IDAssigner.getNextIDFromFile("computer/lastid_" + type + ".txt");
 	}
 
 	public static int nextId(World world, IPeripheral peripheral) {

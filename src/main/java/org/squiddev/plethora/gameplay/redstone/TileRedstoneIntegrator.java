@@ -4,24 +4,24 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralTile;
+import dan200.computercraft.shared.BundledRedstone;
 import dan200.computercraft.shared.common.TileGeneric;
 import dan200.computercraft.shared.util.RedstoneUtil;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.gameplay.Plethora;
-import org.squiddev.plethora.gameplay.registry.Registration;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
-public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
+public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, IPeripheralTile {
 	private final byte[] inputs = new byte[6];
 	private final byte[] outputs = new byte[6];
 	private final int[] bundledInputs = new int[6];
@@ -48,7 +48,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 				changed = true;
 			}
 
-			short newBundled = (short) RedstoneUtil.getBundledRedstoneOutput(world, offset, offsetSide);
+			short newBundled = (short) BundledRedstone.getOutput(world, offset, offsetSide);
 			if (bundledInputs[dirIdx] != newBundled) {
 				bundledInputs[dirIdx] = newBundled;
 				changed = true;
@@ -107,16 +107,8 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 	}
 
 	@Override
-	public void onNeighbourChange() {
+	public void onNeighbourChange(@Nonnull BlockPos pos) {
 		updateInput();
-	}
-
-	public static ItemStack getPickedItem() {
-		return new ItemStack(Registration.blockRedstoneIntegrator);
-	}
-
-	public static void getDroppedItems(@Nonnull NonNullList<ItemStack> drops, boolean creative) {
-		if (!creative) drops.add(getPickedItem());
 	}
 
 	//region Redstone output providers
@@ -261,6 +253,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral {
 		}
 
 		return facing;
+	}
+
+	@Nullable
+	@Override
+	public IPeripheral getPeripheral(@Nonnull EnumFacing facing) {
+		return this;
 	}
 	//endregion
 }

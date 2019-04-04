@@ -53,7 +53,6 @@ public final class Registration {
 
 		registerTiles();
 
-		ComputerCraftAPI.registerPeripheralProvider(blockRedstoneIntegrator);
 		ComputerCraftAPI.registerPeripheralProvider(blockManipulator);
 	}
 

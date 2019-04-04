@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
@@ -35,9 +34,7 @@ public interface IResultExecutor {
 	 * Execute a task, without waiting for the result to execute.
 	 *
 	 * @param result The method result to evaluate
-	 * @return A future representing the final result.
 	 * @throws LuaException If something went wrong when queueing the task
 	 */
-	@Nonnull
-	ListenableFuture<Object[]> executeAsync(@Nonnull MethodResult result) throws LuaException;
+	void executeAsync(@Nonnull MethodResult result) throws LuaException;
 }

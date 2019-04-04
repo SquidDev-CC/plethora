@@ -5,13 +5,9 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
-import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,50 +15,16 @@ import java.util.Set;
  */
 @Injects(ComputerCraft.MOD_ID)
 public final class TransferComputerAccess implements ITransferProvider<IComputerAccess> {
-	private boolean fetched;
-	private Method getAvailablePeripheral;
-	private Method getAvailablePeripherals;
-
-	private void fetchReflection() {
-		if (fetched) return;
-
-		try {
-			getAvailablePeripherals = IComputerAccess.class.getMethod("getAvailablePeripherals");
-			getAvailablePeripheral = IComputerAccess.class.getMethod("getAvailablePeripheral", String.class);
-		} catch (NoSuchMethodException ignored) {
-		}
-
-		fetched = true;
-	}
-
 	@Nullable
 	@Override
 	public Object getTransferLocation(@Nonnull IComputerAccess object, @Nonnull String key) {
-		fetchReflection();
-		if (getAvailablePeripheral != null) {
-			try {
-				return getAvailablePeripheral.invoke(object, key);
-			} catch (ReflectiveOperationException e) {
-				PlethoraIntegration.LOG.error("Failed to call IComputerAccess.getAvailablePeripheral", e);
-			}
-		}
-
-		return null;
+		IPeripheral peripheral = object.getAvailablePeripheral(key);
+		return peripheral == null ? null : peripheral.getTarget();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
 	@Override
 	public Set<String> getTransferLocations(@Nonnull IComputerAccess object) {
-		fetchReflection();
-		if (getAvailablePeripherals != null) {
-			try {
-				return ((Map<String, IPeripheral>) getAvailablePeripherals.invoke(object)).keySet();
-			} catch (ReflectiveOperationException e) {
-				PlethoraIntegration.LOG.error("Failed to call IComputerAccess.getAvailablePeripherals", e);
-			}
-		}
-
-		return Collections.emptySet();
+		return object.getAvailablePeripherals().keySet();
 	}
 }

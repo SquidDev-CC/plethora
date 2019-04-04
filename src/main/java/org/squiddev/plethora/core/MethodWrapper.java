@@ -90,7 +90,7 @@ public class MethodWrapper {
 			return context.getCostHandler().await(cost, () -> method.apply(context, args));
 		} catch (LuaException e) {
 			throw e;
-		} catch (Throwable e) {
+		} catch (Exception | LinkageError e) {
 			PlethoraCore.LOG.error("Unexpected error calling " + method.getName(), e);
 			throw new LuaException("Java Exception Thrown: " + e);
 		}

@@ -54,7 +54,7 @@ public final class MetaItemTurtle extends ItemStackMetaProvider<ITurtleItem> {
 	public ItemStack getExample() {
 		return TurtleItemFactory.create(
 			3, "My turtle", 0x00FF00, ComputerFamily.Normal,
-			ComputerCraft.Upgrades.advancedModem, null, 3000, null
+			ComputerCraft.TurtleUpgrades.advancedModem, null, 3000, null
 		);
 	}
 }
