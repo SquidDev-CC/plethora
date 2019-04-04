@@ -253,6 +253,20 @@ public final class ConfigGameplay {
 		}
 	}
 
+	public static final class Turtle {
+		/**
+		 * The amount of RF required to gain one unit of turtle fuel.
+		 * Set to 0 to disable (the default). If enabled, a good default
+		 * is 100 (100FE for one fuel unit).
+		 */
+		@DefaultInt(0)
+		@Range(min = 0)
+		public static int feFuelRatio;
+
+		private Turtle() {
+		}
+	}
+
 	/**
 	 * Various options that don't belong to anything
 	 */

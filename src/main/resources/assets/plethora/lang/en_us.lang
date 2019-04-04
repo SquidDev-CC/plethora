@@ -153,6 +153,9 @@ gui.config.plethora.chat.allowMobs=Allow mobs in chat
 gui.config.plethora.glasses=Overlay glasses
 gui.config.plethora.glasses.framebufferScale=Framebuffer scale
 
+gui.config.plethora.turtle=Turtle
+gui.config.plethora.turtle.feFuelRatio=FE to fuel ratio
+
 gui.config.plethora.miscellaneous=Miscellaneous
 gui.config.plethora.miscellaneous.funRender=Fun rendering
 

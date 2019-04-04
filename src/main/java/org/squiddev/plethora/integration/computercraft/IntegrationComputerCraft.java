@@ -6,6 +6,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.api.turtle.event.TurtleBlockEvent;
 import dan200.computercraft.api.turtle.event.TurtleInspectItemEvent;
+import dan200.computercraft.api.turtle.event.TurtleRefuelEvent;
 import dan200.computercraft.shared.peripheral.common.ItemPeripheralBase;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
@@ -30,6 +32,7 @@ import org.squiddev.plethora.core.ContextFactory;
 import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.core.TurtleUpgradeModule;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
@@ -93,6 +96,15 @@ public final class IntegrationComputerCraft {
 				.getMeta();
 
 			event.addData(metadata);
+		}
+	}
+
+	@SubscribeEvent
+	@Optional.Method(modid = ComputerCraft.MOD_ID)
+	public static void onTurtleRefuel(TurtleRefuelEvent event) {
+		if (event.getHandler() != null) return;
+		if (ConfigGameplay.Turtle.feFuelRatio > 0 && event.getStack().hasCapability(CapabilityEnergy.ENERGY, null)) {
+			event.setHandler(FERefuelHandler.INSTANCE);
 		}
 	}
 
