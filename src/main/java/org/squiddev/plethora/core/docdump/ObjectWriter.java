@@ -14,7 +14,7 @@ public class ObjectWriter {
 	private final Appendable output;
 	private final ObjectFormatter formatter;
 
-	public ObjectWriter(Appendable stream, ObjectFormatter formatter) {
+	ObjectWriter(Appendable stream, ObjectFormatter formatter) {
 		output = stream;
 		this.formatter = formatter;
 	}

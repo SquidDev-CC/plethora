@@ -189,7 +189,7 @@ final class Registry {
 			if (instance == null) instance = instanceGetter.get();
 			if (instance == null) return Result.ERROR;
 
-			MetaRegistry.instance.registerMetaProvider(klass, (IMetaProvider) instance);
+			MetaRegistry.instance.registerMetaProvider(klass, (IMetaProvider) instance, name);
 		}
 
 		// Register ArgumentType
@@ -199,7 +199,7 @@ final class Registry {
 			if (klass == null) return Result.ERROR;
 
 			if (!(element instanceof Field)) {
-				LOG.error("@Injects {} must be a field in order to be injected as an ArgumentType");
+				LOG.error("@Injects {} must be a field in order to be injected as an ArgumentType", name);
 				return Result.ERROR;
 			}
 

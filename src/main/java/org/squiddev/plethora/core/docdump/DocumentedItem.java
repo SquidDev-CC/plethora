@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
+class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
 	private static final char[] TERMINATORS = new char[]{'!', '.', '?', '\r', '\n'};
 
 	private final T object;
@@ -14,7 +14,7 @@ public class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
 	private final String synopsis;
 	private final String detail;
 
-	public DocumentedItem(@Nonnull T object, @Nonnull String id, @Nonnull String name, @Nullable String doc) {
+	DocumentedItem(@Nonnull T object, @Nonnull String id, @Nonnull String name, @Nullable String doc) {
 		this.object = object;
 		this.id = id;
 		this.name = name;

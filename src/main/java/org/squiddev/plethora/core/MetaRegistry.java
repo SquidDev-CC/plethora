@@ -20,16 +20,21 @@ public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
 	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(Comparator.comparingInt(IMetaProvider::getPriority));
+	private static final Map<IMetaProvider<?>, String> names = new HashMap<>();
 
-	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider) {
+	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider, @Nonnull String name) {
 		Objects.requireNonNull(target, "target cannot be null");
 		Objects.requireNonNull(provider, "provider cannot be null");
+		Objects.requireNonNull(name, "name cannot be null");
 
 		providers.put(target, provider);
+		names.put(provider, name);
 	}
 
-	private <T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull String namespace, @Nonnull IMetaProvider<T> provider) {
-		registerMetaProvider(target, new NamespacedMetaProvider<>(namespace, provider));
+	public String getName(@Nonnull IMetaProvider<?> provider) {
+		String name = names.get(provider);
+		if (name != null) return name;
+		return provider.getClass().getName();
 	}
 
 	@Nonnull
@@ -75,7 +80,7 @@ public final class MetaRegistry implements IMetaRegistry {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadAsm(ASMDataTable asmDataTable) {
+	void loadAsm(ASMDataTable asmDataTable) {
 		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getName())) {
 			String name = asmData.getClassName();
 			try {
@@ -101,9 +106,9 @@ public final class MetaRegistry implements IMetaRegistry {
 
 				String namespace = (String) info.get("namespace");
 				if (Strings.isNullOrEmpty(namespace)) {
-					registerMetaProvider(target, instance);
+					registerMetaProvider(target, instance, name);
 				} else {
-					registerMetaProvider(target, namespace, instance);
+					registerMetaProvider(target, new NamespacedMetaProvider(namespace, instance), name);
 				}
 			} catch (Throwable e) {
 				if (ConfigCore.Testing.strict) {

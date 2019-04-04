@@ -1,15 +1,15 @@
 package org.squiddev.plethora.core.docdump;
 
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.core.MetaRegistry;
 
 import javax.annotation.Nonnull;
 
-public class DocumentedMetaProvider extends DocumentedItem<IMetaProvider<?>> {
+class DocumentedMetaProvider extends DocumentedItem<IMetaProvider<?>> {
 	private final Class<?> target;
 
-	public DocumentedMetaProvider(@Nonnull Class<?> target, @Nonnull IMetaProvider<?> provider) {
-		super(provider, getName(provider), getName(provider), provider.getDescription());
+	DocumentedMetaProvider(@Nonnull Class<?> target, @Nonnull IMetaProvider<?> provider) {
+		super(provider, MetaRegistry.instance.getName(provider), MetaRegistry.instance.getName(provider), provider.getDescription());
 		this.target = target;
 	}
 
@@ -21,11 +21,5 @@ public class DocumentedMetaProvider extends DocumentedItem<IMetaProvider<?>> {
 	@Nonnull
 	public Class<?> getTarget() {
 		return target;
-	}
-
-	private static String getName(IMetaProvider provider) {
-		return provider instanceof NamespacedMetaProvider
-			? getName(((NamespacedMetaProvider) provider).getDelegate())
-			: provider.getClass().getName();
 	}
 }
