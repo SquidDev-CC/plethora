@@ -18,8 +18,8 @@ public final class MetaEnergyContainerItem extends ItemStackMetaProvider<IEnergy
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull IEnergyContainerItem handler) {
-		Map<Object, Object> out = new HashMap<>(2);
+	public Map<String, ?> getMeta(@Nonnull ItemStack object, @Nonnull IEnergyContainerItem handler) {
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("stored", handler.getEnergyStored(object));
 		out.put("capacity", handler.getMaxEnergyStored(object));
 		return out;

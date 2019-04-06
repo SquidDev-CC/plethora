@@ -21,13 +21,13 @@ import java.util.Map;
 public class MetaMaterial extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		ItemStack stack = context.getTarget();
 		Item item = stack.getItem();
 		if (!(item instanceof IMaterialItem)) return Collections.emptyMap();
 
 		IMaterialItem materialItem = (IMaterialItem) item;
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 
 		Material material = materialItem.getMaterial(stack);
 		out.put("id", material.getIdentifier());

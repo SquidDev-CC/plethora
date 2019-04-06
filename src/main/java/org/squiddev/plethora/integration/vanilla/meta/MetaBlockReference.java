@@ -12,7 +12,6 @@ import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +19,8 @@ import java.util.Map;
 public final class MetaBlockReference extends BasicMetaProvider<BlockReference> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull BlockReference reference) {
-		Map<Object, Object> data = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull BlockReference reference) {
+		Map<String, Object> data = new HashMap<>();
 
 		IBlockState state = reference.getState();
 		World world = reference.getLocation().getWorld();
@@ -39,7 +38,7 @@ public final class MetaBlockReference extends BasicMetaProvider<BlockReference> 
 		return data;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public BlockReference getExample() {
 		World world = WorldDummy.INSTANCE;

@@ -39,7 +39,7 @@ public final class IntegrationMcMultipart {
 	public static final SimpleMetaProvider<IPartInfo> META_MULTIPART = IntegrationMcMultipart::getBasicMeta;
 
 	@Nonnull
-	public static Map<Object, Object> getBasicMeta(@Nonnull IPartInfo part) {
+	public static Map<String, ?> getBasicMeta(@Nonnull IPartInfo part) {
 		return MetaBlock.getBasicMeta(part.getPart().getBlock());
 	}
 

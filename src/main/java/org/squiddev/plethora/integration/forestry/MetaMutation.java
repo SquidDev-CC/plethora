@@ -15,8 +15,8 @@ import java.util.Map;
 public class MetaMutation extends BasicMetaProvider<IMutation> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IMutation mutation) {
-		Map<Object, Object> out = new HashMap<>(5);
+	public Map<String, ?> getMeta(@Nonnull IMutation mutation) {
+		Map<String, Object> out = new HashMap<>(5);
 
 		out.put("species1", mutation.getAllele0().getUID());
 		out.put("species2", mutation.getAllele1().getUID());

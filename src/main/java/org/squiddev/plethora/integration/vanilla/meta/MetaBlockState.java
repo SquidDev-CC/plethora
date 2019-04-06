@@ -6,7 +6,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
@@ -22,15 +21,15 @@ public final class MetaBlockState extends BaseMetaProvider<IBlockState> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IBlockState> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<IBlockState> context) {
 		IBlockState state = context.getTarget();
 		Block block = state.getBlock();
 
-		Map<Object, Object> data = new HashMap<>();
+		Map<String, Object> data = new HashMap<>();
 		fillBasicMeta(data, state);
 
 		Material material = state.getMaterial();
-		data.put("material", PlethoraAPI.instance().metaRegistry().getMeta(context.makePartialChild(material)));
+		data.put("material", context.makePartialChild(material).getMeta());
 
 		int level = block.getHarvestLevel(state);
 		if (level >= 0) data.put("harvestLevel", level);

@@ -18,8 +18,8 @@ public class MetaEnergyProvider extends BasicMetaProvider<IEnergyStorage> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IEnergyStorage handler) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull IEnergyStorage handler) {
+		Map<String, Object> out = new HashMap<>();
 		out.put("stored", handler.getEnergyStored());
 		out.put("capacity", handler.getMaxEnergyStored());
 		return out;

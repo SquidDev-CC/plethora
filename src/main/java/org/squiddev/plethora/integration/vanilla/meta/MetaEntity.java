@@ -25,11 +25,11 @@ public final class MetaEntity extends BaseMetaProvider<Entity> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<Entity> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<Entity> context) {
 		Entity entity = context.getTarget();
 		IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
 
-		Map<Object, Object> result = getBasicProperties(entity, location);
+		Map<String, Object> result = getBasicProperties(entity, location);
 
 		{
 			Map<String, Double> subBlock = new HashMap<>();
@@ -44,8 +44,8 @@ public final class MetaEntity extends BaseMetaProvider<Entity> {
 		return result;
 	}
 
-	public static HashMap<Object, Object> getBasicProperties(@Nonnull Entity entity, @Nullable IWorldLocation location) {
-		HashMap<Object, Object> result = new HashMap<>();
+	public static HashMap<String, Object> getBasicProperties(@Nonnull Entity entity, @Nullable IWorldLocation location) {
+		HashMap<String, Object> result = new HashMap<>();
 		result.put("id", entity.getUniqueID().toString());
 
 		result.put("name", Helpers.getName(entity));

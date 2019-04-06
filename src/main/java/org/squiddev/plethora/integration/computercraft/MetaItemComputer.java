@@ -25,8 +25,8 @@ public final class MetaItemComputer extends ItemStackMetaProvider<IComputerItem>
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull IComputerItem item) {
-		Map<Object, Object> data = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull IComputerItem item) {
+		Map<String, Object> data = new HashMap<>(3);
 
 		int id = item.getComputerID(stack);
 		if (id >= 0) data.put("id", id);

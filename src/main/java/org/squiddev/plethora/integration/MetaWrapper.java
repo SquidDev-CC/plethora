@@ -46,7 +46,7 @@ public class MetaWrapper<T> extends ConstantReference<MetaWrapper<T>> {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<MetaWrapper> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<MetaWrapper> context) {
 			return context.makePartialChild(context.getTarget().value()).getMeta();
 		}
 	}

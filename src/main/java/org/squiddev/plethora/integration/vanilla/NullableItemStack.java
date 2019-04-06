@@ -45,7 +45,7 @@ public final class NullableItemStack {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull NullableItemStack object) {
+		public Map<String, ?> getMeta(@Nonnull NullableItemStack object) {
 			return Collections.singletonMap("count", object.count);
 		}
 	}

@@ -7,7 +7,7 @@ import forestry.core.config.Constants;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.utils.LuaList;
+import org.squiddev.plethora.api.method.LuaList;
 
 import java.util.Map;
 
@@ -36,15 +36,13 @@ public final class MethodsAnalyzer {
 		doc = "-- Get a list of all species in the given species root"
 	)
 	public static Map<Integer, Object> getSpeciesList(String root) throws LuaException {
-		ISpeciesRoot rootObj = getSpeciesRoot(root);
-
-		LuaList<Object> species = alleleRegistry.getRegisteredAlleles(rootObj.getSpeciesChromosomeType()).stream()
+		return alleleRegistry
+			.getRegisteredAlleles(getSpeciesRoot(root).getSpeciesChromosomeType()).stream()
 			.map(IAlleleSpecies.class::cast)
 			.filter(s -> !s.isSecret())
 			.map(MetaGenome::getAlleleMeta)
-			.collect(LuaList.toLuaList());
-
-		return species.asMap();
+			.collect(LuaList.toLuaList())
+			.asMap();
 	}
 
 	@PlethoraMethod(
@@ -52,13 +50,11 @@ public final class MethodsAnalyzer {
 		doc = "-- Get a list of all mutations in the given species root"
 	)
 	public static Map<Integer, ?> getMutationsList(IContext<IModuleContainer> context, String root) throws LuaException {
-		ISpeciesRoot rootObj = getSpeciesRoot(root);
-
-		LuaList<Map<Object, Object>> mutations = rootObj.getMutations(false).stream()
+		return getSpeciesRoot(root)
+			.getMutations(false).stream()
 			.filter(s -> !s.isSecret())
 			.map(m -> context.makePartialChild(m).getMeta())
-			.collect(LuaList.toLuaList());
-
-		return mutations.asMap();
+			.collect(LuaList.toLuaList())
+			.asMap();
 	}
 }

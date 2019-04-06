@@ -9,27 +9,28 @@ import net.minecraft.tileentity.BannerPattern;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
+import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Injects
 public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 	public MetaItemBanner() {
-		super("banner", ItemBanner.class);
+		super(ItemBanner.class);
 	}
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemBanner banner) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemBanner banner) {
+		LuaList<Map<String, ?>> out = new LuaList<>();
 
 		NBTTagCompound tag = stack.getSubCompound("BlockEntityTag");
 		if (tag != null && tag.hasKey("Patterns")) {
 			NBTTagList nbttaglist = tag.getTagList("Patterns", 10);
 
-			int idx = 0;
 			for (int i = 0; i < nbttaglist.tagCount() && i < 6; ++i) {
 				NBTTagCompound patternTag = nbttaglist.getCompoundTagAt(i);
 
@@ -47,12 +48,12 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 					entry.put("colour", color.toString());
 					entry.put("color", color.toString());
 
-					out.put(++idx, entry);
+					out.add(entry);
 				}
 			}
 		}
 
-		return out;
+		return Collections.singletonMap("banner", out.asMap());
 	}
 
 	@Nonnull

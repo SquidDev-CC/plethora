@@ -22,8 +22,8 @@ public final class MetaItemTurtle extends ItemStackMetaProvider<ITurtleItem> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ITurtleItem turtle) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack object, @Nonnull ITurtleItem turtle) {
+		Map<String, Object> out = new HashMap<>();
 
 		int colour = turtle.getColour(object);
 		if (colour != -1) {

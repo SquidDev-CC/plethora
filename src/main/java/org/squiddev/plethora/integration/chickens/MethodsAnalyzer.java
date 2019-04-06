@@ -35,7 +35,7 @@ public final class MethodsAnalyzer {
 		module = IntegrationChickens.ANALYZER_S, modId = ChickensMod.MODID,
 		doc = "-- Get a single chicken species"
 	)
-	public static Map<Object, Object> getSpecies(@Nonnull IContext<IModuleContainer> context, String name) {
+	public static Map<String, ?> getSpecies(@Nonnull IContext<IModuleContainer> context, String name) {
 		ChickensRegistryItem species = ChickensRegistry.getByRegistryName(name);
 
 		return species != null

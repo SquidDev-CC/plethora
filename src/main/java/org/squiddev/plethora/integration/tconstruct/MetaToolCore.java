@@ -26,13 +26,13 @@ import java.util.*;
 public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		ItemStack stack = context.getTarget();
 		if (!(stack.getItem() instanceof ToolCore)) return Collections.emptyMap();
 
 		ToolCore tool = (ToolCore) stack.getItem();
 
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 
 		if (tool.hasCategory(Category.HARVEST)) {
 			out.put("miningSpeed", ToolHelper.getActualMiningSpeed(stack));

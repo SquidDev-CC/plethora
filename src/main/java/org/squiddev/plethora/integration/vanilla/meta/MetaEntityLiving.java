@@ -11,10 +11,10 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +25,9 @@ import java.util.Map;
 public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityLivingBase> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<EntityLivingBase> context) {
 		EntityLivingBase target = context.getTarget();
-		Map<Object, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 
 		{
 			Map<String, Object> armor = new HashMap<>();
@@ -40,17 +40,7 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 
 		map.put("heldItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
 		map.put("offhandItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
-
-		{
-			Map<Object, String> potionEffects = new HashMap<>();
-			Collection<PotionEffect> effects = target.getActivePotionEffects();
-
-			int count = 1;
-			for (PotionEffect effect : effects) {
-				potionEffects.put(count++, effect.getEffectName());
-			}
-			map.put("potionEffects", potionEffects);
-		}
+		map.put("potionEffects", LuaList.of(target.getActivePotionEffects(), PotionEffect::getEffectName).asMap());
 
 		map.put("health", target.getHealth());
 		map.put("maxHealth", target.getMaxHealth());

@@ -32,8 +32,8 @@ public class NamespacedMetaProvider<T> extends BaseMetaProvider<T> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<T> context) {
-		Map<Object, Object> data = delegate.getMeta(context);
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<T> context) {
+		Map<String, ?> data = delegate.getMeta(context);
 		return data.isEmpty() ? Collections.emptyMap() : Collections.singletonMap(namespace, data);
 	}
 

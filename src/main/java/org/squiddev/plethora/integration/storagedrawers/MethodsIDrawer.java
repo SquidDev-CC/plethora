@@ -26,7 +26,7 @@ public final class MethodsIDrawer {
 
 	@Optional
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The metadata of the item in this drawer.")
-	public static Map<Object, Object> getItemMeta(IContext<IDrawer> context) {
+	public static Map<String, ?> getItemMeta(IContext<IDrawer> context) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();
 		return stack.isEmpty() ? null : context.makePartialChild(stack).getMeta();
 	}

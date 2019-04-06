@@ -14,9 +14,9 @@ import java.util.Map;
 public class MetaBee extends BasicMetaProvider<IBee> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IBee bee) {
+	public Map<String, ?> getMeta(@Nonnull IBee bee) {
 		if (bee.isAnalyzed()) {
-			Map<Object, Object> out = new HashMap<>(3);
+			Map<String, Object> out = new HashMap<>(3);
 			out.put("canSpawn", bee.canSpawn());
 			out.put("generation", bee.getGeneration());
 			out.put("pristine", bee.isNatural());

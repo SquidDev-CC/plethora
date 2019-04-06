@@ -17,6 +17,7 @@ import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
+import org.squiddev.plethora.api.method.LuaList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,10 +52,9 @@ public final class MethodsGrid {
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 		IItemList<IAEItemStack> items = storageGrid.getInventory(channel).getStorageList();
 
-		int i = 0;
-		Map<Integer, Map<Object, Object>> output = new HashMap<>(items.size());
-		for (IAEItemStack stack : items) output.put(++i, getItemStackProperties(stack));
-		return output;
+		LuaList<Map<String, ?>> output = new LuaList<>(items.size());
+		for (IAEItemStack stack : items) output.add(getItemStackProperties(stack));
+		return output.asMap();
 	}
 
 	@Optional

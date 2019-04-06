@@ -23,11 +23,11 @@ import java.util.Map;
 public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack object) {
 		IMedia media = MediaProviders.get(object);
 		if (media == null) return Collections.emptyMap();
 
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>(3);
 		out.put("label", media.getLabel(object));
 		out.put("recordTitle", media.getAudioTitle(object));
 

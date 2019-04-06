@@ -11,7 +11,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.integration.vanilla.meta.MetaTileSign;
+import org.squiddev.plethora.integration.vanilla.meta.VanillaMeta;
 
 import java.util.Map;
 
@@ -54,8 +54,8 @@ public final class MethodsVanillaTileEntities {
 	}
 
 	@PlethoraMethod(doc = "function():table -- Each line of text on this sign")
-	public static Map<Object, Object> getSignText(@FromTarget TileEntitySign sign) {
-		return MetaTileSign.getSignLines(sign);
+	public static Map<Integer, String> getSignText(@FromTarget TileEntitySign sign) {
+		return VanillaMeta.getSignLines(sign);
 	}
 
 	@PlethoraMethod(doc = "function(lines...:string) -- Set the lines of text on this sign")

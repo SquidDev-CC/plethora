@@ -20,7 +20,7 @@ import java.util.Map;
 @Injects(TConstruct.modID)
 public final class MetaTConstruct {
 	public static final SimpleMetaProvider<IMaterialStats> META_MATERIAL_STATS = stats -> {
-		Map<Object, Object> out = new HashMap<>(2);
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("id", stats.getIdentifier());
 		out.put("name", stats.getLocalizedName());
 		return out;
@@ -30,7 +30,7 @@ public final class MetaTConstruct {
 		Collections.singletonMap("extraDurability", stats.extraDurability);
 
 	public static final SimpleMetaProvider<HandleMaterialStats> META_HANDLE_STATS = stats -> {
-		Map<Object, Object> out = new HashMap<>(2);
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("durability", stats.durability);
 		out.put("modifier", stats.modifier);
 		return out;
@@ -38,7 +38,7 @@ public final class MetaTConstruct {
 
 
 	public static final SimpleMetaProvider<HeadMaterialStats> META_HEAD_STATS = stats -> {
-		Map<Object, Object> out = new HashMap<>(4);
+		Map<String, Object> out = new HashMap<>(4);
 		out.put("attack", stats.attack);
 		out.put("durability", stats.durability);
 		out.put("miningSpeed", stats.miningspeed);
@@ -47,7 +47,7 @@ public final class MetaTConstruct {
 	};
 
 	public static final SimpleMetaProvider<IToolMod> META_TOOL_MOD = mod -> {
-		Map<Object, Object> out = new HashMap<>(2);
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("id", mod.getIdentifier());
 		out.put("name", mod.getLocalizedName());
 		return out;
@@ -56,7 +56,7 @@ public final class MetaTConstruct {
 	public static final ItemStackMetaProvider<IToolPart> META_TOOL_PART = new ItemStackMetaProvider<IToolPart>("toolPart", IToolPart.class) {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull IToolPart toolPart) {
+		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull IToolPart toolPart) {
 			return Collections.singletonMap("cost", toolPart.getCost());
 		}
 	};

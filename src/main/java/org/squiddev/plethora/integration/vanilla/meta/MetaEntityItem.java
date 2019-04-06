@@ -16,7 +16,7 @@ import java.util.Map;
 public class MetaEntityItem extends BaseMetaProvider<EntityItem> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityItem> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<EntityItem> context) {
 		return context.makePartialChild(context.getTarget().getItem()).getMeta();
 	}
 

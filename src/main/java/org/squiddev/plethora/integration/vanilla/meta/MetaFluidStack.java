@@ -22,8 +22,8 @@ public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull FluidStack fluidStack) {
-		Map<Object, Object> data = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull FluidStack fluidStack) {
+		Map<String, Object> data = new HashMap<>();
 		data.put("amount", fluidStack.amount);
 
 		Fluid fluid = fluidStack.getFluid();

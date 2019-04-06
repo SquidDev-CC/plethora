@@ -57,15 +57,14 @@ public abstract class ItemStackMetaProvider<T> extends BasicMetaProvider<ItemSta
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack object) {
 		Item item = object.getItem();
 		if (!type.isInstance(item)) return Collections.emptyMap();
 
-		@SuppressWarnings("unchecked")
-		Map<Object, Object> child = getMeta(object, (T) item);
+		Map<String, ?> child = getMeta(object, type.cast(item));
 		return namespace == null || child.isEmpty() ? child : Collections.singletonMap(namespace, child);
 	}
 
 	@Nonnull
-	public abstract Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull T item);
+	public abstract Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull T item);
 }

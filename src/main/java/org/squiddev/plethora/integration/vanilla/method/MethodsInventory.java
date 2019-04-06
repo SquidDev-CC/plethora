@@ -53,7 +53,7 @@ public final class MethodsInventory {
 
 	@Optional
 	@PlethoraMethod(doc = "-- The metadata of the item in the specified slot. The slot number starts from 1.")
-	public static Map<Object, Object> getItemMeta(IContext<IItemHandler> context, int slot) throws LuaException {
+	public static Map<String, ?> getItemMeta(IContext<IItemHandler> context, int slot) throws LuaException {
 		IItemHandler inventory = context.getTarget();
 		assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 

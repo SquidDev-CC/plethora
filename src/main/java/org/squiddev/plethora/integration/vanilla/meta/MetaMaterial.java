@@ -13,8 +13,8 @@ import java.util.Map;
 public final class MetaMaterial extends BasicMetaProvider<Material> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull Material material) {
-		Map<Object, Object> data = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull Material material) {
+		Map<String, Object> data = new HashMap<>();
 
 		data.put("replaceable", material.isReplaceable());
 		data.put("liquid", material.isLiquid());

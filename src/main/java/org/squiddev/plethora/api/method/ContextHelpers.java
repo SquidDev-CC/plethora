@@ -26,20 +26,15 @@ public final class ContextHelpers {
 	 * @return The converted list.
 	 */
 	@Nonnull
-	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Collection<?> list) {
+	public static Map<Integer, Map<String, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Collection<?> list) {
 		if (list == null) return Collections.emptyMap();
 
-		int i = 0;
-		Map<Integer, Map<Object, Object>> map = new HashMap<>(list.size());
+		LuaList<Map<String, ?>> out = new LuaList<>(list.size());
 		for (Object element : list) {
-			if (element == null) {
-				++i;
-			} else {
-				map.put(++i, context.makePartialChild(element).getMeta());
-			}
+			out.add(element == null ? null : context.makePartialChild(element).getMeta());
 		}
 
-		return map;
+		return out.asMap();
 	}
 
 	/**
@@ -50,10 +45,10 @@ public final class ContextHelpers {
 	 * @return The converted list.
 	 */
 	@Nonnull
-	public static Map<Integer, Map<Object, Object>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Object[] list) {
+	public static Map<Integer, Map<String, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Object[] list) {
 		if (list == null) return Collections.emptyMap();
 
-		Map<Integer, Map<Object, Object>> map = new HashMap<>(list.length);
+		Map<Integer, Map<String, ?>> map = new HashMap<>(list.length);
 		for (int i = 0; i < list.length; i++) {
 			Object element = list[i];
 			if (element != null) {

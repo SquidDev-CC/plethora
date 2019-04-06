@@ -16,7 +16,7 @@ public final class MethodsBeeHousing {
 
 	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current queen for this bee housing.")
-	public static Map<Object, Object> getQueen(IContext<IBeeHousing> context) {
+	public static Map<String, ?> getQueen(IContext<IBeeHousing> context) {
 		ItemStack queen = context.getTarget().getBeeInventory().getQueen();
 		return queen.isEmpty()
 			? null
@@ -25,7 +25,7 @@ public final class MethodsBeeHousing {
 
 	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current drone for this bee housing.")
-	public static Map<Object, Object> getDrone(IContext<IBeeHousing> context) {
+	public static Map<String, ?> getDrone(IContext<IBeeHousing> context) {
 		ItemStack drone = context.getTarget().getBeeInventory().getDrone();
 		return drone.isEmpty()
 			? null

@@ -15,10 +15,10 @@ import java.util.Map;
 public interface SimpleMetaProvider<T> extends IMetaProvider<T> {
 	@Nonnull
 	@Override
-	default Map<Object, Object> getMeta(@Nonnull IPartialContext<T> context) {
+	default Map<String, ?> getMeta(@Nonnull IPartialContext<T> context) {
 		return getMeta(context.getTarget());
 	}
 
 	@Nonnull
-	Map<Object, Object> getMeta(@Nonnull T context);
+	Map<String, ?> getMeta(@Nonnull T target);
 }

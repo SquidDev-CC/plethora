@@ -10,8 +10,8 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.api.method.LuaList;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -24,21 +24,12 @@ public final class MethodsMultipart {
 
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a list of all parts in the multipart.")
 	public static Map<Integer, ?> listParts(@FromTarget IMultipartContainer container) {
-		Collection<? extends IPartInfo> parts = container.getParts().values();
-
-		int i = 0;
-		Map<Integer, Map<Object, Object>> out = new HashMap<>();
-		for (IPartInfo part : parts) {
-			out.put(++i, getBasicMeta(part));
-		}
-
-		return out;
+		return LuaList.of(container.getParts().values(), IntegrationMcMultipart::getBasicMeta).asMap();
 	}
 
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a lookup of slot to parts.")
 	public static Map<String, ?> listSlottedParts(@FromTarget IMultipartContainer container) {
-		Map<String, Map<Object, Object>> parts = new HashMap<>();
-
+		Map<String, Map<String, ?>> parts = new HashMap<>();
 		for (Map.Entry<IPartSlot, ? extends IPartInfo> slot : container.getParts().entrySet()) {
 			parts.put(slot.getKey().getRegistryName().toString().toLowerCase(Locale.ENGLISH), getBasicMeta(slot.getValue()));
 		}
@@ -59,7 +50,7 @@ public final class MethodsMultipart {
 
 	@Optional
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get the metadata of the part in the specified slot.")
-	public static Map<Object, Object> getSlottedPartMeta(final IContext<IMultipartContainer> context, IPartSlot slot) throws LuaException {
+	public static Map<String, ?> getSlottedPartMeta(final IContext<IMultipartContainer> context, IPartSlot slot) throws LuaException {
 		IMultipartContainer container = context.getTarget();
 
 		IPartInfo part = container.get(slot).orElse(null);

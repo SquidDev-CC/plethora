@@ -13,8 +13,8 @@ import java.util.Map;
 public class MetaReactor extends BasicMetaProvider<IReactor> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IReactor object) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull IReactor object) {
+		Map<String, Object> out = new HashMap<>();
 
 		out.put("heat", object.getHeat());
 		out.put("heatModifier", object.getHeatEffectModifier());

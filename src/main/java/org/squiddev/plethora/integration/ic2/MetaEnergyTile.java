@@ -19,8 +19,8 @@ import java.util.Map;
 public class MetaEnergyTile extends BasicMetaProvider<IEnergyTile> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IEnergyTile object) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull IEnergyTile object) {
+		Map<String, Object> out = new HashMap<>();
 
 		if (object instanceof IEnergySink) {
 			IEnergySink sink = (IEnergySink) object;

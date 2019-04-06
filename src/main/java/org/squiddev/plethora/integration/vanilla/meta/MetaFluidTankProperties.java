@@ -14,7 +14,7 @@ import java.util.Map;
 public final class MetaFluidTankProperties extends BasicMetaProvider<IFluidTankProperties> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IFluidTankProperties tank) {
+	public Map<String, ?> getMeta(@Nonnull IFluidTankProperties tank) {
 		return Collections.singletonMap("capacity", tank.getCapacity());
 	}
 

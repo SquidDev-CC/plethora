@@ -61,7 +61,7 @@ public final class MethodsScanner {
 
 	@Nonnull
 	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Get metadata about a nearby block")
-	public static Map<Object, Object> getBlockMeta(
+	public static Map<String, ?> getBlockMeta(
 		IContext<IModuleContainer> context,
 		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		int x, int y, int z

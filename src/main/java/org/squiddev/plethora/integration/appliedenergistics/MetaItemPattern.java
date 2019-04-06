@@ -17,7 +17,7 @@ import java.util.Map;
 public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		ItemStack stack = context.getTarget();
 
 		if (!(stack.getItem() instanceof ICraftingPatternItem)) return Collections.emptyMap();

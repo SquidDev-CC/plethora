@@ -18,12 +18,12 @@ public final class MetaBlock extends BasicMetaProvider<Block> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull Block block) {
+	public Map<String, ?> getMeta(@Nonnull Block block) {
 		return getBasicMeta(block);
 	}
 
-	public static Map<Object, Object> getBasicMeta(@Nonnull Block block) {
-		HashMap<Object, Object> data = new HashMap<>();
+	public static Map<String, ?> getBasicMeta(@Nonnull Block block) {
+		HashMap<String, Object> data = new HashMap<>(3);
 
 		ResourceLocation name = block.getRegistryName();
 		data.put("name", name == null ? "unknown" : name.toString());

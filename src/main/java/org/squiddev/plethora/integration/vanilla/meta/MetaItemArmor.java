@@ -21,8 +21,8 @@ public final class MetaItemArmor extends ItemStackMetaProvider<ItemArmor> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemArmor armor) {
-		HashMap<Object, Object> data = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemArmor armor) {
+		HashMap<String, Object> data = new HashMap<>(3);
 		data.put("armorType", armor.armorType.getName());
 
 		int color = armor.getColor(stack);

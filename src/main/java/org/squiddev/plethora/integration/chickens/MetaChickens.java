@@ -28,7 +28,7 @@ public final class MetaChickens {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<EntityChickensChicken> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<EntityChickensChicken> context) {
 			Map<Object, Object> out = new HashMap<>();
 			EntityChickensChicken chicken = context.getTarget();
 
@@ -74,8 +74,8 @@ public final class MetaChickens {
 	public static final IMetaProvider<ChickensRegistryItem> META_CHICKENS_REGISTRY_ITEM = new BaseMetaProvider<ChickensRegistryItem>() {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ChickensRegistryItem> context) {
-			Map<Object, Object> out = new HashMap<>();
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ChickensRegistryItem> context) {
+			Map<String, Object> out = new HashMap<>();
 			ChickensRegistryItem chicken = context.getTarget();
 
 			//Using key "type" for consistency

@@ -21,8 +21,8 @@ public final class MetaItemPrintout extends ItemStackMetaProvider<ItemPrintout> 
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ItemPrintout item) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack object, @Nonnull ItemPrintout item) {
+		Map<String, Object> out = new HashMap<>(4);
 		out.put("type", ItemPrintout.getType(object).toString());
 		out.put("title", ItemPrintout.getTitle(object));
 		out.put("pages", ItemPrintout.getPageCount(object));

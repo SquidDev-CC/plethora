@@ -23,7 +23,7 @@ public interface IMetaProvider<T> {
 	 * @return The gathered data. Do not return {@code null}.
 	 */
 	@Nonnull
-	Map<Object, Object> getMeta(@Nonnull IPartialContext<T> context);
+	Map<String, ?> getMeta(@Nonnull IPartialContext<T> context);
 
 	/**
 	 * Get the priority of this provider

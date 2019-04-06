@@ -30,7 +30,7 @@ public final class IntegrationEnderIO {
 	) {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSoulVial item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSoulVial item) {
 			CapturedMob mob = CapturedMob.create(context.getTarget());
 			if (mob == null) return Collections.emptyMap();
 
@@ -43,8 +43,8 @@ public final class IntegrationEnderIO {
 			return Collections.singletonMap("capturedEntity", context.makePartialChild(entity).getMeta());
 		}
 
-		private Map<Object, Object> getBasic(CapturedMob mob) {
-			Map<Object, Object> details = new HashMap<>(2);
+		private Map<String, Object> getBasic(CapturedMob mob) {
+			Map<String, Object> details = new HashMap<>(2);
 			details.put("name", mob.getTranslationName());
 			details.put("displayName", mob.getDisplayName());
 			return Collections.singletonMap("capturedEntity", details);

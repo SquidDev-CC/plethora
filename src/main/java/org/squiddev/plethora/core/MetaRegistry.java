@@ -38,27 +38,29 @@ public final class MetaRegistry implements IMetaRegistry {
 	}
 
 	@Nonnull
-	@Override
 	@SuppressWarnings("unchecked")
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<?> context) {
+	public Map<String, ?> getMeta(@Nonnull PartialContext<?> context) {
 		Objects.requireNonNull(context, "context cannot be null");
-		if (!(context instanceof PartialContext)) throw new IllegalStateException("Unknown context class");
 
-		PartialContext<?> partial = (PartialContext<?>) context;
-		String[] keys = partial.keys;
-		Object[] values = partial.values;
+		String[] keys = context.keys;
+		Object[] values = context.values;
 
 		// TODO: Handle priority across each conversion correctly
 
-		HashMap<Object, Object> out = new HashMap<>();
+		HashMap<String, Object> out = new HashMap<>();
 		for (int i = values.length - 1; i >= 0; i--) {
 			if (!ContextKeys.TARGET.equals(keys[i])) continue;
 
 			Object child = values[i];
-			IPartialContext<?> childContext = partial.withIndex(i);
+			IPartialContext<?> childContext = context.withIndex(i);
 
 			for (IMetaProvider provider : getMetaProviders(child.getClass())) {
-				out.putAll(provider.getMeta(childContext));
+				Map<String, ?> res = provider.getMeta(childContext);
+				if (res == null) {
+					PlethoraCore.LOG.error("Meta provider {} returned null", getName(provider));
+					continue;
+				}
+				out.putAll(res);
 			}
 		}
 

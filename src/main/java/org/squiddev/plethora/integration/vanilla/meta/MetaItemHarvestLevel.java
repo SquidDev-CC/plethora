@@ -19,10 +19,10 @@ import java.util.Map;
 public class MetaItemHarvestLevel extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (!item.getToolClasses(stack).isEmpty()) {
-			HashMap<Object, Object> types = new HashMap<>();
+			HashMap<String, Object> types = new HashMap<>();
 
 			for (String tool : item.getToolClasses(stack)) {
 				types.put(tool, item.getHarvestLevel(stack, tool, null, null));

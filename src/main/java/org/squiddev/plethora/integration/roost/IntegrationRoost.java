@@ -36,7 +36,7 @@ public final class IntegrationRoost {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull DataChicken context) {
+		public Map<String, ?> getMeta(@Nonnull DataChicken context) {
 			//Hack?  Maybe.  Works?  For now...
 			return context instanceof DataChickenVanilla || context instanceof DataChickenModded
 				? Collections.emptyMap()
@@ -53,7 +53,7 @@ public final class IntegrationRoost {
 	public static final IMetaProvider<DataChickenVanilla> META_DATA_CHICKEN_VANILLA = new BasicMetaProvider<DataChickenVanilla>() {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull DataChickenVanilla context) {
+		public Map<String, ?> getMeta(@Nonnull DataChickenVanilla context) {
 			Map<Object, Object> out = new HashMap<>(2);
 			NBTTagCompound nbt = context.buildChickenStack().getTagCompound();
 
@@ -79,7 +79,7 @@ public final class IntegrationRoost {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull DataChickenModded context) {
+		public Map<String, ?> getMeta(@Nonnull DataChickenModded context) {
 			NBTTagCompound nbt = context.buildChickenStack().getTagCompound();
 			if (nbt == null) {
 				return Collections.singletonMap("roost", Collections.singletonMap("name", context.getName()));

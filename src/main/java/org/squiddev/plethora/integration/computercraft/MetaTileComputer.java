@@ -15,10 +15,10 @@ import java.util.Map;
 public class MetaTileComputer extends BasicMetaProvider<TileComputerBase> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull TileComputerBase object) {
+	public Map<String, ?> getMeta(@Nonnull TileComputerBase object) {
 		ServerComputer computer = object.getServerComputer();
 
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 		out.put("family", object.getFamily().toString());
 		out.put("id", computer.getID());
 

@@ -29,7 +29,7 @@ public final class MethodsIntrospection {
 		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S},
 		doc = "-- Get this entity's UUID."
 	)
-	public static Map<Object, Object> getMetaOwner(@FromSubtarget EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context) throws LuaException {
+	public static Map<String, ?> getMetaOwner(@FromSubtarget EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context) throws LuaException {
 		return context.makePartialChild(identifier.getEntity()).getMeta();
 	}
 }

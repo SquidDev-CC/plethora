@@ -20,7 +20,7 @@ import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 @Injects(AppEng.MOD_ID)
 public final class MetaAppliedEnergistics {
 	public static final SimpleMetaProvider<ICraftingCPU> META_CRAFTING_CPU = cpu -> {
-		Map<Object, Object> out = new HashMap<>(4);
+		Map<String, Object> out = new HashMap<>(4);
 		out.put("name", cpu.getName());
 		out.put("busy", cpu.isBusy());
 		out.put("coprocessors", cpu.getCoProcessors());
@@ -34,9 +34,9 @@ public final class MetaAppliedEnergistics {
 	public static final BaseMetaProvider<ICraftingPatternDetails> META_CRAFTING_PATTERN_DETAILS = new BaseMetaProvider<ICraftingPatternDetails>() {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingPatternDetails> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ICraftingPatternDetails> context) {
 			ICraftingPatternDetails pattern = context.getTarget();
-			Map<Object, Object> out = new HashMap<>(4);
+			Map<String, Object> out = new HashMap<>(4);
 
 			out.put("outputs", getMetaList(context, pattern.getOutputs()));
 			out.put("inputs", getMetaList(context, pattern.getInputs()));
@@ -51,8 +51,8 @@ public final class MetaAppliedEnergistics {
 	}
 
 	@Nonnull
-	static HashMap<Object, Object> getItemStackProperties(@Nonnull IAEItemStack stack) {
-		HashMap<Object, Object> data = new HashMap<>();
+	static HashMap<String, Object> getItemStackProperties(@Nonnull IAEItemStack stack) {
+		HashMap<String, Object> data = new HashMap<>();
 		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
 		data.put("count", stack.getStackSize());
 		data.put("isCraftable", stack.isCraftable());

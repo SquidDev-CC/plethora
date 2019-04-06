@@ -20,7 +20,7 @@ import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		ItemStack stack = context.getTarget();
 		if (stack.getItem() != RSItems.PATTERN) return Collections.emptyMap();
 
@@ -30,7 +30,7 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 			ICraftingPattern pattern = ItemPattern.getPatternFromCache(position.getWorld(), stack);
 			return context.makePartialChild(pattern).getMeta();
 		} else {
-			Map<Object, Object> out = new HashMap<>();
+			Map<String, Object> out = new HashMap<>();
 
 			out.put("id", "normal");
 			out.put("outputs", getMetaItems(context, stack, ItemPattern::getOutputSlot));
@@ -42,10 +42,9 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 
 			return out;
 		}
-
 	}
 
-	private static <T> Map<Integer, Map<Object, Object>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
+	private static <T> Map<Integer, Map<String, ?>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
 		List<T> out = new ArrayList<>(9);
 		for (int i = 0; i < 9; i++) {
 			T result = func.apply(stack, i);

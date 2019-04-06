@@ -20,8 +20,8 @@ public final class MetaItemModule extends ItemStackMetaProvider<ItemModule> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack, @Nonnull ItemModule module) {
-		Map<Object, Object> result = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemModule module) {
+		Map<String, Object> result = new HashMap<>();
 
 		GameProfile profile = ItemModule.getProfile(stack);
 		if (profile != null) {

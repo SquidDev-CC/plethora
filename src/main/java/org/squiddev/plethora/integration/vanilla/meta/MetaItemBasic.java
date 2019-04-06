@@ -9,7 +9,7 @@ import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.integration.PlethoraIntegration;
-import org.squiddev.plethora.utils.LuaList;
+import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,10 +31,10 @@ import java.util.Map;
 public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack) {
 		if (stack.isEmpty()) return Collections.emptyMap();
 
-		HashMap<Object, Object> data = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
 		fillBasicMeta(data, stack);
 
 		String display = stack.getDisplayName();
@@ -53,7 +53,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			NBTTagCompound displayTag = tag.getCompoundTag("display");
 			if (displayTag.hasKey("Lore", Constants.NBT.TAG_LIST)) {
 				NBTTagList loreTag = displayTag.getTagList("Lore", Constants.NBT.TAG_STRING);
-				LuaList<String> loreText = new LuaList<>();
+				LuaList<String> loreText = new LuaList<>(loreTag.tagCount());
 				for (NBTBase child : loreTag) loreText.add(((NBTTagString) child).getString());
 
 				data.put("lore", loreText.asMap());

@@ -15,14 +15,14 @@ import java.util.Map;
 public class MetaTileCrop extends BasicMetaProvider<ICropTile> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ICropTile object) {
+	public Map<String, ?> getMeta(@Nonnull ICropTile object) {
 		if (Crops.instance == null) return Collections.emptyMap();
 
 		CropCard card = object.getCrop();
 		if (card == null) return Collections.emptyMap();
 
 		int level = object.getScanLevel();
-		Map<Object, Object> out = MetaItemCrop.getMeta(card, level);
+		Map<String, Object> out = MetaItemCrop.getMeta(card, level);
 		if (level >= 4) {
 			out.put("growth", object.getStatGrowth());
 			out.put("gain", object.getStatGain());

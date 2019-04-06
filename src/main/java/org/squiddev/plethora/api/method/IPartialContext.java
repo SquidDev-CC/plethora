@@ -111,8 +111,8 @@ public interface IPartialContext<T> {
 	 * Get the metadata for this object
 	 *
 	 * @return The object's metadata
-	 * @see org.squiddev.plethora.api.meta.IMetaRegistry#getMeta(IPartialContext)
+	 * @see org.squiddev.plethora.api.meta.IMetaProvider
 	 */
 	@Nonnull
-	Map<Object, Object> getMeta();
+	Map<String, ?> getMeta();
 }

@@ -16,9 +16,9 @@ import java.util.Map;
 public final class MetaIndividual extends BaseMetaProvider<IIndividual> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<IIndividual> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<IIndividual> context) {
 		IIndividual individual = context.getTarget();
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 		out.put("id", individual.getIdent());
 		out.put("analyzed", individual.isAnalyzed());
 

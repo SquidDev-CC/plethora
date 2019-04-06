@@ -16,7 +16,7 @@ import java.util.Map;
 public class MetaItemGenetic extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		ItemStack stack = context.getTarget();
 
 		IIndividual individual = AlleleManager.alleleRegistry.getIndividual(stack);

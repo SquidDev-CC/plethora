@@ -1,27 +1,37 @@
-package org.squiddev.plethora.utils;
+package org.squiddev.plethora.api.method;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collector;
 
 /**
- * A simple wrapper class for constructing Lua lists. Not thread safe!
+ * A simple helper class for constructing lists of Lua values.
  */
 public class LuaList<T> {
+	private static final Collector<Object, ?, LuaList<Object>> COLLECTOR = Collector.of(
+		LuaList::new,
+		LuaList::add,
+		(a, b) -> {
+			for (Object t : b.map.values()) a.add(t);
+			return a;
+		},
+		Collector.Characteristics.IDENTITY_FINISH
+	);
+
 	/**
-	 * Creates a {@link Collector} that produces a LuaList
+	 * Creates a {@link Collector} that produces a {@link LuaList}.
 	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <T> Collector<T, ?, LuaList<T>> toLuaList() {
-		return Collector.of(
-			LuaList::new,
-			LuaList::add,
-			(a, b) -> {
-				b.map.values().forEach(a::add);
-				return a;
-			},
-			Collector.Characteristics.IDENTITY_FINISH
-		);
+		return (Collector) COLLECTOR;
+	}
+
+	public static <T, R> LuaList<R> of(Collection<T> items, Function<T, R> map) {
+		LuaList<R> list = new LuaList<>(items.size());
+		for (T item : items) list.add(map.apply(item));
+		return list;
 	}
 
 	private final Map<Integer, T> map;
@@ -52,10 +62,22 @@ public class LuaList<T> {
 	}
 
 	/**
+	 * Create a new list using elements from the given array
+	 *
+	 * @param array The array to construct from.
+	 */
+	public LuaList(T[] array) {
+		this(array.length);
+		for (int i = 0; i < array.length; i++) map.put(i + 1, array[i]);
+		lastIndex = array.length;
+	}
+
+	/**
 	 * Adds an element to the end of the list
 	 */
 	public void add(T e) {
-		map.put(++lastIndex, e);
+		int i = ++lastIndex;
+		if (e != null) map.put(i, e);
 	}
 
 	/**

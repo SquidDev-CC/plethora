@@ -21,7 +21,7 @@ public final class IntegrationTesla {
 	public static final DynamicConverter<ICapabilityProvider, ITeslaHolder> TESLA_HOLDER_CAP = ofCapability(() -> TeslaCapabilities.CAPABILITY_HOLDER);
 
 	public static final IMetaProvider<ITeslaHolder> META_TESLA_HOLDER = new NamespacedMetaProvider<>("tesla", object -> {
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 		ITeslaHolder handler = object.getTarget();
 		out.put("stored", handler.getStoredPower());
 		out.put("capacity", handler.getCapacity());

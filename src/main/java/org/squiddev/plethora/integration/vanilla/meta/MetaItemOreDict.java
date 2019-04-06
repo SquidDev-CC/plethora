@@ -19,18 +19,14 @@ import java.util.Map;
 public class MetaItemOreDict extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack) {
 		if (stack.isEmpty()) return Collections.emptyMap();
 
 		int[] oreIds = OreDictionary.getOreIDs(stack);
 		if (oreIds.length <= 0) return Collections.emptyMap();
 
-		HashMap<Object, Object> list = new HashMap<>();
-
-		for (int id : oreIds) {
-			list.put(OreDictionary.getOreName(id), true);
-		}
-
+		HashMap<String, Object> list = new HashMap<>(oreIds.length);
+		for (int id : oreIds) list.put(OreDictionary.getOreName(id), true);
 		return list;
 	}
 

@@ -36,7 +36,7 @@ public final class MethodsRoost {
 		doc = "-- Get a list of all chickens species, with the species name as the index"
 	)
 	public static Map<String, Object> getSpeciesList(@Nonnull IContext<TileEntityBreeder> context) {
-		Map<Object, Object> vanillaChicken = getVanillaChicken(context);
+		Map<String, Object> vanillaChicken = getVanillaChicken(context);
 
 		if (Loader.isModLoaded(ChickensMod.MODID)) {
 			Map<String, Object> species = ChickensRegistry.getItems().stream()
@@ -56,7 +56,7 @@ public final class MethodsRoost {
 		modId = Roost.MODID,
 		doc = "-- Get a single chicken species"
 	)
-	public static Map<Object, Object> getSpecies(@Nonnull IContext<TileEntityBreeder> context, String name) {
+	public static Map<String, ?> getSpecies(@Nonnull IContext<TileEntityBreeder> context, String name) {
 		if (MINECRAFT_CHICKEN.equals(name)) return getVanillaChicken(context);
 
 		if (Loader.isModLoaded(ChickensMod.MODID)) {
@@ -70,8 +70,8 @@ public final class MethodsRoost {
 		return Collections.emptyMap();
 	}
 
-	private static Map<Object, Object> getVanillaChicken(@Nonnull IPartialContext<?> context) {
-		Map<Object, Object> out = new HashMap<>(6);
+	private static Map<String, Object> getVanillaChicken(@Nonnull IPartialContext<?> context) {
+		Map<String, Object> out = new HashMap<>(6);
 
 		out.put("type", MINECRAFT_CHICKEN);
 		out.put("tier", 0);

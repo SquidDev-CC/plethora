@@ -17,6 +17,7 @@ import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -31,25 +32,18 @@ public final class MethodsSensor {
 	}
 
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Scan for entities in the vicinity")
-	public static Map<Integer, Object> sense(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
+	public static Map<Integer, HashMap<String, Object>> sense(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos), DEFAULT_PREDICATE::test);
 
-		int i = 0;
-		HashMap<Integer, Object> map = new HashMap<>();
-		for (Entity entity : entities) {
-			Map<Object, Object> data = MetaEntity.getBasicProperties(entity, location);
-			map.put(++i, data);
-		}
-
-		return map;
+		return LuaList.of(entities, x -> MetaEntity.getBasicProperties(x, location)).asMap();
 	}
 
 	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by UUID")
-	public static Map<Object, Object> getMetaByID(
+	public static Map<String, ?> getMetaByID(
 		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		UUID id
 	) {
@@ -59,7 +53,7 @@ public final class MethodsSensor {
 
 	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by name")
-	public static Map<Object, Object> getMetaByName(
+	public static Map<String, ?> getMetaByName(
 		IContext<IModuleContainer> context, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		String name
 	) {

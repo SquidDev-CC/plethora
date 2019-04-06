@@ -22,14 +22,14 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ICropSeed seed) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack object, @Nonnull ICropSeed seed) {
 		if (Crops.instance == null) return Collections.emptyMap();
 
 		CropCard card = Crops.instance.getCropCard(object);
 		if (card == null) return Collections.emptyMap();
 
 		int level = seed.getScannedFromStack(object);
-		Map<Object, Object> out = getMeta(card, level);
+		Map<String, Object> out = getMeta(card, level);
 		if (level >= 4) {
 			out.put("growth", seed.getGrowthFromStack(object));
 			out.put("gain", seed.getGainFromStack(object));
@@ -39,8 +39,8 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 		return out;
 	}
 
-	public static Map<Object, Object> getMeta(CropCard card, int level) {
-		Map<Object, Object> out = new HashMap<>();
+	public static Map<String, Object> getMeta(CropCard card, int level) {
+		Map<String, Object> out = new HashMap<>();
 
 		out.put("scanLevel", level);
 

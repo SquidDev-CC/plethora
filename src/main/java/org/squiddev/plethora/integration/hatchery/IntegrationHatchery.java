@@ -72,7 +72,7 @@ public final class IntegrationHatchery {
 		// Is there any way that we can abstract the complexity/deduplicate the code?
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull AnimalNet item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull AnimalNet item) {
 			//Check for a captured entity
 			ItemStack netStack = context.getTarget();
 			if (!AnimalNet.hasCapturedAnimal(netStack)) return Collections.emptyMap();
@@ -108,7 +108,7 @@ public final class IntegrationHatchery {
 	) {
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull HatcheryEgg item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull HatcheryEgg item) {
 			//Check for a captured entity
 			NBTTagCompound nbt = context.getTarget().getTagCompound();
 			if (nbt == null || !nbt.hasKey("storedEntity")) return Collections.emptyMap();
@@ -146,7 +146,7 @@ public final class IntegrationHatchery {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(EntityRooster target) {
+		public Map<String, ?> getMeta(@Nonnull EntityRooster target) {
 			//We are not exposing the actual inventory at this time;
 			//if `seeds` drops below 98, then there are no items left in the inventory.
 
@@ -166,7 +166,7 @@ public final class IntegrationHatchery {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<NestPenTileEntity> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<NestPenTileEntity> context) {
 			NestPenTileEntity target = context.getTarget();
 
 			//The stored entity and the inventory are straightforward
@@ -198,8 +198,8 @@ public final class IntegrationHatchery {
 
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<EggNestTileEntity> context) {
-			Map<Object, Object> out = new HashMap<>(2);
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<EggNestTileEntity> context) {
+			Map<String, Object> out = new HashMap<>(2);
 			EggNestTileEntity target = context.getTarget();
 
 			//The 'hasEgg' property is exposed as part of the BlockState
@@ -230,7 +230,7 @@ public final class IntegrationHatchery {
 
 	//TODO Do we want to move this (and the duplicates) into ContextHelpers, or somewhere else?
 	// Partially depends on how we refactor the rest of the captured entity code
-	private static Map<Object, Object> getBasicEntityDetails(NBTTagCompound entityData, String namespace) {
+	private static Map<String, ?> getBasicEntityDetails(NBTTagCompound entityData, String namespace) {
 		String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
 		if (translationKey == null) return Collections.emptyMap();
 

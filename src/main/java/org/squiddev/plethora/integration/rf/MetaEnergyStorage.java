@@ -13,8 +13,8 @@ import java.util.Map;
 public class MetaEnergyStorage extends BasicMetaProvider<IEnergyStorage> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IEnergyStorage object) {
-		Map<Object, Object> out = new HashMap<>(2);
+	public Map<String, ?> getMeta(@Nonnull IEnergyStorage object) {
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("stored", object.getEnergyStored());
 		out.put("capacity", object.getMaxEnergyStored());
 		return out;

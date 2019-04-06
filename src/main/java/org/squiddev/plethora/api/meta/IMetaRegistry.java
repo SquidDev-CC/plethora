@@ -1,10 +1,7 @@
 package org.squiddev.plethora.api.meta;
 
-import org.squiddev.plethora.api.method.IPartialContext;
-
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A registry for metadata providers.
@@ -12,15 +9,6 @@ import java.util.Map;
  * @see IMetaProvider
  */
 public interface IMetaRegistry {
-	/**
-	 * Get metadata about an object
-	 *
-	 * @param context The object to get metadata about
-	 * @return The gathered metadata
-	 */
-	@Nonnull
-	Map<Object, Object> getMeta(@Nonnull IPartialContext<?> context);
-
 	/**
 	 * An list of all valid providers for a class
 	 *

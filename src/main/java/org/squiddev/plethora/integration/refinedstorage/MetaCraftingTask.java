@@ -15,9 +15,9 @@ import java.util.Map;
 public final class MetaCraftingTask extends BaseMetaProvider<ICraftingTask> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingTask> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ICraftingTask> context) {
 		ICraftingTask task = context.getTarget();
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 
 		ICraftingRequestInfo requested = task.getRequested();
 		if (requested != null) out.put("requested", context.makePartialChild(requested));

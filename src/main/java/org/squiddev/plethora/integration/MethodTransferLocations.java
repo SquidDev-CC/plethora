@@ -4,10 +4,9 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optString;
@@ -41,14 +40,8 @@ public final class MethodTransferLocations extends BasicMethod<IMethodCollection
 
 				locations = PlethoraAPI.instance().transferRegistry().getTransferLocations(found, false);
 			}
-			Map<Integer, String> result = new HashMap<>();
 
-			int i = 1;
-			for (String location1 : locations) {
-				result.put(i++, location1);
-			}
-
-			return MethodResult.result(result);
+			return MethodResult.result(new LuaList<>(locations).asMap());
 		});
 	}
 }

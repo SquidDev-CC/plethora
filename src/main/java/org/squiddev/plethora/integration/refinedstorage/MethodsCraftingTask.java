@@ -25,7 +25,7 @@ public final class MethodsCraftingTask {
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the main pattern for this task.")
-	public static Map<Object, Object> getPattern(IContext<ICraftingTask> context) {
+	public static Map<String, ?> getPattern(IContext<ICraftingTask> context) {
 		return context.makePartialChild(context.getTarget().getPattern()).getMeta();
 	}
 

@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +23,17 @@ import java.util.Map;
 public final class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack stack) {
+	public Map<String, ?> getMeta(@Nonnull ItemStack stack) {
 		Item item = stack.getItem();
 		if (item instanceof ItemFood) {
-			HashMap<Object, Object> data = new HashMap<>();
+			HashMap<String, Object> data = new HashMap<>(2);
 			ItemFood food = (ItemFood) item;
 			data.put("heal", food.getHealAmount(stack));
 			data.put("saturation", food.getSaturationModifier(stack));
 
 			return data;
 		} else if (item instanceof ItemPotion) {
-			HashMap<Object, Object> data = new HashMap<>();
+			HashMap<String, Object> data = new HashMap<>(2);
 			ItemPotion itemPotion = (ItemPotion) item;
 
 			if (itemPotion instanceof ItemSplashPotion) {
@@ -76,7 +75,7 @@ public final class MetaItemConsumable extends BasicMetaProvider<ItemStack> {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		// TODO: Split this provider into potions and food

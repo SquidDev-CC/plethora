@@ -21,8 +21,8 @@ public final class MetaItemPocketComputer extends ItemStackMetaProvider<ItemPock
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ItemStack object, @Nonnull ItemPocketComputer pocket) {
-		Map<Object, Object> out = new HashMap<>(2);
+	public Map<String, ?> getMeta(@Nonnull ItemStack object, @Nonnull ItemPocketComputer pocket) {
+		Map<String, Object> out = new HashMap<>(2);
 
 		int colour = pocket.getColour(object);
 		if (colour != -1) {

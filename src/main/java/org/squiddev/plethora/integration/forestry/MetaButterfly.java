@@ -13,7 +13,7 @@ import java.util.Map;
 public class MetaButterfly extends BasicMetaProvider<IButterfly> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IButterfly butterfly) {
+	public Map<String, ?> getMeta(@Nonnull IButterfly butterfly) {
 		return butterfly.isAnalyzed() ? Collections.singletonMap("size", butterfly.getSize()) : Collections.emptyMap();
 	}
 }

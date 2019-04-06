@@ -15,7 +15,7 @@ import java.util.Map;
 public final class MetaGenome extends BasicMetaProvider<IGenome> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IGenome genome) {
+	public Map<String, ?> getMeta(@Nonnull IGenome genome) {
 		IChromosomeType[] types = genome.getSpeciesRoot().getKaryotype();
 
 		Map<String, Object> active = new HashMap<>(types.length);
@@ -26,7 +26,7 @@ public final class MetaGenome extends BasicMetaProvider<IGenome> {
 			inactive.put(type.getName(), getAlleleMeta(genome.getInactiveAllele(type)));
 		}
 
-		Map<Object, Object> out = new HashMap<>(2);
+		Map<String, Object> out = new HashMap<>(2);
 		out.put("active", active);
 		out.put("inactive", inactive);
 		return out;

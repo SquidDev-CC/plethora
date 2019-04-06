@@ -29,10 +29,9 @@ public final class IntegrationThermalExpansion {
 		ItemMorb.class,
 		"Provides the entity captured inside this Morb."
 	) {
-
 		@Nonnull
 		@Override
-		public Map<Object, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemMorb item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemMorb item) {
 			NBTTagCompound entityData = context.getTarget().getTagCompound();
 			if (entityData == null || !entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
 
@@ -49,13 +48,13 @@ public final class IntegrationThermalExpansion {
 			return Collections.singletonMap("capturedEntity", context.makePartialChild(entity).getMeta());
 		}
 
-		private Map<Object, Object> getBasicDetails(NBTTagCompound entityData) {
+		private Map<String, Object> getBasicDetails(NBTTagCompound entityData) {
 			String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
 			if (translationKey == null) return Collections.emptyMap();
 
 			String translated = Helpers.translateToLocal("entity." + translationKey + ".name");
 
-			Map<Object, Object> details = new HashMap<>(2);
+			Map<String, Object> details = new HashMap<>(2);
 			details.put("name", translated);
 			details.put("displayName",
 				entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)

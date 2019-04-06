@@ -14,10 +14,10 @@ import java.util.Map;
 public final class MetaCraftingPreviewElement extends BaseMetaProvider<ICraftingPreviewElement> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<ICraftingPreviewElement> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ICraftingPreviewElement> context) {
 		ICraftingPreviewElement preview = context.getTarget();
 
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>();
 		out.put("id", preview.getId());
 		out.put("available", preview.getAvailable());
 		out.put("toCraft", preview.getToCraft());

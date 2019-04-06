@@ -22,14 +22,14 @@ import java.util.Map;
 public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IPartialContext<BlockReference> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<BlockReference> context) {
 		if (!context.getModules().hasModule(IntegrationVanilla.daylightSensorMod)) return Collections.emptyMap();
 
 		IWorldLocation location = context.getTarget().getLocation();
 		World world = location.getWorld();
 		BlockPos pos = location.getPos();
 
-		Map<Object, Object> out = new HashMap<>();
+		Map<String, Object> out = new HashMap<>(2);
 		if (!world.provider.hasSkyLight()) {
 			out.put("sky", world.getLightFor(EnumSkyBlock.SKY, pos) - world.getSkylightSubtracted());
 		}

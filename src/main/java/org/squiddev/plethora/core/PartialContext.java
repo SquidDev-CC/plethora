@@ -169,7 +169,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta() {
+	public Map<String, ?> getMeta() {
 		return MetaRegistry.instance.getMeta(this);
 	}
 }

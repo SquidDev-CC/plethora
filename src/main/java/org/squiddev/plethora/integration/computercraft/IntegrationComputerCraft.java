@@ -63,9 +63,6 @@ public final class IntegrationComputerCraft {
 	@SubscribeEvent
 	@Optional.Method(modid = ComputerCraft.MOD_ID)
 	public static void onItemInspect(TurtleInspectItemEvent event) {
-		ITurtleAccess turtle = event.getTurtle();
-		ItemStack stack = event.getStack();
-
 		// Expose the basic metadata to the computer. We can't do any more than this, as this is run on the computer
 		// thread
 		event.addData(MetaItemBasic.getBasicMeta(event.getStack()));
@@ -84,8 +81,7 @@ public final class IntegrationComputerCraft {
 
 			IBlockState state = event.getState();
 			IModuleContainer container = new SingletonModuleContainer(PlethoraModules.SCANNER_M);
-			@SuppressWarnings("unchecked")
-			Map<String, Object> metadata = (Map) ContextFactory
+			Map<String, ?> metadata = ContextFactory
 				.of(state, id(state))
 				.withCostHandler(DefaultCostHandler.get(turtle))
 				.withModules(container, id(container))

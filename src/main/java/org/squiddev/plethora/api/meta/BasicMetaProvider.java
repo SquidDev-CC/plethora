@@ -26,7 +26,7 @@ public abstract class BasicMetaProvider<T> extends BaseMetaProvider<T> implement
 
 	@Nonnull
 	@Override
-	public final Map<Object, Object> getMeta(@Nonnull IPartialContext<T> context) {
+	public final Map<String, ?> getMeta(@Nonnull IPartialContext<T> context) {
 		return getMeta(context.getTarget());
 	}
 }

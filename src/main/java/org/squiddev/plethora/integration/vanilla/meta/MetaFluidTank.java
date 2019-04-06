@@ -13,7 +13,7 @@ import java.util.Map;
 public final class MetaFluidTank extends BasicMetaProvider<IFluidTank> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull IFluidTank tank) {
+	public Map<String, ?> getMeta(@Nonnull IFluidTank tank) {
 		return Collections.singletonMap("capacity", tank.getCapacity());
 	}
 

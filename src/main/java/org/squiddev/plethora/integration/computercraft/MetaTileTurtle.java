@@ -16,8 +16,8 @@ import static org.squiddev.plethora.integration.computercraft.MetaItemTurtle.get
 public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 	@Nonnull
 	@Override
-	public Map<Object, Object> getMeta(@Nonnull ITurtleTile object) {
-		Map<Object, Object> out = new HashMap<>();
+	public Map<String, ?> getMeta(@Nonnull ITurtleTile object) {
+		Map<String, Object> out = new HashMap<>();
 
 		int colour = object.getColour();
 		if (colour != -1) {
