@@ -3,8 +3,11 @@ package org.squiddev.plethora.integration.computercraft;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
+import dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced;
+import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -30,5 +33,16 @@ public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 		out.put("right", getUpgrade(object.getUpgrade(TurtleSide.Right)));
 
 		return out;
+	}
+
+	@Nonnull
+	@Override
+	public ITurtleTile getExample() {
+		TileTurtleAdvanced turtle = new TileTurtleAdvanced();
+		turtle.setWorld(WorldDummy.INSTANCE);
+		turtle.setPos(BlockPos.ORIGIN);
+		turtle.getAccess().setFuelLevel(100);
+		turtle.getAccess().setColour(23);
+		return turtle;
 	}
 }

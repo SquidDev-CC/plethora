@@ -36,7 +36,7 @@ public final class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return new ItemStack(Items.DIAMOND_PICKAXE);

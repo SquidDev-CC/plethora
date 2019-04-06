@@ -4,8 +4,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
@@ -18,8 +18,12 @@ import java.util.Map;
 /**
  * Meta provider which adds block light for blocks when the daylight sensor is installed.
  */
-@IMetaProvider.Inject(value = BlockReference.class, namespace = "light")
+@Injects
 public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
+	public MetaDaylightSensor() {
+		super("Provides metadata about block light levels, when the daylight sensor module is attached.");
+	}
+
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull IPartialContext<BlockReference> context) {
@@ -35,6 +39,6 @@ public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 		}
 
 		out.put("block", world.getLightFor(EnumSkyBlock.BLOCK, pos));
-		return out;
+		return Collections.singletonMap("light", out);
 	}
 }

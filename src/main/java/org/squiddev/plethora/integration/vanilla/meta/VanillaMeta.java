@@ -2,7 +2,9 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -10,9 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.utils.WorldDummy;
 
@@ -25,27 +31,6 @@ import java.util.Map;
 public final class VanillaMeta {
 	private VanillaMeta() {
 	}
-
-	public static final IMetaProvider<EntitySheep> ENTITY_SHEEP = new BasicMetaProvider<EntitySheep>(
-		"Provides the wool colour of the sheep."
-	) {
-		@Nonnull
-		@Override
-		public Map<String, ?> getMeta(@Nonnull EntitySheep sheep) {
-			Map<String, Object> meta = new HashMap<>(2);
-			meta.put("woolColour", sheep.getFleeceColor().getTranslationKey());
-			meta.put("woolColor", sheep.getFleeceColor().getTranslationKey());
-			return meta;
-		}
-
-		@Nonnull
-		@Override
-		public EntitySheep getExample() {
-			EntitySheep sheep = new EntitySheep(WorldDummy.INSTANCE);
-			sheep.setFleeceColor(EnumDyeColor.GREEN);
-			return sheep;
-		}
-	};
 
 	public static final IMetaProvider<TileEntitySign> TILE_SIGN = new BasicMetaProvider<TileEntitySign>(
 		"Provides the text upon the sign."
@@ -104,6 +89,25 @@ public final class VanillaMeta {
 			ItemStack stack = new ItemStack(Items.DIAMOND_HOE);
 			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.UNBREAKING, 5), stack);
 			return stack;
+		}
+	};
+
+	public static final IMetaProvider<IEnergyStorage> ENERGY = new BasicMetaProvider<IEnergyStorage>(
+		"Provides the currently stored energy and capacity of a Forge Energy cell"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, ?> getMeta(@Nonnull IEnergyStorage handler) {
+			Map<String, Object> out = new HashMap<>(2);
+			out.put("stored", handler.getEnergyStored());
+			out.put("capacity", handler.getMaxEnergyStored());
+			return Collections.singletonMap("energy", out);
+		}
+
+		@Nonnull
+		@Override
+		public IEnergyStorage getExample() {
+			return new EnergyStorage(50000, 100, 100, 1000);
 		}
 	};
 }

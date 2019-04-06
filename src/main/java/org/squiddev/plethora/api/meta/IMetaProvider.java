@@ -11,8 +11,11 @@ import java.lang.annotation.Target;
 import java.util.Map;
 
 /**
- * Provides metadata about an object
- * Register with {@link IMetaRegistry}
+ * Provides metadata about an object.
+ *
+ * @see IMetaRegistry
+ * @see IPartialContext#getMeta()
+ * @see org.squiddev.plethora.api.Injects
  */
 @FunctionalInterface
 public interface IMetaProvider<T> {
