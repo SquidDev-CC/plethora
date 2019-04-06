@@ -49,6 +49,7 @@ repositories {
 	jcenter()
 	mavenLocal()
 
+	maven { url 'https://maven.blamejared.com/' } // Botania
 	maven { url 'http://chickenbones.net/maven' } // CBMP
 	maven { url 'http://dvs1.progwml6.com/files/maven' } // JEI + Tinker's
 	maven { url 'http://maven.amadornes.com/' } // Multipart
@@ -62,26 +63,7 @@ repositories {
 	maven { url 'https://repo.raoulvdberge.com' } // Refined Storage
 	maven { url 'https://squiddev.cc/maven/' } // CC: Tweaked
 	maven { url 'https://mod-buildcraft.com/maven/' } // Buildcraft
-}
-
-def curseMod(String mod, int id, String version) {
-	def f = file("lib-${project.mc_version}/${mod}-${version}.jar")
-	if (!f.exists()) {
-		f.parentFile.mkdirs();
-
-		def url = new URL("https://minecraft.curseforge.com/projects/${mod}/files/${id}/download");
-		logger.info("Fetching ${mod} (${version}) from ${url}")
-
-		def connection = url.openConnection();
-		connection.setRequestProperty("User-Agent", "Gradle file downloader");
-		connection.connect();
-
-		def i = connection.getInputStream();
-		f.withOutputStream { it << i }
-		i.close()
-	}
-
-	files(f)
+	maven { url 'https://minecraft.curseforge.com/api/maven/' } // Everything else
 }
 
 dependencies {
@@ -106,17 +88,17 @@ dependencies {
 	compileOnly "refinedstorage:refinedstorage:1.6.13-364:deobf"
 	compileOnly "slimeknights:TConstruct:1.12.2-2.12.0.116"
 	compileOnly "slimeknights.mantle:Mantle:1.12-1.3.3.43"
+	compileOnly "vazkii.botania:Botania:r1.10-361.67"
 
 	// All the Curse mods
-	compileOnly curseMod("botania", 2677096, "r1.10-360")
-	compileOnly curseMod("baubles", 2518667, "1.12-1.5.2")
-	compileOnly curseMod("storage-drawers", 2642386, "1.12.2-5.3.8")
-	compileOnly curseMod("chameleon", 2450900, "1.12-4.1.3")
-	compileOnly curseMod("blockcraftery", 2681355, "1.2.0")
-	compileOnly curseMod("mysticallib", 2681363, "1.12.2-1.1.1")
-	compileOnly curseMod("roost", 2635449, "1.3.0")
-	compileOnly curseMod("chickens", 2545467, "6.1.0v")
-	compileOnly curseMod("hatchery", 2674999, "2.2.1")
+	compileOnly "baubles:Baubles:1.12:1.5.2"
+	compileOnly "storage-drawers:StorageDrawers:1.12.2:5.3.8"
+	compileOnly "chameleon:Chameleon:1.12:4.1.3"
+	compileOnly "blockcraftery:blockcraftery:1.12.2:1.2.0"
+	compileOnly "mysticallib:mysticallib:1.12.2:1.1.1"
+	compileOnly "roost:roost:1.12:1.3.0"
+	compileOnly "chickens:chickens:6.0.4"
+	compileOnly "hatchery:hatchery:1.12.2:2.2.1"
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
