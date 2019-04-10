@@ -58,6 +58,12 @@ public abstract class ItemEntityStorageMetaProvider<T extends Item> extends Item
 	protected abstract Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull T item);
 
 	@Nonnull
+	public static Map<String, ?> getBasicDetails(@Nullable NBTTagCompound entityData) {
+		if (entityData == null || !entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
+		return getBasicDetails(new ResourceLocation(entityData.getString("id")), entityData);
+	}
+
+	@Nonnull
 	protected static Map<String, ?> getBasicDetails(@Nonnull ResourceLocation id, @Nullable NBTTagCompound entityData) {
 		return getBasicDetails(
 			id,

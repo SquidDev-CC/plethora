@@ -15,7 +15,6 @@ import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
 
 @Injects(ThermalExpansion.MOD_ID)
@@ -38,9 +37,7 @@ public final class IntegrationThermalExpansion {
 		@Nonnull
 		@Override
 		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull ItemMorb item) {
-			NBTTagCompound tag = stack.getTagCompound();
-			if (tag == null || !tag.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
-			return getBasicDetails(new ResourceLocation(tag.getString("id")), tag);
+			return getBasicDetails(stack.getTagCompound());
 		}
 
 		@Nullable

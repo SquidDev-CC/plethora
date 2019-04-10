@@ -84,9 +84,7 @@ public final class IntegrationHatchery {
 		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull AnimalNet item) {
 			//Check for a captured entity
 			if (!AnimalNet.hasCapturedAnimal(stack)) return Collections.emptyMap();
-			NBTTagCompound entityData = AnimalNet.getCapturedAnimalNBT(stack);
-			if (!entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
-			return getBasicDetails(new ResourceLocation(entityData.getString("id")), entityData);
+			return getBasicDetails(AnimalNet.getCapturedAnimalNBT(stack));
 		}
 
 		@Nullable
@@ -121,9 +119,7 @@ public final class IntegrationHatchery {
 		@Nonnull
 		@Override
 		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull HatcheryEgg item) {
-			NBTTagCompound entityData = ItemStackEntityNBTHelper.getEntityTagFromStack(stack);
-			if (entityData == null || !entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
-			return getBasicDetails(new ResourceLocation(entityData.getString("id")), entityData);
+			return getBasicDetails(ItemStackEntityNBTHelper.getEntityTagFromStack(stack));
 		}
 
 		@Nonnull

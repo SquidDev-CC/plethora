@@ -3,11 +3,14 @@ package org.squiddev.plethora.integration.vanilla.converter;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartMobSpawner;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -30,6 +33,7 @@ import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.api.reference.ItemSlot;
 import org.squiddev.plethora.integration.EntityIdentifier;
 import org.squiddev.plethora.integration.vanilla.NullableItemStack;
+import org.squiddev.plethora.utils.TypedField;
 
 import static org.squiddev.plethora.api.converter.Converters.ofCapability;
 
@@ -93,4 +97,9 @@ public final class VanillaConverters {
 		from instanceof EntityPlayer
 			? new EntityIdentifier.Player(((EntityPlayer) from).getGameProfile())
 			: new EntityIdentifier(from);
+
+	public static final ConstantConverter<TileEntityMobSpawner, MobSpawnerBaseLogic> GET_TILE_SPAWNER_LOGIC = TileEntityMobSpawner::getSpawnerBaseLogic;
+
+	public static final ConstantConverter<EntityMinecartMobSpawner, MobSpawnerBaseLogic> GET_ENTITY_SPAWNER_LOGIC =
+		TypedField.<EntityMinecartMobSpawner, MobSpawnerBaseLogic>of(EntityMinecartMobSpawner.class, "mobSpawnerLogic", "field_98040_a")::get;
 }
