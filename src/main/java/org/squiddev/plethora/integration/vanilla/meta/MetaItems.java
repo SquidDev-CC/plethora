@@ -1,19 +1,28 @@
 package org.squiddev.plethora.integration.vanilla.meta;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Items;
 import net.minecraft.init.PotionTypes;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
+import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Injects
@@ -84,6 +93,51 @@ public final class MetaItems {
 		@Override
 		public ItemStack getExample() {
 			return PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.SWIFTNESS);
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> ITEM_SPAWN_EGG = new ItemEntityStorageMetaProvider<ItemMonsterPlacer>(
+		"storedEntity", ItemMonsterPlacer.class,
+		"Provides information about items captured within spawn eggs."
+	) {
+		@Nullable
+		@Override
+		protected Entity spawn(@Nonnull ItemStack stack, @Nonnull ItemMonsterPlacer item, @Nonnull IWorldLocation location) {
+			ResourceLocation id = ItemMonsterPlacer.getNamedIdFrom(stack);
+			if (id == null) return null;
+
+			Entity entity = EntityList.createEntityByIDFromName(id, WorldDummy.INSTANCE);
+			if (entity == null) return null;
+
+			if (stack.hasDisplayName()) entity.setCustomNameTag(stack.getDisplayName());
+			NBTTagCompound stackTag = stack.getTagCompound();
+			if (!entity.ignoreItemEntityData() && stackTag != null && stackTag.hasKey("EntityTag", Constants.NBT.TAG_COMPOUND)) {
+				NBTTagCompound entityData = entity.writeToNBT(new NBTTagCompound());
+				UUID uuid = entity.getUniqueID();
+				entityData.merge(stackTag.getCompoundTag("EntityTag"));
+				entity.setUniqueId(uuid);
+				entity.readFromNBT(entityData);
+			}
+
+			return entity;
+		}
+
+		@Nonnull
+		@Override
+		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull ItemMonsterPlacer item) {
+			ResourceLocation id = ItemMonsterPlacer.getNamedIdFrom(stack);
+			return id != null
+				? getBasicDetails(id, stack.hasDisplayName() ? stack.getDisplayName() : null)
+				: Collections.emptyMap();
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack getExample() {
+			ItemStack stack = new ItemStack(Items.SPAWN_EGG, 1);
+			Iterator<EntityList.EntityEggInfo> eggs = EntityList.ENTITY_EGGS.values().iterator();
+			if (eggs.hasNext()) ItemMonsterPlacer.applyEntityIdToItemStack(stack, eggs.next().spawnedID);
+			return stack;
 		}
 	};
 

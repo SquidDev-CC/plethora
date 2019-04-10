@@ -19,7 +19,7 @@ import java.util.Map;
  * Meta provider which adds block light for blocks when the daylight sensor is installed.
  */
 @Injects
-public class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
+public final class MetaDaylightSensor extends BaseMetaProvider<BlockReference> {
 	public MetaDaylightSensor() {
 		super("Provides metadata about block light levels, when the daylight sensor module is attached.");
 	}

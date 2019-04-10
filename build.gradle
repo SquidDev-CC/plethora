@@ -76,7 +76,9 @@ dependencies {
 	compileOnly "codechicken:CodeChickenLib:1.12.2-3.2.2.354:deobf"
 	compileOnly("codechicken:ForgeMultipart:1.12.2-2.6.1.81:deobf") { exclude group: "codechicken" }
 	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.7:deobf"
+	compileOnly "cofh:CoFHCore:1.12.2-4.6.2.25:deobf"
 	compileOnly "cofh:ThermalExpansion:1.12.2-5.5.3.41:deobf"
+	compileOnly "cofh:ThermalFoundation:1.12.2-2.6.2.26:deobf"
 	compileOnly("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
 	compileOnly "com.enderio.core:EnderCore:1.12.2-0.5.51:deobf"
 	compileOnly "com.mod-buildcraft:buildcraft-all:7.99.22"

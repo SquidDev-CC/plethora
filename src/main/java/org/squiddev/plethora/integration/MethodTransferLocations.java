@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
 import java.util.Set;

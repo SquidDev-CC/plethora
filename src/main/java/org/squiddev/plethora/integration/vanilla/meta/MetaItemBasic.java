@@ -8,8 +8,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.integration.PlethoraIntegration;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.integration.PlethoraIntegration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

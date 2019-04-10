@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.meta;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Basic wrapper for meta-providers

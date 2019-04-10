@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -17,7 +18,6 @@ import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaEntity;
 import org.squiddev.plethora.utils.Helpers;
-import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

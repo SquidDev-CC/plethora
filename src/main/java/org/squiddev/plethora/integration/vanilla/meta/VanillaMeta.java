@@ -2,12 +2,8 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
@@ -15,12 +11,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.LuaList;
-import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
