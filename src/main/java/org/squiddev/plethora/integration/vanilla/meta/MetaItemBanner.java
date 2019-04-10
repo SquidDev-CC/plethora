@@ -6,10 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.BannerPattern;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.utils.TypedField;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -18,6 +18,8 @@ import java.util.Map;
 
 @Injects
 public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
+	private static final TypedField<BannerPattern, String> FIELD_NAME = TypedField.of(BannerPattern.class, "fileName", "field_191014_N");
+
 	public MetaItemBanner() {
 		super(ItemBanner.class);
 	}
@@ -40,10 +42,7 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 				if (pattern != null) {
 					Map<String, String> entry = new HashMap<>();
 					entry.put("id", pattern.getHashname());
-
-					// patternName
-					String name = ObfuscationReflectionHelper.getPrivateValue(BannerPattern.class, pattern, "field_191014_N");
-					entry.put("name", name);
+					entry.put("name", FIELD_NAME.get(pattern));
 
 					entry.put("colour", color.toString());
 					entry.put("color", color.toString());

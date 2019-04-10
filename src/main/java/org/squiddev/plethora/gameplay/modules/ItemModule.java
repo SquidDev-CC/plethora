@@ -21,7 +21,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,6 +39,7 @@ import org.squiddev.plethora.gameplay.client.RenderHelpers;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.integration.EntityIdentifier;
 import org.squiddev.plethora.utils.Helpers;
+import org.squiddev.plethora.utils.TypedField;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.AxisAngle4f;
@@ -56,6 +56,8 @@ import static org.squiddev.plethora.gameplay.modules.PlethoraModules.*;
 public final class ItemModule extends ItemBase {
 	private static final int MAX_TICKS = 72000;
 	private static final int USE_TICKS = 30;
+
+	private static final TypedField<NetHandlerPlayServer, Integer> FIELD_FLOATING_TICK_COUNT = TypedField.of(NetHandlerPlayServer.class, "floatingTickCount", "field_147365_f");
 
 	/**
 	 * We multiply the gaussian by this number.
@@ -377,14 +379,9 @@ public final class ItemModule extends ItemBase {
 		}
 
 		if (ConfigGameplay.Kinetic.launchFloatReset && entity instanceof EntityPlayerMP) {
-			try {
-				// Set .floatingTickCount to 0. Ideally we could do this with access transformers, but
-				// it doesn't appear to work under all environments
-				ObfuscationReflectionHelper.setPrivateValue(NetHandlerPlayServer.class,
-					((EntityPlayerMP) entity).connection, 0, "field_147365_f");
-			} catch (RuntimeException ignored) {
-				// This'll be logged by FML, so we'll ignore it for now.
-			}
+			// Set .floatingTickCount to 0. Ideally we could do this with access transformers, but
+			// it doesn't appear to work under all environments
+			FIELD_FLOATING_TICK_COUNT.set(((EntityPlayerMP) entity).connection, 0);
 		}
 	}
 }

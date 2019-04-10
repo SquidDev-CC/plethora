@@ -46,11 +46,11 @@ public final class MinecartHelpers {
 			BlockRailBase.EnumRailDirection railBase = ((BlockRailBase) block.getBlock()).getRailDirection(minecart.getEntityWorld(), new BlockPos(xf, yf, zf), block, minecart);
 			y = yf;
 
-			if (railBase.isAscending()) y = (double) (yf + 1);
+			if (railBase.isAscending()) y = yf + 1;
 
 			int[][] transformed = getMatrix()[railBase.getMetadata()];
-			double dx = (double) (transformed[1][0] - transformed[0][0]);
-			double dz = (double) (transformed[1][2] - transformed[0][2]);
+			double dx = transformed[1][0] - transformed[0][0];
+			double dz = transformed[1][2] - transformed[0][2];
 			double len = Math.sqrt(dx * dx + dz * dz);
 			dx /= len;
 			dz /= len;
@@ -58,9 +58,9 @@ public final class MinecartHelpers {
 			z += dz * offset;
 
 			if (transformed[0][1] != 0 && MathHelper.floor(x) - xf == transformed[0][0] && MathHelper.floor(z) - zf == transformed[0][2]) {
-				y += (double) transformed[0][1];
+				y += transformed[0][1];
 			} else if (transformed[1][1] != 0 && MathHelper.floor(x) - xf == transformed[1][0] && MathHelper.floor(z) - zf == transformed[1][2]) {
-				y += (double) transformed[1][1];
+				y += transformed[1][1];
 			}
 
 			return minecart.getPos(x, y, z);

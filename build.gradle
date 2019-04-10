@@ -33,6 +33,7 @@ minecraft {
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
 	replace '${cct_version}', project.cct_version
+	replace '${forge_version}', project.forge_version
 }
 
 jar {
