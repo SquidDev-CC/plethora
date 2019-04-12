@@ -138,6 +138,11 @@ gradle.projectsEvaluated {
 // Not quite ready for common usage, but helped a lot in checking stuff
 // compileJava { options.compilerArgs << "-Xplugin:ForgeLint" }
 
+// Added for mods that have per-player data, e.g. Astral Sorcery 
+runClient {
+	args '--username', 'PlethoraDev'
+}
+
 curseforge {
 	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
 
