@@ -50,20 +50,22 @@ repositories {
 	jcenter()
 	mavenLocal()
 
-	maven { url 'https://maven.blamejared.com/' } // Botania
-	maven { url 'http://chickenbones.net/maven' } // CBMP
-	maven { url 'http://dvs1.progwml6.com/files/maven' } // JEI + Tinker's
-	maven { url 'http://maven.amadornes.com/' } // Multipart
-	maven { url 'http://maven.covers1624.net' } // RF
+	maven { url 'http://chickenbones.net/maven/' } // CBMP
+	maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's
 	maven { url 'http://maven.ic2.player.to/' } // IC2 + Forestry
-	maven { url 'http://maven.mcmoddev.com' } // Tesla
 	maven { url 'https://cc.crzd.me/maven/' } // ComputerCraft
-	maven { url 'https://dl.bintray.com/squiddev/maven' } // ConfigGen (why do I use this still?)
-	maven { url 'https://maven.tterrag.com' } // EnderCore
-	maven { url 'https://maven2.tterrag.com' } // EnderIO
-	maven { url 'https://repo.raoulvdberge.com' } // Refined Storage
-	maven { url 'https://squiddev.cc/maven/' } // CC: Tweaked
+	maven { url 'https://dl.bintray.com/squiddev/maven/' } // ConfigGen (why do I use this still?)
+	maven { url 'https://maven.amadornes.com/' } // Multipart
+	maven { url 'https://maven.blamejared.com/' } // Botania
+	maven { url 'https://maven.covers1624.net/' } // RF
+	maven { url 'https://maven.k-4u.nl/' } // McJty's mods
+	maven { url 'https://maven.mcmoddev.com/' } // Tesla
+	maven { url 'https://maven.tterrag.com/' } // EnderCore
+	maven { url 'https://maven2.tterrag.com/' } // EnderIO
 	maven { url 'https://mod-buildcraft.com/maven/' } // Buildcraft
+	maven { url 'https://repo.raoulvdberge.com/' } // Refined Storage
+	maven { url 'https://squiddev.cc/maven/' } // CC: Tweaked
+
 	maven { url 'https://minecraft.curseforge.com/api/maven/' } // Everything else
 }
 
@@ -76,12 +78,15 @@ dependencies {
 	compileOnly "appeng:appliedenergistics2:rv6-stable-6"
 	compileOnly "codechicken:CodeChickenLib:1.12.2-3.2.2.354:deobf"
 	compileOnly("codechicken:ForgeMultipart:1.12.2-2.6.1.81:deobf") { exclude group: "codechicken" }
-	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.7:deobf"
 	compileOnly "cofh:CoFHCore:1.12.2-4.6.2.25:deobf"
+	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.7:deobf"
 	compileOnly "cofh:ThermalExpansion:1.12.2-5.5.3.41:deobf"
 	compileOnly "cofh:ThermalFoundation:1.12.2-2.6.2.26:deobf"
 	compileOnly("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
 	compileOnly "com.enderio.core:EnderCore:1.12.2-0.5.51:deobf"
+	compileOnly("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
+	compileOnly("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
+	compileOnly("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
 	compileOnly "com.mod-buildcraft:buildcraft-all:7.99.22"
 	compileOnly "MCMultiPart2:MCMultiPart:2.5.3:deobf"
 	compileOnly "net.darkhax.tesla:Tesla-1.12.2:1.0.63:deobf"

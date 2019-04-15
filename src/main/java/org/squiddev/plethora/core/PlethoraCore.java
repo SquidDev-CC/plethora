@@ -2,6 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import mcjty.xnet.XNet;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -61,6 +62,7 @@ public class PlethoraCore {
 
 		// Integration modules. Generally just listen to capability events
 		IntegrationVanilla.setup();
+		FMLInterModComms.sendFunctionMessage(XNet.MODID, "getXNet", "org.squiddev.plethora.integration.xnet.NetworkChannelType$Setup");
 	}
 
 	@Mod.EventHandler
