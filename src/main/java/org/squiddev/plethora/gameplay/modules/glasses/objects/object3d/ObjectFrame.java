@@ -135,6 +135,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 		}
 
+		GlStateManager.enableDepth();
 		canvas.drawChildren(children.iterator());
 
 		if (OpenGlHelper.framebufferSupported) {
