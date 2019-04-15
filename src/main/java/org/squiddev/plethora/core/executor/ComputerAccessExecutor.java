@@ -6,6 +6,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IWorkMonitor;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

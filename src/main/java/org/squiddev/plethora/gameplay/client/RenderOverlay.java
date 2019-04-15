@@ -29,8 +29,10 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
+import org.squiddev.plethora.gameplay.ConfigGameplay;
 import org.squiddev.plethora.gameplay.Plethora;
 import org.squiddev.plethora.gameplay.modules.ChatMessage;
+import org.squiddev.plethora.gameplay.modules.ItemModule;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.gameplay.registry.Registration;
 
@@ -39,9 +41,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Sensor;
 
 /**
  * Renders overlays for various modules
@@ -143,9 +142,10 @@ public final class RenderOverlay {
 				case PlethoraModules.SENSOR_ID: {
 					// Gather all entities and render them
 					Vec3d position = player.getPositionEyes(event.getPartialTicks());
+					int range = ItemModule.getEffectiveRange(stack, ConfigGameplay.Sensor.radius, ConfigGameplay.Sensor.maxRadius);
 					List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(
-						position.x - Sensor.radius, position.y - Sensor.radius, position.z - Sensor.radius,
-						position.x + Sensor.radius, position.y + Sensor.radius, position.z + Sensor.radius
+						position.x - range, position.y - range, position.z - range,
+						position.x + range, position.y + range, position.z + range
 					));
 
 					for (EntityLivingBase entity : entities) {
@@ -162,9 +162,10 @@ public final class RenderOverlay {
 					// Try to find all ore blocks and render them
 					BlockPos pos = player.getPosition();
 					final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-					for (int oX = x - Scanner.radius; oX <= x + Scanner.radius; oX++) {
-						for (int oY = y - Scanner.radius; oY <= y + Scanner.radius; oY++) {
-							for (int oZ = z - Scanner.radius; oZ <= z + Scanner.radius; oZ++) {
+					int range = ItemModule.getEffectiveRange(stack, ConfigGameplay.Scanner.radius, ConfigGameplay.Scanner.maxRadius);
+					for (int oX = x - range; oX <= x + range; oX++) {
+						for (int oY = y - range; oY <= y + range; oY++) {
+							for (int oZ = z - range; oZ <= z + range; oZ++) {
 								IBlockState state = world.getBlockState(new BlockPos(oX, oY, oZ));
 								Block block = state.getBlock();
 

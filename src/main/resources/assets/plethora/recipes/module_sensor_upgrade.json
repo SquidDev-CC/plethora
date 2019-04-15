@@ -1,0 +1,8 @@
+{
+	"type": "plethora:module_level",
+	"ingredients": [
+		{ "item": "plethora:module", "data": 3 },
+		{ "item": "minecraft:nether_star" }
+	],
+	"result": { "item": "plethora:module", "data": 3, "nbt": { "level": 1 } }
+}

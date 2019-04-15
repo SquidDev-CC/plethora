@@ -10,6 +10,7 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,15 +44,21 @@ public final class MetaBlockState extends BaseMetaProvider<IBlockState> {
 
 		data.put("metadata", block.getMetaFromState(state));
 
-		HashMap<Object, Object> stateProperties = new HashMap<>();
-		data.put("state", stateProperties);
-		for (Map.Entry<IProperty<?>, Comparable<?>> item : state.getProperties().entrySet()) {
-			Object value = item.getValue();
-			if (!(value instanceof String) && !(value instanceof Number) && !(value instanceof Boolean)) {
-				value = value.toString();
+		Map<IProperty<?>, Comparable<?>> properties = state.getProperties();
+		Map<Object, Object> propertyMap;
+		if (properties.isEmpty()) {
+			propertyMap = Collections.emptyMap();
+		} else {
+			propertyMap = new HashMap<>(properties.size());
+			for (Map.Entry<IProperty<?>, Comparable<?>> item : properties.entrySet()) {
+				Object value = item.getValue();
+				if (!(value instanceof String) && !(value instanceof Number) && !(value instanceof Boolean)) {
+					value = value.toString();
+				}
+				propertyMap.put(item.getKey().getName(), value);
 			}
-			stateProperties.put(item.getKey().getName(), value);
 		}
+		data.put("state", propertyMap);
 	}
 
 	@Override
