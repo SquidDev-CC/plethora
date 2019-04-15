@@ -16,7 +16,7 @@ public final class MethodsReactor {
 	private MethodsReactor() {
 	}
 
-	private static class ReactorReference extends DynamicReference<IReactor> {
+	private static class ReactorReference implements DynamicReference<IReactor> {
 		private final IReactor core;
 		private final TileEntity expected;
 

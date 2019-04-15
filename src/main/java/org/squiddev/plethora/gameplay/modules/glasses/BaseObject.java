@@ -95,7 +95,7 @@ public abstract class BaseObject {
 		return new BaseObjectReference(canvas, this);
 	}
 
-	private static class BaseObjectReference extends ConstantReference<BaseObject> {
+	private static class BaseObjectReference implements ConstantReference<BaseObject> {
 		private final CanvasServer canvas;
 		private final int id;
 

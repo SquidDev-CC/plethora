@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -109,7 +110,7 @@ public class ItemKeyboard extends ItemBase {
 		if (world.isRemote) return;
 
 		NBTTagCompound tag = stack.getTagCompound();
-		if (tag != null && tag.hasKey("x", 99)) {
+		if (tag != null && tag.hasKey("x", NBT.TAG_ANY_NUMERIC)) {
 			int session = ComputerCraft.serverComputerRegistry.getSessionID();
 			boolean dirty = false;
 			if (tag.getInteger(SESSION_ID) != session) {
@@ -118,7 +119,7 @@ public class ItemKeyboard extends ItemBase {
 				dirty = true;
 			}
 
-			if (!tag.hasKey(INSTANCE_ID, 99) || !ComputerCraft.serverComputerRegistry.contains(tag.getInteger(INSTANCE_ID))) {
+			if (!tag.hasKey(INSTANCE_ID, NBT.TAG_ANY_NUMERIC) || !ComputerCraft.serverComputerRegistry.contains(tag.getInteger(INSTANCE_ID))) {
 				World remote = DimensionManager.getWorld(tag.getInteger("dim"));
 				BlockPos pos = new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
 				if (remote != null && remote.isBlockLoaded(pos)) {
@@ -145,7 +146,7 @@ public class ItemKeyboard extends ItemBase {
 
 		ServerComputer computer;
 		NBTTagCompound tag = stack.getTagCompound();
-		if (tag != null && tag.hasKey("x", 99)) {
+		if (tag != null && tag.hasKey("x", NBT.TAG_ANY_NUMERIC)) {
 			computer = getBlockComputer(ComputerCraft.serverComputerRegistry, tag);
 		} else {
 			TinySlot slot = NeuralHelpers.getSlot(player);
@@ -168,7 +169,7 @@ public class ItemKeyboard extends ItemBase {
 	}
 
 	private static <T extends IComputer> T getBlockComputer(ComputerRegistry<T> registry, NBTTagCompound tag) {
-		if (!tag.hasKey(SESSION_ID, 99) || !tag.hasKey(INSTANCE_ID, 99)) return null;
+		if (!tag.hasKey(SESSION_ID, NBT.TAG_ANY_NUMERIC) || !tag.hasKey(INSTANCE_ID, NBT.TAG_ANY_NUMERIC)) return null;
 
 		int instance = tag.getInteger(INSTANCE_ID);
 		return registry.get(instance);
@@ -180,7 +181,7 @@ public class ItemKeyboard extends ItemBase {
 		super.addInformation(stack, world, out, flag);
 
 		NBTTagCompound tag = stack.getTagCompound();
-		if (tag != null && tag.hasKey("x", 99)) {
+		if (tag != null && tag.hasKey("x", NBT.TAG_ANY_NUMERIC)) {
 			ClientComputer computer = getBlockComputer(ComputerCraft.clientComputerRegistry, tag);
 			String position = tag.getInteger("x") + ", " + tag.getInteger("y") + ", " + tag.getInteger("z");
 			out.add(Helpers.translateToLocalFormatted(computer != null ? "item.plethora.keyboard.binding" : "item.plethora.keyboard.broken", position));

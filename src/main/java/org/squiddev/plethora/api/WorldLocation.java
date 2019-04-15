@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @see org.squiddev.plethora.api.method.IContext
  */
-public final class WorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
+public final class WorldLocation implements ConstantReference<IWorldLocation>, IWorldLocation {
 	private final World world;
 	private final BlockPos pos;
 	private final Vec3d loc;

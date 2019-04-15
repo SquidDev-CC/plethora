@@ -5,9 +5,9 @@ package org.squiddev.plethora.api.reference;
  *
  * @see IReference#isConstant()
  */
-public abstract class DynamicReference<T> implements IReference<T> {
+public interface DynamicReference<T> extends IReference<T> {
 	@Override
-	public boolean isConstant() {
+	default boolean isConstant() {
 		return false;
 	}
 }

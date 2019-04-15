@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_2D;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.ID_3D;
 
-public final class CanvasServer extends ConstantReference<CanvasServer> implements IAttachable {
+public final class CanvasServer implements ConstantReference<CanvasServer>, IAttachable {
 	private final int canvasId;
 	private final IModuleAccess access;
 	private final EntityPlayerMP player;

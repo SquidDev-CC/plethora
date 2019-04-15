@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * A world position for an entity
  */
-public class EntityWorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
+public class EntityWorldLocation implements ConstantReference<IWorldLocation>, IWorldLocation {
 	private final Entity entity;
 
 	public EntityWorldLocation(@Nonnull Entity entity) {

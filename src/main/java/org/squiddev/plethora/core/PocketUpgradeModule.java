@@ -221,7 +221,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		}
 	}
 
-	public static class PocketPlayerOwnable extends ConstantReference<PocketPlayerOwnable> implements IPlayerOwnable {
+	public static class PocketPlayerOwnable implements ConstantReference<PocketPlayerOwnable>, IPlayerOwnable {
 		private final PocketModuleAccess access;
 
 		public PocketPlayerOwnable(PocketModuleAccess access) {

@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -144,7 +145,7 @@ public final class EntityLaser extends Entity implements IProjectile, IPlayerOwn
 		shooterPlayer = null;
 		shooterOwner = PlayerHelpers.readProfile(tag);
 
-		if (tag.hasKey("shooterPos", 10)) {
+		if (tag.hasKey("shooterPos", Constants.NBT.TAG_COMPOUND)) {
 			shooterPos = WorldPosition.deserializeNBT(tag.getCompoundTag("shooterPos"));
 		}
 

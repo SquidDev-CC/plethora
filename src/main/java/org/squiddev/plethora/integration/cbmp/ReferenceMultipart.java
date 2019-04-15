@@ -9,7 +9,7 @@ import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 
-public class ReferenceMultipart extends DynamicReference<TMultiPart> {
+public class ReferenceMultipart implements DynamicReference<TMultiPart> {
 	private final TMultiPart part;
 	private final TileMultipart container;
 

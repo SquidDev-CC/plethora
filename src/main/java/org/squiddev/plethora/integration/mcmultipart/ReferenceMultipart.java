@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.reference.DynamicReference;
 
 import javax.annotation.Nonnull;
 
-public class ReferenceMultipart extends DynamicReference<IPartInfo> {
+public class ReferenceMultipart implements DynamicReference<IPartInfo> {
 	private final IPartSlot slot;
 	private final IMultipartContainer container;
 

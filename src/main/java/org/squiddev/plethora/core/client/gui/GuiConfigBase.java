@@ -14,7 +14,6 @@ public abstract class GuiConfigBase extends GuiConfig {
 		super(screen, getConfigElements(config), id, false, false, name);
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static List<IConfigElement> getConfigElements(Configuration config) {
 		ArrayList<IConfigElement> elements = new ArrayList<>();
 		for (String category : config.getCategoryNames()) {

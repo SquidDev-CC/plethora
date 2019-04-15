@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 /**
  * A reference that returns its value
  */
-public final class IdentityReference<T> extends ConstantReference<T> {
+public final class IdentityReference<T> implements ConstantReference<T> {
 	private final T object;
 
 	IdentityReference(@Nonnull T object) {
