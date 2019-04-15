@@ -5,7 +5,6 @@ import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Item3D;
 
 import javax.annotation.Nonnull;
 
@@ -23,12 +22,12 @@ public interface ItemObject {
 	void setDamage(int damage);
 
 	@PlethoraMethod(doc = "function(): string, number -- Get the item and damage value for this object.", worldThread = false)
-	static MethodResult getItem(@FromTarget Item3D object) {
+	static MethodResult getItem(@FromTarget ItemObject object) {
 		return MethodResult.result(object.getItem().getRegistryName().toString(), object.getDamage());
 	}
 
 	@PlethoraMethod(doc = "-- Set the item and damage value for this object.", worldThread = false)
-	static void setItem(@FromTarget Item3D object, Item item, @Optional(defInt = 0) int damage) {
+	static void setItem(@FromTarget ItemObject object, Item item, @Optional(defInt = 0) int damage) {
 		object.setItem(item);
 		object.setDamage(damage);
 	}
