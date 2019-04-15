@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Box;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Item3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectFrame;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoot3D;
 
@@ -22,6 +23,7 @@ public final class ObjectRegistry {
 	public static final byte ORIGIN_3D = 9;
 	public static final byte FRAME_3D = 10;
 	public static final byte BOX_3D = 11;
+	public static final byte ITEM_3D = 12;
 
 	private static final BaseObject.Factory[] FACTORIES = new BaseObject.Factory[]{
 		Rectangle::new,
@@ -37,6 +39,7 @@ public final class ObjectRegistry {
 		ObjectRoot3D::new,
 		ObjectFrame::new,
 		Box::new,
+		Item3D::new,
 	};
 
 	private ObjectRegistry() {
@@ -44,7 +47,11 @@ public final class ObjectRegistry {
 
 	public static BaseObject create(int id, int parent, byte type) {
 		if (type < 0 || type >= FACTORIES.length) throw new IllegalStateException("Unknown type " + type);
-		return FACTORIES[type].create(id, parent);
+		BaseObject object = FACTORIES[type].create(id, parent);
+		if (object.type() != type) {
+			throw new IllegalStateException("Created object of type " + object.type() + ", expected " + type);
+		}
+		return object;
 	}
 
 	public static BaseObject read(ByteBuf buf) {
