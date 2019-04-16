@@ -2,6 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import mcjty.xnet.XNet;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -38,7 +39,7 @@ public class PlethoraCore {
 	public static final String ID = "plethora-core";
 	public static final String NAME = "Plethora Core";
 	public static final String VERSION = "${mod_version}";
-	public static final String DEPENDENCIES = "required-after:computercraft@[${cct_version},);required-after:cctweaked@[${cct_version},)";
+	public static final String DEPENDENCIES = "required-after:forge@[${forge_version},);required-after:computercraft@[${cct_version},);required-after:cctweaked@[${cct_version},)";
 	public static final ResourceLocation PERIPHERAL_HANDLER_KEY = new ResourceLocation(Plethora.ID, "peripheralHandler");
 
 	public static final Logger LOG = LogManager.getLogger(ID);
@@ -61,6 +62,7 @@ public class PlethoraCore {
 
 		// Integration modules. Generally just listen to capability events
 		IntegrationVanilla.setup();
+		FMLInterModComms.sendFunctionMessage(XNet.MODID, "getXNet", "org.squiddev.plethora.integration.xnet.NetworkChannelType$Setup");
 	}
 
 	@Mod.EventHandler

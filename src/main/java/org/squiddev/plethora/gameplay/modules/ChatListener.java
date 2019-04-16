@@ -67,7 +67,7 @@ public final class ChatListener {
 		}
 	}
 
-	public static class Listener extends ConstantReference<Listener> implements IAttachable {
+	public static class Listener implements IAttachable, ConstantReference<Listener> {
 		private final IModuleAccess access;
 		private final UUID owner;
 		private final Set<String> patterns = new HashSet<>();

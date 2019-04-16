@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EntityIdentifier extends ConstantReference<EntityIdentifier> {
+public class EntityIdentifier implements ConstantReference<EntityIdentifier> {
 	private final UUID uuid;
 	private final String name;
 

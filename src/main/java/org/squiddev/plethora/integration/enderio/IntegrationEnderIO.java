@@ -12,9 +12,7 @@ import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
-import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,30 +22,27 @@ import java.util.Map;
 
 @Injects(EnderIO.MODID)
 public final class IntegrationEnderIO {
-	public static final IMetaProvider<ItemStack> META_SOUL_VIAL = new ItemStackContextMetaProvider<ItemSoulVial>(
-		ItemSoulVial.class,
+	public static final IMetaProvider<ItemStack> META_SOUL_VIAL = new ItemEntityStorageMetaProvider<ItemSoulVial>(
+		"capturedEntity", ItemSoulVial.class,
 		"Provides the entity captured inside this Soul Vial."
 	) {
-		@Nonnull
+		@Nullable
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSoulVial item) {
-			CapturedMob mob = CapturedMob.create(context.getTarget());
-			if (mob == null) return Collections.emptyMap();
-
-			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			if (location == null) return getBasic(mob);
-
-			Entity entity = mob.getEntity(location.getWorld(), location.getPos(), null, false);
-			if (entity == null) return getBasic(mob);
-
-			return Collections.singletonMap("capturedEntity", context.makePartialChild(entity).getMeta());
+		protected Entity spawn(@Nonnull ItemStack stack, @Nonnull ItemSoulVial item, @Nonnull IWorldLocation location) {
+			CapturedMob mob = CapturedMob.create(stack);
+			return mob == null ? null : mob.getEntity(location.getWorld(), location.getPos(), null, false);
 		}
 
-		private Map<String, Object> getBasic(CapturedMob mob) {
+		@Nonnull
+		@Override
+		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull ItemSoulVial item) {
+			CapturedMob mob = CapturedMob.create(stack);
+			if (mob == null) return Collections.emptyMap();
+
 			Map<String, Object> details = new HashMap<>(2);
 			details.put("name", mob.getTranslationName());
 			details.put("displayName", mob.getDisplayName());
-			return Collections.singletonMap("capturedEntity", details);
+			return details;
 		}
 
 		@Nullable

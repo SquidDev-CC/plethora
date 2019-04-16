@@ -11,7 +11,7 @@ import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 /**
  * An object which contains text.
  */
-public interface Textable {
+public interface TextObject {
 	@Nonnull
 	String getText();
 
@@ -26,33 +26,33 @@ public interface Textable {
 	short getLineHeight();
 
 	@PlethoraMethod(doc = "-- Get the text for this object.", worldThread = false)
-	static String getText(@FromTarget Textable object) {
+	static String getText(@FromTarget TextObject object) {
 		return object.getText();
 	}
 
 	@PlethoraMethod(doc = "-- Set the text for this object.", worldThread = false)
-	static void setText(@FromTarget Textable object, String contents) throws LuaException {
+	static void setText(@FromTarget TextObject object, String contents) throws LuaException {
 		assertBetween(contents.length(), 0, 512, "string length out of bounds (%s)");
 		object.setText(contents);
 	}
 
 	@PlethoraMethod(doc = "-- Set the shadow for this object.", worldThread = false)
-	static void setShadow(@FromTarget Textable object, boolean shadow) {
+	static void setShadow(@FromTarget TextObject object, boolean shadow) {
 		object.setShadow(shadow);
 	}
 
 	@PlethoraMethod(doc = "-- Get the shadow for this object.", worldThread = false)
-	static boolean hasShadow(@FromTarget Textable object) {
+	static boolean hasShadow(@FromTarget TextObject object) {
 		return object.hasShadow();
 	}
 
 	@PlethoraMethod(doc = "-- Get the line height for this object.", worldThread = false)
-	static int getLineHeight(@FromTarget Textable object) {
+	static int getLineHeight(@FromTarget TextObject object) {
 		return object.getLineHeight();
 	}
 
 	@PlethoraMethod(doc = "-- Set the line height for this object.", worldThread = false)
-	static void setLineHeight(@FromTarget Textable object, short lineHeight) {
+	static void setLineHeight(@FromTarget TextObject object, short lineHeight) {
 		object.setLineHeight(lineHeight);
 	}
 }

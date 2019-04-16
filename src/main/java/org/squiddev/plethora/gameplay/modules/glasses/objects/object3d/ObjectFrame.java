@@ -83,19 +83,14 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 	@Override
 	public void writeInitial(ByteBuf buf) {
 		ByteBufUtils.writeVec3d(buf, position);
-		if (rotation == null) {
-			buf.writeBoolean(false);
-		} else {
-			buf.writeBoolean(true);
-			ByteBufUtils.writeVec3d(buf, rotation);
-		}
+		ByteBufUtils.writeOptVec3d(buf, rotation);
 		buf.writeBoolean(depthTest);
 	}
 
 	@Override
 	public void readInitial(ByteBuf buf) {
 		position = ByteBufUtils.readVec3d(buf);
-		rotation = buf.readBoolean() ? ByteBufUtils.readVec3d(buf) : null;
+		rotation = ByteBufUtils.readOptVec3d(buf);
 		depthTest = buf.readBoolean();
 	}
 
@@ -135,6 +130,7 @@ public class ObjectFrame extends BaseObject implements ObjectGroup.Frame2D, Posi
 			GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 		}
 
+		GlStateManager.enableDepth();
 		canvas.drawChildren(children.iterator());
 
 		if (OpenGlHelper.framebufferSupported) {

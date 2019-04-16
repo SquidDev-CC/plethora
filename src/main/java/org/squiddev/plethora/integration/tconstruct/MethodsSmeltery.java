@@ -115,7 +115,7 @@ public final class MethodsSmeltery {
 		return context.makeChild((TileMultiblock) te, new ControllerReference(component, (TileMultiblock) te)).getObject();
 	}
 
-	private static final class ControllerReference extends DynamicReference<TileMultiblock> {
+	private static final class ControllerReference implements DynamicReference<TileMultiblock> {
 		private final TileSmelteryComponent origin;
 		private final TileMultiblock<?> expected;
 

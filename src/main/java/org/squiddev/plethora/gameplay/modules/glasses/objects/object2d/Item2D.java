@@ -13,15 +13,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.FromTarget;
-import org.squiddev.plethora.api.method.wrapper.Optional;
-import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.client.FramebufferGlasses;
 import org.squiddev.plethora.gameplay.client.OpenGlHelper;
 import org.squiddev.plethora.gameplay.client.RenderState;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ItemObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
@@ -32,12 +29,13 @@ import javax.annotation.Nonnull;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
-public class Item2D extends BaseObject implements Scalable, Positionable2D {
+public class Item2D extends BaseObject implements Scalable, ItemObject, Positionable2D {
 	private float scale;
 	private Vec2d position = Vec2d.ZERO;
 
 	private int damage;
 	private Item item;
+	private ItemStack stack;
 
 	public Item2D(int id, int parent) {
 		super(id, parent, ObjectRegistry.ITEM_2D);
@@ -70,24 +68,31 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		}
 	}
 
+	@Override
 	public int getDamage() {
 		return damage;
 	}
 
+	@Override
 	public void setDamage(int damage) {
 		if (this.damage != damage) {
 			this.damage = damage;
+			stack = null;
 			setDirty();
 		}
 	}
 
+	@Override
+	@Nonnull
 	public Item getItem() {
 		return item;
 	}
 
+	@Override
 	public void setItem(@Nonnull Item item) {
 		if (this.item != item) {
 			this.item = item;
+			stack = null;
 			setDirty();
 		}
 	}
@@ -141,11 +146,12 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlpha();
+		GlStateManager.enableDepth();
 
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderHelper.enableGUIStandardItemLighting();
 
-		ItemStack stack = new ItemStack(item, 1, damage);
+		if (stack == null) stack = new ItemStack(item, 1, damage);
 		Minecraft.getMinecraft().getRenderItem()
 			.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().player, stack, 0, 0);
 
@@ -178,16 +184,5 @@ public class Item2D extends BaseObject implements Scalable, Positionable2D {
 
 			GlStateManager.bindTexture(0);
 		}
-	}
-
-	@PlethoraMethod(doc = "function(): string, number -- Get the item and damage value for this object.", worldThread = false)
-	public static MethodResult getItem(@FromTarget Item2D object) {
-		return MethodResult.result(object.getItem().getRegistryName().toString(), object.getDamage());
-	}
-
-	@PlethoraMethod(doc = "-- Set the item and damage value for this object.", worldThread = false)
-	public static void setItem(@FromTarget Item2D object, Item item, @Optional(defInt = 0) int damage) {
-		object.setItem(item);
-		object.setDamage(damage);
 	}
 }

@@ -219,7 +219,7 @@ public class TurtleUpgradeModule implements ITurtleUpgrade {
 		}
 	}
 
-	public static class TurtlePlayerOwnable extends ConstantReference<TurtlePlayerOwnable> implements IPlayerOwnable {
+	public static class TurtlePlayerOwnable implements ConstantReference<TurtlePlayerOwnable>, IPlayerOwnable {
 		private final ITurtleAccess access;
 
 		public TurtlePlayerOwnable(ITurtleAccess access) {

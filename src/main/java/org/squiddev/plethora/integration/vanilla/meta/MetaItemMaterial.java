@@ -6,7 +6,6 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public final class MetaItemMaterial extends BasicMetaProvider<ItemStack> {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return new ItemStack(Items.DIAMOND_PICKAXE);

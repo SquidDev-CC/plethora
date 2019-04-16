@@ -11,14 +11,14 @@ import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.Textable;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.TextObject;
 import org.squiddev.plethora.utils.ByteBufUtils;
 import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
 
-public class Text extends ColourableObject implements Positionable2D, Scalable, Textable {
+public class Text extends ColourableObject implements Positionable2D, Scalable, TextObject {
 	/**
 	 * We use a two dimensional string array to indicate where tabs are.
 	 * For example, {@code "Hello\tworld\nFoo\tBar"} would become

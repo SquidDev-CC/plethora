@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * An reference to an entity. Ensures it is still alive.
  */
-public class EntityReference<T extends Entity> extends ConstantReference<T> {
+public class EntityReference<T extends Entity> implements ConstantReference<T> {
 	private final MinecraftServer server;
 	private final UUID id;
 	private WeakReference<T> entity;

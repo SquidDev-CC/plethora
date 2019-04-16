@@ -5,10 +5,10 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.api.method.LuaList;
 
 import java.util.HashMap;
 import java.util.Locale;

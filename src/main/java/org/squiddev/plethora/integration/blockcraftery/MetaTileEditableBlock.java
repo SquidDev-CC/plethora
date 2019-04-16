@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.blockcraftery;
 import epicsquid.blockcraftery.Blockcraftery;
 import epicsquid.blockcraftery.tile.TileEditableBlock;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
@@ -27,5 +28,14 @@ public class MetaTileEditableBlock extends BaseMetaProvider<TileEditableBlock> {
 			result.put("block", context.makePartialChild(object.state).getMeta());
 		}
 		return result;
+	}
+
+	@Nonnull
+	@Override
+	public TileEditableBlock getExample() {
+		TileEditableBlock tile = new TileEditableBlock();
+		tile.stack = new ItemStack(Blocks.DIRT);
+		tile.state = Blocks.DIRT.getDefaultState();
+		return tile;
 	}
 }

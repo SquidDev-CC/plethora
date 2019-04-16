@@ -175,11 +175,25 @@ public final class ConfigGameplay {
 
 	public static final class Scanner {
 		/**
-		 * The radius scanners can get blocks in
+		 * The radius scanners can get blocks in.
 		 */
 		@DefaultInt(8)
 		@Range(min = 0)
 		public static int radius;
+
+		/**
+		 * The radius a fully upgraded scanner can get blocks in.
+		 */
+		@DefaultInt(16)
+		@Range(min = 0)
+		public static int maxRadius;
+
+		/**
+		 * The additional cost each level incurs for scan().
+		 */
+		@DefaultInt(50)
+		@Range(min = 0)
+		public static int scanLevelCost;
 
 		private Scanner() {
 		}
@@ -187,11 +201,25 @@ public final class ConfigGameplay {
 
 	public static final class Sensor {
 		/**
-		 * The radius sensors can get entities in
+		 * The radius sensors can get entities in.
 		 */
 		@DefaultInt(16)
 		@Range(min = 0)
 		public static int radius;
+
+		/**
+		 * The radius a fully upgraded sensor can get entities in.
+		 */
+		@DefaultInt(32)
+		@Range(min = 0)
+		public static int maxRadius;
+
+		/**
+		 * The additional cost each level incurs for sense().
+		 */
+		@DefaultInt(40)
+		@Range(min = 0)
+		public static int senseLevelCost;
 
 		private Sensor() {
 		}

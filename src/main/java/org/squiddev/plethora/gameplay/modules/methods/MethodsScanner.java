@@ -9,11 +9,14 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.gameplay.modules.RangeInfo;
 import org.squiddev.plethora.integration.vanilla.meta.MetaBlockState;
 
 import javax.annotation.Nonnull;
@@ -21,27 +24,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
-import static org.squiddev.plethora.gameplay.ConfigGameplay.Scanner.radius;
 
 public final class MethodsScanner {
 	private MethodsScanner() {
 	}
 
-	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Scan all blocks in the vicinity")
-	public static Map<Integer, Object> scan(@FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
+	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "function():table -- Scan all blocks in the vicinity")
+	public static MethodResult scan(
+		IContext<IModuleContainer> context,
+		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@FromContext(PlethoraModules.SCANNER_S) RangeInfo range
+	) throws LuaException {
 		final World world = location.getWorld();
 		final BlockPos pos = location.getPos();
 		final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
-		int i = 0;
-		HashMap<Integer, Object> map = new HashMap<>();
+		return context.getCostHandler().await(range.getBulkCost(), () -> MethodResult.result(scan(world, x, y, z, range.getRange())));
+	}
+
+	private static Map<Integer, Map<String, ?>> scan(World world, int x, int y, int z, int radius) {
+		LuaList<Map<String, ?>> result = new LuaList<>();
 		for (int oX = x - radius; oX <= x + radius; oX++) {
 			for (int oY = y - radius; oY <= y + radius; oY++) {
 				for (int oZ = z - radius; oZ <= z + radius; oZ++) {
 					BlockPos subPos = new BlockPos(oX, oY, oZ);
 					IBlockState block = world.getBlockState(subPos).getActualState(world, subPos);
 
-					HashMap<Object, Object> data = new HashMap<>();
+					HashMap<String, Object> data = new HashMap<>(6);
 					data.put("x", oX - x);
 					data.put("y", oY - y);
 					data.put("z", oZ - z);
@@ -51,12 +60,12 @@ public final class MethodsScanner {
 
 					MetaBlockState.fillBasicMeta(data, block);
 
-					map.put(++i, data);
+					result.add(data);
 				}
 			}
 		}
 
-		return map;
+		return result.asMap();
 	}
 
 	@Nonnull
@@ -64,8 +73,10 @@ public final class MethodsScanner {
 	public static Map<String, ?> getBlockMeta(
 		IContext<IModuleContainer> context,
 		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+		@FromContext(PlethoraModules.SCANNER_S) RangeInfo range,
 		int x, int y, int z
 	) throws LuaException {
+		int radius = range.getRange();
 		assertBetween(x, -radius, radius, "X coordinate out of bounds (%s)");
 		assertBetween(y, -radius, radius, "Y coordinate out of bounds (%s)");
 		assertBetween(z, -radius, radius, "Z coordinate out of bounds (%s)");

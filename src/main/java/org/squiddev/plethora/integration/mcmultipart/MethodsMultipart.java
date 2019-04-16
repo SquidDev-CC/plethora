@@ -7,10 +7,10 @@ import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.api.method.LuaList;
 
 import java.util.HashMap;
 import java.util.Locale;

@@ -1,6 +1,6 @@
 package org.squiddev.plethora.api.meta;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Basic wrapper for meta-providers
@@ -31,7 +31,7 @@ public abstract class BaseMetaProvider<T> implements IMetaProvider<T> {
 		return priority;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public String getDescription() {
 		return description;

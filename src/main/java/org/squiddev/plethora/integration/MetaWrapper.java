@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Objects;
 
-public class MetaWrapper<T> extends ConstantReference<MetaWrapper<T>> {
+public class MetaWrapper<T> implements ConstantReference<MetaWrapper<T>> {
 	private final T value;
 
 	public MetaWrapper(@Nonnull T value) {

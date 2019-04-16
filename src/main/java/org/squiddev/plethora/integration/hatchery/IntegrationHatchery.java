@@ -8,6 +8,7 @@ import com.gendeathrow.hatchery.core.init.ModItems;
 import com.gendeathrow.hatchery.entities.EntityRooster;
 import com.gendeathrow.hatchery.item.AnimalNet;
 import com.gendeathrow.hatchery.item.HatcheryEgg;
+import com.gendeathrow.hatchery.util.ItemStackEntityNBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
@@ -19,18 +20,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
-import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
 import org.squiddev.plethora.utils.EntityPlayerDummy;
-import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -63,35 +61,30 @@ public final class IntegrationHatchery {
 	 * Upgrades
 	 */
 
-	public static final IMetaProvider<ItemStack> META_ANIMAL_NET = new ItemStackContextMetaProvider<AnimalNet>(
-		AnimalNet.class,
+	public static final IMetaProvider<ItemStack> META_ANIMAL_NET = new ItemEntityStorageMetaProvider<AnimalNet>(
+		"capturedEntity", AnimalNet.class,
 		"Provides the entity captured inside this Animal Net."
 	) {
 
-		//TODO All of the classes (so far) that expose captured entity data have many of the same checks;
-		// Is there any way that we can abstract the complexity/deduplicate the code?
-		@Nonnull
+		@Nullable
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull AnimalNet item) {
+		protected Entity spawn(@Nonnull ItemStack stack, @Nonnull AnimalNet item, @Nonnull IWorldLocation location) {
 			//Check for a captured entity
-			ItemStack netStack = context.getTarget();
-			if (!AnimalNet.hasCapturedAnimal(netStack)) return Collections.emptyMap();
+			if (!AnimalNet.hasCapturedAnimal(stack)) return null;
 
 			//Check for an entity ID
-			NBTTagCompound entityData = AnimalNet.getCapturedAnimalNBT(netStack);
-			if (!entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
+			NBTTagCompound entityData = AnimalNet.getCapturedAnimalNBT(stack);
+			if (!entityData.hasKey("id", Constants.NBT.TAG_STRING)) return null;
 
-			//Check if we have a location
-			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			if (location == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "capturedEntity");
+			return EntityList.createEntityFromNBT(entityData, location.getWorld());
+		}
 
-			//Only the empty AnimalNet is registered, so we don't need to check for a generic
-			Entity entity = EntityList.createEntityFromNBT(entityData, location.getWorld());
-			if (entity == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "capturedEntity");
-
-			Vec3d loc = location.getLoc();
-			entity.setPositionAndRotation(loc.x, loc.y, loc.z, 0, 0);
-			return Collections.singletonMap("capturedEntity", context.makePartialChild(entity).getMeta());
+		@Nonnull
+		@Override
+		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull AnimalNet item) {
+			//Check for a captured entity
+			if (!AnimalNet.hasCapturedAnimal(stack)) return Collections.emptyMap();
+			return getBasicDetails(AnimalNet.getCapturedAnimalNBT(stack));
 		}
 
 		@Nullable
@@ -102,24 +95,16 @@ public final class IntegrationHatchery {
 	};
 
 	//Because of COURSE it stores a raw entity...
-	public static final IMetaProvider<ItemStack> META_HATCHERY_EGG = new ItemStackContextMetaProvider<HatcheryEgg>(
-		HatcheryEgg.class,
+	public static final IMetaProvider<ItemStack> META_HATCHERY_EGG = new ItemEntityStorageMetaProvider<HatcheryEgg>(
+		"storedEntity", HatcheryEgg.class,
 		"Provides the entity that may spawn from this Egg"
 	) {
-		@Nonnull
+		@Nullable
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull HatcheryEgg item) {
+		protected Entity spawn(@Nonnull ItemStack stack, @Nonnull HatcheryEgg item, @Nonnull IWorldLocation location) {
 			//Check for a captured entity
-			NBTTagCompound nbt = context.getTarget().getTagCompound();
-			if (nbt == null || !nbt.hasKey("storedEntity")) return Collections.emptyMap();
-
-			//Check for an entity ID
-			NBTTagCompound entityData = nbt.getCompoundTag("storedEntity");
-			if (!entityData.hasKey("id", Constants.NBT.TAG_STRING)) return Collections.emptyMap();
-
-			//Check if we have a location
-			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-			if (location == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "spawnEntity");
+			NBTTagCompound entityData = ItemStackEntityNBTHelper.getEntityTagFromStack(stack);
+			if (entityData == null || !entityData.hasKey("id", Constants.NBT.TAG_STRING)) return null;
 
 			//Due to Hatchery's `ItemStackEntityNBTHelper` having a `saveAll` param, we may need to
 			// handle a generic egg.  Unfortunately, they don't provide a convenient analogue to TE's `ItemMorb.GENERIC`,
@@ -128,11 +113,13 @@ public final class IntegrationHatchery {
 			if (entity == null) {
 				entity = EntityList.createEntityByIDFromName(new ResourceLocation(entityData.getString("id")), location.getWorld());
 			}
-			if (entity == null) return IntegrationHatchery.getBasicEntityDetails(entityData, "spawnEntity");
+			return entity;
+		}
 
-			Vec3d loc = location.getLoc();
-			entity.setPositionAndRotation(loc.x, loc.y, loc.z, 0, 0);
-			return Collections.singletonMap("spawnEntity", context.makePartialChild(entity).getMeta());
+		@Nonnull
+		@Override
+		protected Map<String, ?> getBasicDetails(@Nonnull ItemStack stack, @Nonnull HatcheryEgg item) {
+			return getBasicDetails(ItemStackEntityNBTHelper.getEntityTagFromStack(stack));
 		}
 
 		@Nonnull
@@ -227,23 +214,4 @@ public final class IntegrationHatchery {
 			return te;
 		}
 	};
-
-	//TODO Do we want to move this (and the duplicates) into ContextHelpers, or somewhere else?
-	// Partially depends on how we refactor the rest of the captured entity code
-	private static Map<String, ?> getBasicEntityDetails(NBTTagCompound entityData, String namespace) {
-		String translationKey = EntityList.getTranslationName(new ResourceLocation(entityData.getString("id")));
-		if (translationKey == null) return Collections.emptyMap();
-
-		String translated = Helpers.translateToLocal("entity." + translationKey + ".name");
-
-		Map<Object, Object> details = new HashMap<>(2);
-		details.put("name", translated);
-		details.put("displayName",
-			entityData.hasKey("CustomName", Constants.NBT.TAG_STRING)
-				? entityData.getString("CustomName")
-				: translated
-		);
-
-		return Collections.singletonMap(namespace, details);
-	}
 }

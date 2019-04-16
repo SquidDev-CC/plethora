@@ -5,13 +5,13 @@ import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.MediaProviders;
 import dan200.computercraft.shared.media.items.ItemDiskExpanded;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.utils.TypedField;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +19,10 @@ import java.util.Map;
 /**
  * Provider for all media items (disks and records)
  */
-@IMetaProvider.Inject(value = ItemStack.class, modId = ComputerCraft.MOD_ID, namespace = "media")
-public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
+@Injects(ComputerCraft.MOD_ID)
+public final class MetaItemMedia extends BasicMetaProvider<ItemStack> {
+	private static final TypedField<SoundEvent, ResourceLocation> FIELD_SOUND_NAME = TypedField.of(SoundEvent.class, "soundName", "field_187506_b");
+
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull ItemStack object) {
@@ -33,13 +35,14 @@ public class MetaItemMedia extends BasicMetaProvider<ItemStack> {
 
 		SoundEvent soundEvent = media.getAudio(object);
 		if (soundEvent != null) {
-			out.put("recordName", ObfuscationReflectionHelper.getPrivateValue(SoundEvent.class, soundEvent, "field_187506_b").toString());
+			ResourceLocation id = FIELD_SOUND_NAME.get(soundEvent);
+			if (id != null) out.put("recordName", id.toString());
 		}
 
-		return out;
+		return Collections.singletonMap("media", out);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getExample() {
 		return ItemDiskExpanded.createFromIDAndColour(3, "My disk", 0xFF0000);

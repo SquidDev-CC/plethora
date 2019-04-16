@@ -3,9 +3,9 @@ package org.squiddev.plethora.integration.forestry;
 import forestry.api.core.IErrorLogicSource;
 import forestry.api.core.IErrorState;
 import forestry.core.config.Constants;
+import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-import org.squiddev.plethora.api.method.LuaList;
 
 import java.util.Map;
 

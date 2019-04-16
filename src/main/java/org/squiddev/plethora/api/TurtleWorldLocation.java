@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * A world location for turtles
  */
-public class TurtleWorldLocation extends ConstantReference<IWorldLocation> implements IWorldLocation {
+public class TurtleWorldLocation implements ConstantReference<IWorldLocation>, IWorldLocation {
 	private final ITurtleAccess turtle;
 
 	public TurtleWorldLocation(@Nonnull ITurtleAccess turtle) {

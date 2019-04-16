@@ -3,13 +3,12 @@ package org.squiddev.plethora.api.meta;
 import org.squiddev.plethora.api.method.IPartialContext;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * A provider that wraps the data in a namespace
+ * A provider that wraps the data in a namespace.
  */
 public class NamespacedMetaProvider<T> extends BaseMetaProvider<T> {
 	private final String namespace;
@@ -37,7 +36,7 @@ public class NamespacedMetaProvider<T> extends BaseMetaProvider<T> {
 		return data.isEmpty() ? Collections.emptyMap() : Collections.singletonMap(namespace, data);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public T getExample() {
 		return delegate.getExample();

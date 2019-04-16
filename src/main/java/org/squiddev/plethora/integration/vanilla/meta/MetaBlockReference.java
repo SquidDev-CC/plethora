@@ -17,6 +17,10 @@ import java.util.Map;
 
 @Injects
 public final class MetaBlockReference extends BasicMetaProvider<BlockReference> {
+	public MetaBlockReference() {
+		super("Provides information about blocks which exist in the world.");
+	}
+
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull BlockReference reference) {

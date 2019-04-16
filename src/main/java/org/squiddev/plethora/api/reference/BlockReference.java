@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
-public class BlockReference extends ConstantReference<BlockReference> {
+public class BlockReference implements ConstantReference<BlockReference> {
 	private final IWorldLocation location;
 	private final WeakReference<TileEntity> tile;
 	private final int tileHash;

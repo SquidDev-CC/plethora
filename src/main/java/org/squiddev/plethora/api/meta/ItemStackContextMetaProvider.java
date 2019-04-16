@@ -58,7 +58,7 @@ public abstract class ItemStackContextMetaProvider<T> extends BaseMetaProvider<I
 
 	@Nonnull
 	@Override
-	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public final Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
 		Item item = context.getTarget().getItem();
 		if (!type.isInstance(item)) return Collections.emptyMap();
 

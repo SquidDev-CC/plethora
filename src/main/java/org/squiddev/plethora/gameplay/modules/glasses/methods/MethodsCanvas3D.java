@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
@@ -10,9 +11,11 @@ import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Origin3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Box;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Item3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectFrame;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoot3D;
 
@@ -83,5 +86,22 @@ public final class MethodsCanvas3D {
 		canvas.add(box);
 
 		return baked.makeChild(box, box.reference(canvas)).getObject();
+	}
+
+	@PlethoraMethod(doc = "-- Create a item model.", worldThread = false)
+	public static ILuaObject addItem(
+		IContext<ObjectGroup.Group3D> baked, @FromContext CanvasServer canvas,
+		Vec3d position, Item item, @Optional(defInt = 0) int damage, @Optional(defDoub = 1) float scale
+	) {
+		ObjectGroup.Group3D group = baked.getTarget();
+
+		Item3D model = new Item3D(canvas.newObjectId(), group.id());
+		model.setPosition(position);
+		model.setScale(scale);
+		model.setItem(item);
+		model.setDamage(damage);
+
+		canvas.add(model);
+		return baked.makeChild(model, model.reference(canvas)).getObject();
 	}
 }
