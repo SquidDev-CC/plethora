@@ -5,24 +5,39 @@ import hellfirepvp.astralsorcery.common.constellation.*;
 import hellfirepvp.astralsorcery.common.data.research.PlayerProgress;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
 import hellfirepvp.astralsorcery.common.data.research.ResearchProgression;
+import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletEnchantment;
+import hellfirepvp.astralsorcery.common.enchantment.dynamic.DynamicEnchantment;
 import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemConstellationPaper;
+import hellfirepvp.astralsorcery.common.item.ItemInfusedGlass;
 import hellfirepvp.astralsorcery.common.item.ItemJournal;
 import hellfirepvp.astralsorcery.common.item.base.ItemConstellationFocus;
+import hellfirepvp.astralsorcery.common.item.block.ItemCollectorCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
+import hellfirepvp.astralsorcery.common.item.crystal.CrystalPropertyItem;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemRockCrystalBase;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
+import hellfirepvp.astralsorcery.common.item.tool.ItemCrystalToolBase;
 import hellfirepvp.astralsorcery.common.item.tool.ItemSkyResonator;
+import hellfirepvp.astralsorcery.common.item.tool.sextant.ItemSextant;
+import hellfirepvp.astralsorcery.common.item.tool.wand.ItemWand;
+import hellfirepvp.astralsorcery.common.item.tool.wand.WandAugment;
+import hellfirepvp.astralsorcery.common.item.wand.ItemIlluminationWand;
+import hellfirepvp.astralsorcery.common.item.wearable.ItemCape;
+import hellfirepvp.astralsorcery.common.item.wearable.ItemEnchantmentAmulet;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
-import hellfirepvp.astralsorcery.common.tile.TileGrindstone;
-import hellfirepvp.astralsorcery.common.tile.TileRitualPedestal;
-import hellfirepvp.astralsorcery.common.tile.TileWell;
+import hellfirepvp.astralsorcery.common.tile.*;
 import hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase;
 import hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory;
 import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 import hellfirepvp.astralsorcery.common.tile.network.TileCrystalLens;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
@@ -40,6 +55,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static org.squiddev.plethora.integration.PlethoraIntegration.LOG;
+
 @Injects(AstralSorcery.MODID)
 public final class IntegrationAstralSorcery {
 	private IntegrationAstralSorcery() {
@@ -56,10 +73,10 @@ public final class IntegrationAstralSorcery {
 
 	//TODO Clean up this file; cluttered mess!
 
-	/*TODO Providers to add:
-	 * Constellation attunement - items
-	 * Spectral Relay - TileAttunementRelay - Has SO MANY uses in the mod...
-	 *
+	/*Providers that could be added:
+	 * Evershifting Fountain - blockbore
+	 * Celestial Gateway - The 'display name' is not exposed
+	 * TODO Ask Squid about support for `IWorldNameable` and whether it'd cause issues
 	 *
 	 * Many multiblocks _CANNOT_ have methods, as they do not
 	 * permit any other blocks to intrude into their space.  Period.
@@ -67,7 +84,18 @@ public final class IntegrationAstralSorcery {
 	 * Having said that, metadata is visible via the Block Scanner's `getBlockMeta`
 	 */
 
-	public static final ConstantConverter<ItemStack, CrystalProperties> ITEM_STACK_TO_CRYSTAL_PROPERTIES = CrystalProperties::getCrystalProperties;
+	public static final ConstantConverter<ItemStack, CrystalProperties> ITEM_STACK_TO_CRYSTAL_PROPERTIES = stack -> {
+		Item item = stack.getItem();
+		return item instanceof CrystalPropertyItem
+			? ((CrystalPropertyItem) item).provideCurrentPropertiesOrNull(stack)
+			: CrystalProperties.getCrystalProperties(stack);
+
+	};
+
+	//FIXME Since this method doesn't return `null`, it overrides the above converter.
+	// How should I handle the inconsistency in how CrystalProperties are stored to NBT?
+	//... ... yeah, don't expect Astral's code to be consistent.
+	//public static final ConstantConverter<ItemStack, CrystalProperties> ITEM_STACK_CRYSTAL_TOOL_TO_CRYSTAL_PROPERTIES = ItemCrystalToolBase::getToolProperties;
 
 /*
 	//Didn't work because the item form is of type `ItemCollectorCrystal`, which does NOT implement CrystalPropertyItem
@@ -122,8 +150,7 @@ public final class IntegrationAstralSorcery {
 			//This field doesn't appear to be used
 			//out.put("sizeOverride", properties.getSizeOverride());
 
-			//REFINE Not happy with this namespace...
-			return Collections.singletonMap("astralCrystal", out);
+			return Collections.singletonMap("crystalProperties", out);
 		}
 
 		@Nullable //If it returns Null, Astral broke something...
@@ -133,25 +160,23 @@ public final class IntegrationAstralSorcery {
 		}
 	};
 
-	public static final IMetaProvider<ItemStack> META_ITEM_CONSTELLATION_FOCUS = new ItemStackContextMetaProvider<ItemConstellationFocus>(
-		ItemConstellationFocus.class,
-		"Provides the constellation for this item"
+	public static final IMetaProvider<ItemStack> META_TUNED_CRYSTAL_BASE = new ItemStackContextMetaProvider<ItemTunedCrystalBase>(
+		ItemTunedCrystalBase.class,
+		"Provides the constellation(s) for this item"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemConstellationFocus item) {
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemTunedCrystalBase item) {
 			ItemStack stack = context.getTarget();
-
-			IConstellation constellation = item.getFocusConstellation(stack);
-			if (constellation == null) return Collections.emptyMap();
-
 			Map<String, Object> out = new HashMap<>(2);
 
-			//TODO Do we want this, or should we simply `getMeta` on the `IConstellation`?
-			out.put("constellationSimpleName", constellation.getSimpleName());
-			out.put("constellationUnlocalizedName", constellation.getUnlocalizedName());
+			IConstellation constellation = item.getFocusConstellation(stack);
+			out.put("constellationFocus", constellation == null ? null : context.makePartialChild(constellation).getMeta());
 
-			return Collections.singletonMap("astralConstellation", out);
+			IConstellation trait = ItemTunedCrystalBase.getTrait(stack);
+			out.put("constellationTrait", trait == null ? null : context.makePartialChild(trait).getMeta());
+
+			return out;
 		}
 
 		@Nullable
@@ -250,9 +275,9 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemConstellationPaper item) {
-			ItemStack stack = context.getTarget();
-
-			return Collections.singletonMap("astralConstellation", context.makePartialChild(ItemConstellationPaper.getConstellation(stack)).getMeta());
+			IConstellation constellation = ItemConstellationPaper.getConstellation(context.getTarget());
+			return Collections.singletonMap("constellation",
+				constellation != null ? context.makePartialChild(constellation).getMeta() : null);
 		}
 
 		@Nullable
@@ -308,6 +333,7 @@ public final class IntegrationAstralSorcery {
 			// Further, the Lightwell won't accept a catalyst if a block is directly above it...
 			// And it needs a clear line to the sky... looking a bit like 'No automation via CC for you!'...
 
+			//REFINE Do we want this stack wrapped, or should we just `getMeta`?
 			return Collections.singletonMap("catalyst",
 				ContextHelpers.wrapStack(context, context.getTarget().getInventoryHandler().getStackInSlot(0)));
 		}
@@ -330,8 +356,13 @@ public final class IntegrationAstralSorcery {
 			TileCollectorCrystal target = context.getTarget();
 
 			out.putAll(context.makePartialChild(target.getCrystalProperties()).getMeta());
-			out.put("constellation", context.makePartialChild(target.getConstellation()).getMeta());
-			out.put("traitConstellation", context.makePartialChild(target.getTrait()).getMeta());
+
+			IWeakConstellation mainConstellation = target.getConstellation();
+			out.put("constellation", mainConstellation != null ? context.makePartialChild(mainConstellation).getMeta() : null);
+
+			IMinorConstellation traitConstellation = target.getTrait();
+			out.put("traitConstellation", traitConstellation != null ? context.makePartialChild(traitConstellation).getMeta() : null);
+
 			out.put("crystalType", target.getType().name());
 
 			return out;
@@ -344,18 +375,50 @@ public final class IntegrationAstralSorcery {
 		}
 	};
 
+	public static final IMetaProvider<ItemStack> META_ITEM_COLLECTOR_CRYSTAL = new ItemStackContextMetaProvider<ItemCollectorCrystal>(
+		ItemCollectorCrystal.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCollectorCrystal item) {
+			Map<String, Object> out = new HashMap<>(3);
+			ItemStack stack = context.getTarget();
+
+			//CrystalProperties of the item form are already exposed
+			IWeakConstellation mainConstellation = ItemCollectorCrystal.getConstellation(stack);
+			out.put("constellation", mainConstellation != null ? context.makePartialChild(mainConstellation).getMeta() : null);
+
+			IMinorConstellation traitConstellation = ItemCollectorCrystal.getTrait(stack);
+			out.put("traitConstellation", traitConstellation != null ? context.makePartialChild(traitConstellation).getMeta() : null);
+
+			out.put("crystalType", ItemCollectorCrystal.getType(stack).name());
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
 	public static final IMetaProvider<TileCrystalLens> META_TILE_CRYSTAL_LENS= new BaseMetaProvider<TileCrystalLens>() {
 
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileCrystalLens> context) {
-			Map<String, Object> out = new HashMap<>(2);
+			Map<String, Object> out = new HashMap<>(3);
 			TileCrystalLens target = context.getTarget();
 
 			out.putAll(context.makePartialChild(target.getCrystalProperties()).getMeta());
 
 			ItemColoredLens.ColorType lens = target.getLensColor();
-			out.put("lensColor", lens != null ? lens.getUnlocalizedName() : null);
+			String colorName = lens != null ? lens.getUnlocalizedName() : null;
+
+			out.put("lensColor", colorName);
+			out.put("lensColour", colorName);
 
 			return out;
 		}
@@ -376,10 +439,22 @@ public final class IntegrationAstralSorcery {
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSkyResonator item) {
 			//REFINE Do we want `getUnlocalizedName` or `getUnlocalizedUpgradeName`?
 			// Further, should we localize the String?
+
+			/*
+			ItemStack stack = context.getTarget();
+			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(stack);
+			LuaList<String> modeNames = new LuaList<>(modes.size());
+
+			for (ItemSkyResonator.ResonatorUpgrade mode : modes) {
+				modeNames.add(mode.getUnlocalizedName());
+			}
+
+			return Collections.singletonMap("modes", modeNames.asMap()); */
+
 			return Collections.singletonMap("modes",
 				ItemSkyResonator.getUpgrades(context.getTarget()).stream()
 					.map(ItemSkyResonator.ResonatorUpgrade::getUnlocalizedName)
-					.collect(LuaList.toLuaList()));
+					.collect(LuaList.toLuaList()).asMap());
 		}
 
 		@Nullable
@@ -414,16 +489,12 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileRitualPedestal> context) {
-			Map<String, Object> out = new HashMap<>(4);
+			Map<String, Object> out = new HashMap<>(2);
 			TileRitualPedestal target = context.getTarget();
 
-			out.putAll(context.makePartialChild(target.getInventoryHandler().getStackInSlot(0)).getMeta());
+			out.put("focus", context.makePartialChild(target.getInventoryHandler().getStackInSlot(0)).getMeta());
 
-			IConstellation ritual = target.getRitualConstellation();
-			out.put("constellation", ritual != null ? context.makePartialChild(ritual).getMeta() : null);
-
-			IConstellation trait = target.getRitualTrait();
-			out.put("traitConstellation", trait != null ? context.makePartialChild(trait).getMeta() : null);
+			//Ritual constellation(s) provided by the crystal's meta
 
 			out.put("isWorking", target.isWorking());
 
@@ -433,6 +504,265 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public TileRitualPedestal getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_COLORED_LENS = new ItemStackContextMetaProvider<ItemColoredLens>(
+		ItemColoredLens.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemColoredLens item) {
+			ItemStack stack = context.getTarget();
+
+			// ... yay for the lack of a native reverse lookup or conversion based on the ordinal...
+			// (e.g. casting `int` to enum or a `TryParse` type method...)
+			ItemColoredLens.ColorType[] colors = ItemColoredLens.ColorType.values();
+			int meta = stack.getMetadata();
+
+			// Didn't find a concise yet readable format I liked, so a comment it is!
+			// Basically, run a bounds check, then get the name of the enum if in bounds
+			String colorName = meta >= colors.length || meta < 0 ? null : colors[meta].getUnlocalizedName();
+
+			Map<String, Object> out = new HashMap<>(2);
+			out.put("lensColor", colorName);
+			out.put("lensColour", colorName);
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_RESPLENDENT_PRISM = new ItemStackContextMetaProvider<ItemEnchantmentAmulet>(
+		ItemEnchantmentAmulet.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemEnchantmentAmulet item) {
+			return Collections.singletonMap("amuletEnchantments",
+				ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget()).stream()
+				.map(e -> context.makePartialChild(e).getMeta())
+				.collect(LuaList.toLuaList()).asMap());
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	//REFINE As this is only ever called via META_RESPLENDENT_PRISM, we technically could just use a method
+	// rather than a full-fledged IMetaProvider
+	public static final IMetaProvider<AmuletEnchantment> META_AMULET_ENCHANTMENT = new BaseMetaProvider<AmuletEnchantment>() {
+
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context) {
+			Map<String, Object> out = new HashMap<>(3);
+			AmuletEnchantment target = context.getTarget();
+
+			DynamicEnchantment.Type enchantType = target.getType();
+			out.put("bonusType", enchantType.toString());
+
+			//REFINE I feel like I'm missing some simple logical fallacy here...
+			// Could just be that the code is brittle, as broken data could cause a type other than
+			// `ADD_TO_EXISTING_ALL` to have a `null` enchant...
+			Enchantment enchant = target.getEnchantment();
+			out.put("boostedEnchant", (enchantType.hasEnchantmentTag() && enchant != null)
+				? enchant.getName() : "all");
+
+			out.put("bonusLevel", target.getLevelAddition());
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public AmuletEnchantment getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_MANTLE_OF_THE_STARS = new ItemStackContextMetaProvider<ItemCape>(
+		ItemCape.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCape item) {
+			IConstellation constellation = ItemCape.getAttunedConstellation(context.getTarget());
+			return Collections.singletonMap("constellation",
+				constellation != null
+					? context.makePartialChild(constellation).getMeta() : null);
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_ILLUMINATION_WAND = new ItemStackContextMetaProvider<ItemIlluminationWand>(
+		ItemIlluminationWand.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemIlluminationWand item) {
+			EnumDyeColor color = ItemIlluminationWand.getConfiguredColor(context.getTarget());
+			if (color == null) return Collections.emptyMap();
+
+			Map<String, Object> out = new HashMap<>(2);
+
+			out.put("flareColor", color.toString());
+			out.put("flareColour", color.toString());
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<TileIlluminator> META_CAVE_ILLUMINATOR = new BasicMetaProvider<TileIlluminator>() {
+
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull TileIlluminator context) {
+			NBTTagCompound nbt = new NBTTagCompound();
+			context.writeCustomNBT(nbt);
+
+			if (!nbt.hasKey("wandColor", Constants.NBT.TAG_INT)) return Collections.emptyMap();
+
+			Map<String, Object> out = new HashMap<>(2);
+
+			EnumDyeColor color = EnumDyeColor.byMetadata(nbt.getInteger("wandColor"));
+			out.put("flareColor", color.toString());
+			out.put("flareColour", color.toString());
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public TileIlluminator getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<TileAttunementRelay> META_SPECTRAL_RELAY = new BaseMetaProvider<TileAttunementRelay>() {
+
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileAttunementRelay> context) {
+			// While it also functions as a starlight collector, and is part of attunement and top-tier altar crafting,
+			// the stored item is the only thing that we can easily access.
+			// We _could_ extract the linked BlockPos and check the type of TileEntity there, but... meh.
+			return Collections.singletonMap("item",
+				context.makePartialChild(context.getTarget().getInventoryHandler().getStackInSlot(0)).getMeta());
+		}
+
+		@Nullable
+		@Override
+		public TileAttunementRelay getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_RESONATING_WAND = new ItemStackContextMetaProvider<ItemWand>(
+		ItemWand.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemWand item) {
+			WandAugment augment = ItemWand.getAugment(context.getTarget());
+			if (augment == null) return Collections.emptyMap();
+
+			IConstellation constellation = augment.getAssociatedConstellation();
+			return constellation != null
+				? Collections.singletonMap("constellation", context.makePartialChild(constellation).getMeta())
+				: Collections.emptyMap();
+
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<TileMapDrawingTable> META_STELLAR_REFRACTION_TABLE = new BaseMetaProvider<TileMapDrawingTable>() {
+
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileMapDrawingTable> context) {
+			Map<String, Object> out = new HashMap<>();
+			TileMapDrawingTable target = context.getTarget();
+
+			//TODO Expose the infused glass, processing slot
+
+			return out;
+		}
+
+		@Nullable
+		@Override
+		public TileMapDrawingTable getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_INFUSED_GLASS = new ItemStackContextMetaProvider<ItemInfusedGlass>(
+		ItemInfusedGlass.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemInfusedGlass item) {
+			ItemStack stack = context.getTarget();
+
+			//TODO Expose the engraved constellations
+			//We are only exposing the constellations on this piece of Infused Glass, nothing more!
+
+			return Collections.emptyMap();
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
+			return null;
+		}
+	};
+
+	public static final IMetaProvider<ItemStack> META_SEXTANT = new ItemStackContextMetaProvider<ItemSextant>(
+		ItemSextant.class,
+		"FIXME Set the description"
+	) {
+		@Nonnull
+		@Override
+		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSextant item) {
+			ItemStack stack = context.getTarget();
+			//TODO Expose whether the sextant is augmented
+			return Collections.emptyMap();
+		}
+
+		@Nullable
+		@Override
+		public ItemStack getExample() {
 			return null;
 		}
 	};
