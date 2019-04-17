@@ -6,7 +6,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IWorkMonitor;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.core.PlethoraCore;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -109,7 +108,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		}
 
 		@Override
-		boolean canContinue() {
+		boolean canWork() {
 			return monitor == null || monitor.shouldWork();
 		}
 
@@ -126,7 +125,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 				return true;
 			}
 
-			return (monitor == null || monitor.canWork()) && super.update();
+			return super.update();
 		}
 	}
 }
