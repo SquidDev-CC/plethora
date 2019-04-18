@@ -1,34 +1,34 @@
 package org.squiddev.plethora.integration.astralsorcery;
 
+import dan200.computercraft.api.lua.ILuaObject;
 import hellfirepvp.astralsorcery.AstralSorcery;
+import hellfirepvp.astralsorcery.common.block.network.BlockCollectorCrystalBase;
 import hellfirepvp.astralsorcery.common.constellation.*;
+import hellfirepvp.astralsorcery.common.constellation.starmap.ActiveStarMap;
 import hellfirepvp.astralsorcery.common.data.research.PlayerProgress;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
 import hellfirepvp.astralsorcery.common.data.research.ResearchProgression;
+import hellfirepvp.astralsorcery.common.data.world.WorldCacheManager;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletEnchantment;
 import hellfirepvp.astralsorcery.common.enchantment.dynamic.DynamicEnchantment;
-import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
-import hellfirepvp.astralsorcery.common.item.ItemConstellationPaper;
-import hellfirepvp.astralsorcery.common.item.ItemInfusedGlass;
-import hellfirepvp.astralsorcery.common.item.ItemJournal;
-import hellfirepvp.astralsorcery.common.item.base.ItemConstellationFocus;
+import hellfirepvp.astralsorcery.common.item.*;
 import hellfirepvp.astralsorcery.common.item.block.ItemCollectorCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalPropertyItem;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemRockCrystalBase;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
-import hellfirepvp.astralsorcery.common.item.tool.ItemCrystalToolBase;
 import hellfirepvp.astralsorcery.common.item.tool.ItemSkyResonator;
 import hellfirepvp.astralsorcery.common.item.tool.sextant.ItemSextant;
+import hellfirepvp.astralsorcery.common.item.tool.sextant.SextantFinder;
 import hellfirepvp.astralsorcery.common.item.tool.wand.ItemWand;
 import hellfirepvp.astralsorcery.common.item.tool.wand.WandAugment;
 import hellfirepvp.astralsorcery.common.item.wand.ItemIlluminationWand;
 import hellfirepvp.astralsorcery.common.item.wearable.ItemCape;
 import hellfirepvp.astralsorcery.common.item.wearable.ItemEnchantmentAmulet;
+import hellfirepvp.astralsorcery.common.lib.BlocksAS;
+import hellfirepvp.astralsorcery.common.lib.Constellations;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import hellfirepvp.astralsorcery.common.tile.*;
-import hellfirepvp.astralsorcery.common.tile.base.TileInventoryBase;
-import hellfirepvp.astralsorcery.common.tile.base.TileReceiverBaseInventory;
 import hellfirepvp.astralsorcery.common.tile.network.TileCollectorCrystal;
 import hellfirepvp.astralsorcery.common.tile.network.TileCrystalLens;
 import net.minecraft.enchantment.Enchantment;
@@ -37,8 +37,9 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.ItemStackHandler;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
@@ -54,8 +55,6 @@ import org.squiddev.plethora.utils.WorldDummy;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static org.squiddev.plethora.integration.PlethoraIntegration.LOG;
 
 @Injects(AstralSorcery.MODID)
 public final class IntegrationAstralSorcery {
@@ -78,7 +77,7 @@ public final class IntegrationAstralSorcery {
 	 * Celestial Gateway - The 'display name' is not exposed
 	 * TODO Ask Squid about support for `IWorldNameable` and whether it'd cause issues
 	 *
-	 * Many multiblocks _CANNOT_ have methods, as they do not
+	 * Some multiblocks _CANNOT_ have methods, as they do not
 	 * permit any other blocks to intrude into their space.  Period.
 	 * Not even if you return `true` for `isAir()`.
 	 * Having said that, metadata is visible via the Block Scanner's `getBlockMeta`
@@ -92,47 +91,6 @@ public final class IntegrationAstralSorcery {
 
 	};
 
-	//FIXME Since this method doesn't return `null`, it overrides the above converter.
-	// How should I handle the inconsistency in how CrystalProperties are stored to NBT?
-	//... ... yeah, don't expect Astral's code to be consistent.
-	//public static final ConstantConverter<ItemStack, CrystalProperties> ITEM_STACK_CRYSTAL_TOOL_TO_CRYSTAL_PROPERTIES = ItemCrystalToolBase::getToolProperties;
-
-/*
-	//Didn't work because the item form is of type `ItemCollectorCrystal`, which does NOT implement CrystalPropertyItem
-	public static final IMetaProvider<ItemStack> META_CRYSTAL_PROPERTY_ITEM = new ItemStackContextMetaProvider<CrystalPropertyItem>(
-		CrystalPropertyItem.class,
-		"Provides the cutting, size, purity, and fracturing of this CrystalPropertyItem"
-	) {
-		@Nonnull
-		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull CrystalPropertyItem item) {
-			ItemStack stack = context.getTarget();
-
-			CrystalProperties properties = item.provideCurrentPropertiesOrNull(stack);
-			if (properties == null) return Collections.emptyMap();
-
-			Map<String, Object> out = new HashMap<>(4);
-
-			out.put("cutting", properties.getCollectiveCapability());
-			out.put("size", properties.getSize());
-			out.put("purity", properties.getPurity());
-
-			out.put("fracture", properties.getFracturation());
-
-			//This field doesn't appear to be used
-			//out.put("sizeOverride", properties.getSizeOverride());
-
-			return Collections.singletonMap("astralCrystal2", out);
-		}
-
-		@Nonnull
-		@Override
-		public ItemStack getExample() {
-			return ItemRockCrystalBase.createMaxBaseCrystal();
-		}
-	};
-*/
-
 	public static final IMetaProvider<CrystalProperties> META_CRYSTAL_PROPERTY = new BasicMetaProvider<CrystalProperties>(
 		"Provides the cutting, size, purity, and fracturing from this CrystalProperties"
 	) {
@@ -144,7 +102,6 @@ public final class IntegrationAstralSorcery {
 			out.put("cutting", props.getCollectiveCapability());
 			out.put("size", props.getSize());
 			out.put("purity", props.getPurity());
-
 			out.put("fracture", props.getFracturation());
 
 			//This field doesn't appear to be used
@@ -156,7 +113,7 @@ public final class IntegrationAstralSorcery {
 		@Nullable //If it returns Null, Astral broke something...
 		@Override
 		public CrystalProperties getExample() {
-			return CrystalProperties.getCrystalProperties(ItemRockCrystalBase.createMaxBaseCrystal());
+			return CrystalProperties.getMaxRockProperties();
 		}
 	};
 
@@ -171,10 +128,14 @@ public final class IntegrationAstralSorcery {
 			Map<String, Object> out = new HashMap<>(2);
 
 			IConstellation constellation = item.getFocusConstellation(stack);
-			out.put("constellationFocus", constellation == null ? null : context.makePartialChild(constellation).getMeta());
+			if (constellation != null) {
+				out.put("constellationFocus", context.makePartialChild(constellation).getMeta());
+			}
 
 			IConstellation trait = ItemTunedCrystalBase.getTrait(stack);
-			out.put("constellationTrait", trait == null ? null : context.makePartialChild(trait).getMeta());
+			if (trait != null) {
+				out.put("constellationTrait", context.makePartialChild(trait).getMeta());
+			}
 
 			return out;
 		}
@@ -183,11 +144,17 @@ public final class IntegrationAstralSorcery {
 		@Override
 		public ItemStack getExample() {
 			ItemStack crystalStack = new ItemStack(ItemsAS.tunedRockCrystal);
+			CrystalProperties.applyCrystalProperties(crystalStack, CrystalProperties.getMaxRockProperties());
 
-			IWeakConstellation constellation = getExampleConstellation();
+			IWeakConstellation constellation = Constellations.discidia;
 			if (constellation == null) return null;
 
 			ItemTunedCrystalBase.applyMainConstellation(crystalStack, constellation);
+
+			IMinorConstellation trait = Constellations.gelu;
+			if (trait == null) return crystalStack;
+
+			ItemTunedCrystalBase.applyTrait(crystalStack, trait);
 
 			return crystalStack;
 		}
@@ -215,13 +182,19 @@ public final class IntegrationAstralSorcery {
 			out.put("availablePerkPoints", progress.getAvailablePerkPoints(player)); //SO MANY METHODS THAT SHOULD BE STATIC, NOT INSTANCE!!!
 
 			IConstellation attuned = progress.getAttunedConstellation();
-			out.put("attunedConstellation", attuned != null ? context.makePartialChild(attuned).getMeta() : null);
+			if (attuned != null) {
+				out.put("attunedConstellation", context.makePartialChild(attuned).getMeta());
+			}
 			out.put("progressTier", progress.getTierReached().toString()); //REFINE Do we want the name, the ordinal, or a LuaList with both?
 
 			// ... shouldn't the `progressId` field be the same as the ordinal? ... whatever.
-			out.put("researchTier", progress.getResearchProgression().stream()
+			//noinspection SimplifyOptionalCallChains It may be simpler, but it (to me) hurts readability...
+			String researchTier = progress.getResearchProgression().stream()
 				.max(Comparator.comparingInt(ResearchProgression::getProgressId))
-				.<Object>map(Enum::toString).orElse(null));
+				.map(Enum::toString).orElse(null);
+			if (researchTier != null) {
+				out.put("researchTier", researchTier);
+			}
 
 			//REFINE Someone else can expose the Perks if they want; cost/benefit says "no" at this time
 
@@ -250,9 +223,7 @@ public final class IntegrationAstralSorcery {
 			out.put("tierColor", context.getTierRenderColor().getRGB());
 			out.put("tierColour", context.getTierRenderColor().getRGB());
 
-			//Because there isn't a nice, clean `getTier` method...
-			out.put("tier", context instanceof IMinorConstellation ? "minor"
-				: context instanceof IMajorConstellation ? "major" : "weak");
+			out.put("tier", getConstellationTier(context));
 
 			//Exposing the stars and the connections wouldn't help players much, unless they want to visualize
 			// constellations on a computer...?
@@ -264,7 +235,7 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public IConstellation getExample() {
-			return getExampleConstellation();
+			return Constellations.discidia;
 		}
 	};
 
@@ -276,8 +247,9 @@ public final class IntegrationAstralSorcery {
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemConstellationPaper item) {
 			IConstellation constellation = ItemConstellationPaper.getConstellation(context.getTarget());
-			return Collections.singletonMap("constellation",
-				constellation != null ? context.makePartialChild(constellation).getMeta() : null);
+			return constellation != null
+				? Collections.singletonMap("constellation", context.makePartialChild(constellation).getMeta())
+				: Collections.emptyMap();
 		}
 
 		@Nullable
@@ -285,7 +257,7 @@ public final class IntegrationAstralSorcery {
 		public ItemStack getExample() {
 			ItemStack paperStack = new ItemStack(ItemsAS.constellationPaper);
 
-			IWeakConstellation constellation = getExampleConstellation();
+			IWeakConstellation constellation = Constellations.discidia;
 			if (constellation == null) return  null;
 
 			ItemConstellationPaper.setConstellation(paperStack, constellation);
@@ -301,23 +273,24 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemJournal item) {
-			ItemStack stack = context.getTarget();
-
-			//ItemJournal also has a method to map an IInventory, BUT said IInventory does not apply any
-			// of the slot restrictions imposed by the ContainerJournal...
-			//REFINE We mainly care about the name of the constellation on the paper...
+			//REFINE Or should we use `getStoredConstellations` and not worry about the papers themselves?
+			// Saves a slight bit of work in Astral's code...
 			return Collections.singletonMap("papers",
-				Arrays.stream(ItemJournal.getStoredConstellationStacks(stack))
-					.map(paper -> context.makePartialChild(paper).getMeta())
-					.collect(LuaList.toLuaList())
-					.asMap());
+				LuaList.of(Arrays.asList(ItemJournal.getStoredConstellationStacks(context.getTarget())),
+					paper -> context.makePartialChild(paper).getMeta()).asMap());
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			//FIXME Set the example
-			return null;
+			ItemStack stack = new ItemStack(ItemsAS.journal);
+
+			LinkedList<IConstellation> constellations = new LinkedList<>();
+			constellations.add(Constellations.discidia);
+
+			ItemJournal.setStoredConstellations(stack,constellations);
+
+			return stack;
 		}
 	};
 
@@ -328,21 +301,19 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileWell> context) {
-
-			//TODO turtle.placeDown() doesn't work to insert the catalyst; does this simulate a click, or just try to place a block?
-			// Further, the Lightwell won't accept a catalyst if a block is directly above it...
-			// And it needs a clear line to the sky... looking a bit like 'No automation via CC for you!'...
-
 			//REFINE Do we want this stack wrapped, or should we just `getMeta`?
-			return Collections.singletonMap("catalyst",
-				ContextHelpers.wrapStack(context, context.getTarget().getInventoryHandler().getStackInSlot(0)));
+			ILuaObject stack = ContextHelpers.wrapStack(context, context.getTarget().getInventoryHandler().getStackInSlot(0));
+			return stack != null
+				? Collections.singletonMap("catalyst", stack)
+				: Collections.emptyMap();
 		}
 
 		@Nonnull
 		@Override
 		public TileWell getExample() {
 			TileWell well = new TileWell();
-			well.getInventoryHandler().setStackInSlot(0, new ItemStack(ItemsAS.craftingComponent));
+			well.getInventoryHandler().setStackInSlot(0,
+				new ItemStack(ItemsAS.craftingComponent, 1, ItemCraftingComponent.MetaType.AQUAMARINE.getMeta()));
 			return well;
 		}
 	};
@@ -358,10 +329,14 @@ public final class IntegrationAstralSorcery {
 			out.putAll(context.makePartialChild(target.getCrystalProperties()).getMeta());
 
 			IWeakConstellation mainConstellation = target.getConstellation();
-			out.put("constellation", mainConstellation != null ? context.makePartialChild(mainConstellation).getMeta() : null);
+			if (mainConstellation != null) {
+				out.put("constellation", context.makePartialChild(mainConstellation).getMeta());
+			}
 
 			IMinorConstellation traitConstellation = target.getTrait();
-			out.put("traitConstellation", traitConstellation != null ? context.makePartialChild(traitConstellation).getMeta() : null);
+			if (traitConstellation != null) {
+				out.put("traitConstellation", context.makePartialChild(traitConstellation).getMeta());
+			}
 
 			out.put("crystalType", target.getType().name());
 
@@ -371,7 +346,14 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public TileCollectorCrystal getExample() {
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.collectorCrystal.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileCollectorCrystal)) return null;
+
+			TileCollectorCrystal crystal = (TileCollectorCrystal) te;
+			crystal.onPlace(Constellations.discidia, Constellations.gelu, CrystalProperties.getMaxRockProperties(), true, BlockCollectorCrystalBase.CollectorCrystalType.ROCK_CRYSTAL);
+
+			return crystal;
 		}
 	};
 
@@ -387,10 +369,14 @@ public final class IntegrationAstralSorcery {
 
 			//CrystalProperties of the item form are already exposed
 			IWeakConstellation mainConstellation = ItemCollectorCrystal.getConstellation(stack);
-			out.put("constellation", mainConstellation != null ? context.makePartialChild(mainConstellation).getMeta() : null);
+			if (mainConstellation != null) {
+				out.put("constellation", context.makePartialChild(mainConstellation).getMeta());
+			}
 
 			IMinorConstellation traitConstellation = ItemCollectorCrystal.getTrait(stack);
-			out.put("traitConstellation", traitConstellation != null ? context.makePartialChild(traitConstellation).getMeta() : null);
+			if (traitConstellation != null) {
+				out.put("traitConstellation", context.makePartialChild(traitConstellation).getMeta());
+			}
 
 			out.put("crystalType", ItemCollectorCrystal.getType(stack).name());
 
@@ -400,7 +386,15 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack stack = new ItemStack(BlocksAS.collectorCrystal);
+			CrystalProperties.applyCrystalProperties(stack, CrystalProperties.getMaxRockProperties());
+			ItemCollectorCrystal.setType(stack, BlockCollectorCrystalBase.CollectorCrystalType.ROCK_CRYSTAL);
+
+			//REFINE Do we want to add null checks to the `Constellations` field access?
+			ItemCollectorCrystal.setConstellation(stack, Constellations.discidia);
+			ItemCollectorCrystal.setTraitConstellation(stack, Constellations.gelu);
+
+			return stack;
 		}
 	};
 
@@ -417,8 +411,10 @@ public final class IntegrationAstralSorcery {
 			ItemColoredLens.ColorType lens = target.getLensColor();
 			String colorName = lens != null ? lens.getUnlocalizedName() : null;
 
-			out.put("lensColor", colorName);
-			out.put("lensColour", colorName);
+			if (colorName != null) {
+				out.put("lensColor", colorName);
+				out.put("lensColour", colorName);
+			}
 
 			return out;
 		}
@@ -426,7 +422,15 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public TileCrystalLens getExample() {
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.lens.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileCrystalLens)) return  null;
+
+			TileCrystalLens lens = (TileCrystalLens) te;
+			lens.onPlace(CrystalProperties.getMaxRockProperties());
+			lens.setLensColor(ItemColoredLens.ColorType.SPECTRAL);
+
+			return lens;
 		}
 	};
 
@@ -452,15 +456,18 @@ public final class IntegrationAstralSorcery {
 			return Collections.singletonMap("modes", modeNames.asMap()); */
 
 			return Collections.singletonMap("modes",
-				ItemSkyResonator.getUpgrades(context.getTarget()).stream()
-					.map(ItemSkyResonator.ResonatorUpgrade::getUnlocalizedName)
-					.collect(LuaList.toLuaList()).asMap());
+				LuaList.of(ItemSkyResonator.getUpgrades(context.getTarget()),
+					ItemSkyResonator.ResonatorUpgrade::getUnlocalizedName).asMap());
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack stack = new ItemStack(ItemsAS.skyResonator);
+			ItemSkyResonator.setUpgradeUnlocked(stack, ItemSkyResonator.ResonatorUpgrade.AREA_SIZE);
+			ItemSkyResonator.setUpgradeUnlocked(stack, ItemSkyResonator.ResonatorUpgrade.FLUID_FIELDS);
+
+			return stack;
 		}
 	};
 
@@ -478,7 +485,7 @@ public final class IntegrationAstralSorcery {
 		@Nullable
 		@Override
 		public TileGrindstone getExample() {
-			//REFINE Implement this example
+			//FIXME Implement this example
 			// Since `setGrindingItem` updates the BlockState, we will have to create the block for the TE too
 			return null;
 		}
@@ -501,10 +508,17 @@ public final class IntegrationAstralSorcery {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public TileRitualPedestal getExample() {
-			return null;
+			//FIXME This probably needs a Block set too...
+			TileRitualPedestal tile = new TileRitualPedestal();
+			ItemStack focus = new ItemStack(ItemsAS.tunedCelestialCrystal);
+			CrystalProperties.applyCrystalProperties(focus, CrystalProperties.getMaxCelestialProperties());
+			ItemTunedCrystalBase.applyMainConstellation(focus, Constellations.discidia);
+
+			tile.placeCrystalIntoPedestal(focus);
+			return tile;
 		}
 	};
 
@@ -526,6 +540,8 @@ public final class IntegrationAstralSorcery {
 			// Basically, run a bounds check, then get the name of the enum if in bounds
 			String colorName = meta >= colors.length || meta < 0 ? null : colors[meta].getUnlocalizedName();
 
+			if (colorName == null) return Collections.emptyMap();
+
 			Map<String, Object> out = new HashMap<>(2);
 			out.put("lensColor", colorName);
 			out.put("lensColour", colorName);
@@ -533,10 +549,10 @@ public final class IntegrationAstralSorcery {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			return new ItemStack(ItemsAS.coloredLens, 1, ItemColoredLens.ColorType.SPECTRAL.getMeta());
 		}
 	};
 
@@ -548,14 +564,21 @@ public final class IntegrationAstralSorcery {
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemEnchantmentAmulet item) {
 			return Collections.singletonMap("amuletEnchantments",
-				ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget()).stream()
-				.map(e -> context.makePartialChild(e).getMeta())
-				.collect(LuaList.toLuaList()).asMap());
+				LuaList.of(ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget()),
+					e -> context.makePartialChild(e).getMeta()).asMap());
 		}
 
 		@Nullable
 		@Override
 		public ItemStack getExample() {
+			ItemStack stack = new ItemStack(ItemsAS.enchantmentAmulet);
+			ItemEnchantmentAmulet.freezeAmuletColor(stack); //Not strictly necessary, but...
+
+			List<AmuletEnchantment> enchants = new ArrayList<>(2);
+
+			//FIXME Determine what enchants we want on our example
+			//enchants.add(new AmuletEnchantment(AmuletEnchantment.Type.))
+
 			return null;
 		}
 	};
@@ -600,15 +623,18 @@ public final class IntegrationAstralSorcery {
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCape item) {
 			IConstellation constellation = ItemCape.getAttunedConstellation(context.getTarget());
-			return Collections.singletonMap("constellation",
-				constellation != null
-					? context.makePartialChild(constellation).getMeta() : null);
+			return constellation != null
+				? Collections.singletonMap("constellation", context.makePartialChild(constellation).getMeta())
+				: Collections.emptyMap();
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack stack = new ItemStack(ItemsAS.armorImbuedCape);
+			ItemCape.setAttunedConstellation(stack, Constellations.discidia);
+
+			return stack;
 		}
 	};
 
@@ -630,10 +656,12 @@ public final class IntegrationAstralSorcery {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack wand = new ItemStack(ItemsAS.illuminationWand);
+			ItemIlluminationWand.setConfiguredColor(wand, EnumDyeColor.YELLOW);
+			return wand;
 		}
 	};
 
@@ -696,7 +724,6 @@ public final class IntegrationAstralSorcery {
 			return constellation != null
 				? Collections.singletonMap("constellation", context.makePartialChild(constellation).getMeta())
 				: Collections.emptyMap();
-
 		}
 
 		@Nullable
@@ -711,10 +738,15 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileMapDrawingTable> context) {
-			Map<String, Object> out = new HashMap<>();
+			Map<String, Object> out = new HashMap<>(2);
 			TileMapDrawingTable target = context.getTarget();
 
-			//TODO Expose the infused glass, processing slot
+			//TODO Discuss the difference between `getMeta` and `wrapStack` with Squid, regarding behavior of empty stacks
+			// `getMeta` appears to result in an empty table, while `wrapStack` returns `null`
+			//noinspection ConstantConditions
+			out.put("infusedGlass", ContextHelpers.wrapStack(context, target.getSlotGlassLens()));
+			//noinspection ConstantConditions
+			out.put("processingSlot", ContextHelpers.wrapStack(context, target.getSlotIn()));
 
 			return out;
 		}
@@ -733,12 +765,13 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemInfusedGlass item) {
-			ItemStack stack = context.getTarget();
-
-			//TODO Expose the engraved constellations
 			//We are only exposing the constellations on this piece of Infused Glass, nothing more!
-
-			return Collections.emptyMap();
+			ActiveStarMap starMap = ItemInfusedGlass.getMapEngravingInformations(context.getTarget());
+			return starMap == null
+				? Collections.emptyMap()
+				: Collections.singletonMap("constellations",
+				LuaList.of(starMap.getConstellations(),
+					c -> context.makePartialChild(c).getMeta()).asMap());
 		}
 
 		@Nullable
@@ -756,8 +789,17 @@ public final class IntegrationAstralSorcery {
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSextant item) {
 			ItemStack stack = context.getTarget();
-			//TODO Expose whether the sextant is augmented
-			return Collections.emptyMap();
+
+			Map<String, Object> out = new HashMap<>(2);
+
+			out.put("augmented", ItemSextant.isAdvanced(stack));
+
+			SextantFinder.TargetObject target = ItemSextant.getTarget(stack);
+			if (target != null) {
+				out.put("targetType", target.getRegistryName());
+			}
+
+			return out;
 		}
 
 		@Nullable
@@ -767,11 +809,11 @@ public final class IntegrationAstralSorcery {
 		}
 	};
 
-	@Nullable
-	private static IWeakConstellation getExampleConstellation() {
-		//Yes, I just picked Discidia at random; feel free to swap with `ConstellationRegistry.getMajorConstellations.get(0)`
-		return ConstellationRegistry.getMajorConstellationByName(AstralSorcery.MODID + ".constellation.discidia");
+
+	@SuppressWarnings("SimplifiableIfStatement")
+	private static String getConstellationTier(IConstellation constellation) {
+		if (constellation instanceof IMinorConstellation) return "minor";
+		if (constellation instanceof IMajorConstellation) return "major";
+		return "weak";
 	}
-
-
 }
