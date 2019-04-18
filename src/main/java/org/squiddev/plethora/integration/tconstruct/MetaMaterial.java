@@ -2,8 +2,8 @@ package org.squiddev.plethora.integration.tconstruct;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
@@ -11,22 +11,23 @@ import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.IMaterialItem;
 import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.traits.ITrait;
+import slimeknights.tconstruct.tools.TinkerTools;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, namespace = "toolMaterial", modId = TConstruct.modID)
-public class MetaMaterial extends BaseMetaProvider<ItemStack> {
+@Injects(TConstruct.modID)
+public final class MetaMaterial extends ItemStackContextMetaProvider<IMaterialItem> {
+	public MetaMaterial() {
+		super("toolMaterial", IMaterialItem.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, IMaterialItem materialItem) {
 		ItemStack stack = context.getTarget();
 		Item item = stack.getItem();
-		if (!(item instanceof IMaterialItem)) return Collections.emptyMap();
-
-		IMaterialItem materialItem = (IMaterialItem) item;
 		Map<String, Object> out = new HashMap<>();
 
 		Material material = materialItem.getMaterial(stack);
@@ -62,5 +63,11 @@ public class MetaMaterial extends BaseMetaProvider<ItemStack> {
 		}
 
 		return out;
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getExample() {
+		return new ItemStack(TinkerTools.pickHead);
 	}
 }

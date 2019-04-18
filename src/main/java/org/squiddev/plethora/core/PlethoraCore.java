@@ -81,7 +81,6 @@ public class PlethoraCore {
 		long start = System.currentTimeMillis();
 
 		Registry.register(asmData);
-		MetaRegistry.instance.loadAsm(asmData);
 		PlethoraMethodRegistry.loadAsm(asmData);
 
 		long finish = System.currentTimeMillis();

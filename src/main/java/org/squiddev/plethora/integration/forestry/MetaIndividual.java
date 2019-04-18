@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.forestry;
 
 import forestry.api.genetics.IChromosomeType;
 import forestry.api.genetics.IIndividual;
+import forestry.apiculture.genetics.BeeDefinition;
 import forestry.core.config.Constants;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
@@ -34,5 +35,13 @@ public final class MetaIndividual extends BaseMetaProvider<IIndividual> {
 		}
 
 		return out;
+	}
+
+	@Nonnull
+	@Override
+	public IIndividual getExample() {
+		IIndividual individual = BeeDefinition.FOREST.getIndividual();
+		individual.analyze();
+		return individual;
 	}
 }

@@ -3,16 +3,20 @@ package org.squiddev.plethora.integration.forestry;
 import forestry.api.genetics.IAllele;
 import forestry.api.genetics.IChromosomeType;
 import forestry.api.genetics.IMutation;
+import forestry.api.genetics.ISpeciesRoot;
+import forestry.apiculture.genetics.BeeDefinition;
 import forestry.core.config.Constants;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@MetaWrapper.MetaProvider.Inject(value = IMutation.class, modId = Constants.MOD_ID)
-public class MetaMutation extends BasicMetaProvider<IMutation> {
+@Injects(Constants.MOD_ID)
+public final class MetaMutation extends BasicMetaProvider<IMutation> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull IMutation mutation) {
@@ -45,5 +49,13 @@ public class MetaMutation extends BasicMetaProvider<IMutation> {
 		if (!conditions.isEmpty()) out.put("conditions", conditions);
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public IMutation getExample() {
+		ISpeciesRoot root = BeeDefinition.FOREST.getGenome().getSpeciesRoot();
+		List<? extends IMutation> mutation = root.getMutations(false);
+		return mutation.isEmpty() ? null : mutation.get(0);
 	}
 }

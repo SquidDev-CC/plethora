@@ -5,11 +5,14 @@ import ic2.api.crops.CropProperties;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
 import ic2.core.IC2;
+import ic2.core.crop.IC2Crops;
+import ic2.core.item.ItemCropSeed;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +40,12 @@ public final class MetaItemCrop extends ItemStackMetaProvider<ICropSeed> {
 		}
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return ItemCropSeed.generateItemStackFromValues(IC2Crops.cropFerru, 4, 16, 10, 4);
 	}
 
 	public static Map<String, Object> getMeta(CropCard card, int level) {

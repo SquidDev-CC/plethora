@@ -5,18 +5,19 @@ import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced;
 import net.minecraft.util.math.BlockPos;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.squiddev.plethora.integration.computercraft.MetaItemTurtle.getUpgrade;
 
-@IMetaProvider.Inject(value = ITurtleTile.class, modId = ComputerCraft.MOD_ID, namespace = "turtle")
-public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
+@Injects(ComputerCraft.MOD_ID)
+public final class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull ITurtleTile object) {
@@ -32,7 +33,7 @@ public class MetaTileTurtle extends BasicMetaProvider<ITurtleTile> {
 		out.put("left", getUpgrade(object.getUpgrade(TurtleSide.Left)));
 		out.put("right", getUpgrade(object.getUpgrade(TurtleSide.Right)));
 
-		return out;
+		return Collections.singletonMap("turtle", out);
 	}
 
 	@Nonnull

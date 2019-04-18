@@ -1,16 +1,23 @@
 package org.squiddev.plethora.integration.appliedenergistics;
 
+import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
+import org.squiddev.plethora.api.meta.BasicMetaProvider;
+import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.SimpleMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +35,21 @@ public final class MetaAppliedEnergistics {
 		return out;
 	};
 
-	public static final SimpleMetaProvider<IAEItemStack> META_AE_ITEM_STACK =
-		stack -> Collections.singletonMap("count", stack.getStackSize());
+	public static final IMetaProvider<IAEItemStack> META_AE_ITEM_STACK = new BasicMetaProvider<IAEItemStack>(
+		"An ItemStack within an AE network."
+	) {
+		@Nonnull
+		@Override
+		public Map<String, ?> getMeta(@Nonnull IAEItemStack stack) {
+			return Collections.singletonMap("count", stack.getStackSize());
+		}
+
+		@Nullable
+		@Override
+		public IAEItemStack getExample() {
+			return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(new ItemStack(Items.STICK, 4));
+		}
+	};
 
 	public static final BaseMetaProvider<ICraftingPatternDetails> META_CRAFTING_PATTERN_DETAILS = new BaseMetaProvider<ICraftingPatternDetails>() {
 		@Nonnull

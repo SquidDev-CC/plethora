@@ -2,12 +2,15 @@ package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
+import com.raoulvdberge.refinedstorage.item.ItemPattern;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,5 +35,11 @@ public final class MetaCraftingPattern extends BaseMetaProvider<ICraftingPattern
 		out.put("inputs", LuaList.of(pattern.getInputs(), x -> x.isEmpty() ? null : getMetaList(context, x)).asMap());
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ICraftingPattern getExample() {
+		return ItemPattern.getPatternFromCache(WorldDummy.INSTANCE, MetaItemPattern.getExampleStack());
 	}
 }

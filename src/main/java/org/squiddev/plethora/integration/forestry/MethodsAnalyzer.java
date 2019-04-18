@@ -49,7 +49,7 @@ public final class MethodsAnalyzer {
 		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 		doc = "-- Get a list of all mutations in the given species root"
 	)
-	public static Map<Integer, ?> getMutationsList(IContext<IModuleContainer> context, String root) throws LuaException {
+	public static Map<Integer, ? extends Map<String, ?>> getMutationsList(IContext<IModuleContainer> context, String root) throws LuaException {
 		return getSpeciesRoot(root)
 			.getMutations(false).stream()
 			.filter(s -> !s.isSecret())

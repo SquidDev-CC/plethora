@@ -4,17 +4,18 @@ import epicsquid.blockcraftery.Blockcraftery;
 import epicsquid.blockcraftery.tile.TileEditableBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = TileEditableBlock.class, namespace = "frames", modId = Blockcraftery.MODID)
-public class MetaTileEditableBlock extends BaseMetaProvider<TileEditableBlock> {
+@Injects(Blockcraftery.MODID)
+public final class MetaTileEditableBlock extends BaseMetaProvider<TileEditableBlock> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull IPartialContext<TileEditableBlock> context) {
@@ -27,7 +28,7 @@ public class MetaTileEditableBlock extends BaseMetaProvider<TileEditableBlock> {
 		if (object.state.getBlock() != Blocks.AIR) {
 			result.put("block", context.makePartialChild(object.state).getMeta());
 		}
-		return result;
+		return Collections.singletonMap("frames", result);
 	}
 
 	@Nonnull
