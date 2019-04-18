@@ -90,7 +90,7 @@ public final class IntegrationHatchery {
 		@Nullable
 		@Override
 		public ItemStack getExample() {
-			return AnimalNet.addEntitytoNet(new EntityPlayerDummy(WorldDummy.INSTANCE), ModItems.animalNet.getDefaultInstance(), new EntityCow(WorldDummy.INSTANCE));
+			return AnimalNet.addEntitytoNet(new EntityPlayerDummy(WorldDummy.INSTANCE), new ItemStack(ModItems.animalNet), new EntityCow(WorldDummy.INSTANCE));
 		}
 	};
 

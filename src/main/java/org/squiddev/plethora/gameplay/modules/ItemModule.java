@@ -192,6 +192,7 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack) {
 		return super.hasEffect(stack) || getLevel(stack) > 0;
 	}

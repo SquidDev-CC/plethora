@@ -3,6 +3,8 @@ package org.squiddev.plethora.core.docdump;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 import com.google.gson.stream.JsonWriter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IMethod;
@@ -17,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class JSONWriter implements IDocWriter {
-	private static final Gson gson = new GsonBuilder().create();
+	private static final Gson gson = new GsonBuilder()
+		.registerTypeAdapter(Class.class, (JsonSerializer<Class<?>>) (src, typeOfSrc, context) -> new JsonPrimitive(src.getName()))
+		.create();
 
 	private final JsonWriter writer;
 	private final List<DocumentedMethod> methodData;
