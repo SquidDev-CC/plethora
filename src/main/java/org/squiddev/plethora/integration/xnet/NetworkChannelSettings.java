@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.squiddev.plethora.integration.xnet.NetworkChannelType.CAPABILITY;
+import static org.squiddev.plethora.integration.xnet.NetworkChannelType.Capabilities.WIRED_ELEMENT;
 
 class NetworkChannelSettings implements IChannelSettings, IWiredElement {
 	private boolean cleanCache = true;
@@ -194,8 +194,8 @@ class NetworkChannelSettings implements IChannelSettings, IWiredElement {
 			BlockPos pos = context.findConsumerPosition(id);
 			if (tile == null) tile = pos != null ? context.getControllerWorld().getTileEntity(pos.offset(side)) : null;
 
-			IWiredElement element = tile != null && tile.hasCapability(CAPABILITY, settings.getFacing())
-				? tile.getCapability(CAPABILITY, settings.getFacing()) : null;
+			IWiredElement element = tile != null && tile.hasCapability(WIRED_ELEMENT, settings.getFacing())
+				? tile.getCapability(WIRED_ELEMENT, settings.getFacing()) : null;
 			IWiredNode newNode = element == null ? null : element.getNode();
 			if (newNode != node) {
 				if (node != null) node.disconnectFrom(rootNode);

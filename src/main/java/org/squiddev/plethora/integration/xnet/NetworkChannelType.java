@@ -19,13 +19,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+import static org.squiddev.plethora.integration.xnet.NetworkChannelType.Capabilities.WIRED_ELEMENT;
+
 class NetworkChannelType implements IChannelType {
 	private static final String ID = "plethora.cc";
 	static final IndicatorIcon CHANNEL_ICON = new IndicatorIcon(new ResourceLocation(Plethora.ID, "textures/gui/xnet.png"), 0, 0, 11, 10);
 	static final IndicatorIcon CONNECTOR_ICON = new IndicatorIcon(new ResourceLocation(Plethora.ID, "textures/gui/xnet.png"), 12, 0, 13, 10);
-
-	@CapabilityInject(IWiredElement.class)
-	public static Capability<IWiredElement> CAPABILITY;
 
 	private static final NetworkChannelType INSTANCE = new NetworkChannelType();
 
@@ -42,7 +41,7 @@ class NetworkChannelType implements IChannelType {
 	@Override
 	public boolean supportsBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nullable EnumFacing side) {
 		TileEntity tile = world.getTileEntity(pos);
-		return tile != null && CAPABILITY != null && tile.hasCapability(CAPABILITY, side);
+		return tile != null && WIRED_ELEMENT != null && tile.hasCapability(WIRED_ELEMENT, side);
 	}
 
 	@Nonnull
@@ -62,6 +61,17 @@ class NetworkChannelType implements IChannelType {
 		public Void apply(IXNet api) {
 			api.registerChannelType(INSTANCE);
 			return null;
+		}
+	}
+
+	/**
+	 * Declare capabilities in a separate class, so injecting caps doesn't cause XNet classes to be loaded.
+	 */
+	public static final class Capabilities {
+		@CapabilityInject(IWiredElement.class)
+		public static Capability<IWiredElement> WIRED_ELEMENT;
+
+		private Capabilities() {
 		}
 	}
 }
