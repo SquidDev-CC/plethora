@@ -1,21 +1,26 @@
 package org.squiddev.plethora.integration.astralsorcery;
 
+import dan200.computercraft.api.lua.LuaException;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.auxiliary.CelestialGatewaySystem;
-import hellfirepvp.astralsorcery.common.data.world.WorldCacheManager;
+import hellfirepvp.astralsorcery.common.constellation.IConstellation;
+import hellfirepvp.astralsorcery.common.data.research.PlayerProgress;
+import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
+import hellfirepvp.astralsorcery.common.data.research.ResearchProgression;
 import hellfirepvp.astralsorcery.common.data.world.data.GatewayCache;
 import hellfirepvp.astralsorcery.common.tile.TileCelestialGateway;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.Side;
-import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.api.module.IModuleContainer;
+import org.squiddev.plethora.gameplay.modules.PlethoraModules;
+import org.squiddev.plethora.integration.EntityIdentifier;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,19 +38,14 @@ public final class MethodsAstralSorcery {
 		doc = "-- Get a list of all Celestial Gateways, grouped by dimension"
 	)
 	public static Map<String, Object> getGateways(@Nonnull IContext<TileCelestialGateway> context) {
-		//REFINE Should be able to convert this to an annotated method arg...
-		IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-		if (location == null) return Collections.singletonMap("error", "Failed to get list of gateways, world data not in context.");
-
-		//TODO Confirm that this code does, in fact, only run on the server side... don't want to break things!
 		Map<Integer, List<GatewayCache.GatewayNode>> nodesByDimension = CelestialGatewaySystem.instance.getGatewayCache(Side.SERVER);
 		Map<String, Object> fullOut = new HashMap<>();
 
 		//TODO This will break badly if dimensions aren't identified by number, e.g. 1.13, NEID, JEID, etc.
-		for (Integer id : nodesByDimension.keySet()) {
+		for (Map.Entry<Integer, List<GatewayCache.GatewayNode>> entry : nodesByDimension.entrySet()) {
 			// I was going to filter this for the current node, but that will result in excessive collection manipulation
 			// if I can't convert to a stream API chain; otherwise, I would risk modifying the actual server data...
-			List<GatewayCache.GatewayNode> dimNodes = nodesByDimension.get(id);
+			List<GatewayCache.GatewayNode> dimNodes = entry.getValue();
 			LuaList<Map<String, Object>> dimOut = new LuaList<>(dimNodes.size());
 			for (GatewayCache.GatewayNode node : dimNodes) {
 				Map<String, Object> inner = new HashMap<>();
@@ -60,9 +60,50 @@ public final class MethodsAstralSorcery {
 			// it doesn't account for named dimensions, e.g. RFTools Dimensions, Mystcraft, etc. ...
 			//REFINE I recall there being a difference between `String.valueOf` and `toString` for primitives, but I
 			// don't remember the specifics...
-			fullOut.put(String.valueOf(id), dimOut.asMap());
+			fullOut.put(String.valueOf(entry.getKey()), dimOut.asMap());
 		}
 
 		return fullOut;
+	}
+
+	//Mainly useful if a player wants to design some sort of organizer to track their progress
+	@PlethoraMethod(
+		modId = AstralSorcery.MODID,
+		module = PlethoraModules.INTROSPECTION_S,
+		doc = "-- Get this player's progress in Astral Sorcery"
+	)
+	public static Map<String, Object> getAstralProgress(@Nonnull IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player playerId) throws LuaException {
+		EntityPlayerMP player = playerId.getPlayer();
+
+		Map<String, Object> out = new HashMap<>();
+
+		PlayerProgress progress = ResearchManager.getProgress(player);
+
+		//Refers to the constellations that you have seen on a paper
+		out.put("seenConstellations", new LuaList<>(progress.getSeenConstellations()).asMap()); //FIXME ... great, it's the unlocalized name...
+
+		//Refers to the constellations that you have discovered via telescope, after seeing them on a paper
+		out.put("knownConstellations", new LuaList<>(progress.getKnownConstellations()).asMap()); //FIXME ... great, it's the unlocalized name...
+
+		out.put("availablePerkPoints", progress.getAvailablePerkPoints(player)); //SO MANY METHODS THAT SHOULD BE STATIC, NOT INSTANCE!!!
+
+		IConstellation attuned = progress.getAttunedConstellation();
+		if (attuned != null) {
+			out.put("attunedConstellation", context.makePartialChild(attuned).getMeta());
+		}
+		out.put("progressTier", progress.getTierReached().toString()); //REFINE Do we want the name, the ordinal, or a LuaList with both?
+
+		// ... shouldn't the `progressId` field be the same as the ordinal? ... whatever.
+		//noinspection SimplifyOptionalCallChains It may be simpler, but it (to me) hurts readability...
+		String researchTier = progress.getResearchProgression().stream()
+			.max(Comparator.comparingInt(ResearchProgression::getProgressId))
+			.map(Enum::toString).orElse(null);
+		if (researchTier != null) {
+			out.put("researchTier", researchTier);
+		}
+
+		//REFINE Someone else can expose the Perks if they want; cost/benefit says "no" at this time
+
+		return out;
 	}
 }
