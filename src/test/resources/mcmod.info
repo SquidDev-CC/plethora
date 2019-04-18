@@ -1,0 +1,9 @@
+[
+	{
+		"modid": "plethora-test",
+		"description": "Test runner for Plethora",
+		"credits": "Dan200, Forge team",
+		"authorList": [ "SquidDev" ],
+		"dependencies": [ "plethora", "plethora-core" ]
+	}
+]
