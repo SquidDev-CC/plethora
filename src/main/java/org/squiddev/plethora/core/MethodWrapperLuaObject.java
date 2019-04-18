@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Handles integration with a {@link ILuaObject}.
  */
-public class MethodWrapperLuaObject extends MethodWrapper implements ILuaObject {
+public class MethodWrapperLuaObject<T> extends MethodWrapper implements TypedLuaObject<T> {
 	public MethodWrapperLuaObject(List<IMethod<?>> methods, List<UnbakedContext<?>> contexts) {
 		super(methods, contexts);
 	}

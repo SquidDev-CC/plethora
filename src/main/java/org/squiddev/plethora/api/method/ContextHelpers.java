@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.ContextFactory;
@@ -60,7 +59,7 @@ public final class ContextHelpers {
 	}
 
 	/**
-	 * Generate a Lua list with the {@link ILuaObject} taken for each element in the list.
+	 * Generate a Lua list with the {@link TypedLuaObject} taken for each element in the list.
 	 *
 	 * This uses the identity reference ({@link Reference#id(Object)}) to capture objects.
 	 *
@@ -69,12 +68,12 @@ public final class ContextHelpers {
 	 * @return The converted list.
 	 */
 	@Nonnull
-	public static Map<Integer, ILuaObject> getObjectList(@Nonnull IContext<?> context, @Nullable Collection<?> list) {
+	public static <T> Map<Integer, TypedLuaObject<T>> getObjectList(@Nonnull IContext<?> context, @Nullable Collection<T> list) {
 		if (list == null) return Collections.emptyMap();
 
 		int i = 0;
-		Map<Integer, ILuaObject> map = new HashMap<>(list.size());
-		for (Object element : list) {
+		Map<Integer, TypedLuaObject<T>> map = new HashMap<>(list.size());
+		for (T element : list) {
 			if (element == null) {
 				++i;
 			} else {
@@ -94,7 +93,7 @@ public final class ContextHelpers {
 	 * @return The wrapped stack
 	 */
 	@Nullable
-	public static ILuaObject wrapStack(@Nonnull IPartialContext<?> context, @Nullable ItemStack object) {
+	public static TypedLuaObject<MetaWrapper<ItemStack>> wrapStack(@Nonnull IPartialContext<?> context, @Nullable ItemStack object) {
 		if (object == null || object.isEmpty()) return null;
 
 		MetaWrapper<ItemStack> wrapper = MetaWrapper.of(object.copy());

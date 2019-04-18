@@ -10,10 +10,10 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -65,7 +65,7 @@ public final class MethodsGrid {
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static ILuaObject findItem(final IContext<IGrid> baked, ItemFingerprint fingerprint) {
+	public static TypedLuaObject<IAEItemStack> findItem(final IContext<IGrid> baked, ItemFingerprint fingerprint) {
 		IAEItemStack stack = findStack(baked.getTarget(), fingerprint);
 		return stack == null ? null : baked.makeChildId(stack).getObject();
 	}
@@ -77,12 +77,12 @@ public final class MethodsGrid {
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static Map<Integer, ILuaObject> findItems(IContext<IGrid> context, ItemFingerprint item) {
+	public static Map<Integer, TypedLuaObject<IAEItemStack>> findItems(IContext<IGrid> context, ItemFingerprint item) {
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 		IStorageGrid grid = context.getTarget().getCache(IStorageGrid.class);
 
 		int i = 0;
-		Map<Integer, ILuaObject> out = new HashMap<>();
+		Map<Integer, TypedLuaObject<IAEItemStack>> out = new HashMap<>();
 		for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
 			if (item.matches(aeStack.getDefinition())) {
 				out.put(++i, context.makeChildId(aeStack).getObject());

@@ -1,12 +1,12 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -28,7 +28,7 @@ public final class MethodsCanvas3D {
 	}
 
 	@PlethoraMethod(doc = "-- Create a new 3D canvas centred relative to the current position.", worldThread = false)
-	public static ILuaObject create(
+	public static TypedLuaObject<ObjectRoot3D> create(
 		IContext<Origin3D> baked, @FromContext CanvasServer canvas, @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@Optional Vec3d offset
 	) {
@@ -40,24 +40,24 @@ public final class MethodsCanvas3D {
 		root.recentre(location.getWorld(), location.getLoc().add(offset));
 
 		canvas.add(root);
-		return baked.makeChild(root, root.reference(canvas)).getObject();
+		return baked.makeChild(root, canvas.reference(root)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a new frame to put 2d objects in.", worldThread = false)
-	public static ILuaObject addFrame(IContext<Group3D> baked, @FromContext CanvasServer canvas, Vec3d position) {
+	public static TypedLuaObject<ObjectFrame> addFrame(IContext<Group3D> baked, @FromContext CanvasServer canvas, Vec3d position) {
 		Group3D group = baked.getTarget();
 
 		ObjectFrame frame = new ObjectFrame(canvas.newObjectId(), group.id());
 		frame.setPosition(position);
 
 		canvas.add(frame);
-		return baked.makeChild(frame, frame.reference(canvas)).getObject();
+		return baked.makeChild(frame, canvas.reference(frame)).getObject();
 	}
 
 	@PlethoraMethod(worldThread = false,
 		doc = "function(x:number, y:number, z:number[, width:number, height:number, depth:number][, color:number]):table -- Create a new box."
 	)
-	public static ILuaObject addBox(IContext<Group3D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
+	public static TypedLuaObject<Box> addBox(IContext<Group3D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
 		double x = getFloat(args, 0);
 		double y = getFloat(args, 1);
 		double z = getFloat(args, 2);
@@ -85,11 +85,11 @@ public final class MethodsCanvas3D {
 
 		canvas.add(box);
 
-		return baked.makeChild(box, box.reference(canvas)).getObject();
+		return baked.makeChild(box, canvas.reference(box)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a item model.", worldThread = false)
-	public static ILuaObject addItem(
+	public static TypedLuaObject<Item3D> addItem(
 		IContext<ObjectGroup.Group3D> baked, @FromContext CanvasServer canvas,
 		Vec3d position, Item item, @Optional(defInt = 0) int damage, @Optional(defDoub = 1) float scale
 	) {
@@ -102,6 +102,6 @@ public final class MethodsCanvas3D {
 		model.setDamage(damage);
 
 		canvas.add(model);
-		return baked.makeChild(model, model.reference(canvas)).getObject();
+		return baked.makeChild(model, canvas.reference(model)).getObject();
 	}
 }

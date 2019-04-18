@@ -1,7 +1,6 @@
 package org.squiddev.plethora.core.wrapper;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -10,6 +9,7 @@ import net.minecraftforge.common.config.Configuration;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.ContextFactory;
 import org.squiddev.plethora.core.executor.BasicExecutor;
@@ -41,7 +41,7 @@ public class PlethoraMethodRegistryTest {
 		assertTrue(PlethoraMethodRegistry.add(method));
 
 		TileEntityFurnace furnace = new TileEntityFurnace();
-		ILuaObject object = ContextFactory
+		TypedLuaObject<TileEntityFurnace> object = ContextFactory
 			.of(furnace, id(furnace))
 			.withExecutor(BasicExecutor.INSTANCE)
 			.getObject();
@@ -58,7 +58,7 @@ public class PlethoraMethodRegistryTest {
 		assertTrue(PlethoraMethodRegistry.add(method));
 
 		TileEntitySign furnace = new TileEntitySign();
-		ILuaObject object = ContextFactory
+		TypedLuaObject<TileEntitySign> object = ContextFactory
 			.of(furnace, id(furnace))
 			.withExecutor(BasicExecutor.INSTANCE)
 			.getObject();

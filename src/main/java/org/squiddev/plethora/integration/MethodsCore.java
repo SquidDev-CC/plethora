@@ -1,11 +1,11 @@
 package org.squiddev.plethora.integration;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IMethodCollection;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.ArgumentTypes;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
@@ -39,7 +39,7 @@ public final class MethodsCore {
 	}
 
 	@PlethoraMethod(doc = "function(names:string...):table|nil -- Gets the methods which require these modules")
-	public static Object filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
+	public static TypedLuaObject<IModuleContainer> filterModules(@Nonnull IContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 		Set<ResourceLocation> oldModules = context.getTarget().getModules();
 		Set<ResourceLocation> newModules = new HashSet<>();
 
@@ -50,8 +50,8 @@ public final class MethodsCore {
 
 		if (newModules.isEmpty()) return null;
 
-		ILuaObject object = context
-			.makeChildId(new BasicModuleContainer(newModules))
+		TypedLuaObject<IModuleContainer> object = context
+			.<IModuleContainer>makeChildId(new BasicModuleContainer(newModules))
 			.getObject();
 
 		return object.getMethodNames().length == 0 ? null : object;

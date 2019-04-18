@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.reference.ConstantReference;
+import org.squiddev.plethora.api.reference.IReference;
+import org.squiddev.plethora.gameplay.modules.glasses.BaseObject.BaseObjectReference;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 
 import javax.annotation.Nonnull;
@@ -161,5 +163,14 @@ public final class CanvasServer implements ConstantReference<CanvasServer>, IAtt
 	@Override
 	public CanvasServer safeGet() {
 		return this;
+	}
+
+	/**
+	 * Get a reference to this object
+	 *
+	 * @param baseObject@return The resulting reference.
+	 */
+	public <T extends BaseObject> IReference<T> reference(T baseObject) {
+		return new BaseObjectReference(this, baseObject);
 	}
 }

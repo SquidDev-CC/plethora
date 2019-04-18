@@ -5,9 +5,9 @@ import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
 import com.raoulvdberge.refinedstorage.api.network.INetwork;
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNode;
-import dan200.computercraft.api.lua.ILuaObject;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
@@ -82,7 +82,7 @@ public final class MethodsNetworkNode {
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static ILuaObject findItem(IContext<INetworkNode> context, ItemFingerprint item) {
+	public static TypedLuaObject<NullableItemStack> findItem(IContext<INetworkNode> context, ItemFingerprint item) {
 		INetwork network = context.getTarget().getNetwork();
 		if (network == null) return null;
 
@@ -110,14 +110,14 @@ public final class MethodsNetworkNode {
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static Map<Integer, ILuaObject> findItems(final IContext<INetworkNode> context, ItemFingerprint item) {
+	public static Map<Integer, TypedLuaObject<NullableItemStack>> findItems(final IContext<INetworkNode> context, ItemFingerprint item) {
 		INetwork network = context.getTarget().getNetwork();
 		if (network == null) return Collections.emptyMap();
 
 		Set<ItemIdentity> seen = new HashSet<>();
 
 		int i = 0;
-		Map<Integer, ILuaObject> out = new HashMap<>();
+		Map<Integer, TypedLuaObject<NullableItemStack>> out = new HashMap<>();
 		for (ItemStack stack : network.getItemStorageCache().getList().getStacks()) {
 			if (item.matches(stack)) {
 				seen.add(new ItemIdentity(stack));

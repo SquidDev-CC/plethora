@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.mcmultipart;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import mcmultipart.MCMultiPart;
 import mcmultipart.api.container.IMultipartContainer;
@@ -8,6 +7,7 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -39,7 +39,7 @@ public final class MethodsMultipart {
 
 	@Optional
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a reference to the part in the specified slot.")
-	public static ILuaObject getSlottedPart(final IContext<IMultipartContainer> context, IPartSlot slot) {
+	public static TypedLuaObject<IPartInfo> getSlottedPart(final IContext<IMultipartContainer> context, IPartSlot slot) {
 		IMultipartContainer container = context.getTarget();
 
 		IPartInfo part = container.get(slot).orElse(null);

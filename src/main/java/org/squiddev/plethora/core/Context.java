@@ -1,8 +1,8 @@
 package org.squiddev.plethora.core;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 import org.squiddev.plethora.api.reference.Reference;
@@ -78,7 +78,7 @@ public final class Context<T> extends PartialContext<T> implements IContext<T> {
 
 	@Nonnull
 	@Override
-	public ILuaObject getObject() {
-		return new MethodWrapperLuaObject(MethodRegistry.instance.getMethodsPaired(this));
+	public TypedLuaObject<T> getObject() {
+		return new MethodWrapperLuaObject<>(MethodRegistry.instance.getMethodsPaired(this));
 	}
 }

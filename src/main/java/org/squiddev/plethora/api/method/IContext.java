@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
@@ -47,6 +46,12 @@ public interface IContext<T> extends IPartialContext<T> {
 	@Nonnull
 	IUnbakedContext<T> unbake();
 
+	/**
+	 * Find all methods which may be applied to this context, and bundle them into a
+	 * {@link dan200.computercraft.api.lua.ILuaObject}.
+	 *
+	 * @return The converted object
+	 */
 	@Nonnull
-	ILuaObject getObject();
+	TypedLuaObject<T> getObject();
 }

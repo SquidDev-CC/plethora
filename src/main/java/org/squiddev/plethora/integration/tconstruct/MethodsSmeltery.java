@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.tconstruct;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +9,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -105,7 +105,7 @@ public final class MethodsSmeltery {
 
 	@Optional
 	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the controller for this smeltery component.")
-	public static ILuaObject getController(IContext<TileSmelteryComponent> context) {
+	public static TypedLuaObject<TileMultiblock> getController(IContext<TileSmelteryComponent> context) {
 		TileSmelteryComponent component = context.getTarget();
 		if (!component.getHasMaster()) return null;
 

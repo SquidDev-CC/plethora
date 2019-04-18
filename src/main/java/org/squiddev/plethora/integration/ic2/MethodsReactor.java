@@ -1,12 +1,12 @@
 package org.squiddev.plethora.integration.ic2;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
 import ic2.core.IC2;
 import net.minecraft.tileentity.TileEntity;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.reference.DynamicReference;
 
@@ -43,7 +43,7 @@ public final class MethodsReactor {
 	}
 
 	@PlethoraMethod(modId = IC2.MODID, doc = "-- Get a reference to the reactor's core")
-	public static ILuaObject getReactorCore(IContext<IReactorChamber> context) {
+	public static TypedLuaObject<IReactor> getReactorCore(IContext<IReactorChamber> context) {
 		IReactor core = context.getTarget().getReactorInstance();
 		return context.makeChild(core, new ReactorReference(core)).getObject();
 	}

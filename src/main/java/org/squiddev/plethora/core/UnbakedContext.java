@@ -41,9 +41,9 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		for (int i = 0; i < references.length; i++) {
 			Object reference = references[i];
 			if (reference instanceof IReference) {
-				values[i] = ((IReference) reference).get();
+				values[i] = ((IReference<?>) reference).get();
 			} else if (reference instanceof ConverterReference) {
-				values[i] = ((ConverterReference) reference).tryConvert(values);
+				values[i] = ((ConverterReference<?>) reference).tryConvert(values);
 			} else {
 				values[i] = reference;
 			}
@@ -59,7 +59,7 @@ public final class UnbakedContext<T> implements IUnbakedContext<T> {
 		for (int i = 0; i < references.length; i++) {
 			Object reference = references[i];
 			if (reference instanceof IReference) {
-				values[i] = ((IReference) reference).safeGet();
+				values[i] = ((IReference<?>) reference).safeGet();
 			} else if (reference instanceof ConverterReference) {
 				values[i] = null;
 			} else {
