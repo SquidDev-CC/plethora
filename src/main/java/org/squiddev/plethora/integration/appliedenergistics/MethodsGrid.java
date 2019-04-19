@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.appliedenergistics;
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
+import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.storage.IStorageGrid;
@@ -10,6 +11,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
@@ -93,7 +95,7 @@ public final class MethodsGrid {
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all crafting cpus in the network")
-	public static Map<Integer, ?> getCraftingCPUs(IContext<IGrid> context) {
+	public static Map<Integer, TypedMeta<ICraftingCPU, ?>> getCraftingCPUs(IContext<IGrid> context) {
 		ICraftingGrid crafting = context.getTarget().getCache(ICraftingGrid.class);
 		return ContextHelpers.getMetaList(context, crafting.getCpus());
 	}

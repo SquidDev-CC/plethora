@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.cbmp;
 import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.TypedLuaObject;
@@ -49,7 +50,7 @@ public final class MethodsMultipart {
 
 	@Optional
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get the metadata of the part in the specified slot.")
-	public static Map<String, ?> getSlottedPartMeta(IContext<TileMultipart> context, PartMap slot) {
+	public static TypedMeta<TMultiPart, ?> getSlottedPartMeta(IContext<TileMultipart> context, PartMap slot) {
 		TileMultipart container = context.getTarget();
 
 		TMultiPart part = container.partMap(slot.i);

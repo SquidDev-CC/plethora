@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.storagedrawers;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
@@ -26,7 +27,7 @@ public final class MethodsIDrawer {
 
 	@Optional
 	@PlethoraMethod(modId = StorageDrawers.MOD_ID, doc = "-- The metadata of the item in this drawer.")
-	public static Map<String, ?> getItemMeta(IContext<IDrawer> context) {
+	public static TypedMeta<ItemStack, ?> getItemMeta(IContext<IDrawer> context) {
 		ItemStack stack = context.getTarget().getStoredItemPrototype();
 		return stack.isEmpty() ? null : context.makePartialChild(stack).getMeta();
 	}

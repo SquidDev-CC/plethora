@@ -1,7 +1,12 @@
 package org.squiddev.plethora.integration.refinedstorage;
 
 import com.raoulvdberge.refinedstorage.RS;
+import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
+import com.raoulvdberge.refinedstorage.api.autocrafting.preview.ICraftingPreviewElement;
 import com.raoulvdberge.refinedstorage.api.autocrafting.task.ICraftingTask;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -15,22 +20,22 @@ public final class MethodsCraftingTask {
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the items which are missing for this task.")
-	public static Map<Integer, ?> getMissing(IContext<ICraftingTask> context) {
+	public static Map<Integer, TypedMeta<ItemStack, ?>> getMissing(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getMissing().getStacks());
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the fludis which are missing for this task.")
-	public static Map<Integer, ?> getMissingFluids(IContext<ICraftingTask> context) {
+	public static Map<Integer, TypedMeta<FluidStack, ?>> getMissingFluids(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getMissingFluids().getStacks());
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the main pattern for this task.")
-	public static Map<String, ?> getPattern(IContext<ICraftingTask> context) {
+	public static TypedMeta<ICraftingPattern, ?> getPattern(IContext<ICraftingTask> context) {
 		return context.makePartialChild(context.getTarget().getPattern()).getMeta();
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the various items required for this task.")
-	public static Map<Integer, ?> getComponents(IContext<ICraftingTask> context) {
+	public static Map<Integer, TypedMeta<ICraftingPreviewElement, ?>> getComponents(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getPreviewStacks());
 	}
 

@@ -1,6 +1,7 @@
 package org.squiddev.plethora.core;
 
 import org.squiddev.plethora.api.PlethoraAPI;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.ICostHandler;
 import org.squiddev.plethora.api.method.IPartialContext;
@@ -169,7 +170,7 @@ public class PartialContext<T> implements IPartialContext<T> {
 
 	@Nonnull
 	@Override
-	public Map<String, ?> getMeta() {
+	public TypedMeta<T, ?> getMeta() {
 		return MetaRegistry.instance.getMeta(this);
 	}
 }

@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
@@ -70,7 +71,7 @@ public final class MethodsScanner {
 
 	@Nonnull
 	@PlethoraMethod(module = PlethoraModules.SCANNER_S, doc = "-- Get metadata about a nearby block")
-	public static Map<String, ?> getBlockMeta(
+	public static TypedMeta<BlockReference, ?> getBlockMeta(
 		IContext<IModuleContainer> context,
 		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@FromContext(PlethoraModules.SCANNER_S) RangeInfo range,
