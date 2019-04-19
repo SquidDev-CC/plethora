@@ -1,14 +1,14 @@
 <script type="text/javascript">
 	(() => {
-		const nestedMetas = document.getElementsByClassName("nested-meta");
-		const toggleActive = function () {
+		const toggleActive = function (e) {
+			e.stopPropagation();
 			this.classList.toggle("active");
 		};
+		const nestedMetas = document.getElementsByClassName("nested-meta");
 		for (let i = 0; i < nestedMetas.length; i++) {
 			nestedMetas[i].addEventListener("click", toggleActive);
 		}
 
-		const metaMaps = document.getElementsByClassName("meta-map");
 		const addFocus = function (e) {
 			e.stopPropagation();
 			this.classList.add("focus");
@@ -16,6 +16,7 @@
 		const removeFocus = function (e) {
 			this.classList.remove("focus");
 		};
+		const metaMaps = document.getElementsByClassName("meta-map");
 		for (let i = 0; i < metaMaps.length; i++) {
 			metaMaps[i].addEventListener("mouseover", addFocus);
 			metaMaps[i].addEventListener("mouseout", removeFocus);
