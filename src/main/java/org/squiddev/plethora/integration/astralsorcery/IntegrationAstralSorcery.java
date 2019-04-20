@@ -18,6 +18,7 @@ import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +30,9 @@ import java.util.Map;
 public final class IntegrationAstralSorcery {
 	private IntegrationAstralSorcery() {
 	}
+
+	//FIXME Determine whether access to fields in `Constellations` should be tested for `null`,
+	// then ensure consistency in the code
 
 	/* Note that we will mainly be adding meta-providers for Astral Sorcery,
 	 * as I do NOT want to deal with HellfirePvP's stance on fake players
@@ -90,8 +94,10 @@ public final class IntegrationAstralSorcery {
 		public Map<String, Object> getMeta(@Nonnull IConstellation context) {
 			Map<String, Object> out = new HashMap<>(7);
 
-			out.put("unlocalizedName", context.getUnlocalizedName());
+			String translationKey = context.getUnlocalizedName();
+			out.put("name", translationKey);
 			out.put("simpleName", context.getSimpleName());
+			out.put("displayName", Helpers.translateToLocal(translationKey));
 
 			out.put("color", context.getConstellationColor().getRGB()); //Used for particles on rituals, collectors?
 			out.put("colour", context.getConstellationColor().getRGB());
@@ -121,7 +127,7 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context) {
-			Map<String, Object> out = new HashMap<>(3);
+			Map<String, Object> out = new HashMap<>(4);
 			AmuletEnchantment target = context.getTarget();
 
 			DynamicEnchantment.Type enchantType = target.getType();
@@ -131,8 +137,12 @@ public final class IntegrationAstralSorcery {
 			// Could just be that the code is brittle, as broken data could cause a type other than
 			// `ADD_TO_EXISTING_ALL` to have a `null` enchant...
 			Enchantment enchant = target.getEnchantment();
-			out.put("boostedEnchant", (enchantType.hasEnchantmentTag() && enchant != null)
-				? enchant.getName() : "all");
+			if (enchantType.hasEnchantmentTag() && enchant != null) {
+				out.put("boostedEnchant", enchant.getName());
+				out.put("boostedEnchantFullName", enchant.getTranslatedName(1));
+			} else {
+				out.put("boostedEnchant", "all");
+			}
 
 			out.put("bonusLevel", target.getLevelAddition());
 

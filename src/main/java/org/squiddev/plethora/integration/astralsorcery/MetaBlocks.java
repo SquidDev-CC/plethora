@@ -2,6 +2,7 @@ package org.squiddev.plethora.integration.astralsorcery;
 
 import dan200.computercraft.api.lua.ILuaObject;
 import hellfirepvp.astralsorcery.AstralSorcery;
+import hellfirepvp.astralsorcery.common.block.BlockMachine;
 import hellfirepvp.astralsorcery.common.block.network.BlockCollectorCrystalBase;
 import hellfirepvp.astralsorcery.common.constellation.IMinorConstellation;
 import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
@@ -9,6 +10,7 @@ import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemCraftingComponent;
 import hellfirepvp.astralsorcery.common.item.block.ItemCollectorCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
+import hellfirepvp.astralsorcery.common.item.crystal.ItemRockCrystalSimple;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
@@ -57,12 +59,15 @@ public final class MetaBlocks {
 				: Collections.emptyMap();
 		}
 
-		@Nonnull
+		@Nullable
 		@Override
 		public TileWell getExample() {
-			TileWell well = new TileWell();
-			well.getInventoryHandler().setStackInSlot(0,
-				new ItemStack(ItemsAS.craftingComponent, 1, ItemCraftingComponent.MetaType.AQUAMARINE.getMeta()));
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.blockWell.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileWell)) return null;
+
+			TileWell well = (TileWell) te;
+			well.getInventoryHandler().setStackInSlot(0, ItemCraftingComponent.MetaType.AQUAMARINE.asStack());
 			return well;
 		}
 	};
@@ -107,8 +112,7 @@ public final class MetaBlocks {
 	};
 
 	public static final IMetaProvider<ItemStack> META_ITEM_COLLECTOR_CRYSTAL = new ItemStackContextMetaProvider<ItemCollectorCrystal>(
-		ItemCollectorCrystal.class,
-		"FIXME Set the description"
+		ItemCollectorCrystal.class
 	) {
 		@Nonnull
 		@Override
@@ -132,7 +136,7 @@ public final class MetaBlocks {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
 			ItemStack stack = new ItemStack(BlocksAS.collectorCrystal);
@@ -197,9 +201,17 @@ public final class MetaBlocks {
 		@Nullable
 		@Override
 		public TileGrindstone getExample() {
-			//FIXME Implement this example
-			// Since `setGrindingItem` updates the BlockState, we will have to create the block for the TE too
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.blockMachine.getDefaultState().withProperty(BlockMachine.MACHINE_TYPE, BlockMachine.MachineType.GRINDSTONE));
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileGrindstone)) return null;
+
+			TileGrindstone grindstone = (TileGrindstone) te;
+			ItemStack stack = new ItemStack(ItemsAS.rockCrystal);
+			CrystalProperties.applyCrystalProperties(stack, new CrystalProperties(CrystalProperties.MAX_SIZE_ROCK, 100, 90, 0, -1));
+
+			grindstone.setGrindingItem(stack);
+
+			return grindstone;
 		}
 	};
 
@@ -220,17 +232,20 @@ public final class MetaBlocks {
 			return out;
 		}
 
-		@Nonnull
+		@Nullable
 		@Override
 		public TileRitualPedestal getExample() {
-			//FIXME This probably needs a Block set too...
-			TileRitualPedestal tile = new TileRitualPedestal();
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.ritualPedestal.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileRitualPedestal)) return null;
+
 			ItemStack focus = new ItemStack(ItemsAS.tunedCelestialCrystal);
 			CrystalProperties.applyCrystalProperties(focus, CrystalProperties.getMaxCelestialProperties());
 			ItemTunedCrystalBase.applyMainConstellation(focus, Constellations.discidia);
 
-			tile.placeCrystalIntoPedestal(focus);
-			return tile;
+			TileRitualPedestal pedestal = (TileRitualPedestal) te;
+			pedestal.placeCrystalIntoPedestal(focus);
+			return pedestal;
 		}
 	};
 
@@ -256,7 +271,13 @@ public final class MetaBlocks {
 		@Nullable
 		@Override
 		public TileIlluminator getExample() {
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.blockIlluminator.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileIlluminator)) return null;
+
+			TileIlluminator illuminator = (TileIlluminator) te;
+			illuminator.onWandUsed(EnumDyeColor.YELLOW);
+			return illuminator;
 		}
 	};
 
@@ -275,7 +296,13 @@ public final class MetaBlocks {
 		@Nullable
 		@Override
 		public TileAttunementRelay getExample() {
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.attunementRelay.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileAttunementRelay)) return null;
+
+			TileAttunementRelay relay = (TileAttunementRelay) te;
+			relay.getInventoryHandler().insertItem(0, ItemCraftingComponent.MetaType.GLASS_LENS.asStack(), false);
+			return relay;
 		}
 	};
 
@@ -301,7 +328,15 @@ public final class MetaBlocks {
 		@Nullable
 		@Override
 		public TileMapDrawingTable getExample() {
-			return null;
+			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.drawingTable.getDefaultState());
+			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (!(te instanceof TileMapDrawingTable)) return null;
+
+			TileMapDrawingTable table = (TileMapDrawingTable) te;
+			table.addParchment(32);
+			table.putGlassLens(new ItemStack(ItemsAS.infusedGlass));
+
+			return table;
 		}
 	};
 

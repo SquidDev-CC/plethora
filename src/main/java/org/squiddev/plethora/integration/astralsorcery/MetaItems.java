@@ -6,6 +6,7 @@ import hellfirepvp.astralsorcery.common.constellation.IMinorConstellation;
 import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import hellfirepvp.astralsorcery.common.constellation.starmap.ActiveStarMap;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletEnchantment;
+import hellfirepvp.astralsorcery.common.enchantment.dynamic.DynamicEnchantment;
 import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemConstellationPaper;
 import hellfirepvp.astralsorcery.common.item.ItemInfusedGlass;
@@ -15,6 +16,7 @@ import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
 import hellfirepvp.astralsorcery.common.item.tool.ItemSkyResonator;
 import hellfirepvp.astralsorcery.common.item.tool.sextant.ItemSextant;
 import hellfirepvp.astralsorcery.common.item.tool.sextant.SextantFinder;
+import hellfirepvp.astralsorcery.common.item.tool.sextant.SextantTargets;
 import hellfirepvp.astralsorcery.common.item.tool.wand.ItemWand;
 import hellfirepvp.astralsorcery.common.item.tool.wand.WandAugment;
 import hellfirepvp.astralsorcery.common.item.wand.ItemIlluminationWand;
@@ -22,13 +24,20 @@ import hellfirepvp.astralsorcery.common.item.wearable.ItemCape;
 import hellfirepvp.astralsorcery.common.item.wearable.ItemEnchantmentAmulet;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentLootBonus;
+import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,7 +93,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_CONSTELLATION_PAPER = new ItemStackContextMetaProvider<ItemConstellationPaper>(
 		ItemConstellationPaper.class,
-		"Provides the Constellation, if any, for this Constellation Paper"
+		"Provides the Constellation for this Constellation Paper"
 	) {
 		@Nonnull
 		@Override
@@ -145,29 +154,31 @@ public final class MetaItems {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSkyResonator item) {
-			//REFINE Do we want `getUnlocalizedName` or `getUnlocalizedUpgradeName`?
-			// Further, should we localize the String?
-
-			/*
-			ItemStack stack = context.getTarget();
-			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(stack);
-			LuaList<String> modeNames = new LuaList<>(modes.size());
+			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(context.getTarget());
+			LuaList<Map<String, String>> modesOut = new LuaList<>(modes.size());
 
 			for (ItemSkyResonator.ResonatorUpgrade mode : modes) {
-				modeNames.add(mode.getUnlocalizedName());
+				Map<String, String> modeMap = new HashMap<>(2);
+				String translationKey = mode.getUnlocalizedUpgradeName();
+				modeMap.put("name", translationKey);
+				modeMap.put("displayName", Helpers.translateToLocal(translationKey));
+
+				modesOut.add(modeMap);
 			}
 
-			return Collections.singletonMap("modes", modeNames.asMap()); */
+			return Collections.singletonMap("modes", modesOut.asMap());
 
-			return Collections.singletonMap("modes",
+			//REFINE This could be converted to use `LuaList.of`, but the lambda would be a bit unwieldy...
+/*			return Collections.singletonMap("modes",
 				LuaList.of(ItemSkyResonator.getUpgrades(context.getTarget()),
-					ItemSkyResonator.ResonatorUpgrade::getUnlocalizedName).asMap());
+					ItemSkyResonator.ResonatorUpgrade::getUnlocalizedUpgradeName).asMap());*/
 		}
 
 		@Nonnull
 		@Override
 		public ItemStack getExample() {
 			ItemStack stack = new ItemStack(ItemsAS.skyResonator);
+			ItemSkyResonator.setEnhanced(stack);
 			ItemSkyResonator.setUpgradeUnlocked(stack, ItemSkyResonator.ResonatorUpgrade.AREA_SIZE);
 			ItemSkyResonator.setUpgradeUnlocked(stack, ItemSkyResonator.ResonatorUpgrade.FLUID_FIELDS);
 
@@ -177,17 +188,15 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_COLORED_LENS = new ItemStackContextMetaProvider<ItemColoredLens>(
 		ItemColoredLens.class,
-		"FIXME Set the description"
+		"Provides the color of this lens"
 	) {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemColoredLens item) {
-			ItemStack stack = context.getTarget();
-
 			// ... yay for the lack of a native reverse lookup or conversion based on the ordinal...
 			// (e.g. casting `int` to enum or a `TryParse` type method...)
 			ItemColoredLens.ColorType[] colors = ItemColoredLens.ColorType.values();
-			int meta = stack.getMetadata();
+			int meta = context.getTarget().getMetadata();
 
 			// Didn't find a concise yet readable format I liked, so a comment it is!
 			// Basically, run a bounds check, then get the name of the enum if in bounds
@@ -211,7 +220,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_RESPLENDENT_PRISM = new ItemStackContextMetaProvider<ItemEnchantmentAmulet>(
 		ItemEnchantmentAmulet.class,
-		"FIXME Set the description"
+		"Provides the enchantment bonuses for this Resplendent Prism"
 	) {
 		@Nonnull
 		@Override
@@ -221,24 +230,29 @@ public final class MetaItems {
 					e -> context.makePartialChild(e).getMeta()).asMap());
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
 			ItemStack stack = new ItemStack(ItemsAS.enchantmentAmulet);
 			ItemEnchantmentAmulet.freezeAmuletColor(stack); //Not strictly necessary, but...
 
-			List<AmuletEnchantment> enchants = new ArrayList<>(2);
+			List<AmuletEnchantment> enchants = new ArrayList<>(3);
 
-			//FIXME Determine what enchants we want on our example
-			//enchants.add(new AmuletEnchantment(AmuletEnchantment.Type.))
+			Enchantment looting = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("looting"));
+			if (looting != null) {
+				enchants.add(new AmuletEnchantment(AmuletEnchantment.Type.ADD_TO_EXISTING_SPECIFIC, looting, 1));
+			}
+			enchants.add(new AmuletEnchantment(AmuletEnchantment.Type.ADD_TO_EXISTING_ALL, 2));
 
-			return null;
+			ItemEnchantmentAmulet.setAmuletEnchantments(stack, enchants);
+
+			return stack;
 		}
 	};
 
 	public static final IMetaProvider<ItemStack> META_MANTLE_OF_THE_STARS = new ItemStackContextMetaProvider<ItemCape>(
 		ItemCape.class,
-		"FIXME Set the description"
+		"Provides the constellation this Mantle of the Stars is attuned to"
 	) {
 		@Nonnull
 		@Override
@@ -261,7 +275,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_ILLUMINATION_WAND = new ItemStackContextMetaProvider<ItemIlluminationWand>(
 		ItemIlluminationWand.class,
-		"FIXME Set the description"
+		"Provides the color of flares place by this Illumination Wand"
 	) {
 		@Nonnull
 		@Override
@@ -288,7 +302,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_RESONATING_WAND = new ItemStackContextMetaProvider<ItemWand>(
 		ItemWand.class,
-		"FIXME Set the description"
+		"Provides the constellation this Resonating Wand is attuned to"
 	) {
 		@Nonnull
 		@Override
@@ -302,16 +316,18 @@ public final class MetaItems {
 				: Collections.emptyMap();
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack stack = new ItemStack(ItemsAS.wand);
+			ItemWand.setAugment(stack, WandAugment.DISCIDIA);
+			return stack;
 		}
 	};
 
 	public static final IMetaProvider<ItemStack> META_INFUSED_GLASS = new ItemStackContextMetaProvider<ItemInfusedGlass>(
 		ItemInfusedGlass.class,
-		"FIXME Set the description"
+		"Provides the constellations etched on this Infused Glass"
 	) {
 		@Nonnull
 		@Override
@@ -328,13 +344,17 @@ public final class MetaItems {
 		@Nullable
 		@Override
 		public ItemStack getExample() {
+			//TODO Provide this example
+			// This example will require defining the `DrawnConstellation` list to build an `ActiveStarMap`,
+			// ensuring that the list is valid input.
+			// I simply don't feel like dealing with that at present.
 			return null;
 		}
 	};
 
 	public static final IMetaProvider<ItemStack> META_SEXTANT = new ItemStackContextMetaProvider<ItemSextant>(
 		ItemSextant.class,
-		"FIXME Set the description"
+		"Provides the active target of this Sextant, and whether the Sextant is augmented"
 	) {
 		@Nonnull
 		@Override
@@ -353,10 +373,13 @@ public final class MetaItems {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
-			return null;
+			ItemStack stack = new ItemStack(ItemsAS.sextant);
+			ItemSextant.setAdvanced(stack);
+			ItemSextant.setTarget(stack, SextantTargets.TARGET_SMALL_SHRINE);
+			return stack;
 		}
 	};
 }
