@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api.method;
 
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.module.IModuleContainer;
 
 import javax.annotation.Nonnull;
@@ -114,5 +115,5 @@ public interface IPartialContext<T> {
 	 * @see org.squiddev.plethora.api.meta.IMetaProvider
 	 */
 	@Nonnull
-	Map<String, ?> getMeta();
+	TypedMeta<T, ?> getMeta();
 }

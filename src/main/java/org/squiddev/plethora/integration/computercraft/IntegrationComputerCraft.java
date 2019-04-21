@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.IPeripheralHandler;
 import org.squiddev.plethora.api.TurtleWorldLocation;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.SingletonModuleContainer;
@@ -38,7 +39,6 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 import static org.squiddev.plethora.api.reference.Reference.id;
 
@@ -81,7 +81,7 @@ public final class IntegrationComputerCraft {
 
 			IBlockState state = event.getState();
 			IModuleContainer container = new SingletonModuleContainer(PlethoraModules.SCANNER_M);
-			Map<String, ?> metadata = ContextFactory
+			TypedMeta<IBlockState, ?> metadata = ContextFactory
 				.of(state, id(state))
 				.withCostHandler(DefaultCostHandler.get(turtle))
 				.withModules(container, id(container))

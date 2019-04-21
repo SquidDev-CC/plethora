@@ -82,7 +82,7 @@ final class Registry {
 			LOG.warn("@Injects class {} should be public final, but is only {}", name, Modifier.toString(modifiers));
 		}
 
-		Result result = registerInstance("class " + name, klass, klass, klass, () -> {
+		Result result = registerInstance(name, klass, klass, klass, () -> {
 			Object value;
 			try {
 				value = klass.newInstance();
@@ -108,7 +108,7 @@ final class Registry {
 			return Result.OK;
 		}
 
-		return registerInstance("field " + name, field, field.getType(), field.getGenericType(), () -> {
+		return registerInstance(name, field, field.getType(), field.getGenericType(), () -> {
 			// Verify this is a "public static final" field. We do this inside the getter as it means we don't warn on
 			// fields which don't look like ours.
 			int modifiers = field.getModifiers();

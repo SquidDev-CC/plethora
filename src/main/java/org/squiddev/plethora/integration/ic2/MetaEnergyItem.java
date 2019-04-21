@@ -2,17 +2,19 @@ package org.squiddev.plethora.integration.ic2;
 
 import ic2.api.item.IElectricItemManager;
 import ic2.core.IC2;
+import ic2.core.ref.ItemName;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = IC2.MODID, namespace = "eu")
-public class MetaEnergyItem extends BasicMetaProvider<ItemStack> {
+@Injects(IC2.MODID)
+public final class MetaEnergyItem extends BasicMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull ItemStack object) {
@@ -24,6 +26,12 @@ public class MetaEnergyItem extends BasicMetaProvider<ItemStack> {
 		map.put("capacity", manager.getMaxCharge(object));
 		map.put("tier", manager.getTier(object));
 
-		return map;
+		return Collections.singletonMap("eu", map);
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		return ItemName.batpack.getItemStack();
 	}
 }

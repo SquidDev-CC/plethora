@@ -20,6 +20,7 @@ public class Task {
 	private volatile boolean done = false;
 	private Callable<MethodResult> callback;
 	private MethodResult.Resolver resolver;
+	private boolean resolved;
 
 	Object[] result;
 	LuaException error;
@@ -42,17 +43,17 @@ public class Task {
 	}
 
 	public boolean update() {
-		while (!done && resolver.update()) {
+		while (!done && (resolved || (resolved = resolver.update()) && canWork())) {
 			long start = System.nanoTime();
 			try {
 				MethodResult next = callback.call();
 				if (next.isFinal()) {
 					finish(next.getResult());
 					return true;
-				} else {
-					resolver = next.getResolver();
-					callback = next.getCallback();
 				}
+				resolver = next.getResolver();
+				resolved = false;
+				callback = next.getCallback();
 			} catch (LuaException e) {
 				finish(e);
 				return true;
@@ -67,11 +68,9 @@ public class Task {
 			} finally {
 				submitTiming(System.nanoTime() - start);
 			}
-
-			if (!canContinue()) break;
 		}
 
-		return false;
+		return done;
 	}
 
 	final void cancel() {
@@ -101,7 +100,7 @@ public class Task {
 	 *
 	 * @return If we should continue to work
 	 */
-	boolean canContinue() {
+	boolean canWork() {
 		return true;
 	}
 }

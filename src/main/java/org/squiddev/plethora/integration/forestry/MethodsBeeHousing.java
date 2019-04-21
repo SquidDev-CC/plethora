@@ -3,12 +3,11 @@ package org.squiddev.plethora.integration.forestry;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.core.config.Constants;
 import net.minecraft.item.ItemStack;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
-
-import java.util.Map;
 
 public final class MethodsBeeHousing {
 	private MethodsBeeHousing() {
@@ -16,7 +15,7 @@ public final class MethodsBeeHousing {
 
 	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current queen for this bee housing.")
-	public static Map<String, ?> getQueen(IContext<IBeeHousing> context) {
+	public static TypedMeta<ItemStack, ?> getQueen(IContext<IBeeHousing> context) {
 		ItemStack queen = context.getTarget().getBeeInventory().getQueen();
 		return queen.isEmpty()
 			? null
@@ -25,7 +24,7 @@ public final class MethodsBeeHousing {
 
 	@Optional
 	@PlethoraMethod(modId = Constants.MOD_ID, doc = "-- Get the current drone for this bee housing.")
-	public static Map<String, ?> getDrone(IContext<IBeeHousing> context) {
+	public static TypedMeta<ItemStack, ?> getDrone(IContext<IBeeHousing> context) {
 		ItemStack drone = context.getTarget().getBeeInventory().getDrone();
 		return drone.isEmpty()
 			? null

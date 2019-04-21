@@ -1,6 +1,5 @@
 package org.squiddev.plethora.integration.tconstruct;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -9,7 +8,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -64,10 +65,10 @@ public final class MethodsSmeltery {
 	}
 
 	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get a list of all molten fluids within the smeltery.")
-	public static Map<Integer, Object> getMolten(IContext<ISmelteryTankHandler> context) {
+	public static Map<Integer, TypedMeta<FluidStack, ?>> getMolten(IContext<ISmelteryTankHandler> context) {
 		ISmelteryTankHandler smeltery = context.getTarget();
 
-		Map<Integer, Object> result = new HashMap<>();
+		Map<Integer, TypedMeta<FluidStack, ?>> result = new HashMap<>();
 		int i = 0;
 		for (FluidStack fluid : smeltery.getTank().getFluids()) {
 			result.put(++i, context.makePartialChild(fluid).getMeta());
@@ -80,10 +81,10 @@ public final class MethodsSmeltery {
 		modId = TConstruct.modID,
 		doc = "-- Get a list of all fuels currently used by the seared-bricks multiblock."
 	)
-	public static Map<Integer, Object> getFuels(IContext<TileHeatingStructureFuelTank> context) {
+	public static Map<Integer, TypedMeta<IFluidTank, ?>> getFuels(IContext<TileHeatingStructureFuelTank<?>> context) {
 		TileHeatingStructureFuelTank<?> structure = context.getTarget();
 
-		Map<Integer, Object> result = new HashMap<>();
+		Map<Integer, TypedMeta<IFluidTank, ?>> result = new HashMap<>();
 		int i = 0;
 		for (BlockPos pos : structure.tanks) {
 			TileEntity te = getRelatedTile(structure, pos);
@@ -99,13 +100,13 @@ public final class MethodsSmeltery {
 	}
 
 	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the internal temperature of this structure.")
-	public static double getTemperature(@FromTarget TileHeatingStructureFuelTank structure) {
+	public static double getTemperature(@FromTarget TileHeatingStructureFuelTank<?> structure) {
 		return structure.getTemperature();
 	}
 
 	@Optional
 	@PlethoraMethod(modId = TConstruct.modID, doc = "-- Get the controller for this smeltery component.")
-	public static ILuaObject getController(IContext<TileSmelteryComponent> context) {
+	public static TypedLuaObject<TileMultiblock> getController(IContext<TileSmelteryComponent> context) {
 		TileSmelteryComponent component = context.getTarget();
 		if (!component.getHasMaster()) return null;
 

@@ -7,10 +7,10 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.me.helpers.MachineSource;
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
@@ -25,7 +25,7 @@ public final class MethodCraftItem {
 		modId = AppEng.MOD_ID,
 		doc = "-- Craft this item, returning a reference to the crafting task."
 	)
-	public static ILuaObject craft(
+	public static TypedLuaObject<CraftingResult> craft(
 		IContext<IAEItemStack> context, @FromContext IGridNode node, @FromContext IActionHost host,
 		int quantity
 	) {

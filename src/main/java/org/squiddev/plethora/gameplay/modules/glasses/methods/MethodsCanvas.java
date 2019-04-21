@@ -1,7 +1,7 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
@@ -18,12 +18,12 @@ public final class MethodsCanvas {
 	}
 
 	@PlethoraMethod(module = GLASSES_S, doc = "-- Get the 2D canvas for these glasses.", worldThread = false)
-	public static ILuaObject canvas(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
+	public static TypedLuaObject<ObjectGroup.Frame2D> canvas(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
 		return context.makeChildId(server.canvas2d()).getObject();
 	}
 
 	@PlethoraMethod(module = GLASSES_S, doc = "-- Get the 3D canvas for these glasses.", worldThread = false)
-	public static ILuaObject canvas3d(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
+	public static TypedLuaObject<ObjectGroup.Origin3D> canvas3d(IContext<IModuleContainer> context, @FromSubtarget(GLASSES_S) CanvasServer server) {
 		return context.makeChildId(server.canvas3d()).getObject();
 	}
 

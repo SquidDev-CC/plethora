@@ -4,25 +4,31 @@ import com.raoulvdberge.refinedstorage.RS;
 import com.raoulvdberge.refinedstorage.RSItems;
 import com.raoulvdberge.refinedstorage.api.autocrafting.ICraftingPattern;
 import com.raoulvdberge.refinedstorage.item.ItemPattern;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.IWorldLocation;
-import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
+@Injects(RS.ID)
+public final class MetaItemPattern extends ItemStackContextMetaProvider<ItemPattern> {
+	public MetaItemPattern() {
+		super("pattern", ItemPattern.class);
+	}
 
-@IMetaProvider.Inject(modId = RS.ID, value = ItemStack.class, namespace = "pattern")
-public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 	@Nonnull
 	@Override
-	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemPattern item) {
 		ItemStack stack = context.getTarget();
-		if (stack.getItem() != RSItems.PATTERN) return Collections.emptyMap();
 
 
 		IWorldLocation position = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
@@ -44,17 +50,32 @@ public class MetaItemPattern extends BaseMetaProvider<ItemStack> {
 		}
 	}
 
-	private static <T> Map<Integer, Map<String, ?>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
-		List<T> out = new ArrayList<>(9);
+	private static <T> Map<Integer, TypedMeta<T, ?>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
+		LuaList<TypedMeta<T, ?>> out = new LuaList<>(9);
 		for (int i = 0; i < 9; i++) {
 			T result = func.apply(stack, i);
-			if (result != null) out.add(result);
+			if (result != null) out.add(context.makePartialChild(result).getMeta());
 		}
-		return getMetaList(context, out);
+		return out.asMap();
 	}
 
 	@FunctionalInterface
 	public interface IntStackFunction<T> {
 		T apply(ItemStack stack, int slot);
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getExample() {
+		return getExampleStack();
+	}
+
+	@Nonnull
+	public static ItemStack getExampleStack() {
+		ItemStack stack = new ItemStack(RSItems.PATTERN);
+		ItemPattern.setInputSlot(stack, 0, new ItemStack(Blocks.PLANKS));
+		ItemPattern.setInputSlot(stack, 1, new ItemStack(Blocks.PLANKS));
+		ItemPattern.setOutputSlot(stack, 0, new ItemStack(Items.STICK, 4));
+		return stack;
 	}
 }

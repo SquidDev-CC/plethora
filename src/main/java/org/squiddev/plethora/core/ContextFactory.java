@@ -1,7 +1,6 @@
 package org.squiddev.plethora.core;
 
 import com.google.common.collect.Lists;
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
@@ -153,12 +152,6 @@ public final class ContextFactory<T> implements IContextFactory<T>, IContextBuil
 	public UnbakedContext<T> getUnbaked() {
 		setup();
 		return new UnbakedContext<>(keys.size(), combinedKeys, combinedReferences, handler, moduleReference, executor);
-	}
-
-	@Nonnull
-	@Override
-	public ILuaObject getObject() {
-		return getBaked().getObject();
 	}
 
 	@Nonnull

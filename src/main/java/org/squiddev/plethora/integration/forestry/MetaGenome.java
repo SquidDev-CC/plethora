@@ -1,6 +1,7 @@
 package org.squiddev.plethora.integration.forestry;
 
 import forestry.api.genetics.*;
+import forestry.apiculture.genetics.BeeDefinition;
 import forestry.core.config.Constants;
 import net.minecraft.util.math.Vec3i;
 import org.squiddev.plethora.api.Injects;
@@ -69,5 +70,11 @@ public final class MetaGenome extends BasicMetaProvider<IGenome> {
 		} else {
 			return allele.getUID();
 		}
+	}
+
+	@Nonnull
+	@Override
+	public IGenome getExample() {
+		return BeeDefinition.FOREST.getGenome();
 	}
 }

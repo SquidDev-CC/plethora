@@ -1,6 +1,5 @@
 package org.squiddev.plethora.api.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.reference.IReference;
 
@@ -64,7 +63,10 @@ public interface IContextFactory<T> {
 	 * Get a lua object from this context
 	 *
 	 * @return The built Lua object
+	 * @see IContext#getObject()
 	 */
 	@Nonnull
-	ILuaObject getObject();
+	default TypedLuaObject<T> getObject() {
+		return getBaked().getObject();
+	}
 }

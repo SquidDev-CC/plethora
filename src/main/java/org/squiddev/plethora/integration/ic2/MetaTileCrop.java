@@ -4,15 +4,17 @@ import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropTile;
 import ic2.core.IC2;
+import ic2.core.crop.IC2Crops;
+import ic2.core.crop.TileEntityCrop;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 
-@IMetaProvider.Inject(value = ICropTile.class, modId = IC2.MODID, namespace = "crop")
-public class MetaTileCrop extends BasicMetaProvider<ICropTile> {
+@Injects(IC2.MODID)
+public final class MetaTileCrop extends BasicMetaProvider<ICropTile> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull ICropTile object) {
@@ -35,6 +37,14 @@ public class MetaTileCrop extends BasicMetaProvider<ICropTile> {
 		out.put("airQuality", object.getTerrainAirQuality());
 		out.put("nutrients", object.getTerrainNutrients());
 
-		return out;
+		return Collections.singletonMap("crop", out);
+	}
+
+	@Nonnull
+	@Override
+	public ICropTile getExample() {
+		TileEntityCrop tile = new TileEntityCrop();
+		tile.setCrop(IC2Crops.cropFerru);
+		return tile;
 	}
 }

@@ -1,17 +1,13 @@
 package org.squiddev.plethora.core;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.objectweb.asm.Type;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaRegistry;
-import org.squiddev.plethora.api.meta.NamespacedMetaProvider;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
-import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -39,7 +35,7 @@ public final class MetaRegistry implements IMetaRegistry {
 
 	@Nonnull
 	@SuppressWarnings("unchecked")
-	public Map<String, ?> getMeta(@Nonnull PartialContext<?> context) {
+	public <T> TypedMeta<T, ?> getMeta(@Nonnull PartialContext<T> context) {
 		Objects.requireNonNull(context, "context cannot be null");
 
 		String[] keys = context.keys;
@@ -47,7 +43,8 @@ public final class MetaRegistry implements IMetaRegistry {
 
 		// TODO: Handle priority across each conversion correctly
 
-		HashMap<String, Object> out = new HashMap<>();
+		HashTypedMeta<T, Object> result = null;
+		Map<String, ?> first = null;
 		for (int i = values.length - 1; i >= 0; i--) {
 			if (!ContextKeys.TARGET.equals(keys[i])) continue;
 
@@ -60,11 +57,24 @@ public final class MetaRegistry implements IMetaRegistry {
 					PlethoraCore.LOG.error("Meta provider {} returned null", getName(provider));
 					continue;
 				}
-				out.putAll(res);
+
+				if (res.isEmpty()) continue;
+
+				if (result != null) {
+					result.putAll(res);
+				} else if (first != null) {
+					result = new HashTypedMeta<>(first.size() + res.size());
+					result.putAll(first);
+					result.putAll(res);
+				} else {
+					first = res;
+				}
 			}
 		}
 
-		return out;
+		if (result != null) return result;
+		if (first != null) return new WrapperTypedMeta<>(first);
+		return WrapperTypedMeta.empty();
 	}
 
 	@Nonnull
@@ -81,44 +91,93 @@ public final class MetaRegistry implements IMetaRegistry {
 		return Collections.unmodifiableList(result);
 	}
 
-	@SuppressWarnings("unchecked")
-	void loadAsm(ASMDataTable asmDataTable) {
-		for (ASMDataTable.ASMData asmData : asmDataTable.getAll(IMetaProvider.Inject.class.getName())) {
-			String name = asmData.getClassName();
-			try {
-				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					PlethoraCore.LOG.debug("Ignoring " + name + " as it has been blacklisted");
-					continue;
-				}
+	private static class HashTypedMeta<T, V> extends HashMap<String, V> implements TypedMeta<T, V> {
+		private static final long serialVersionUID = 2925566988195565014L;
 
-				Map<String, Object> info = asmData.getAnnotationInfo();
-				String modId = (String) info.get("modId");
-				if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-					PlethoraCore.LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
-					continue;
-				}
+		HashTypedMeta(int initialCapacity) {
+			super(initialCapacity);
+		}
 
-				PlethoraCore.LOG.debug("Registering " + name);
+		public HashTypedMeta(Map<? extends String, ? extends V> m) {
+			super(m);
+		}
+	}
 
-				Class<?> asmClass = Class.forName(name);
-				IMetaProvider instance = asmClass.asSubclass(IMetaProvider.class).newInstance();
+	private static final class WrapperTypedMeta<T, V> implements TypedMeta<T, V> {
+		private static final WrapperTypedMeta<?, ?> EMPTY = new WrapperTypedMeta<>(Collections.emptyMap());
 
-				Class<?> target = Class.forName(((Type) info.get("value")).getClassName());
-				Helpers.assertTarget(asmClass, target, IMetaProvider.class);
+		@SuppressWarnings({"unchecked", "rawtypes"})
+		public static <T> TypedMeta<T, ?> empty() {
+			return (TypedMeta) EMPTY;
+		}
 
-				String namespace = (String) info.get("namespace");
-				if (Strings.isNullOrEmpty(namespace)) {
-					registerMetaProvider(target, instance, name);
-				} else {
-					registerMetaProvider(target, new NamespacedMetaProvider(namespace, instance), name);
-				}
-			} catch (Throwable e) {
-				if (ConfigCore.Testing.strict) {
-					throw new IllegalStateException("Failed to load: " + name, e);
-				} else {
-					PlethoraCore.LOG.error("Failed to load: " + name, e);
-				}
-			}
+		private final Map<String, V> wrapper;
+
+		WrapperTypedMeta(Map<String, V> wrapper) {
+			this.wrapper = wrapper;
+		}
+
+		@Override
+		public int size() {
+			return wrapper.size();
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return wrapper.isEmpty();
+		}
+
+		@Override
+		public boolean containsKey(Object key) {
+			return wrapper.containsKey(key);
+		}
+
+		@Override
+		public boolean containsValue(Object value) {
+			return wrapper.containsValue(value);
+		}
+
+		@Override
+		public V get(Object key) {
+			return wrapper.get(key);
+		}
+
+		@Override
+		public V put(String key, V value) {
+			return wrapper.put(key, value);
+		}
+
+		@Override
+		public V remove(Object key) {
+			return wrapper.remove(key);
+		}
+
+		@Override
+		public void putAll(@Nonnull Map<? extends String, ? extends V> m) {
+			wrapper.putAll(m);
+		}
+
+		@Override
+		public void clear() {
+			wrapper.clear();
+		}
+
+		@Nonnull
+		@Override
+		public Set<String> keySet() {
+			return wrapper.keySet();
+		}
+
+		@Nonnull
+		@Override
+		public Collection<V> values() {
+			return wrapper.values();
+		}
+
+		@Nonnull
+		@Override
+		public Set<Entry<String, V>> entrySet() {
+			return wrapper.entrySet();
 		}
 	}
 }

@@ -1,10 +1,11 @@
 package org.squiddev.plethora.integration.vanilla.method;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -37,7 +38,7 @@ public final class MethodsInventory {
 
 	@Optional
 	@PlethoraMethod(doc = "-- The item in the specified slot. The slot number starts from 1.")
-	public static ILuaObject getItem(IContext<IItemHandler> baked, int slot) throws LuaException {
+	public static TypedLuaObject<ItemSlot> getItem(IContext<IItemHandler> baked, int slot) throws LuaException {
 		IItemHandler inventory = baked.getTarget();
 
 		assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
@@ -53,7 +54,7 @@ public final class MethodsInventory {
 
 	@Optional
 	@PlethoraMethod(doc = "-- The metadata of the item in the specified slot. The slot number starts from 1.")
-	public static Map<String, ?> getItemMeta(IContext<IItemHandler> context, int slot) throws LuaException {
+	public static TypedMeta<ItemStack, ?> getItemMeta(IContext<IItemHandler> context, int slot) throws LuaException {
 		IItemHandler inventory = context.getTarget();
 		assertBetween(slot, 1, inventory.getSlots(), "Slot out of range (%s)");
 

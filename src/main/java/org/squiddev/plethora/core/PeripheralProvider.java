@@ -8,7 +8,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
@@ -21,41 +20,37 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
- * Wraps tile entities as a peripherals.
- * - Tries to find capability first
- * - If this fails then it attempts to find methods from it
+ * Wraps any tile entity as a peripheral.
  */
 public class PeripheralProvider implements IPeripheralProvider {
 	@Override
-	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
+	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing side) {
 		TileEntity te = world.getTileEntity(blockPos);
-		if (te != null) {
-			try {
-				// Check for capability first
-				IPeripheral capability = te.getCapability(Constants.PERIPHERAL_CAPABILITY, enumFacing);
-				if (capability != null) return capability;
+		if (te == null || te.isInvalid()) return null;
 
-				// Simple blacklisting
-				if (te instanceof IPeripheralTile) return null;
+		// Skip peripheral tiles which are currently non-functioning.
+		if (te instanceof IPeripheralTile && ((IPeripheralTile) te).getPeripheral(side) == null) {
+			return null;
+		}
 
-				Class<?> klass = te.getClass();
-				if (isBlacklisted(klass)) return null;
+		try {
+			Class<?> klass = te.getClass();
+			if (isBlacklisted(klass)) return null;
 
-				MethodRegistry registry = MethodRegistry.instance;
+			MethodRegistry registry = MethodRegistry.instance;
 
-				WorldLocation location = new WorldLocation(world, blockPos);
-				BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te);
-				ContextFactory<BlockReference> factory = ContextFactory.of(reference)
-					.withCostHandler(CostHelpers.getCostHandler(te, enumFacing))
-					.addContext(ContextKeys.ORIGIN, location);
+			WorldLocation location = new WorldLocation(world, blockPos);
+			BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te);
+			ContextFactory<BlockReference> factory = ContextFactory.of(reference)
+				.withCostHandler(CostHelpers.getCostHandler(te, side))
+				.addContext(ContextKeys.ORIGIN, location);
 
-				Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
-				if (!paired.getLeft().isEmpty()) {
-					return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
-				}
-			} catch (RuntimeException e) {
-				PlethoraCore.LOG.error("Error getting peripheral", e);
+			Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
+			if (!paired.getLeft().isEmpty()) {
+				return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
 			}
+		} catch (RuntimeException e) {
+			PlethoraCore.LOG.error("Error getting peripheral", e);
 		}
 
 		return null;

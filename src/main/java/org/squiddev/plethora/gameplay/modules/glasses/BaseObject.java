@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.api.reference.ConstantReference;
-import org.squiddev.plethora.api.reference.IReference;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -14,7 +13,7 @@ import java.util.Comparator;
 public abstract class BaseObject {
 	public static final Comparator<BaseObject> SORTING_ORDER = Comparator.comparingInt(a -> a.id);
 
-	private final int id;
+	final int id;
 	private final byte type;
 	private final int parent;
 
@@ -85,36 +84,27 @@ public abstract class BaseObject {
 	@SideOnly(Side.CLIENT)
 	public abstract void draw(CanvasClient canvas);
 
-	/**
-	 * Get a reference to this object
-	 *
-	 * @param canvas The owning canvas
-	 * @return The resulting reference.
-	 */
-	public IReference<BaseObject> reference(CanvasServer canvas) {
-		return new BaseObjectReference(canvas, this);
-	}
-
-	private static class BaseObjectReference implements ConstantReference<BaseObject> {
+	static class BaseObjectReference<T extends BaseObject> implements ConstantReference<T> {
 		private final CanvasServer canvas;
 		private final int id;
 
-		public BaseObjectReference(CanvasServer canvas, BaseObject object) {
+		BaseObjectReference(CanvasServer canvas, BaseObject object) {
 			this.canvas = canvas;
 			id = object.id;
 		}
 
 		@Nonnull
 		@Override
-		public BaseObject get() throws LuaException {
-			BaseObject object = canvas.getObject(id);
+		public T get() throws LuaException {
+			@SuppressWarnings("unchecked")
+			T object = (T) canvas.getObject(id);
 			if (object == null) throw new LuaException("This object has been removed");
 			return object;
 		}
 
 		@Nonnull
 		@Override
-		public BaseObject safeGet() throws LuaException {
+		public T safeGet() throws LuaException {
 			return get();
 		}
 	}

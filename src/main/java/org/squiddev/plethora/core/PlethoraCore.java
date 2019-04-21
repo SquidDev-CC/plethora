@@ -4,6 +4,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import mcjty.xnet.XNet;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -60,6 +61,13 @@ public class PlethoraCore {
 		CapabilityManager.INSTANCE.register(IPeripheralHandler.class, new DefaultStorage<>(), DefaultPeripheral::new);
 		CapabilityManager.INSTANCE.register(IVehicleUpgradeHandler.class, new DefaultStorage<>(), DefaultVehicleUpgradeHandler::new);
 
+		// Provide tiles with an IPeripheral capability.
+		ComputerCraftAPI.registerPeripheralProvider((world, pos, side) -> {
+			TileEntity te = world.getTileEntity(pos);
+			return te != null && te.hasCapability(Constants.PERIPHERAL_CAPABILITY, side)
+				? te.getCapability(Constants.PERIPHERAL_CAPABILITY, side) : null;
+		});
+
 		// Integration modules. Generally just listen to capability events
 		IntegrationVanilla.setup();
 		FMLInterModComms.sendFunctionMessage(XNet.MODID, "getXNet", "org.squiddev.plethora.integration.xnet.NetworkChannelType$Setup");
@@ -73,7 +81,6 @@ public class PlethoraCore {
 		long start = System.currentTimeMillis();
 
 		Registry.register(asmData);
-		MetaRegistry.instance.loadAsm(asmData);
 		PlethoraMethodRegistry.loadAsm(asmData);
 
 		long finish = System.currentTimeMillis();
@@ -88,6 +95,7 @@ public class PlethoraCore {
 
 	@Mod.EventHandler
 	public static void loadComplete(FMLLoadCompleteEvent event) {
+		// Register our fallback peripheral provider at the very last instance.
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 

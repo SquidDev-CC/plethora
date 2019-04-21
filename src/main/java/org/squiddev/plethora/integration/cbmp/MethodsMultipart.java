@@ -3,9 +3,10 @@ package org.squiddev.plethora.integration.cbmp;
 import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-import dan200.computercraft.api.lua.ILuaObject;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -38,7 +39,7 @@ public final class MethodsMultipart {
 	}
 
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a reference to the part in the specified slot.")
-	public static ILuaObject getSlottedPart(IContext<TileMultipart> context, PartMap slot) {
+	public static TypedLuaObject<TMultiPart> getSlottedPart(IContext<TileMultipart> context, PartMap slot) {
 		TileMultipart container = context.getTarget();
 
 		TMultiPart part = container.partMap(slot.i);
@@ -49,7 +50,7 @@ public final class MethodsMultipart {
 
 	@Optional
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get the metadata of the part in the specified slot.")
-	public static Map<String, ?> getSlottedPartMeta(IContext<TileMultipart> context, PartMap slot) {
+	public static TypedMeta<TMultiPart, ?> getSlottedPartMeta(IContext<TileMultipart> context, PartMap slot) {
 		TileMultipart container = context.getTarget();
 
 		TMultiPart part = container.partMap(slot.i);

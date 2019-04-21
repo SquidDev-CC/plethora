@@ -1,5 +1,6 @@
 package org.squiddev.plethora.gameplay.neural;
 
+import dan200.computercraft.core.computer.ComputerSide;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.EntityLivingBase;
@@ -112,13 +113,13 @@ public class NeuralComputer extends ServerComputer {
 			for (int slot = 0; slot < PERIPHERAL_SIZE; slot++) {
 				if ((dirtyStatus & (1 << slot)) == 1 << slot) {
 					// We skip the "back" slot
-					setPeripheral(slot < BACK ? slot : slot + 1, buildPeripheral(stacks.get(slot)));
+					setPeripheral(ComputerSide.valueOf(slot < BACK ? slot : slot + 1), buildPeripheral(stacks.get(slot)));
 				}
 			}
 
 			// If the modules have changed.
 			if (dirtyStatus >> PERIPHERAL_SIZE != 0) {
-				setPeripheral(BACK, NeuralHelpers.buildModules(this, stacks, owner));
+				setPeripheral(ComputerSide.BACK, NeuralHelpers.buildModules(this, stacks, owner));
 			}
 		}
 

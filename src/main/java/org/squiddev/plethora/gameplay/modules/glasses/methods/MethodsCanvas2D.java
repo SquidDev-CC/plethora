@@ -1,10 +1,10 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
-import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
@@ -25,7 +25,7 @@ public final class MethodsCanvas2D {
 	}
 
 	@PlethoraMethod(doc = "-- Create a new rectangle.", worldThread = false)
-	public static ILuaObject addRectangle(
+	public static TypedLuaObject<Rectangle> addRectangle(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		float x, float y, float width, float height, @Optional(defInt = DEFAULT_COLOUR) int colour
 	) {
@@ -38,11 +38,11 @@ public final class MethodsCanvas2D {
 
 		canvas.add(rectangle);
 
-		return baked.makeChild(rectangle, rectangle.reference(canvas)).getObject();
+		return baked.makeChild(rectangle, canvas.reference(rectangle)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a new line.", worldThread = false)
-	public static ILuaObject addLine(
+	public static TypedLuaObject<Line> addLine(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		Vec2d start, Vec2d end, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float thickness
 	) {
@@ -56,11 +56,11 @@ public final class MethodsCanvas2D {
 
 		canvas.add(line);
 
-		return baked.makeChild(line, line.reference(canvas)).getObject();
+		return baked.makeChild(line, canvas.reference(line)).getObject();
 	}
 
 	@PlethoraMethod(doc = "function(position:table, [, color:number][, size:number]):table -- Create a new dot.", worldThread = false)
-	public static ILuaObject addDot(
+	public static TypedLuaObject<Dot> addDot(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		Vec2d position, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float size
 	) {
@@ -72,11 +72,11 @@ public final class MethodsCanvas2D {
 		dot.setScale(size);
 
 		canvas.add(dot);
-		return baked.makeChild(dot, dot.reference(canvas)).getObject();
+		return baked.makeChild(dot, canvas.reference(dot)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a new text object.", worldThread = false)
-	public static ILuaObject addText(
+	public static TypedLuaObject<Text> addText(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		Vec2d position, String contents, @Optional(defInt = DEFAULT_COLOUR) int colour, @Optional(defDoub = 1) float size
 	) {
@@ -90,11 +90,11 @@ public final class MethodsCanvas2D {
 
 		canvas.add(text);
 
-		return baked.makeChild(text, text.reference(canvas)).getObject();
+		return baked.makeChild(text, canvas.reference(text)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a new triangle, composed of three points.", worldThread = false)
-	public static ILuaObject addTriangle(
+	public static TypedLuaObject<Triangle> addTriangle(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		Vec2d p1, Vec2d p2, Vec2d p3, @Optional(defInt = DEFAULT_COLOUR) int colour
 	) {
@@ -108,11 +108,11 @@ public final class MethodsCanvas2D {
 
 		canvas.add(triangle);
 
-		return baked.makeChild(triangle, triangle.reference(canvas)).getObject();
+		return baked.makeChild(triangle, canvas.reference(triangle)).getObject();
 	}
 
 	@PlethoraMethod(doc = "function(points...:table, [, color:number]):table -- Create a new polygon, composed of many points.", worldThread = false)
-	public static ILuaObject addPolygon(IContext<Group2D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
+	public static TypedLuaObject<Polygon> addPolygon(IContext<Group2D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
 		Group2D group = baked.getTarget();
 
 		Polygon polygon = new Polygon(canvas.newObjectId(), group.id());
@@ -129,11 +129,11 @@ public final class MethodsCanvas2D {
 		polygon.setColour(optInt(args, i, DEFAULT_COLOUR));
 
 		canvas.add(polygon);
-		return baked.makeChild(polygon, polygon.reference(canvas)).getObject();
+		return baked.makeChild(polygon, canvas.reference(polygon)).getObject();
 	}
 
 	@PlethoraMethod(doc = "function(points...:table, [, color:number[, thickness:number]]):table -- Create a new line loop, composed of many points.", worldThread = false)
-	public static MethodResult addLines(IContext<Group2D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
+	public static TypedLuaObject<LineLoop> addLines(IContext<Group2D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
 		Group2D group = baked.getTarget();
 
 		LineLoop lines = new LineLoop(canvas.newObjectId(), group.id());
@@ -151,11 +151,11 @@ public final class MethodsCanvas2D {
 		lines.setScale(optFloat(args, i + 1, 1));
 
 		canvas.add(lines);
-		return MethodResult.result(baked.makeChild(lines, lines.reference(canvas)).getObject());
+		return baked.makeChild(lines, canvas.reference(lines)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a item icon.", worldThread = false)
-	public static ILuaObject addItem(
+	public static TypedLuaObject<Item2D> addItem(
 		IContext<Group2D> baked, @FromContext CanvasServer canvas,
 		Vec2d position, Item item, @Optional(defInt = 0) int damage, @Optional(defDoub = 1) float scale
 	) {
@@ -168,18 +168,18 @@ public final class MethodsCanvas2D {
 		model.setDamage(damage);
 
 		canvas.add(model);
-		return baked.makeChild(model, model.reference(canvas)).getObject();
+		return baked.makeChild(model, canvas.reference(model)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a new object group.", worldThread = false)
-	public static ILuaObject addGroup(IContext<Group2D> baked, @FromContext CanvasServer canvas, Vec2d position) throws LuaException {
+	public static TypedLuaObject<ObjectGroup2D> addGroup(IContext<Group2D> baked, @FromContext CanvasServer canvas, Vec2d position) throws LuaException {
 		Group2D group = baked.getTarget();
 
 		ObjectGroup2D newGroup = new ObjectGroup2D(canvas.newObjectId(), group.id());
 		newGroup.setPosition(position);
 
 		canvas.add(newGroup);
-		return baked.makeChild(newGroup, newGroup.reference(canvas)).getObject();
+		return baked.makeChild(newGroup, canvas.reference(newGroup)).getObject();
 	}
 
 	@PlethoraMethod(doc = "function():number, number -- Get the size of this canvas.", worldThread = false)

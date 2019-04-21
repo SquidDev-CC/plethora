@@ -8,6 +8,7 @@ import joptsimple.internal.Strings;
 import net.minecraft.util.math.BlockPos;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
@@ -46,7 +47,7 @@ public class HTMLWriter implements IDocWriter {
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
 		writer = new PrintStream(stream);
-		objectWriter = new ObjectWriter(writer, formatter);
+		objectWriter = new HtmlObjectWriter(writer);
 
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methodLookup.entries()) {
 			IMethod<?> method = entry.getValue();
@@ -71,22 +72,25 @@ public class HTMLWriter implements IDocWriter {
 
 	@Override
 	public void writeHeader() throws IOException {
-		InputStream header = getClass().getClassLoader().getResourceAsStream("assets/plethora/header.html");
-		if (header == null) {
-			writer.println("<html><body>");
-		} else {
-			try {
+		try (InputStream header = getClass().getClassLoader().getResourceAsStream("assets/plethora/header.html")) {
+			if (header == null) {
+				writer.println("<html><body>");
+			} else {
 				ByteStreams.copy(header, writer);
-			} finally {
-				header.close();
 			}
 		}
 	}
 
 	@Override
-	public void writeFooter() {
+	public void writeFooter() throws IOException {
 		writer.printf("<footer>Generated on %s</footer>\n", DATE_FORMAT.format(new Date()));
-		writer.println("</body></html>");
+		try (InputStream footer = getClass().getClassLoader().getResourceAsStream("assets/plethora/footer.html")) {
+			if (footer == null) {
+				writer.println("</body></html>");
+			} else {
+				ByteStreams.copy(footer, writer);
+			}
+		}
 	}
 
 	@Override
@@ -286,35 +290,23 @@ public class HTMLWriter implements IDocWriter {
 		void emit(String groupId, String target, T object) throws IOException;
 	}
 
-	private static final ObjectFormatter formatter = new ObjectFormatter() {
-		@Override
-		public String formatInteger(int value) {
-			return Integer.toString(value);
+	private static final class HtmlObjectWriter extends ObjectWriter {
+		HtmlObjectWriter(Appendable stream) {
+			super(stream);
 		}
 
 		@Override
-		public String formatDouble(double value) {
-			if (Double.isFinite(value)) {
-				return NUMBER_FORMAT.format(value);
-			} else if (Double.isNaN(value)) {
-				return "nan";
-			} else {
-				return value > 0 ? "inf" : "-inf";
-			}
+		public void writeValue(boolean value) throws IOException {
+			classed("kc", value ? "true" : "false");
 		}
 
 		@Override
-		public String formatBoolean(boolean value) {
-			return classed("kc", value ? "true" : "false");
+		public void writeValue(Void value) throws IOException {
+			classed("kc", "nil");
 		}
 
 		@Override
-		public String formatNil() {
-			return classed("kc", "nil");
-		}
-
-		@Override
-		public String formatString(String value) {
+		public void writeValue(String value) throws IOException {
 			StringBuilder builder = new StringBuilder(2 + value.length());
 			builder.append('"');
 			for (int i = 0; i < value.length(); i++) {
@@ -330,16 +322,64 @@ public class HTMLWriter implements IDocWriter {
 				}
 			}
 
-			return classed("s2", builder.append('"').toString());
+			classed("s2", builder.append('"').toString());
 		}
 
 		@Override
-		public String formatSpecial(String value) {
-			return classed("o", value);
+		public void writeSpecial(String value) throws IOException {
+			classed("o", '\u00ab' + value + '\u00bb');
 		}
 
-		private String classed(String css, String value) {
-			return String.format("<span class=\"%s\">%s</span>", css, value);
+		@Override
+		protected void writeValue(Map<?, ?> value, String indent) throws IOException {
+			if (value.isEmpty()) {
+				output.append("{}");
+				return;
+			}
+
+			output
+				.append("<span class=\"meta-map\">")
+				.append("<span class=\"meta-brace\">{</span>");
+
+			writeMapBody(value, indent);
+
+			output
+				.append("<span class=\"meta-brace\">}</span>")
+				.append("</span>");
 		}
-	};
+
+		@Override
+		protected void writeMeta(TypedMeta<?, ?> meta, String indent) throws IOException {
+			if (meta.isEmpty()) {
+				output.append("{}");
+				return;
+			}
+
+			// Generally not needed, as the top level won't be a meta object. But useful none-the-less.
+			if (indent.isEmpty()) {
+				writeValue(meta, indent);
+				return;
+			}
+
+			output
+				.append("<span class=\"nested-meta meta-map\">")
+				.append("<span class=\"meta-brace\">{</span>");
+
+			output.append("<span class=\"nested-meta-short\"> ");
+			writeSpecial("nested metadata");
+			output.append(" </span>");
+
+			output.append("<span class=\"nested-meta-long\">");
+			writeMapBody(meta, indent);
+			output.append("</span>");
+
+			output
+				.append("<span class=\"meta-brace\">}</span>")
+				.append("</span>");
+		}
+
+		private void classed(String css, String value) throws IOException {
+			output.append(String.format("<span class=\"%s\">%s</span>", css, value));
+		}
+	}
 }

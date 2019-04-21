@@ -3,8 +3,8 @@ package org.squiddev.plethora.integration.tconstruct;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import org.squiddev.plethora.api.meta.BaseMetaProvider;
-import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -18,19 +18,22 @@ import slimeknights.tconstruct.library.tools.ToolCore;
 import slimeknights.tconstruct.library.utils.TagUtil;
 import slimeknights.tconstruct.library.utils.TinkerUtil;
 import slimeknights.tconstruct.library.utils.ToolHelper;
+import slimeknights.tconstruct.tools.harvest.TinkerHarvestTools;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
-@IMetaProvider.Inject(value = ItemStack.class, modId = TConstruct.modID, namespace = "tool")
-public class MetaToolCore extends BaseMetaProvider<ItemStack> {
+@Injects(TConstruct.modID)
+public final class MetaToolCore extends ItemStackContextMetaProvider<ToolCore> {
+	public MetaToolCore() {
+		super("tool", ToolCore.class);
+	}
+
 	@Nonnull
 	@Override
-	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context) {
+	public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, ToolCore tool) {
 		ItemStack stack = context.getTarget();
-		if (!(stack.getItem() instanceof ToolCore)) return Collections.emptyMap();
-
-		ToolCore tool = (ToolCore) stack.getItem();
 
 		Map<String, Object> out = new HashMap<>();
 
@@ -43,7 +46,6 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 
 		out.put("maxDurability", ToolHelper.getDurabilityStat(stack));
 		out.put("durability", ToolHelper.getCurrentDurability(stack));
-
 
 		{
 			// Gather a list of all modifiers. We don't provide what they do, but this should be enough.
@@ -98,5 +100,24 @@ public class MetaToolCore extends BaseMetaProvider<ItemStack> {
 
 
 		return out;
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getExample() {
+		ToolCore tool = TinkerHarvestTools.pickaxe;
+		int required = tool.getRequiredComponents().size();
+		List<Material> mats = new ArrayList<>(required);
+
+		Collection<Material> materials = TinkerRegistry.getAllMaterials();
+		for (Material material : materials) {
+			mats.clear();
+			for (int i = 0; i < required; i++) mats.add(material);
+
+			ItemStack stack = tool.buildItem(mats);
+			if (tool.hasValidMaterials(stack)) return stack;
+		}
+
+		return null;
 	}
 }

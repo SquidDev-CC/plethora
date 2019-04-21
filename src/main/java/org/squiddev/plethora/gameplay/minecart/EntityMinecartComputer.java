@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.minecart;
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.core.computer.ComputerSide;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
 import dan200.computercraft.shared.computer.blocks.ComputerState;
@@ -71,7 +72,12 @@ public class EntityMinecartComputer extends EntityMinecart implements IPlayerOwn
 	private static final ComputerFamily[] FAMILIES = ComputerFamily.values();
 	private static final ComputerState[] STATES = ComputerState.values();
 
-	private static final int[] PERIPHERAL_MAPPINGS = new int[]{1, 5, 4, 2};
+	private static final ComputerSide[] PERIPHERAL_MAPPINGS = new ComputerSide[]{
+		ComputerSide.TOP,
+		ComputerSide.LEFT,
+		ComputerSide.RIGHT,
+		ComputerSide.BACK
+	};
 
 	private static final AxisAlignedBB[] BOUNDS = new AxisAlignedBB[]{
 		// The main block: simply there to avoid reaching "through" the block.

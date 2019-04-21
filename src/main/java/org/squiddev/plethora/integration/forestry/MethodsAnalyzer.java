@@ -2,8 +2,10 @@ package org.squiddev.plethora.integration.forestry;
 
 import dan200.computercraft.api.lua.LuaException;
 import forestry.api.genetics.IAlleleSpecies;
+import forestry.api.genetics.IMutation;
 import forestry.api.genetics.ISpeciesRoot;
 import forestry.core.config.Constants;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -49,7 +51,7 @@ public final class MethodsAnalyzer {
 		module = IntegrationForestry.analyzerMod, worldThread = false, modId = Constants.MOD_ID,
 		doc = "-- Get a list of all mutations in the given species root"
 	)
-	public static Map<Integer, ?> getMutationsList(IContext<IModuleContainer> context, String root) throws LuaException {
+	public static Map<Integer, ? extends TypedMeta<? extends IMutation, ?>> getMutationsList(IContext<IModuleContainer> context, String root) throws LuaException {
 		return getSpeciesRoot(root)
 			.getMutations(false).stream()
 			.filter(s -> !s.isSecret())

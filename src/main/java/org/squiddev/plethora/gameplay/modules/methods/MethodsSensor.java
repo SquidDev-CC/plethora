@@ -8,6 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
@@ -24,7 +25,6 @@ import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public final class MethodsSensor {
@@ -48,7 +48,7 @@ public final class MethodsSensor {
 
 	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by UUID")
-	public static Map<String, ?> getMetaByID(
+	public static TypedMeta<Entity, ?> getMetaByID(
 		IContext<IModuleContainer> context,
 		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@FromContext(PlethoraModules.SENSOR_S) RangeInfo range,
@@ -61,7 +61,7 @@ public final class MethodsSensor {
 
 	@Optional
 	@PlethoraMethod(module = PlethoraModules.SENSOR_S, doc = "-- Find a nearby entity by name")
-	public static Map<String, ?> getMetaByName(
+	public static TypedMeta<Entity, ?> getMetaByName(
 		IContext<IModuleContainer> context,
 		@FromContext(ContextKeys.ORIGIN) IWorldLocation location,
 		@FromContext(PlethoraModules.SENSOR_S) RangeInfo range,
