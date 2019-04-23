@@ -2,11 +2,9 @@ package org.squiddev.plethora.integration.astralsorcery;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.constellation.IConstellation;
-import hellfirepvp.astralsorcery.common.constellation.IMinorConstellation;
 import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import hellfirepvp.astralsorcery.common.constellation.starmap.ActiveStarMap;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletEnchantment;
-import hellfirepvp.astralsorcery.common.enchantment.dynamic.DynamicEnchantment;
 import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemConstellationPaper;
 import hellfirepvp.astralsorcery.common.item.ItemInfusedGlass;
@@ -25,9 +23,6 @@ import hellfirepvp.astralsorcery.common.item.wearable.ItemEnchantmentAmulet;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
 import hellfirepvp.astralsorcery.common.lib.ItemsAS;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLootBonus;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -50,7 +45,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_TUNED_CRYSTAL_BASE = new ItemStackContextMetaProvider<ItemTunedCrystalBase>(
 		ItemTunedCrystalBase.class,
-		"Provides the constellation(s) for this item"
+		"Provides the constellation(s) for an item"
 	) {
 		@Nonnull
 		@Override
@@ -71,21 +66,13 @@ public final class MetaItems {
 			return out;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
 			ItemStack crystalStack = new ItemStack(ItemsAS.tunedRockCrystal);
 			CrystalProperties.applyCrystalProperties(crystalStack, CrystalProperties.getMaxRockProperties());
-
-			IWeakConstellation constellation = Constellations.discidia;
-			if (constellation == null) return null;
-
-			ItemTunedCrystalBase.applyMainConstellation(crystalStack, constellation);
-
-			IMinorConstellation trait = Constellations.gelu;
-			if (trait == null) return crystalStack;
-
-			ItemTunedCrystalBase.applyTrait(crystalStack, trait);
+			ItemTunedCrystalBase.applyMainConstellation(crystalStack, Constellations.discidia);
+			ItemTunedCrystalBase.applyTrait(crystalStack, Constellations.gelu);
 
 			return crystalStack;
 		}
@@ -93,7 +80,7 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_CONSTELLATION_PAPER = new ItemStackContextMetaProvider<ItemConstellationPaper>(
 		ItemConstellationPaper.class,
-		"Provides the Constellation for this Constellation Paper"
+		"Provides the Constellation for a Constellation Paper"
 	) {
 		@Nonnull
 		@Override
@@ -120,15 +107,16 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_ITEM_JOURNAL = new ItemStackContextMetaProvider<ItemJournal>(
 		ItemJournal.class,
-		"Provides the Constellation Papers stored in this Journal"
+		"Provides the Constellations stored in a Journal"
 	) {
 		@Nonnull
 		@Override
 		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemJournal item) {
-			//REFINE Or should we use `getStoredConstellations` and not worry about the papers themselves?
-			// Saves a slight bit of work in Astral's code...
+			//Just getting the constellations, rather than the papers; removes needless indirection,
+			// and reduces processing overhead (Astral's `getStoredConstellationStacks` calls `getStoredConstellations`,
+			// and then creates an ItemStack for each)
 			return Collections.singletonMap("papers",
-				LuaList.of(Arrays.asList(ItemJournal.getStoredConstellationStacks(context.getTarget())),
+				LuaList.of(ItemJournal.getStoredConstellations(context.getTarget()),
 					paper -> context.makePartialChild(paper).getMeta()).asMap());
 		}
 
@@ -149,11 +137,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_SKY_RESONATOR = new ItemStackContextMetaProvider<ItemSkyResonator>(
 		ItemSkyResonator.class,
-		"Provides the available modes for this Resonator"
+		"Provides the available modes for a Resonator"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSkyResonator item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSkyResonator item) {
 			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(context.getTarget());
 			LuaList<Map<String, String>> modesOut = new LuaList<>(modes.size());
 
@@ -167,11 +155,6 @@ public final class MetaItems {
 			}
 
 			return Collections.singletonMap("modes", modesOut.asMap());
-
-			//REFINE This could be converted to use `LuaList.of`, but the lambda would be a bit unwieldy...
-/*			return Collections.singletonMap("modes",
-				LuaList.of(ItemSkyResonator.getUpgrades(context.getTarget()),
-					ItemSkyResonator.ResonatorUpgrade::getUnlocalizedUpgradeName).asMap());*/
 		}
 
 		@Nonnull
@@ -188,11 +171,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_COLORED_LENS = new ItemStackContextMetaProvider<ItemColoredLens>(
 		ItemColoredLens.class,
-		"Provides the color of this lens"
+		"Provides the color of a lens"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemColoredLens item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemColoredLens item) {
 			// ... yay for the lack of a native reverse lookup or conversion based on the ordinal...
 			// (e.g. casting `int` to enum or a `TryParse` type method...)
 			ItemColoredLens.ColorType[] colors = ItemColoredLens.ColorType.values();
@@ -220,11 +203,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_RESPLENDENT_PRISM = new ItemStackContextMetaProvider<ItemEnchantmentAmulet>(
 		ItemEnchantmentAmulet.class,
-		"Provides the enchantment bonuses for this Resplendent Prism"
+		"Provides the enchantment bonuses for a Resplendent Prism"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemEnchantmentAmulet item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemEnchantmentAmulet item) {
 			return Collections.singletonMap("amuletEnchantments",
 				LuaList.of(ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget()),
 					e -> context.makePartialChild(e).getMeta()).asMap());
@@ -252,11 +235,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_MANTLE_OF_THE_STARS = new ItemStackContextMetaProvider<ItemCape>(
 		ItemCape.class,
-		"Provides the constellation this Mantle of the Stars is attuned to"
+		"Provides the constellation a Mantle of the Stars is attuned to"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCape item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCape item) {
 			IConstellation constellation = ItemCape.getAttunedConstellation(context.getTarget());
 			return constellation != null
 				? Collections.singletonMap("constellation", context.makePartialChild(constellation).getMeta())
@@ -275,11 +258,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_ILLUMINATION_WAND = new ItemStackContextMetaProvider<ItemIlluminationWand>(
 		ItemIlluminationWand.class,
-		"Provides the color of flares place by this Illumination Wand"
+		"Provides the color of flares placed by an Illumination Wand"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemIlluminationWand item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemIlluminationWand item) {
 			EnumDyeColor color = ItemIlluminationWand.getConfiguredColor(context.getTarget());
 			if (color == null) return Collections.emptyMap();
 
@@ -302,11 +285,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_RESONATING_WAND = new ItemStackContextMetaProvider<ItemWand>(
 		ItemWand.class,
-		"Provides the constellation this Resonating Wand is attuned to"
+		"Provides the constellation a Resonating Wand is attuned to"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemWand item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemWand item) {
 			WandAugment augment = ItemWand.getAugment(context.getTarget());
 			if (augment == null) return Collections.emptyMap();
 
@@ -327,11 +310,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_INFUSED_GLASS = new ItemStackContextMetaProvider<ItemInfusedGlass>(
 		ItemInfusedGlass.class,
-		"Provides the constellations etched on this Infused Glass"
+		"Provides the constellations etched on an Infused Glass"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemInfusedGlass item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemInfusedGlass item) {
 			//We are only exposing the constellations on this piece of Infused Glass, nothing more!
 			ActiveStarMap starMap = ItemInfusedGlass.getMapEngravingInformations(context.getTarget());
 			return starMap == null
@@ -354,11 +337,11 @@ public final class MetaItems {
 
 	public static final IMetaProvider<ItemStack> META_SEXTANT = new ItemStackContextMetaProvider<ItemSextant>(
 		ItemSextant.class,
-		"Provides the active target of this Sextant, and whether the Sextant is augmented"
+		"Provides the active target of a Sextant, and whether the Sextant is augmented"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSextant item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSextant item) {
 			ItemStack stack = context.getTarget();
 
 			Map<String, Object> out = new HashMap<>(2);

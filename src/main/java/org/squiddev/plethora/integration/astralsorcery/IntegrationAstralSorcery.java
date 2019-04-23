@@ -31,9 +31,6 @@ public final class IntegrationAstralSorcery {
 	private IntegrationAstralSorcery() {
 	}
 
-	//FIXME Determine whether access to fields in `Constellations` should be tested for `null`,
-	// then ensure consistency in the code
-
 	/* Note that we will mainly be adding meta-providers for Astral Sorcery,
 	 * as I do NOT want to deal with HellfirePvP's stance on fake players
 	 * ( {@see hellfirepvp.astralsorcery.common.util.MiscUtils.isPlayerFakeMP})
@@ -41,6 +38,9 @@ public final class IntegrationAstralSorcery {
 	 *MEMO The following pieces need to be set up for the test environment to work properly:
 	 * Bump the Forge version to AT LEAST 14.23.5.2781
 	 * Disable the Patreon flare effects for Astral (it will crash otherwise... >_> )
+	 *
+	 *Assumptions made in this code:
+	 * Fields in the `Constellations` class will be instantiated before we attempt to access them
 	 */
 
 	/*Providers that could be added:
@@ -66,7 +66,7 @@ public final class IntegrationAstralSorcery {
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull CrystalProperties props) {
+		public Map<String, ?> getMeta(@Nonnull CrystalProperties props ) {
 			Map<String, Object> out = new HashMap<>(4);
 
 			out.put("cutting", props.getCollectiveCapability());
@@ -87,11 +87,13 @@ public final class IntegrationAstralSorcery {
 		}
 	};
 
-	public static final IMetaProvider<IConstellation> META_I_CONSTELLATION = new BasicMetaProvider<IConstellation>() {
+	public static final IMetaProvider<IConstellation> META_I_CONSTELLATION = new BasicMetaProvider<IConstellation>(
+		"Provides the name, colors, and tier of an IConstellation"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IConstellation context) {
+		public Map<String, ?> getMeta(@Nonnull IConstellation context ) {
 			Map<String, Object> out = new HashMap<>(7);
 
 			String translationKey = context.getUnlocalizedName();
@@ -122,11 +124,14 @@ public final class IntegrationAstralSorcery {
 
 	//REFINE As this is only ever called via META_RESPLENDENT_PRISM, we technically could just use a method
 	// rather than a full-fledged IMetaProvider
-	public static final IMetaProvider<AmuletEnchantment> META_AMULET_ENCHANTMENT = new BaseMetaProvider<AmuletEnchantment>() {
+	public static final IMetaProvider<AmuletEnchantment> META_AMULET_ENCHANTMENT = new BaseMetaProvider<AmuletEnchantment>(
+		"Provides the type, level, and boosted enchantment (if applicable) of this Amulet Enchantment.\n" +
+			"For examples, see META_RESPLENDENT_PRISM"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context ) {
 			Map<String, Object> out = new HashMap<>(4);
 			AmuletEnchantment target = context.getTarget();
 

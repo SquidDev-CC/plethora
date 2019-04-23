@@ -10,7 +10,6 @@ import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
 import hellfirepvp.astralsorcery.common.item.ItemCraftingComponent;
 import hellfirepvp.astralsorcery.common.item.block.ItemCollectorCrystal;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
-import hellfirepvp.astralsorcery.common.item.crystal.ItemRockCrystalSimple;
 import hellfirepvp.astralsorcery.common.item.crystal.base.ItemTunedCrystalBase;
 import hellfirepvp.astralsorcery.common.lib.BlocksAS;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
@@ -31,6 +30,8 @@ import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.TypedLuaObject;
+import org.squiddev.plethora.integration.MetaWrapper;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -39,6 +40,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.squiddev.plethora.integration.PlethoraIntegration.LOG;
+
 // Despite the name, this class also houses the providers for TileEntities, and their item forms.
 @Injects(AstralSorcery.MODID)
 public final class MetaBlocks {
@@ -46,12 +49,12 @@ public final class MetaBlocks {
 	}
 
 	public static final IMetaProvider<TileWell> META_LIGHT_WELL = new BaseMetaProvider<TileWell>(
-		"Provides the catalyst item in this Lightwell"
+		"Provides the catalyst item in a Lightwell"
 	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileWell> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileWell> context ) {
 			//REFINE Do we want this stack wrapped, or should we just `getMeta`?
 			ILuaObject stack = ContextHelpers.wrapStack(context, context.getTarget().getInventoryHandler().getStackInSlot(0));
 			return stack != null
@@ -72,11 +75,13 @@ public final class MetaBlocks {
 		}
 	};
 
-	public static final IMetaProvider<TileCollectorCrystal> META_TILE_COLLECTOR_CRYSTAL = new BaseMetaProvider<TileCollectorCrystal>() {
+	public static final IMetaProvider<TileCollectorCrystal> META_TILE_COLLECTOR_CRYSTAL = new BaseMetaProvider<TileCollectorCrystal>(
+		"Provides the CrystalProperties, attunement, and crystal type for a Collector Crystal"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileCollectorCrystal> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileCollectorCrystal> context) {
 			Map<String, Object> out = new HashMap<>(4);
 			TileCollectorCrystal target = context.getTarget();
 
@@ -112,11 +117,12 @@ public final class MetaBlocks {
 	};
 
 	public static final IMetaProvider<ItemStack> META_ITEM_COLLECTOR_CRYSTAL = new ItemStackContextMetaProvider<ItemCollectorCrystal>(
-		ItemCollectorCrystal.class
+		ItemCollectorCrystal.class,
+		"Provides the attunement and crystal type for a Collector Crystal in item form"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCollectorCrystal item) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemCollectorCrystal item) {
 			Map<String, Object> out = new HashMap<>(3);
 			ItemStack stack = context.getTarget();
 
@@ -143,7 +149,6 @@ public final class MetaBlocks {
 			CrystalProperties.applyCrystalProperties(stack, CrystalProperties.getMaxRockProperties());
 			ItemCollectorCrystal.setType(stack, BlockCollectorCrystalBase.CollectorCrystalType.ROCK_CRYSTAL);
 
-			//REFINE Do we want to add null checks to the `Constellations` field access?
 			ItemCollectorCrystal.setConstellation(stack, Constellations.discidia);
 			ItemCollectorCrystal.setTraitConstellation(stack, Constellations.gelu);
 
@@ -151,11 +156,13 @@ public final class MetaBlocks {
 		}
 	};
 
-	public static final IMetaProvider<TileCrystalLens> META_TILE_CRYSTAL_LENS = new BaseMetaProvider<TileCrystalLens>() {
+	public static final IMetaProvider<TileCrystalLens> META_TILE_CRYSTAL_LENS = new BaseMetaProvider<TileCrystalLens>(
+		"Provides the CrystalProperties and lens color of a Crystal Lens"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileCrystalLens> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileCrystalLens> context ) {
 			Map<String, Object> out = new HashMap<>(3);
 			TileCrystalLens target = context.getTarget();
 
@@ -188,12 +195,12 @@ public final class MetaBlocks {
 	};
 
 	public static final IMetaProvider<TileGrindstone> META_GRINDSTONE = new BaseMetaProvider<TileGrindstone>(
-		"Provides the item currently on this Grindstone"
+		"Provides the item currently on a Grindstone"
 	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileGrindstone> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileGrindstone> context ) {
 			return Collections.singletonMap("item",
 				context.makePartialChild(context.getTarget().getGrindingItem()).getMeta());
 		}
@@ -203,6 +210,11 @@ public final class MetaBlocks {
 		public TileGrindstone getExample() {
 			WorldDummy.INSTANCE.setBlockState(BlockPos.ORIGIN, BlocksAS.blockMachine.getDefaultState().withProperty(BlockMachine.MACHINE_TYPE, BlockMachine.MachineType.GRINDSTONE));
 			TileEntity te = WorldDummy.INSTANCE.getTileEntity(BlockPos.ORIGIN);
+			if (te != null) {
+				//FIXME Turns out I'm not getting my examples because this is (at least in the first test)
+				// actually a TileAttunementRelay?
+				LOG.debug("Grindstone class: {}", te.getClass().getCanonicalName());
+			}
 			if (!(te instanceof TileGrindstone)) return null;
 
 			TileGrindstone grindstone = (TileGrindstone) te;
@@ -215,11 +227,13 @@ public final class MetaBlocks {
 		}
 	};
 
-	public static final IMetaProvider<TileRitualPedestal> META_RITUAL_PEDESTAL = new BaseMetaProvider<TileRitualPedestal>() {
+	public static final IMetaProvider<TileRitualPedestal> META_RITUAL_PEDESTAL = new BaseMetaProvider<TileRitualPedestal>(
+		"Provides the focus crystal and work status of a Ritual Pedestal"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileRitualPedestal> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileRitualPedestal> context ) {
 			Map<String, Object> out = new HashMap<>(2);
 			TileRitualPedestal target = context.getTarget();
 
@@ -249,11 +263,13 @@ public final class MetaBlocks {
 		}
 	};
 
-	public static final IMetaProvider<TileIlluminator> META_CAVE_ILLUMINATOR = new BasicMetaProvider<TileIlluminator>() {
+	public static final IMetaProvider<TileIlluminator> META_CAVE_ILLUMINATOR = new BasicMetaProvider<TileIlluminator>(
+		"Provides the flare color for a Cave Illuminator"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull TileIlluminator context) {
+		public Map<String, ?> getMeta(@Nonnull TileIlluminator context ) {
 			NBTTagCompound nbt = new NBTTagCompound();
 			context.writeCustomNBT(nbt);
 
@@ -281,11 +297,13 @@ public final class MetaBlocks {
 		}
 	};
 
-	public static final IMetaProvider<TileAttunementRelay> META_SPECTRAL_RELAY = new BaseMetaProvider<TileAttunementRelay>() {
+	public static final IMetaProvider<TileAttunementRelay> META_SPECTRAL_RELAY = new BaseMetaProvider<TileAttunementRelay>(
+		"Provides the item in a Spectral Relay"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileAttunementRelay> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileAttunementRelay> context ) {
 			// While it also functions as a starlight collector, and is part of attunement and top-tier altar crafting,
 			// the stored item is the only thing that we can easily access.
 			// We _could_ extract the linked BlockPos and check the type of TileEntity there, but... meh.
@@ -307,20 +325,25 @@ public final class MetaBlocks {
 	};
 
 
-	public static final IMetaProvider<TileMapDrawingTable> META_STELLAR_REFRACTION_TABLE = new BaseMetaProvider<TileMapDrawingTable>() {
+	public static final IMetaProvider<TileMapDrawingTable> META_STELLAR_REFRACTION_TABLE = new BaseMetaProvider<TileMapDrawingTable>(
+		"Provides the items in a Stellar Refraction Table"
+	) {
 
 		@Nonnull
 		@Override
-		public Map<String, Object> getMeta(@Nonnull IPartialContext<TileMapDrawingTable> context) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<TileMapDrawingTable> context ) {
 			Map<String, Object> out = new HashMap<>(2);
 			TileMapDrawingTable target = context.getTarget();
 
-			//TODO Discuss the difference between `getMeta` and `wrapStack` with Squid, regarding behavior of empty stacks
-			// `getMeta` appears to result in an empty table, while `wrapStack` returns `null`
-			//noinspection ConstantConditions
-			out.put("infusedGlass", ContextHelpers.wrapStack(context, target.getSlotGlassLens()));
-			//noinspection ConstantConditions
-			out.put("processingSlot", ContextHelpers.wrapStack(context, target.getSlotIn()));
+			TypedLuaObject<MetaWrapper<ItemStack>> lensStack = ContextHelpers.wrapStack(context, target.getSlotGlassLens());
+			if (lensStack != null) {
+				out.put("infusedGlass", lensStack);
+			}
+
+			TypedLuaObject<MetaWrapper<ItemStack>> inputStack = ContextHelpers.wrapStack(context, target.getSlotIn());
+			if (inputStack != null) {
+				out.put("processingSlot", inputStack);
+			}
 
 			return out;
 		}

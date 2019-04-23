@@ -3,6 +3,7 @@ package org.squiddev.plethora.integration.astralsorcery;
 import dan200.computercraft.api.lua.LuaException;
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.auxiliary.CelestialGatewaySystem;
+import hellfirepvp.astralsorcery.common.constellation.ConstellationRegistry;
 import hellfirepvp.astralsorcery.common.constellation.IConstellation;
 import hellfirepvp.astralsorcery.common.data.research.PlayerProgress;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
@@ -11,6 +12,7 @@ import hellfirepvp.astralsorcery.common.data.world.data.GatewayCache;
 import hellfirepvp.astralsorcery.common.tile.TileCelestialGateway;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.Side;
+import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
@@ -20,6 +22,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +40,9 @@ public final class MethodsAstralSorcery {
 		modId = AstralSorcery.MODID,
 		doc = "-- Get a list of all Celestial Gateways, grouped by dimension"
 	)
-	public static Map<String, Object> getGateways(@Nonnull IContext<TileCelestialGateway> context) {
+	public static Map<String, ?> getGateways(@Nonnull IContext<TileCelestialGateway> context ) {
 		Map<Integer, List<GatewayCache.GatewayNode>> nodesByDimension = CelestialGatewaySystem.instance.getGatewayCache(Side.SERVER);
-		Map<String, Object> fullOut = new HashMap<>();
+		Map<String, Object> fullOut = new HashMap<>(nodesByDimension.size());
 
 		//TODO This will break badly if dimensions aren't identified by number, e.g. 1.13, NEID, JEID, etc.
 		for (Map.Entry<Integer, List<GatewayCache.GatewayNode>> entry : nodesByDimension.entrySet()) {
@@ -48,7 +51,7 @@ public final class MethodsAstralSorcery {
 			List<GatewayCache.GatewayNode> dimNodes = entry.getValue();
 			LuaList<Map<String, Object>> dimOut = new LuaList<>(dimNodes.size());
 			for (GatewayCache.GatewayNode node : dimNodes) {
-				Map<String, Object> inner = new HashMap<>();
+				Map<String, Object> inner = new HashMap<>(4);
 				inner.put("posX", node.getX());
 				inner.put("posY", node.getY());
 				inner.put("posZ", node.getZ());
@@ -72,7 +75,7 @@ public final class MethodsAstralSorcery {
 		module = PlethoraModules.INTROSPECTION_S,
 		doc = "-- Get this player's progress in Astral Sorcery"
 	)
-	public static Map<String, Object> getAstralProgress(@Nonnull IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player playerId) throws LuaException {
+	public static Map<String, ?> getAstralProgress(@Nonnull IContext<IModuleContainer> context, @FromSubtarget EntityIdentifier.Player playerId) throws LuaException {
 		EntityPlayerMP player = playerId.getPlayer();
 
 		Map<String, Object> out = new HashMap<>();
@@ -80,12 +83,16 @@ public final class MethodsAstralSorcery {
 		PlayerProgress progress = ResearchManager.getProgress(player);
 
 		//Refers to the constellations that you have seen on a paper
-		out.put("seenConstellations", new LuaList<>(progress.getSeenConstellations()).asMap()); //FIXME ... great, it's the unlocalized name...
+		//REFINE This is a bit of a kludge, even extracting the lambda to a separate method;
+		// `getSeenConstellations` returns the unlocalized name(s),
+		// so we have to do a lookup if we intend to expose the meta...
+		out.put("seenConstellations", LuaList.of(progress.getSeenConstellations(), c -> getConstellationMeta(context, c)).asMap());
 
 		//Refers to the constellations that you have discovered via telescope, after seeing them on a paper
-		out.put("knownConstellations", new LuaList<>(progress.getKnownConstellations()).asMap()); //FIXME ... great, it's the unlocalized name...
+		//REFINE Same issue as the "seenConstellations"
+		out.put("knownConstellations", LuaList.of(progress.getKnownConstellations(), c -> getConstellationMeta(context, c)).asMap());
 
-		out.put("availablePerkPoints", progress.getAvailablePerkPoints(player)); //SO MANY METHODS THAT SHOULD BE STATIC, NOT INSTANCE!!!
+		out.put("availablePerkPoints", progress.getAvailablePerkPoints(player));
 
 		IConstellation attuned = progress.getAttunedConstellation();
 		if (attuned != null) {
@@ -105,5 +112,11 @@ public final class MethodsAstralSorcery {
 		//REFINE Someone else can expose the Perks if they want; cost/benefit says "no" at this time
 
 		return out;
+	}
+
+	@Nullable
+	private static TypedMeta<IConstellation, ?> getConstellationMeta(IContext<?> context, String translationKey){
+		IConstellation constellation = ConstellationRegistry.getConstellationByName(translationKey);
+		return constellation != null ? context.makePartialChild(constellation).getMeta() : null;
 	}
 }
