@@ -97,10 +97,10 @@ dependencies {
 	compileOnly "slimeknights:TConstruct:1.12.2-2.12.0.116"
 	compileOnly "slimeknights.mantle:Mantle:1.12-1.3.3.43"
 	compileOnly "vazkii.botania:Botania:r1.10-361.67"
-	compile "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80" //FIXME Change to 'compileOnly' before merging
+	compileOnly "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80"
 
 	// All the Curse mods
-	compile "baubles:Baubles:1.12:1.5.2" //FIXME Revert to 'compileOnly' before merging
+	compileOnly "baubles:Baubles:1.12:1.5.2"
 	compileOnly "storage-drawers:StorageDrawers:1.12.2:5.3.8"
 	compileOnly "chameleon:Chameleon:1.12:4.1.3"
 	compileOnly "blockcraftery:blockcraftery:1.12.2:1.2.0"

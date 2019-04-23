@@ -114,6 +114,7 @@ public final class MethodsAstralSorcery {
 		return out;
 	}
 
+	//Minor method, attempting to help code readability; debatable effectiveness
 	@Nullable
 	private static TypedMeta<IConstellation, ?> getConstellationMeta(IContext<?> context, String translationKey){
 		IConstellation constellation = ConstellationRegistry.getConstellationByName(translationKey);

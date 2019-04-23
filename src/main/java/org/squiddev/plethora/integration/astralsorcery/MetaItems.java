@@ -91,15 +91,12 @@ public final class MetaItems {
 				: Collections.emptyMap();
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public ItemStack getExample() {
 			ItemStack paperStack = new ItemStack(ItemsAS.constellationPaper);
 
-			IWeakConstellation constellation = Constellations.discidia;
-			if (constellation == null) return null;
-
-			ItemConstellationPaper.setConstellation(paperStack, constellation);
+			ItemConstellationPaper.setConstellation(paperStack, Constellations.discidia);
 
 			return paperStack;
 		}

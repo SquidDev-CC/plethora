@@ -94,7 +94,7 @@ public final class IntegrationAstralSorcery {
 		@Nonnull
 		@Override
 		public Map<String, ?> getMeta(@Nonnull IConstellation context ) {
-			Map<String, Object> out = new HashMap<>(7);
+			Map<String, Object> out = new HashMap<>(8);
 
 			String translationKey = context.getUnlocalizedName();
 			out.put("name", translationKey);
