@@ -22,6 +22,7 @@ public class LuaList<T> {
 
 	/**
 	 * Creates a {@link Collector} that produces a {@link LuaList}.
+	 * Prefer {@link LuaList#of(Collection, Function)}
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <T> Collector<T, ?, LuaList<T>> toLuaList() {
