@@ -7,10 +7,13 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralTile;
 import dan200.computercraft.shared.BundledRedstone;
 import dan200.computercraft.shared.common.TileGeneric;
-import dan200.computercraft.shared.util.RedstoneUtil;
+import net.minecraft.block.BlockRedstoneWire;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
@@ -42,7 +45,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			EnumFacing offsetSide = dir.getOpposite();
 			int dirIdx = dir.ordinal();
 
-			byte newInput = (byte) world.getRedstonePower(offset, offsetSide);
+			byte newInput = (byte) getRedstoneInput(world, offset, offsetSide);
 			if (newInput != inputs[dirIdx]) {
 				inputs[dirIdx] = newInput;
 				changed = true;
@@ -78,7 +81,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 
 		if (outputDirty) {
 			for (EnumFacing dir : EnumFacing.VALUES) {
-				RedstoneUtil.propagateRedstoneOutput(world, pos, dir);
+				propagateRedstoneOutput(world, pos, dir);
 			}
 			outputDirty = false;
 		}
@@ -96,6 +99,42 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			}
 			inputDirty = false;
 		}
+	}
+
+	/**
+	 * Gets the redstone input for an adjacent block
+	 *
+	 * @param world The world we exist in
+	 * @param pos   The position of the neighbour
+	 * @param side  The side we are reading from
+	 * @return The effective redstone power
+	 * @see net.minecraft.block.BlockRedstoneDiode#calculateInputStrength(World, BlockPos, IBlockState)
+	 */
+	private static int getRedstoneInput(World world, BlockPos pos, EnumFacing side) {
+		int power = world.getRedstonePower(pos, side);
+		if (power >= 15) return power;
+
+		IBlockState neighbour = world.getBlockState(pos);
+		return neighbour.getBlock() == Blocks.REDSTONE_WIRE
+			? Math.max(power, neighbour.getValue(BlockRedstoneWire.POWER))
+			: power;
+	}
+
+	/**
+	 * Propagate ordinary output
+	 *
+	 * @param world The world we exist in
+	 * @param pos   Our position
+	 * @param side  The side to propagate to
+	 * @see net.minecraft.block.BlockRedstoneDiode#notifyNeighbors(World, BlockPos, IBlockState)
+	 */
+	private static void propagateRedstoneOutput(World world, BlockPos pos, EnumFacing side) {
+		IBlockState block = world.getBlockState(pos);
+		if (ForgeEventFactory.onNeighborNotify(world, pos, block, EnumSet.of(side), false).isCanceled()) return;
+
+		BlockPos neighbourPos = pos.offset(side);
+		world.neighborChanged(neighbourPos, block.getBlock(), pos);
+		world.notifyNeighborsOfStateExcept(neighbourPos, block.getBlock(), side.getOpposite());
 	}
 
 	@Override
