@@ -9,8 +9,6 @@ import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import java.util.Map;
-
 public final class MethodsIDrawer {
 	private MethodsIDrawer() {
 	}

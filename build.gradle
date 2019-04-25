@@ -46,6 +46,11 @@ jar {
 	exclude "**/*.java"
 }
 
+configurations {
+	integrationMod
+	compileOnly.extendsFrom integrationMod
+}
+
 repositories {
 	jcenter()
 	mavenLocal()
@@ -53,11 +58,10 @@ repositories {
 	maven { url 'http://chickenbones.net/maven/' } // CBMP
 	maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's
 	maven { url 'http://maven.ic2.player.to/' } // IC2 + Forestry
-	maven { url 'https://cc.crzd.me/maven/' } // ComputerCraft
 	maven { url 'https://dl.bintray.com/squiddev/maven/' } // ConfigGen (why do I use this still?)
 	maven { url 'https://maven.amadornes.com/' } // Multipart
 	maven { url 'https://maven.blamejared.com/' } // Botania
-	maven { url 'https://maven.covers1624.net/' } // RF
+	maven { url 'https://maven.covers1624.net/' } // CoFH
 	maven { url 'https://maven.k-4u.nl/' } // McJty's mods
 	maven { url 'https://maven.mcmoddev.com/' } // Tesla
 	maven { url 'https://maven.tterrag.com/' } // EnderCore
@@ -75,39 +79,41 @@ dependencies {
 	compile "mezz.jei:jei_1.12.2:4.15.0.268"
 
 	// External mods with maven dependencies. Have fun when the next version of Minecraft drops!
-	compileOnly "appeng:appliedenergistics2:rv6-stable-6"
-	compileOnly "codechicken:CodeChickenLib:1.12.2-3.2.2.354:deobf"
-	compileOnly("codechicken:ForgeMultipart:1.12.2-2.6.1.81:deobf") { exclude group: "codechicken" }
-	compileOnly "cofh:CoFHCore:1.12.2-4.6.2.25:deobf"
-	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.7:deobf"
-	compileOnly "cofh:ThermalExpansion:1.12.2-5.5.3.41:deobf"
-	compileOnly "cofh:ThermalFoundation:1.12.2-2.6.2.26:deobf"
-	compileOnly("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
-	compileOnly "com.enderio.core:EnderCore:1.12.2-0.5.51:deobf"
-	compileOnly("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
-	compileOnly("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
-	compileOnly("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
-	compileOnly "com.mod-buildcraft:buildcraft-all:7.99.22"
-	compileOnly "MCMultiPart2:MCMultiPart:2.5.3:deobf"
-	compileOnly "net.darkhax.tesla:Tesla-1.12.2:1.0.63:deobf"
-	compileOnly "net.industrial-craft:industrialcraft-2:2.8.111-ex112:dev"
-	compileOnly "net.sengir.forestry:forestry_1.12.2:5.8.2.383:api"
-	compileOnly "net.sengir.forestry:forestry_1.12.2:5.8.2.383"
-	compileOnly "refinedstorage:refinedstorage:1.6.13-364:deobf"
-	compileOnly "slimeknights:TConstruct:1.12.2-2.12.0.116"
-	compileOnly "slimeknights.mantle:Mantle:1.12-1.3.3.43"
-	compileOnly "vazkii.botania:Botania:r1.10-361.67"
-	compileOnly "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80"
+	integrationMod "appeng:appliedenergistics2:rv6-stable-6"
+	integrationMod "codechicken:ChickenASM:1.12-1.0.2.9"
+	integrationMod "codechicken:CodeChickenLib:1.12.2-3.2.2.354:universal"
+	integrationMod("codechicken:ForgeMultipart:1.12.2-2.6.1.81:universal") { exclude group: "codechicken" }
+	integrationMod "cofh:CoFHCore:1.12.2-4.6.2.25:universal"
+	integrationMod "cofh:RedstoneFlux:1.12-2.1.0.7:universal"
+	integrationMod "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
+	integrationMod "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
+	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
+	integrationMod ("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
+	integrationMod  "com.enderio.core:EnderCore:1.12.2-0.5.51"
+	integrationMod("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
+	integrationMod("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
+	integrationMod("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
+	integrationMod "com.mod-buildcraft:buildcraft-all:7.99.22"
+	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80"
+	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
+	integrationMod "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
+	integrationMod "net.industrial-craft:industrialcraft-2:2.8.111-ex112"
+	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.383:api"
+	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.383"
+	integrationMod "refinedstorage:refinedstorage:1.6.13-364"
+	integrationMod "slimeknights:TConstruct:1.12.2-2.12.0.116"
+	integrationMod "slimeknights.mantle:Mantle:1.12-1.3.3.43"
+	integrationMod "vazkii.botania:Botania:r1.10-361.67"
 
 	// All the Curse mods
-	compileOnly "baubles:Baubles:1.12:1.5.2"
-	compileOnly "storage-drawers:StorageDrawers:1.12.2:5.3.8"
-	compileOnly "chameleon:Chameleon:1.12:4.1.3"
-	compileOnly "blockcraftery:blockcraftery:1.12.2:1.2.0"
-	compileOnly "mysticallib:mysticallib:1.12.2:1.1.1"
-	compileOnly "roost:roost:1.12:1.3.0"
-	compileOnly "chickens:chickens:6.0.4"
-	compileOnly "hatchery:hatchery:1.12.2:2.2.1"
+	integrationMod "baubles:Baubles:1.12:1.5.2"
+	integrationMod "storage-drawers:StorageDrawers:1.12.2:5.3.8"
+	integrationMod "chameleon:Chameleon:1.12:4.1.3"
+	integrationMod "blockcraftery:blockcraftery:1.12.2:1.2.0"
+	integrationMod "mysticallib:mysticallib:1.12.2:1.1.1"
+	integrationMod "roost:roost:1.12:1.3.0"
+	integrationMod "chickens:chickens:6.0.4"
+	integrationMod "hatchery:hatchery:1.12.2:2.2.1"
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
@@ -145,7 +151,7 @@ gradle.projectsEvaluated {
 // Not quite ready for common usage, but helped a lot in checking stuff
 // compileJava { options.compilerArgs << "-Xplugin:ForgeLint" }
 
-// Added for mods that have per-player data, e.g. Astral Sorcery 
+// Added for mods that have per-player data, e.g. Astral Sorcery
 runClient {
 	args '--username', 'PlethoraDev'
 }
