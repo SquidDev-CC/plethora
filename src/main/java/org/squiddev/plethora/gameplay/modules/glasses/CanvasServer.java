@@ -171,6 +171,6 @@ public final class CanvasServer implements ConstantReference<CanvasServer>, IAtt
 	 * @param baseObject@return The resulting reference.
 	 */
 	public <T extends BaseObject> IReference<T> reference(T baseObject) {
-		return new BaseObjectReference(this, baseObject);
+		return new BaseObjectReference<>(this, baseObject);
 	}
 }
