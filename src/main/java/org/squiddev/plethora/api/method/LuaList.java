@@ -22,11 +22,9 @@ public class LuaList<T> {
 
 	/**
 	 * Creates a {@link Collector} that produces a {@link LuaList}.
-	 *
-	 * @deprecated Prefer {@link LuaList#of(Collection, Function)}
+	 * Prefer {@link LuaList#of(Collection, Function)}
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Deprecated
 	public static <T> Collector<T, ?, LuaList<T>> toLuaList() {
 		return (Collector) COLLECTOR;
 	}

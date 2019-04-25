@@ -66,7 +66,7 @@ public final class IntegrationAstralSorcery {
 	) {
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull CrystalProperties props ) {
+		public Map<String, ?> getMeta(@Nonnull CrystalProperties props) {
 			Map<String, Object> out = new HashMap<>(4);
 
 			out.put("cutting", props.getCollectiveCapability());
@@ -93,7 +93,7 @@ public final class IntegrationAstralSorcery {
 
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IConstellation context ) {
+		public Map<String, ?> getMeta(@Nonnull IConstellation context) {
 			Map<String, Object> out = new HashMap<>(8);
 
 			String translationKey = context.getUnlocalizedName();
@@ -131,7 +131,7 @@ public final class IntegrationAstralSorcery {
 
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context ) {
+		public Map<String, ?> getMeta(@Nonnull IPartialContext<AmuletEnchantment> context) {
 			Map<String, Object> out = new HashMap<>(4);
 			AmuletEnchantment target = context.getTarget();
 
@@ -152,12 +152,6 @@ public final class IntegrationAstralSorcery {
 			out.put("bonusLevel", target.getLevelAddition());
 
 			return out;
-		}
-
-		@Nullable
-		@Override
-		public AmuletEnchantment getExample() {
-			return null;
 		}
 	};
 

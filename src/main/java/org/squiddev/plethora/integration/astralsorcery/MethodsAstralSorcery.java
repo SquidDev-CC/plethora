@@ -16,17 +16,14 @@ import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class MethodsAstralSorcery {
 	private MethodsAstralSorcery() {
@@ -40,7 +37,7 @@ public final class MethodsAstralSorcery {
 		modId = AstralSorcery.MODID,
 		doc = "-- Get a list of all Celestial Gateways, grouped by dimension"
 	)
-	public static Map<String, ?> getGateways(@Nonnull IContext<TileCelestialGateway> context ) {
+	public static Map<String, ?> getGateways(@FromTarget TileCelestialGateway gateway) {
 		Map<Integer, List<GatewayCache.GatewayNode>> nodesByDimension = CelestialGatewaySystem.instance.getGatewayCache(Side.SERVER);
 		Map<String, Object> fullOut = new HashMap<>(nodesByDimension.size());
 
@@ -83,14 +80,10 @@ public final class MethodsAstralSorcery {
 		PlayerProgress progress = ResearchManager.getProgress(player);
 
 		//Refers to the constellations that you have seen on a paper
-		//REFINE This is a bit of a kludge, even extracting the lambda to a separate method;
-		// `getSeenConstellations` returns the unlocalized name(s),
-		// so we have to do a lookup if we intend to expose the meta...
-		out.put("seenConstellations", LuaList.of(progress.getSeenConstellations(), c -> getConstellationMeta(context, c)).asMap());
+		out.put("seenConstellations", getConstellationMeta(context, progress.getSeenConstellations()));
 
 		//Refers to the constellations that you have discovered via telescope, after seeing them on a paper
-		//REFINE Same issue as the "seenConstellations"
-		out.put("knownConstellations", LuaList.of(progress.getKnownConstellations(), c -> getConstellationMeta(context, c)).asMap());
+		out.put("knownConstellations", getConstellationMeta(context, progress.getKnownConstellations()));
 
 		out.put("availablePerkPoints", progress.getAvailablePerkPoints(player));
 
@@ -114,10 +107,13 @@ public final class MethodsAstralSorcery {
 		return out;
 	}
 
-	//Minor method, attempting to help code readability; debatable effectiveness
-	@Nullable
-	private static TypedMeta<IConstellation, ?> getConstellationMeta(IContext<?> context, String translationKey){
-		IConstellation constellation = ConstellationRegistry.getConstellationByName(translationKey);
-		return constellation != null ? context.makePartialChild(constellation).getMeta() : null;
+	@Nonnull
+	private static Map<Integer, TypedMeta<IConstellation, ?>> getConstellationMeta(IContext<?> context, Collection<String> translationKeys) {
+		LuaList<TypedMeta<IConstellation, ?>> out = new LuaList<>(translationKeys.size());
+		for (String translationKey : translationKeys) {
+			IConstellation constellation = ConstellationRegistry.getConstellationByName(translationKey);
+			if (constellation != null) out.add(context.makePartialChild(constellation).getMeta());
+		}
+		return out.asMap();
 	}
 }

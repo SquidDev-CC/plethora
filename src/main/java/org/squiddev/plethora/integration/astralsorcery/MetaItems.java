@@ -2,7 +2,6 @@ package org.squiddev.plethora.integration.astralsorcery;
 
 import hellfirepvp.astralsorcery.AstralSorcery;
 import hellfirepvp.astralsorcery.common.constellation.IConstellation;
-import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import hellfirepvp.astralsorcery.common.constellation.starmap.ActiveStarMap;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletEnchantment;
 import hellfirepvp.astralsorcery.common.item.ItemColoredLens;
@@ -30,6 +29,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
+import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
 import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.utils.Helpers;
@@ -132,14 +132,14 @@ public final class MetaItems {
 	};
 
 
-	public static final IMetaProvider<ItemStack> META_SKY_RESONATOR = new ItemStackContextMetaProvider<ItemSkyResonator>(
+	public static final IMetaProvider<ItemStack> META_SKY_RESONATOR = new ItemStackMetaProvider<ItemSkyResonator>(
 		ItemSkyResonator.class,
 		"Provides the available modes for a Resonator"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSkyResonator item) {
-			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(context.getTarget());
+		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemSkyResonator item) {
+			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(stack);
 			LuaList<Map<String, String>> modesOut = new LuaList<>(modes.size());
 
 			for (ItemSkyResonator.ResonatorUpgrade mode : modes) {
@@ -166,17 +166,17 @@ public final class MetaItems {
 		}
 	};
 
-	public static final IMetaProvider<ItemStack> META_COLORED_LENS = new ItemStackContextMetaProvider<ItemColoredLens>(
+	public static final IMetaProvider<ItemStack> META_COLORED_LENS = new ItemStackMetaProvider<ItemColoredLens>(
 		ItemColoredLens.class,
 		"Provides the color of a lens"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemColoredLens item) {
+		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemColoredLens item) {
 			// ... yay for the lack of a native reverse lookup or conversion based on the ordinal...
 			// (e.g. casting `int` to enum or a `TryParse` type method...)
 			ItemColoredLens.ColorType[] colors = ItemColoredLens.ColorType.values();
-			int meta = context.getTarget().getMetadata();
+			int meta = stack.getMetadata();
 
 			// Didn't find a concise yet readable format I liked, so a comment it is!
 			// Basically, run a bounds check, then get the name of the enum if in bounds
@@ -253,14 +253,14 @@ public final class MetaItems {
 		}
 	};
 
-	public static final IMetaProvider<ItemStack> META_ILLUMINATION_WAND = new ItemStackContextMetaProvider<ItemIlluminationWand>(
+	public static final IMetaProvider<ItemStack> META_ILLUMINATION_WAND = new ItemStackMetaProvider<ItemIlluminationWand>(
 		ItemIlluminationWand.class,
 		"Provides the color of flares placed by an Illumination Wand"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemIlluminationWand item) {
-			EnumDyeColor color = ItemIlluminationWand.getConfiguredColor(context.getTarget());
+		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemIlluminationWand item) {
+			EnumDyeColor color = ItemIlluminationWand.getConfiguredColor(stack);
 			if (color == null) return Collections.emptyMap();
 
 			Map<String, Object> out = new HashMap<>(2);
@@ -332,15 +332,13 @@ public final class MetaItems {
 		}
 	};
 
-	public static final IMetaProvider<ItemStack> META_SEXTANT = new ItemStackContextMetaProvider<ItemSextant>(
+	public static final IMetaProvider<ItemStack> META_SEXTANT = new ItemStackMetaProvider<ItemSextant>(
 		ItemSextant.class,
 		"Provides the active target of a Sextant, and whether the Sextant is augmented"
 	) {
 		@Nonnull
 		@Override
-		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemSextant item) {
-			ItemStack stack = context.getTarget();
-
+		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemSextant item) {
 			Map<String, Object> out = new HashMap<>(2);
 
 			out.put("augmented", ItemSextant.isAdvanced(stack));
