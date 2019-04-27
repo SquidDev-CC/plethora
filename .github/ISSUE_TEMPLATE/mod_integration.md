@@ -1,8 +1,7 @@
 ---
 name: Mod integration 
 about: Suggest an integration for a mod
-labels: enhancement, "mod-integration"
-assignees: 'Nerdpie'
+labels: enhancement, integration
 
 ---
 
