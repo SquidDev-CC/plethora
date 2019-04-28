@@ -11,9 +11,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.squiddev.plethora.api.method.MethodResult;
-import org.squiddev.plethora.api.method.wrapper.FromTarget;
-import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
@@ -22,7 +19,7 @@ import org.squiddev.plethora.utils.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 
-public class Line3D extends ColourableObject implements Positionable3D, DepthTestable, Scalable {
+public class Line3D extends ColourableObject implements MultiPoint3D, DepthTestable, Scalable {
 	private Vec3d start;
 	private Vec3d end;
 
@@ -31,6 +28,44 @@ public class Line3D extends ColourableObject implements Positionable3D, DepthTes
 
 	public Line3D(int id, int parent) {
 		super(id, parent, ObjectRegistry.LINE_3D);
+	}
+
+	@Nonnull
+	@Override
+	public Vec3d getPoint(int idx) {
+		switch (idx) {
+			case 0:
+				return start;
+			case 1:
+				return end;
+			default:
+				throw new IndexOutOfBoundsException("No vertex #" + idx);
+		}
+	}
+
+	@Override
+	public void setVertex(int idx, @Nonnull Vec3d point) {
+		switch (idx) {
+			case 0:
+				if (!Objects.equal(start, point)) {
+					start = point;
+					setDirty();
+				}
+				break;
+			case 1:
+				if (!Objects.equal(end, point)) {
+					end = point;
+					setDirty();
+				}
+				break;
+			default:
+				throw new IndexOutOfBoundsException("No vertex #" + idx);
+		}
+	}
+
+	@Override
+	public int getVertices() {
+		return 2;
 	}
 
 	@Override
@@ -90,42 +125,6 @@ public class Line3D extends ColourableObject implements Positionable3D, DepthTes
 		end = ByteBufUtils.readVec3d(buf);
 		thickness = buf.readFloat();
 		depthTest = buf.readBoolean();
-	}
-
-	@Nonnull
-	@Override
-	public Vec3d getPosition() {
-		return start;
-	}
-
-	@Nonnull
-	public Vec3d getEndPosition() {
-		return end;
-	}
-
-	@Override
-	public void setPosition(@Nonnull Vec3d position) {
-		if (!Objects.equal(this.start, position)) {
-			this.start = position;
-			setDirty();
-		}
-	}
-
-	public void setEndPosition(@Nonnull Vec3d position) {
-		if (!Objects.equal(this.end, position)) {
-			this.end = position;
-			setDirty();
-		}
-	}
-
-	@PlethoraMethod(doc = "function():number, number, number -- Get the end position of this line.", worldThread = false)
-	public static MethodResult getEndPosition(@FromTarget Line3D line) {
-		return MethodResult.result(line.end.x, line.end.y, line.end.z);
-	}
-
-	@PlethoraMethod(doc = "function(endX:number, endY:number, endZ:number) -- Set the end position of this line.", worldThread = false)
-	public static void setEndPosition(@FromTarget Line3D line, float endX, float endY, float endZ) {
-		line.setEndPosition(new Vec3d(endX, endY, endZ));
 	}
 
 	@Override

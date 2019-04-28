@@ -86,9 +86,7 @@ public final class MethodsCanvas3D {
 		return baked.makeChild(box, canvas.reference(box)).getObject();
 	}
 
-	@PlethoraMethod(worldThread = false,
-		doc = "-- Create a new line."
-	)
+	@PlethoraMethod(doc = "-- Create a new line.", worldThread = false)
 	public static TypedLuaObject<Line3D> addLine(
 		IContext<Group3D> baked, @FromContext CanvasServer canvas,
 		Vec3d start, Vec3d end,
@@ -97,8 +95,8 @@ public final class MethodsCanvas3D {
 		Group3D group = baked.getTarget();
 
 		Line3D line = new Line3D(canvas.newObjectId(), group.id());
-		line.setPosition(start);
-		line.setEndPosition(end);
+		line.setVertex(0, start);
+		line.setVertex(1, end);
 		line.setScale(thickness);
 		line.setColour(colour);
 
