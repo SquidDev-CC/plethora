@@ -4,10 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Box;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Item3D;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectFrame;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoot3D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.*;
 
 public final class ObjectRegistry {
 	public static final byte RECTANGLE_2D = 0;
@@ -24,6 +21,7 @@ public final class ObjectRegistry {
 	public static final byte FRAME_3D = 10;
 	public static final byte BOX_3D = 11;
 	public static final byte ITEM_3D = 12;
+	public static final byte LINE_3D = 13;
 
 	private static final BaseObject.Factory[] FACTORIES = new BaseObject.Factory[]{
 		Rectangle::new,
@@ -40,6 +38,7 @@ public final class ObjectRegistry {
 		ObjectFrame::new,
 		Box::new,
 		Item3D::new,
+		Line3D::new
 	};
 
 	private ObjectRegistry() {
