@@ -110,7 +110,7 @@ public class Line3D extends ColourableObject implements Positionable3D, DepthTes
 			setDirty();
 		}
 	}
-	
+
 	public void setEndPosition(@Nonnull Vec3d position) {
 		if (!Objects.equal(this.end, position)) {
 			this.end = position;

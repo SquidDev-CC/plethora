@@ -89,23 +89,16 @@ public final class MethodsCanvas3D {
 	@PlethoraMethod(worldThread = false,
 		doc = "function(startX:number, startY:number, startZ:number, endX:number, endY:number, endZ:number[, thickness:number, color:number] -- Create a new line."
 	)
-	public static TypedLuaObject<Line3D> addLine(IContext<Group3D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
-		double startX = getFloat(args, 0);
-		double startY = getFloat(args, 1);
-		double startZ = getFloat(args, 2);
-
-		double endX = getFloat(args, 3);
-		double endY = getFloat(args, 4);
-		double endZ = getFloat(args, 5);
-
-		float thickness = optFloat(args, 6, 1.0f);
-		int colour = optInt(args, 7, DEFAULT_COLOUR);
-
+	public static TypedLuaObject<Line3D> addLine(
+		IContext<Group3D> baked, @FromContext CanvasServer canvas,
+		Vec3d start, Vec3d end,
+		@Optional(defDoub = 1.0f) float thickness, @Optional(defInt = DEFAULT_COLOUR) int colour
+	) {
 		Group3D group = baked.getTarget();
 
 		Line3D line = new Line3D(canvas.newObjectId(), group.id());
-		line.setPosition(new Vec3d(startX, startY, startZ));
-		line.setEndPosition(new Vec3d(endX, endY, endZ));
+		line.setPosition(start);
+		line.setEndPosition(end);
 		line.setScale(thickness);
 		line.setColour(colour);
 
