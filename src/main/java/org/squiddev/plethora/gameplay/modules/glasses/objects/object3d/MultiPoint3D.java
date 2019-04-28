@@ -21,7 +21,7 @@ public interface MultiPoint3D {
 
 	int getVertices();
 
-	@PlethoraMethod(doc = "function(idx:int):number, number -- Get the specified vertex of this object.", worldThread = false)
+	@PlethoraMethod(doc = "function(idx:int):number, number, number -- Get the specified vertex of this object.", worldThread = false)
 	static MethodResult getPoint(@FromTarget MultiPoint3D object, int idx) throws LuaException {
 		assertBetween(idx, 1, object.getVertices(), "Index out of range (%s)");
 
