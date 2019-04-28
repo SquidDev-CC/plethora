@@ -14,13 +14,11 @@ import org.squiddev.plethora.gameplay.modules.glasses.CanvasServer;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Origin3D;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Box;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.Item3D;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectFrame;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.ObjectRoot3D;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
+import static org.squiddev.plethora.api.method.ArgumentHelper.optFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
 public final class MethodsCanvas3D {
@@ -86,6 +84,25 @@ public final class MethodsCanvas3D {
 		canvas.add(box);
 
 		return baked.makeChild(box, canvas.reference(box)).getObject();
+	}
+
+	@PlethoraMethod(doc = "-- Create a new line.", worldThread = false)
+	public static TypedLuaObject<Line3D> addLine(
+		IContext<Group3D> baked, @FromContext CanvasServer canvas,
+		Vec3d start, Vec3d end,
+		@Optional(defDoub = 1.0f) float thickness, @Optional(defInt = DEFAULT_COLOUR) int colour
+	) {
+		Group3D group = baked.getTarget();
+
+		Line3D line = new Line3D(canvas.newObjectId(), group.id());
+		line.setVertex(0, start);
+		line.setVertex(1, end);
+		line.setScale(thickness);
+		line.setColour(colour);
+
+		canvas.add(line);
+
+		return baked.makeChild(line, canvas.reference(line)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a item model.", worldThread = false)
