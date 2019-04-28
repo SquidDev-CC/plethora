@@ -87,7 +87,7 @@ public final class MethodsCanvas3D {
 	}
 
 	@PlethoraMethod(worldThread = false,
-		doc = "function(startX:number, startY:number, startZ:number, endX:number, endY:number, endZ:number[, thickness:number, color:number] -- Create a new line."
+		doc = "-- Create a new line."
 	)
 	public static TypedLuaObject<Line3D> addLine(
 		IContext<Group3D> baked, @FromContext CanvasServer canvas,
