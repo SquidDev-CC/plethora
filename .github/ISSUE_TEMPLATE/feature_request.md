@@ -12,4 +12,4 @@ labels: enhancement
 
 ## Useful information to include:
  - Explanation of how the feature/change should work.
- - Some rationale/use case for a feature. I'd like to keep Plethora as minimal as possible, so I like have a solid justification for each feature.
+ - Some rationale/use case for a feature. Everything takes time to implement, so I like to have a solid justification for each feature.

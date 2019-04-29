@@ -14,4 +14,4 @@ labels: enhancement, integration
 ## Useful information to include:
  - Explanation of how the feature/change should work.
  - Some rationale/use case for a feature. I'd like to keep Plethora as minimal as possible, so I like to have a solid justification for each feature.
- - Detailed use cases, possibly with pseudo-code, can improve the chances of your suggestion being implemented.
+ - Detailed use cases, possibly with example code help make it easier to see the sort of things you'd like to interact with.  This makes it much easier to implement your suggestion!
