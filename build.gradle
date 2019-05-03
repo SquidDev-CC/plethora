@@ -49,6 +49,8 @@ jar {
 configurations {
 	integrationMod
 	compileOnly.extendsFrom integrationMod
+	testCompile.extendsFrom integrationMod
+	testCompile.extendsFrom forgeGradleGradleStart
 }
 
 repositories {
@@ -88,24 +90,24 @@ dependencies {
 	integrationMod "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
 	integrationMod "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
 	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
-	integrationMod ("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
-	integrationMod  "com.enderio.core:EnderCore:1.12.2-0.5.51"
+	compileOnly   ("com.enderio:EnderIO:1.12.2-5.0.43") { transitive = false }
+	compileOnly    "com.enderio.core:EnderCore:1.12.2-0.5.57" // EnderCore appears to crash in a development environment.
 	//FIXME Revert these to `integrationMod` before merging
-	compile("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
-	compile("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
+	compile("com.github.mcjty:mcjtylib:1.12-3.5.0") { transitive = false }
+	compile("com.github.mcjty:rftools:1.12-7.70") { transitive = false }
 	compile("mcjty.rftoolsctrl:rftoolsctrl:1.12-1.9.1") { transitive = false }
-	compile("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
+	compile("com.github.mcjty:xnet:1.12-1.8.0") { transitive = false }
 	integrationMod "com.mod-buildcraft:buildcraft-all:7.99.22"
-	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80"
-	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
+	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.18-v129"
+	integrationMod "MCMultiPart2:MCMultiPart:2.5.4"
 	integrationMod "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
-	integrationMod "net.industrial-craft:industrialcraft-2:2.8.111-ex112"
-	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.383:api"
-	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.383"
+	integrationMod "net.industrial-craft:industrialcraft-2:2.8.146-ex112"
+	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.387:api"
+	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.387"
 	integrationMod "refinedstorage:refinedstorage:1.6.13-364"
 	integrationMod "slimeknights:TConstruct:1.12.2-2.12.0.116"
-	integrationMod "slimeknights.mantle:Mantle:1.12-1.3.3.43"
-	integrationMod "vazkii.botania:Botania:r1.10-361.67"
+	integrationMod "slimeknights.mantle:Mantle:1.12-1.3.3.51"
+	integrationMod "vazkii.botania:Botania:r1.10-362.77"
 
 	// All the Curse mods
 	integrationMod "baubles:Baubles:1.12:1.5.2"
@@ -170,7 +172,15 @@ curseforge {
 		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
 
 		 relations {
-			 requiredLibrary 'cctweaked'
+			 requiredLibrary 'cc-tweaked'
 		 }
 	}
+}
+
+task runTestServer(type: JavaExec) {
+  classpath = sourceSets.test.runtimeClasspath
+  main = "org.squiddev.plethora.boostrap.LaunchServer"
+  workingDir = "${project.projectDir}/test-files/server"
+
+  workingDir.mkdirs()
 }

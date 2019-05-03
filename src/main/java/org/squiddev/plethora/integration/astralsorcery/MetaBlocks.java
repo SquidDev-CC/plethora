@@ -171,7 +171,7 @@ public final class MetaBlocks {
 			Map<String, Object> out = new HashMap<>(2);
 			TileRitualPedestal target = context.getTarget();
 
-			out.put("focus", context.makePartialChild(target.getInventoryHandler().getStackInSlot(0)).getMeta());
+			out.put("focus", context.makePartialChild(target.getCatalystCache()).getMeta());
 
 			//Ritual constellation(s) provided by the crystal's meta
 

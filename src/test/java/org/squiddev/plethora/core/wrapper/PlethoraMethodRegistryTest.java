@@ -57,9 +57,9 @@ public class PlethoraMethodRegistryTest {
 		Method method = MethodsVanillaTileEntities.class.getMethod("getSignText", TileEntitySign.class);
 		assertTrue(PlethoraMethodRegistry.add(method));
 
-		TileEntitySign furnace = new TileEntitySign();
+		TileEntitySign sign = new TileEntitySign();
 		TypedLuaObject<TileEntitySign> object = ContextFactory
-			.of(furnace, id(furnace))
+			.of(sign, id(sign))
 			.withExecutor(BasicExecutor.INSTANCE)
 			.getObject();
 
