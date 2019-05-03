@@ -105,6 +105,20 @@ pre.highlight {
 	.kc { color: $base0D; }
 }
 
+/* Meta toggling */
+.nested-meta {
+	& > .nested-meta-short { cursor: pointer; }
+	& > .nested-meta-long { display: none }
+
+	&.active > .nested-meta-short { opacity: 0.5; }
+	&.active > .nested-meta-long { display: inline; }
+}
+
+/* More fancy metadata */
+.meta-brace { display: inline-block; }
+.meta-map.focus > .meta-brace { background: #eee; }
+
+
 em { font-style: italic; }
 strong { font-weight: bold; }
 
