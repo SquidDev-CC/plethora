@@ -90,9 +90,11 @@ dependencies {
 	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
 	integrationMod ("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
 	integrationMod  "com.enderio.core:EnderCore:1.12.2-0.5.51"
-	integrationMod("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
-	integrationMod("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
-	integrationMod("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
+	//FIXME Revert these to `integrationMod` before merging
+	compile("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
+	compile("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
+	compile("mcjty.rftoolsctrl:rftoolsctrl:1.12-1.9.1") { transitive = false }
+	compile("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
 	integrationMod "com.mod-buildcraft:buildcraft-all:7.99.22"
 	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.12-v80"
 	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
@@ -114,6 +116,9 @@ dependencies {
 	integrationMod "roost:roost:1.12:1.3.0"
 	integrationMod "chickens:chickens:6.0.4"
 	integrationMod "hatchery:hatchery:1.12.2:2.2.1"
+	//FIXME Switch to `integrationMod` before merging
+	//TODO See if this is available via the k-4u.nl Maven repo
+	compile("rftools-dimensions:rftoolsdim:1.12:5.64") { transitive = false }
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
