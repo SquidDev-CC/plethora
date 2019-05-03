@@ -167,7 +167,7 @@ curseforge {
 		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
 
 		 relations {
-			 requiredLibrary 'cctweaked'
+			 requiredLibrary 'cc-tweaked'
 		 }
 	}
 }
