@@ -49,6 +49,8 @@ jar {
 configurations {
 	integrationMod
 	compileOnly.extendsFrom integrationMod
+	testCompile.extendsFrom integrationMod
+	testCompile.extendsFrom forgeGradleGradleStart
 }
 
 repositories {
@@ -88,8 +90,8 @@ dependencies {
 	integrationMod "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
 	integrationMod "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
 	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
-	integrationMod ("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
-	integrationMod  "com.enderio.core:EnderCore:1.12.2-0.5.51"
+	compileOnly   ("com.enderio:EnderIO:1.12.2-5.0.40") { transitive = false }
+	compileOnly    "com.enderio.core:EnderCore:1.12.2-0.5.51" // EnderCore appears to crash in a development environment.
 	integrationMod("com.github.mcjty:mcjtylib:1.12-3.1.1") { transitive = false }
 	integrationMod("com.github.mcjty:rftools:1.12-7.60") { transitive = false }
 	integrationMod("com.github.mcjty:xnet:1.12-1.7.6_beta2") { transitive = false }
