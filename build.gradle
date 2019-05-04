@@ -55,7 +55,6 @@ configurations {
 
 repositories {
 	jcenter()
-	mavenLocal()
 
 	maven { url 'http://chickenbones.net/maven/' } // CBMP
 	maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's
@@ -97,7 +96,7 @@ dependencies {
 	integrationMod("com.github.mcjty:xnet:1.12-1.8.0") { transitive = false }
 	integrationMod "com.mod-buildcraft:buildcraft-all:7.99.22"
 	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.18-v129"
-	integrationMod "MCMultiPart2:MCMultiPart:2.5.4"
+	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
 	integrationMod "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
 	integrationMod "net.industrial-craft:industrialcraft-2:2.8.146-ex112"
 	integrationMod "net.sengir.forestry:forestry_1.12.2:5.8.2.387:api"
