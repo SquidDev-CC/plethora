@@ -9,4 +9,21 @@ public final class IntegrationRFTools {
 	}
 
 
+	/*
+	 *RFTools
+	 *
+	 *
+	 *
+	 *Control
+	 *
+	 *
+	 *
+	 *Dimensions
+	 * We could use IMC to get the Dimension Manager, a la `rftools.setup.ModSetup`,
+	 * reference RFTools' field, or just instantiate it ourselves (less flexible...)
+	 *
+	 *
+	 *
+	 */
+
 }
