@@ -91,9 +91,11 @@ dependencies {
 	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
 	compileOnly   ("com.enderio:EnderIO:1.12.2-5.0.43") { transitive = false }
 	compileOnly    "com.enderio.core:EnderCore:1.12.2-0.5.57" // EnderCore appears to crash in a development environment.
-	integrationMod("com.github.mcjty:mcjtylib:1.12-3.5.0") { transitive = false }
-	integrationMod("com.github.mcjty:rftools:1.12-7.70") { transitive = false }
-	integrationMod("com.github.mcjty:xnet:1.12-1.8.0") { transitive = false }
+	//FIXME Revert these to `integrationMod` before merging
+	deobfCompile("com.github.mcjty:mcjtylib:1.12-3.5.0") { transitive = false }
+	deobfCompile("com.github.mcjty:rftools:1.12-7.70") { transitive = false }
+	deobfCompile("mcjty.rftoolsctrl:rftoolsctrl:1.12-2.0.1") { transitive = false }
+	deobfCompile("com.github.mcjty:xnet:1.12-1.8.0") { transitive = false }
 	integrationMod "com.mod-buildcraft:buildcraft-all:7.99.22"
 	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.18-v129"
 	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
@@ -115,6 +117,9 @@ dependencies {
 	integrationMod "roost:roost:1.12:1.3.0"
 	integrationMod "chickens:chickens:6.0.4"
 	integrationMod "hatchery:hatchery:1.12.2:2.2.1"
+	//FIXME Switch to `integrationMod` before merging
+	//TODO See if this is available via the k-4u.nl Maven repo
+	deobfCompile("rftools-dimensions:rftoolsdim:1.12:5.70") { transitive = false }
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
