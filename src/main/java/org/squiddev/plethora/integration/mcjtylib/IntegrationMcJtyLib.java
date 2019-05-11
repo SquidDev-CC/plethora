@@ -15,7 +15,6 @@ import org.squiddev.plethora.utils.EntityPlayerDummy;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,25 +34,23 @@ public final class IntegrationMcJtyLib {
 		@Nonnull
 		@Override
 		public Map<String, ?> getMeta(@Nonnull GenericTileEntity context) {
-			Map<String, Object> out = new HashMap<>(5);
+			Map<String, Object> out = new HashMap<>(4);
 
 			if (GeneralConfig.manageOwnership) {
-				//TODO Do we want to expose the UUID, if set, regardless of the owner's name?
-				// That is, how closely do we want to mimic the results of `mcjty.lib.tileentity.GenericTileEntity.addProbeInfo`
 				String ownerName = context.getOwnerName();
-				if (ownerName != null && !ownerName.isEmpty()) out.put("ownerName", ownerName);
+				UUID ownerID = context.getOwnerUUID();
+				if (ownerName != null && !ownerName.isEmpty() && ownerID != null) {
+					Map<String, Object> ownerMap = new HashMap<>(2);
+					ownerMap.put("name", ownerName);
+					ownerMap.put("id", ownerID.toString());
+					out.put("owner", ownerMap);
 
-				UUID owner = context.getOwnerUUID();
-				if (owner != null) out.put("ownerUUID", owner.toString());
-
-				int securityChannel = context.getSecurityChannel();
-				if (securityChannel != -1) out.put("securityChannel", securityChannel);
+					int securityChannel = context.getSecurityChannel();
+					if (securityChannel != -1) out.put("securityChannel", securityChannel);
+				}
 			}
 
 			out.put("infusion", context.getInfused());
-
-			//REFINE Do we want to provide the max infusion on each `GenericTileEntity`,
-			// provide it via a method, or provide `getInfusedFactor` as a percentage?
 			out.put("infusionMax", GeneralConfig.maxInfuse);
 
 			return out;
@@ -80,32 +77,33 @@ public final class IntegrationMcJtyLib {
 			NBTTagCompound nbt = stack.getTagCompound();
 			if (nbt == null) return Collections.emptyMap();
 
-			Map<String, Object> out = new HashMap<>(6);
+			Map<String, Object> out = new HashMap<>(5);
 
-			if (GeneralConfig.manageOwnership) {
-				//TODO Do we want to expose the UUID, if set, regardless of the owner's name?
-				// That is, how closely do we want to mimic the results of `mcjty.lib.tileentity.GenericBlock.intAddInformation`
-				if (nbt.hasKey("owner", Constants.NBT.TAG_STRING)) out.put("ownerName", nbt.getString("owner"));
+			if (GeneralConfig.manageOwnership && nbt.hasKey("owner", Constants.NBT.TAG_STRING)) {
+				String ownerName = nbt.getString("owner");
+				if (!ownerName.isEmpty() && nbt.hasKey("idM", Constants.NBT.TAG_LONG) && nbt.hasKey("idL", Constants.NBT.TAG_LONG)) {
+					Map<String, Object> ownerMap = new HashMap<>(2);
+					ownerMap.put("name", ownerName);
 
-				if (nbt.hasKey("idM", Constants.NBT.TAG_LONG) && nbt.hasKey("idL", Constants.NBT.TAG_LONG)) {
-					UUID owner = new UUID(nbt.getLong("idM"), nbt.getLong("idL"));
-					out.put("ownerUUID", owner.toString());
-				}
+					UUID ownerID = new UUID(nbt.getLong("idM"), nbt.getLong("idL"));
+					ownerMap.put("id", ownerID.toString());
 
-				if (nbt.hasKey("secChannel", Constants.NBT.TAG_INT)) {
-					int securityChannel = nbt.getInteger("secChannel");
-					if (securityChannel != -1) out.put("securityChannel", securityChannel);
+					out.put("owner", ownerMap);
+
+					if (nbt.hasKey("secChannel", Constants.NBT.TAG_INT)) {
+						int securityChannel = nbt.getInteger("secChannel");
+						if (securityChannel != -1) out.put("securityChannel", securityChannel);
+					}
 				}
 			}
 
 			if (nbt.hasKey("Energy", Constants.NBT.TAG_LONG)) out.put("energy", nbt.getLong("Energy"));
 
+			//TODO Find a way to only add the 'infused' properties to ItemBlocks that can actually be infused
 			//Unfortunately, `mcjty.lib.blocks.GenericItemBlock` doesn't expose the base Block,
 			// so we can't call `isInfusable`; this results in the 'infusion level' showing on ItemBlocks
 			// that can't be infused...
 			if (nbt.hasKey("infused", Constants.NBT.TAG_INT)) out.put("infusion", nbt.getInteger("infusion"));
-
-			//REFINE See task in META_GENERIC_TILE
 			out.put("infusionMax", GeneralConfig.maxInfuse);
 
 			return out;

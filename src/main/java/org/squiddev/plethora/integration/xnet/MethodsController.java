@@ -8,17 +8,20 @@ import mcjty.xnet.blocks.cables.ConnectorTileEntity;
 import mcjty.xnet.blocks.controller.TileEntityController;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.api.method.wrapper.FromContext;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.integration.vanilla.meta.MetaBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,20 +66,20 @@ public final class MethodsController {
 	// This block is intended to simplify adapting the code from the OC XNet Driver mod,
 	// and may be removed at a later time.
 
-	//TODO Do we need this?  This was a configuration setting in OC XNet Driver
-	private static final boolean relativePositions = false;
-
-	//TODO File an issue with OC XNet Driver; they had the same check for `toRelative` and `toAbsolute`
-	private static BlockPos toRelative(BlockPos pos, BlockPos controllerPos) {
-		return relativePositions
-			? pos
-			: pos.add(-controllerPos.getX(), -controllerPos.getY(), -controllerPos.getZ());
+	/**
+	 * Converts the internal absolute coords into user-facing relative coords
+	 */
+	@Nonnull
+	private static BlockPos toRelative(@Nonnull BlockPos pos, @Nonnull BlockPos controllerPos) {
+		return pos.subtract(controllerPos);
 	}
 
-	private static BlockPos toAbsolute(BlockPos pos, BlockPos controllerPos) {
-		return !relativePositions
-			? pos
-			: pos.add(controllerPos.getX(), controllerPos.getY(), controllerPos.getZ());
+	/**
+	 * Converts the user's input relative coords into internal absolute coords
+	 */
+	@Nonnull
+	private static BlockPos toAbsolute(@Nonnull BlockPos pos, BlockPos controllerPos) {
+		return pos.add(controllerPos);
 	}
 
 	@Nullable
@@ -96,43 +99,58 @@ public final class MethodsController {
 		modId = XNet.MODID,
 		doc = "-- List all blocks connected to the XNet network"
 	)
-	public static Map<Integer, Object> getConnectedBlocks(@Nonnull IContext<TileEntityController> context) {
-		//REFINE Do we want to return a Tuple<boolean, ?> representing the success and result/error?
+	public static Map<Integer, Object> getConnectedBlocks(@FromTarget TileEntityController controller,
+														  @FromContext(ContextKeys.ORIGIN) IWorldLocation location) {
 		LuaList<Object> out = new LuaList<>();
-		TileEntityController controller = context.getTarget();
-
-		IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-		if (location == null) return Collections.emptyMap(); //REFINE Do I need to return an empty map for a method?
-
 		World world = location.getWorld();
 		BlockPos controllerPos = location.getPos();
 
-		for(SidedPos pos : controller.getConnectedBlockPositions()) {
+		for (SidedPos pos : controller.getConnectedBlockPositions()) {
 			Map<String, Object> inner = new HashMap<>();
 			IBlockState state = world.getBlockState(pos.getPos());
 
 			//REFINE Some of this could probably be exposed using our existing meta providers
 			inner.put("pos", toRelative(pos.getPos(), controllerPos));
 			inner.put("side", pos.getSide());
-			inner.put("name", state.getBlock().getRegistryName());
+
+			//inner.put("name", state.getBlock().getRegistryName());
+			inner.putAll(MetaBlock.getBasicMeta(state.getBlock()));
 			inner.put("meta", state.getBlock().getMetaFromState(state));
 
 			BlockPos connectorPos = pos.getPos().offset(pos.getSide());
 
-			String registryName = world.getBlockState(connectorPos).getBlock().getRegistryName().toString();
-			if(registryName.equals("xnet:advanced_connector") || registryName.equals("xnet:connector")) {
-				//TODO File issue with OC XNet Driver; they had used reflection here, rather than just using the methods...
-				TileEntity tile = world.getTileEntity(connectorPos);
-				if (tile instanceof ConnectorTileEntity) {
-					ConnectorTileEntity connectorTile = (ConnectorTileEntity) tile;
-					String connectorName = connectorTile.getConnectorName();
-					if (connectorName != null && !connectorName.isEmpty()) inner.put("connector", connectorName);
-				}
-			}
+			String connectorName = getConnectorName(world, connectorPos);
+			if (connectorName != null) inner.put("connector", connectorName);
+
 			out.add(inner);
 		}
 
 		return out.asMap();
+	}
+
+	// Extracted to try and find a cleaner structure; not much luck, as I end up with either
+	// nested if statements, or multiple returns...
+	private static String getConnectorName(World world, BlockPos connectorPos) {
+		ResourceLocation resourceLocation = world.getBlockState(connectorPos).getBlock().getRegistryName();
+		if (resourceLocation == null) {
+			return null;
+		}
+
+		String registryName = resourceLocation.toString();
+		// REFINE IDEA suggests extracting a Set from this condition, and using Set#contains
+		//  However, I'm not sure about the trade-offs; it _may_ perform better,
+		//  in exchange for increased memory overhead.
+		if ("xnet:advanced_connector".equals(registryName) || "xnet:connector".equals(registryName)) {
+			TileEntity tile = world.getTileEntity(connectorPos);
+			if (tile instanceof ConnectorTileEntity) {
+				ConnectorTileEntity connectorTile = (ConnectorTileEntity) tile;
+				String connectorName = connectorTile.getConnectorName();
+				if (connectorName != null && !connectorName.isEmpty()) {
+					return connectorName;
+				}
+			}
+		}
+		return null;
 	}
 
 
