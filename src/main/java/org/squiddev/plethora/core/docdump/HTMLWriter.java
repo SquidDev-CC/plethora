@@ -19,10 +19,8 @@ import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.WorldDummy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -46,7 +44,13 @@ public class HTMLWriter implements IDocWriter {
 		Multimap<Class<?>, IMethod<?>> methodLookup,
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
-		writer = new PrintStream(stream);
+		PrintStream writer;
+		try {
+			writer = new PrintStream(stream, false, StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+			writer = new PrintStream(stream);
+		}
+		this.writer = writer;
 		objectWriter = new HtmlObjectWriter(writer);
 
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methodLookup.entries()) {
@@ -327,7 +331,7 @@ public class HTMLWriter implements IDocWriter {
 
 		@Override
 		public void writeSpecial(String value) throws IOException {
-			classed("o", '\u00ab' + value + '\u00bb');
+			classed("o", "&laquo;" + value + "&raquo;");
 		}
 
 		@Override

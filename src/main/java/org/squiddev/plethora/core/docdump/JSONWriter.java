@@ -13,6 +13,7 @@ import org.squiddev.plethora.core.collections.SortedMultimap;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +33,7 @@ public class JSONWriter implements IDocWriter {
 		Multimap<Class<?>, IMethod<?>> methods,
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
-		writer = new JsonWriter(new OutputStreamWriter(stream));
+		writer = new JsonWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
 
 		List<DocumentedMethod> methodData = this.methodData = new ArrayList<>(methods.size());
 		for (Map.Entry<Class<?>, IMethod<?>> entry : methods.entries()) {
