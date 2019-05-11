@@ -1,11 +1,19 @@
 package org.squiddev.plethora.integration;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCommandBlock;
+import net.minecraft.block.BlockStructure;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -13,6 +21,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.MethodResult;
 
@@ -57,14 +67,14 @@ public final class PlayerInteractionHelpers {
 				// When right next to a block the hit direction gets inverted. Try both to see if one works.
 				BlockPos pos = hit.getBlockPos();
 				if (!world.isAirBlock(pos) && world.getWorldBorder().contains(pos)) {
-					float hitX = (float) hit.hitVec.x - (float) pos.getX();
-					float hitY = (float) hit.hitVec.y - (float) pos.getY();
-					float hitZ = (float) hit.hitVec.z - (float) pos.getZ();
+					float hitX = (float) hit.hitVec.x - pos.getX();
+					float hitY = (float) hit.hitVec.y - pos.getY();
+					float hitZ = (float) hit.hitVec.z - pos.getZ();
 
-					EnumActionResult result = player.interactionManager.processRightClickBlock(player, world, stack, hand, pos, hit.sideHit, hitX, hitY, hitZ);
+					EnumActionResult result = rightClickBlock(player, world, stack, hand, pos, hit.sideHit, hitX, hitY, hitZ);
 					if (result == EnumActionResult.SUCCESS) return MethodResult.result(true, "block");
 
-					result = player.interactionManager.processRightClickBlock(player, world, stack, hand, pos, hit.sideHit.getOpposite(), hitX, hitY, hitZ);
+					result = rightClickBlock(player, world, stack, hand, pos, hit.sideHit.getOpposite(), hitX, hitY, hitZ);
 					if (result == EnumActionResult.SUCCESS) return MethodResult.result(true, "block");
 				}
 			}
@@ -99,6 +109,46 @@ public final class PlayerInteractionHelpers {
 		}
 
 		return MethodResult.result(false);
+	}
+
+	/**
+	 * Modified version of processRightClickBlock, but aborts after successful block interactions (rather than
+	 * attempting to right click a block).
+	 *
+	 * @see PlayerInteractionManager#processRightClickBlock(EntityPlayer, World, ItemStack, EnumHand, BlockPos, EnumFacing, float, float, float)
+	 */
+	private static EnumActionResult rightClickBlock(EntityPlayer player, World worldIn, ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		double reachDist = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+		PlayerInteractEvent.RightClickBlock event = ForgeHooks.onRightClickBlock(player, hand, pos, facing, ForgeHooks.rayTraceEyeHitVec(player, reachDist + 1));
+		if (event.isCanceled()) return event.getCancellationResult();
+
+		if (event.getUseItem() != Event.Result.DENY) {
+			EnumActionResult result = stack.onItemUseFirst(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+			if (result != EnumActionResult.PASS) return result;
+		}
+
+		// Attempt to use on the block
+		boolean bypass = player.getHeldItemMainhand().doesSneakBypassUse(worldIn, pos, player) && player.getHeldItemOffhand().doesSneakBypassUse(worldIn, pos, player);
+		if (!player.isSneaking() || bypass || event.getUseBlock() == Event.Result.ALLOW) {
+			IBlockState state = worldIn.getBlockState(pos);
+			if (event.getUseBlock() != Event.Result.DENY && state.getBlock().onBlockActivated(worldIn, pos, state, player, hand, facing, hitX, hitY, hitZ)) {
+				return EnumActionResult.SUCCESS;
+			}
+		}
+
+		if (stack.isEmpty() || player.getCooldownTracker().hasCooldown(stack.getItem())) return EnumActionResult.PASS;
+
+		if (stack.getItem() instanceof ItemBlock && !player.canUseCommandBlock()) {
+			Block block = ((ItemBlock) stack.getItem()).getBlock();
+			if (block instanceof BlockCommandBlock || block instanceof BlockStructure) return EnumActionResult.FAIL;
+		}
+
+		if (event.getUseItem() == Event.Result.DENY) return EnumActionResult.PASS;
+
+		ItemStack copyBeforeUse = stack.copy();
+		EnumActionResult result = stack.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+		if (stack.isEmpty()) ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, hand);
+		return result;
 	}
 	//endregion
 
