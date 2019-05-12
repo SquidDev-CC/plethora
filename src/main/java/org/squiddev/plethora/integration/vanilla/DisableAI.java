@@ -45,15 +45,14 @@ public final class DisableAI {
 
 	/**
 	 * Check if this entity should have its AI disabled and if so, ensure that our obedience AI is inserted.
-	 * @param entity
+	 * @param entity The entity to check
 	 */
 	public static void maybePossess(EntityLiving entity) {
 		IDisableAIHandler disableAI = entity.getCapability(DISABLE_AI_CAPABILITY, null);
 		if (disableAI != null && disableAI.isDisabled()) {
 			// Check that our obedience AI task is added.
 			// We don't remove this AI as it watches the Disable AI Capability for changes.
-			Optional<EntityAITasks.EntityAITaskEntry> obedient = entity.tasks.taskEntries.stream().filter(it -> it.action instanceof AIPlethoraObedience).findFirst();
-			if (!obedient.isPresent()) {
+			if (entity.tasks.taskEntries.stream().noneMatch(it -> it.action instanceof AIPlethoraObedience)) {
 				entity.tasks.addTask(Integer.MIN_VALUE, new AIPlethoraObedience(entity));
 			}
 		}
