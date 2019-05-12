@@ -20,10 +20,6 @@ public class EntityWorldLocation implements ConstantReference<IWorldLocation>, I
 		this.entity = entity;
 	}
 
-	private boolean isEntityLookingDown() {
-		return this.entity.rotationPitch >= 45 && this.entity.rotationPitch <= 90;
-	}
-
 	@Nonnull
 	@Override
 	public World getWorld() {
@@ -33,13 +29,13 @@ public class EntityWorldLocation implements ConstantReference<IWorldLocation>, I
 	@Nonnull
 	@Override
 	public BlockPos getPos() {
-		return new BlockPos(entity.posX, entity.posY + (isEntityLookingDown() ? 0 : entity.getEyeHeight()), entity.posZ);
+		return new BlockPos(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
 	}
 
 	@Nonnull
 	@Override
 	public Vec3d getLoc() {
-		return new Vec3d(entity.posX, entity.posY + (isEntityLookingDown() ? 0 : entity.getEyeHeight()), entity.posZ);
+		return new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
 	}
 
 	@Nonnull
