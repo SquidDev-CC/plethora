@@ -1,8 +1,6 @@
 package org.squiddev.plethora.integration.vanilla;
 
-import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.EntityLookHelper;
@@ -20,7 +18,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Optional;
 
 public final class DisableAI {
