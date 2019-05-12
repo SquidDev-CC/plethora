@@ -54,8 +54,7 @@ public final class MethodsKineticEntity {
 		yaw %= 360;
 		pitch %= 360;
 
-		// Clamp pitch between -90 and 90 degrees for aesthetics.
-		pitch = pitch > 90 ? 90 : pitch < -90 ? -90 : pitch;
+		pitch = MathHelper.clamp(pitch, -90, 90);
 
 		if (target instanceof EntityPlayerMP) {
 			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
