@@ -42,12 +42,12 @@ public final class IntegrationTesla {
 		}
 	};
 
-	@PlethoraMethod(doc = "-- The amount of Tesla currently stored")
+	@PlethoraMethod(modId = "tesla", doc = "-- The amount of Tesla currently stored")
 	public static long getTeslaStored(@FromTarget ITeslaHolder holder) {
 		return holder.getStoredPower();
 	}
 
-	@PlethoraMethod(doc = "-- The maximum amount of Tesla that can be stored")
+	@PlethoraMethod(modId = "tesla", doc = "-- The maximum amount of Tesla that can be stored")
 	public static long getTeslaCapacity(@FromTarget ITeslaHolder holder) {
 		return holder.getCapacity();
 	}
