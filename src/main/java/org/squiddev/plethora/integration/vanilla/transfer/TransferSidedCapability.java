@@ -1,10 +1,10 @@
 package org.squiddev.plethora.integration.vanilla.transfer;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.transfer.ITransferProvider;
+import org.squiddev.plethora.utils.CapabilityWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,20 +35,7 @@ public final class TransferSidedCapability implements ITransferProvider<ICapabil
 	@Override
 	public Object getTransferLocation(@Nonnull ICapabilityProvider object, @Nonnull String key) {
 		final EnumFacing facing = mappings.get(key.toLowerCase());
-
-		if (facing == null) return null;
-		return new ICapabilityProvider() {
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing enumFacing) {
-				return (enumFacing == facing || enumFacing == null) && object.hasCapability(capability, facing);
-			}
-
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing enumFacing) {
-				return (enumFacing == facing || enumFacing == null) ? object.getCapability(capability, facing) : null;
-			}
-		};
-
+		return facing == null ? null : new CapabilityWrapper(object, facing);
 	}
 
 	@Nonnull

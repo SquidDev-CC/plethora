@@ -40,7 +40,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 			MethodRegistry registry = MethodRegistry.instance;
 
 			WorldLocation location = new WorldLocation(world, blockPos);
-			BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te);
+			BlockReference reference = new BlockReference(location, world.getBlockState(blockPos), te, side);
 			ContextFactory<BlockReference> factory = ContextFactory.of(reference)
 				.withCostHandler(CostHelpers.getCostHandler(te, side))
 				.addContext(ContextKeys.ORIGIN, location);

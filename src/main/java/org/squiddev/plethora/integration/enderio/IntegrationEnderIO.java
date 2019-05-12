@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.enderio;
 
+import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.item.soulvial.ItemSoulVial;
@@ -9,10 +10,15 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.api.converter.ConstantConverter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
+import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
+import org.squiddev.plethora.utils.CapabilityWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +28,9 @@ import java.util.Map;
 
 @Injects(EnderIO.MODID)
 public final class IntegrationEnderIO {
+	private IntegrationEnderIO() {
+	}
+
 	public static final IMetaProvider<ItemStack> META_SOUL_VIAL = new ItemEntityStorageMetaProvider<ItemSoulVial>(
 		"capturedEntity", ItemSoulVial.class,
 		"Provides the entity captured inside this Soul Vial."
@@ -54,6 +63,17 @@ public final class IntegrationEnderIO {
 		}
 	};
 
-	private IntegrationEnderIO() {
-	}
+	/**
+	 * Provide a capability provider which explicitly uses a specific side.
+	 *
+	 * EnderIO returns {@code null} for the internal side (https://github.com/SleepyTrousers/EnderIO/issues/4840),
+	 * which breaks any of our existing capability converters. We bodge around this by exposing a secondary capability
+	 * provider which uses the side we're up against.
+	 */
+	public static final ConstantConverter<BlockReference, ICapabilityProvider> ENDERIO_CAPABILITIES = x -> {
+		TileEntity tile = x.getTileEntity();
+		return tile instanceof TileEntityBase && x.getSide() != null
+			? new CapabilityWrapper(tile, x.getSide())
+			: null;
+	};
 }
