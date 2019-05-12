@@ -8,6 +8,8 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.converter.DynamicConverter;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.SimpleMetaProvider;
+import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -39,4 +41,14 @@ public final class IntegrationTesla {
 			return new BaseTeslaContainer(100, 50000, 0, 0);
 		}
 	};
+
+	@PlethoraMethod(doc = "-- The amount of Tesla currently stored")
+	public static long getTeslaStored(@FromTarget ITeslaHolder holder) {
+		return holder.getStoredPower();
+	}
+
+	@PlethoraMethod(doc = "-- The maximum amount of Tesla that can be stored")
+	public static long getTeslaCapacity(@FromTarget ITeslaHolder holder) {
+		return holder.getCapacity();
+	}
 }
