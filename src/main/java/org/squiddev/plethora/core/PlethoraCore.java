@@ -3,11 +3,13 @@ package org.squiddev.plethora.core;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import mcjty.xnet.XNet;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +29,7 @@ import org.squiddev.plethora.core.capabilities.*;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.core.wrapper.PlethoraMethodRegistry;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.gameplay.PlethoraFakePlayer;
 import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -153,5 +156,16 @@ public class PlethoraCore {
 	@SubscribeEvent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 		ModuleRegistry.instance.addRecipes(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public static void onEntitySpawn(EntityJoinWorldEvent event) {
+		Entity entity = event.getEntity();
+		if (!(entity instanceof PlethoraFakePlayer)) return;
+
+		event.setCanceled(true);
+		event.getWorld().playerEntities.remove(entity);
+
+		LOG.error("Attempted to spawn PlethoraFakePlayer ({}). This should NEVER happen.", new IllegalStateException("Stacktrace as follows:"));
 	}
 }
