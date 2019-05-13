@@ -28,7 +28,7 @@ describe("inventories", function()
 
 		it("on a stick", function()
 			local inv = setup()
-			expect(inv.getItemMeta(1)):same {
+			expect(inv.getItemMeta(1)):matches {
 				name = "minecraft:stick", displayName = "Stick", rawName = "item.stick",
 				damage = 0, maxDamage = 0, count = 50, maxCount = 64,
 				ores = { stickWood = true }
