@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api;
 
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -37,6 +38,13 @@ public class TurtleWorldLocation implements ConstantReference<IWorldLocation>, I
 	public Vec3d getLoc() {
 		BlockPos pos = turtle.getPosition();
 		return new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+	}
+
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBounds() {
+		BlockPos pos = turtle.getPosition();
+		return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 	}
 
 	@Nonnull

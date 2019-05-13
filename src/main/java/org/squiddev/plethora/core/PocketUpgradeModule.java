@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -272,6 +273,13 @@ class PocketUpgradeModule implements IPocketUpgrade {
 		@Override
 		public Vec3d getLoc() {
 			return lastEntity.getPositionVector();
+		}
+
+		@Nonnull
+		@Override
+		public AxisAlignedBB getBounds() {
+			AxisAlignedBB bounds = lastEntity.getCollisionBoundingBox();
+			return bounds == null ? lastEntity.getEntityBoundingBox() : bounds;
 		}
 
 		@Nonnull

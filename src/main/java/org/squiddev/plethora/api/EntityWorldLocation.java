@@ -1,6 +1,7 @@
 package org.squiddev.plethora.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -36,6 +37,13 @@ public class EntityWorldLocation implements ConstantReference<IWorldLocation>, I
 	@Override
 	public Vec3d getLoc() {
 		return new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+	}
+
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBounds() {
+		AxisAlignedBB bounds = entity.getCollisionBoundingBox();
+		return bounds == null ? entity.getEntityBoundingBox() : bounds;
 	}
 
 	@Nonnull

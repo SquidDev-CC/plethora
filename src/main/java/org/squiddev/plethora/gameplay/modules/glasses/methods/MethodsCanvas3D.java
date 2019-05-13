@@ -18,7 +18,6 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.*;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
-import static org.squiddev.plethora.api.method.ArgumentHelper.optFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 
 public final class MethodsCanvas3D {

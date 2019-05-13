@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api;
 
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -18,6 +19,7 @@ public final class WorldLocation implements ConstantReference<IWorldLocation>, I
 	private final World world;
 	private final BlockPos pos;
 	private final Vec3d loc;
+	private AxisAlignedBB bounds;
 
 	public WorldLocation(@Nonnull World world, @Nonnull BlockPos pos) {
 		Objects.requireNonNull(world, "world cannot be null");
@@ -57,6 +59,13 @@ public final class WorldLocation implements ConstantReference<IWorldLocation>, I
 	@Override
 	public Vec3d getLoc() {
 		return loc;
+	}
+
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBounds() {
+		return bounds != null ? bounds
+			: new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 	}
 
 	@Nonnull

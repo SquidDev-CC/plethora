@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -83,12 +82,7 @@ public final class MethodsInventoryWorld {
 		if (slot != -1) assertBetween(slot, 1, handler.getSlots(), "Slot out of range (%s)");
 
 		World world = location.getWorld();
-		BlockPos pos = location.getPos();
-
-		AxisAlignedBB box = new AxisAlignedBB(
-			pos.getX() + 0.5 - SUCK_RADIUS, pos.getY() + 0.5 - SUCK_RADIUS, pos.getZ() + 0.5 - SUCK_RADIUS,
-			pos.getX() + 0.5 + SUCK_RADIUS, pos.getY() + 0.5 + SUCK_RADIUS, pos.getZ() + 0.5 + SUCK_RADIUS
-		);
+		AxisAlignedBB box = location.getBounds().grow(SUCK_RADIUS, SUCK_RADIUS, SUCK_RADIUS);
 
 		int total = 0;
 		int remaining = limit;

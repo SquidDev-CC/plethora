@@ -1,5 +1,6 @@
 package org.squiddev.plethora.api;
 
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -41,4 +42,15 @@ public interface IWorldLocation extends IReference<IWorldLocation> {
 	 */
 	@Nonnull
 	Vec3d getLoc();
+
+	/**
+	 * Get the bounding box of this location.
+	 *
+	 * This represents the entire area this location represents. Both {@link #getPos()} and {@link #getLoc()} should be
+	 * contained within it.
+	 *
+	 * @return This location's bounding box.
+	 */
+	@Nonnull
+	AxisAlignedBB getBounds();
 }
