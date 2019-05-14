@@ -52,14 +52,26 @@ public final class MethodsKinetic {
 
 	@PlethoraMethod(
 		module = PlethoraModules.KINETIC_S,
-		doc = "-- Disable the AI of this entity. Be warned: this permanently scars them - they'll never be the same again!"
+		doc = "-- Disable the AI of this entity. Their neural pathways will be inhibited preventing them thinking for themselves"
 	)
 	public static void disableAI(@FromSubtarget(ContextKeys.ORIGIN) EntityLiving entity) throws LuaException {
 		DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
 		if (disable == null) throw new LuaException("Cannot disable AI");
 
 		disable.setDisabled(true);
-		DisableAI.maybeClear(entity);
+		DisableAI.maybePossess(entity);
+	}
+
+	@PlethoraMethod(
+		module = PlethoraModules.KINETIC_S,
+		doc = "-- Enable the AI of this entity."
+	)
+	public static void enableAI(@FromSubtarget(ContextKeys.ORIGIN) EntityLiving entity) throws LuaException {
+		DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
+		if (disable == null) throw new LuaException("Cannot enable AI");
+
+		disable.setDisabled(false);
+		// We don't need to call maybePossess, because if our AI task isn't registered its irrelevant.
 	}
 
 	public static final SubtargetedModuleMethod<EntityLiving> WALK = SubtargetedModuleMethod.of(
