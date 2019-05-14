@@ -1,5 +1,6 @@
 package org.squiddev.plethora.integration.xnet;
 
+import mcjty.xnet.XNet;
 import mcjty.xnet.blocks.cables.ConnectorTileEntity;
 import mcjty.xnet.blocks.facade.FacadeItemBlock;
 import mcjty.xnet.blocks.facade.IFacadeSupport;
@@ -7,17 +8,22 @@ import mcjty.xnet.init.ModBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.wrapper.ArgumentType;
+import org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Injects(XNet.MODID)
 public final class IntegrationXNet {
 	private IntegrationXNet() {
 	}
@@ -38,6 +44,10 @@ public final class IntegrationXNet {
 	 * Router
 	 * Wireless Router
 	 */
+
+	//TODO Determine a better location for this ArgumentType
+	//REFINE This may not be the most efficient, but it does reduce code duplication...
+	public static final ArgumentType<BlockPos> BLOCK_POS = ArgumentPointHelper.VEC3D.map(BlockPos::new);
 
 	public static final IMetaProvider<IFacadeSupport> META_FACADE = new BaseMetaProvider<IFacadeSupport>() {
 		@Nonnull
