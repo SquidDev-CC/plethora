@@ -166,6 +166,6 @@ public class PlethoraCore {
 		event.setCanceled(true);
 		event.getWorld().playerEntities.remove(entity);
 
-		LOG.error("Attempted to spawn PlethoraFakePlayer ({}). This should NEVER happen.", new IllegalStateException("Stacktrace as follows:"));
+		LOG.error("Attempted to spawn PlethoraFakePlayer ({}). This should NEVER happen.", entity, new IllegalStateException("Stacktrace as follows:"));
 	}
 }
