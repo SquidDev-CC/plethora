@@ -54,6 +54,8 @@ public final class MethodsKineticEntity {
 		yaw %= 360;
 		pitch %= 360;
 
+		pitch = MathHelper.clamp(pitch, -90, 90);
+
 		if (target instanceof EntityPlayerMP) {
 			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
 			handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);

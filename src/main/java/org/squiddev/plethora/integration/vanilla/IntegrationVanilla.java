@@ -91,7 +91,7 @@ public final class IntegrationVanilla {
 	public static void entityTick(LivingEvent.LivingUpdateEvent event) {
 		EntityLivingBase livingBase = event.getEntityLiving();
 		if (livingBase instanceof EntityLiving) {
-			DisableAI.maybeClear((EntityLiving) livingBase);
+			DisableAI.maybePossess((EntityLiving) livingBase);
 		}
 	}
 
