@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -109,11 +110,11 @@ public final class MethodsController {
 		return pos.add(controllerPos);
 	}
 
-	@Nullable
-	private static SidedPos getSidedPos(@Nonnull BlockPos pos, @Nonnull IControllerContext context) {
+	@Nonnull
+	private static SidedPos getSidedPos(@Nonnull BlockPos pos, @Nonnull IControllerContext context, @Nonnull String description) throws LuaException {
 		return context.getConnectedBlockPositions().stream()
 			.filter(sp -> sp.getPos().equals(pos)).findFirst()
-			.orElse(null);
+			.orElseThrow(() -> badPosition(description));
 	}
 
 	//----------
@@ -189,24 +190,24 @@ public final class MethodsController {
 	)
 	public static Map<Integer, String> getSupportedCapabilities(@Nonnull @FromTarget TileEntityController controller,
 																@Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-																@Nonnull BlockPos posArg,
-																@Optional EnumFacing sideArg) throws LuaException {
-		//REFINE Yes, the BlockPos and EnumFacing args need better names...
-		BlockPos pos = toAbsolute(posArg, location.getPos());
+																@Nonnull BlockPos pos,
+																@Optional EnumFacing side) throws LuaException {
+		//This variable exists purely to ease code duplication checks...
+		String description = "";
+		BlockPos absolute = toAbsolute(pos, location.getPos());
 
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if (sidedPos == null) throw badPosition();
+		SidedPos sidedPos = getSidedPos(absolute, controller, description);
 
-		EnumFacing side = (sideArg != null) ? sideArg : sidedPos.getSide();
+		EnumFacing facing = (side != null) ? side : sidedPos.getSide();
 
-		TileEntity tile = location.getWorld().getTileEntity(pos);
-		if (tile == null) throw nonTile();
+		TileEntity tile = location.getWorld().getTileEntity(absolute);
+		if (tile == null) throw nonTile(description);
 
 		LuaList<String> out = new LuaList<>(3);
 
-		if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)) out.add("items");
-		if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) out.add("fluid");
-		if (tile.hasCapability(CapabilityEnergy.ENERGY, side)) out.add("energy");
+		if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing)) out.add("items");
+		if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)) out.add("fluid");
+		if (tile.hasCapability(CapabilityEnergy.ENERGY, facing)) out.add("energy");
 
 		return out.asMap();
 	}
@@ -217,21 +218,10 @@ public final class MethodsController {
 	)
 	public static Map<String, ?> getItems(@Nonnull @FromTarget TileEntityController controller,
 										  @Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-										  @Nonnull BlockPos posArg,
-										  @Optional EnumFacing sideArg) throws LuaException {
-		BlockPos pos = toAbsolute(posArg, location.getPos());
+										  @Nonnull BlockPos pos,
+										  @Optional EnumFacing side) throws LuaException {
+		IItemHandler handler = getHandler(controller, location, pos, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, "item", "");
 
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if (sidedPos == null) throw badPosition();
-
-		EnumFacing side = (sideArg != null) ? sideArg : sidedPos.getSide();
-
-		TileEntity tile = location.getWorld().getTileEntity(pos);
-		if (tile == null) throw nonTile();
-
-		if (!tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)) throw nonItemHandler();
-
-		IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 		List<ItemStack> result = new ArrayList<>();
 		for (int slot = 0; slot < handler.getSlots(); slot++) {
 			ItemStack stack = handler.getStackInSlot(slot);
@@ -251,49 +241,18 @@ public final class MethodsController {
 	)
 	public static int transferItem(@Nonnull @FromTarget TileEntityController controller,
 								   @Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-								   @Nonnull BlockPos sourcePosArg,
+								   @Nonnull BlockPos sourcePos,
 								   int sourceSlot,
 								   int amount,
-								   @Nonnull BlockPos targetPosArg,
-								   @Optional EnumFacing sourceSideArg,
-								   @Optional EnumFacing targetSideArg) throws LuaException {
-		BlockPos pos = toAbsolute(sourcePosArg, location.getPos());
+								   @Nonnull BlockPos targetPos,
+								   @Optional EnumFacing sourceSide,
+								   @Optional EnumFacing targetSide) throws LuaException {
+		IItemHandler handler = getHandler(controller, location, sourcePos, sourceSide, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, "item", "source");
 
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if(sidedPos == null) throw badPosition("source");
+		IItemHandler targetHandler = getHandler(controller, location, targetPos, targetSide, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, "item", "target");
 
-		EnumFacing side = (sourceSideArg != null) ? sourceSideArg : sidedPos.getSide();
-
-		TileEntity tileEntity = location.getWorld().getTileEntity(pos);
-		if(tileEntity == null) throw nonTile("source");
-
-		if(!tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)) {
-			throw nonItemHandler("source");
-		}
-
-		BlockPos targetPos = toAbsolute(targetPosArg, location.getPos());
-
-		SidedPos targetSidedPos = getSidedPos(targetPos, controller);
-		if(targetSidedPos == null) throw badPosition("target");
-
-		EnumFacing targetSide = (targetSideArg != null) ? targetSideArg : targetSidedPos.getSide();
-
-		TileEntity targetTileEntity = location.getWorld().getTileEntity(targetPos);
-		if(targetTileEntity == null) throw nonTile("target");
-
-		if(!targetTileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide)) {
-			throw nonItemHandler("target");
-		}
-
-		IItemHandler handler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-		IItemHandler targetHandler = targetTileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
-
-
-		//`handler` should be nonnull, as we already checked if the tile had the capability;
-		// only edge case would be someone modifying the tile mid-tick...
-		//noinspection ConstantConditions
-		ItemStack sourceStackSim = handler.extractItem(sourceSlot-1, amount, true);
-		if(sourceStackSim.isEmpty()) throw new LuaException("can not extract from source slot");
+		ItemStack sourceStackSim = handler.extractItem(sourceSlot - 1, amount, true);
+		if (sourceStackSim.isEmpty()) throw new LuaException("can not extract from source slot");
 
 		ItemStack returnStackSim = ItemHandlerHelper.insertItemStacked(targetHandler, sourceStackSim, true);
 
@@ -313,26 +272,12 @@ public final class MethodsController {
 	)
 	public static Map<Integer, ?> getFluids(@Nonnull @FromTarget TileEntityController controller,
 											@Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-											@Nonnull BlockPos posArg,
-											@Optional EnumFacing sideArg) throws LuaException {
-		BlockPos pos = toAbsolute(posArg, location.getPos());
-
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if(sidedPos == null) throw badPosition();
-
-		EnumFacing side = (sideArg != null) ? sideArg : sidedPos.getSide();
-
-		TileEntity tileEntity = location.getWorld().getTileEntity(pos);
-		if(tileEntity == null) throw nonTile();
-
-		if(!tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
-			throw nonFluidHandler();
-		}
-
-		IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+											@Nonnull BlockPos pos,
+											@Optional EnumFacing side) throws LuaException {
+		IFluidHandler handler = getHandler(controller, location, pos, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, "fluid", "");
 
 		LuaList<Object> result = new LuaList<>();
-		for(IFluidTankProperties tank : handler.getTankProperties()) {
+		for (IFluidTankProperties tank : handler.getTankProperties()) {
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("capacity", tank.getCapacity());
 			map.put("content", tank.getContents());
@@ -349,70 +294,44 @@ public final class MethodsController {
 	public static int transferFluid(@Nonnull IContext<TileEntityController> context,
 									@Nonnull @FromTarget TileEntityController controller,
 									@Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-									@Nonnull BlockPos sourcePosArg,
+									@Nonnull BlockPos sourcePos,
 									int amount,
-									@Nonnull BlockPos targetPosArg,
+									@Nonnull BlockPos targetPos,
 									@Optional String fluidName,
-									@Optional EnumFacing sourceSideArg,
-									@Optional EnumFacing targetSideArg) throws LuaException {
+									@Optional EnumFacing sourceSide,
+									@Optional EnumFacing targetSide) throws LuaException {
 		//MEMO Check if you need the full `IContext` or can make due with `@FromTarget`
-		BlockPos pos = toAbsolute(sourcePosArg, location.getPos());
+		IFluidHandler handler = getHandler(controller, location, sourcePos, sourceSide, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, "fluid", "source");
 
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if(sidedPos == null) throw badPosition("source");
-
-		EnumFacing side = (sourceSideArg != null) ? sourceSideArg : sidedPos.getSide();
-
-		TileEntity tileEntity = location.getWorld().getTileEntity(pos);
-		if(tileEntity == null) throw nonTile("source");
-
-		if(!tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
-			throw nonFluidHandler("source");
-		}
-
-		BlockPos targetPos = toAbsolute(targetPosArg, location.getPos());
-
-		SidedPos targetSidedPos = getSidedPos(targetPos, controller);
-		if(targetSidedPos == null) throw badPosition("target");
-
-		EnumFacing targetSide = (targetSideArg != null) ? targetSideArg : targetSidedPos.getSide();
-
-		TileEntity targetTileEntity = location.getWorld().getTileEntity(targetPos);
-		if(targetTileEntity == null) throw nonTile("target");
-
-		if(!targetTileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide)) {
-			throw nonFluidHandler("target");
-		}
+		IFluidHandler targetHandler = getHandler(controller, location, targetPos, targetSide, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, "fluid", "target");
 
 		FluidStack extractStack = null;
-		if(fluidName != null) {
+		if (fluidName != null) {
 			extractStack = FluidRegistry.getFluidStack(fluidName, amount);
-			if(extractStack == null) {
-				throw new LuaException("Unkown fluid: " + fluidName);
+			if (extractStack == null) {
+				throw new LuaException("Unknown fluid: " + fluidName);
 			}
 		}
 
-		IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
-		IFluidHandler targetHandler = targetTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
 
 		FluidStack simStack;
-		if(extractStack != null) {
+		if (extractStack != null) {
 			simStack = handler.drain(extractStack, false);
 		} else {
 			simStack = handler.drain(amount, false);
 		}
 
-		if(simStack == null) {
+		if (simStack == null) {
 			throw new LuaException("can not drain from source tank");
 		}
 
 		int simAmount = targetHandler.fill(simStack, false);
-		if(simAmount <= 0) {
+		if (simAmount <= 0) {
 			throw new LuaException("can not fill target tank");
 		}
 
 		FluidStack realStack;
-		if(extractStack != null) {
+		if (extractStack != null) {
 			extractStack.amount = simAmount;
 			realStack = handler.drain(extractStack, true);
 		} else {
@@ -426,30 +345,15 @@ public final class MethodsController {
 
 	@PlethoraMethod(
 		modId = XNet.MODID,
-		doc = "-- function(pos:table[, side: number]):table -- Get capacity and stored energy of the given energy handler"
+		doc = "-- Get capacity and stored energy of the given energy handler"
 	)
 	public static Map<String, ?> getEnergy(@Nonnull IContext<TileEntityController> context,
 										   @Nonnull @FromTarget TileEntityController controller,
 										   @Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-										   @Nonnull BlockPos posArg,
-										   @Optional EnumFacing sideArg) throws LuaException {
+										   @Nonnull BlockPos pos,
+										   @Optional EnumFacing side) throws LuaException {
 		//MEMO Check if you need the full `IContext` or can make due with `@FromTarget`
-
-		BlockPos pos = toAbsolute(posArg, location.getPos());
-		SidedPos sidedPos = getSidedPos(pos, controller);
-
-		if(sidedPos == null) throw badPosition();
-
-		EnumFacing side = (sideArg != null) ? sideArg : sidedPos.getSide(); //TODO Verify correct variables
-
-		TileEntity tileEntity = location.getWorld().getTileEntity(pos);
-		if(tileEntity == null) throw nonTile();
-
-		if(!tileEntity.hasCapability(CapabilityEnergy.ENERGY, side)) {
-			throw nonEnergyHandler();
-		}
-
-		IEnergyStorage handler = tileEntity.getCapability(CapabilityEnergy.ENERGY, side);
+		IEnergyStorage handler = getHandler(controller, location, pos, side, CapabilityEnergy.ENERGY, "energy", "");
 
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("capacity", handler.getMaxEnergyStored());
@@ -465,64 +369,40 @@ public final class MethodsController {
 		doc = "-- Transfer energy between two energy handlers"
 	)
 	public static int transferEnergy(@Nonnull IContext<TileEntityController> context,
-												@Nonnull @FromTarget TileEntityController controller,
-												@Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
-												@Nonnull BlockPos sourcePosArg,
-												int amount,
-												@Nonnull BlockPos targetPosArg,
-												@Optional EnumFacing sourceSideArg,
-												@Optional EnumFacing targetSideArg) throws LuaException {
+									 @Nonnull @FromTarget TileEntityController controller,
+									 @Nonnull @FromContext(ContextKeys.ORIGIN) IWorldLocation location,
+									 @Nonnull BlockPos sourcePos,
+									 int amount,
+									 @Nonnull BlockPos targetPos,
+									 @Optional EnumFacing sourceSide,
+									 @Optional EnumFacing targetSide) throws LuaException {
 		//MEMO Check if you need the full `IContext` or can make due with `@FromTarget`
-		BlockPos pos = toAbsolute(sourcePosArg, location.getPos());
+		IEnergyStorage handler = getHandler(controller, location, sourcePos, sourceSide, CapabilityEnergy.ENERGY, "energy", "source");
 
-		SidedPos sidedPos = getSidedPos(pos, controller);
-		if(sidedPos == null) throw badPosition("source");
+		IEnergyStorage targetHandler = getHandler(controller, location, targetPos, targetSide, CapabilityEnergy.ENERGY, "energy", "target");
 
-		EnumFacing side = (sourceSideArg != null) ? sourceSideArg : sidedPos.getSide();
-
-		TileEntity tileEntity = location.getWorld().getTileEntity(pos);
-		if(tileEntity == null) throw nonTile("source");
-
-		if(!tileEntity.hasCapability(CapabilityEnergy.ENERGY, side)) {
-			throw nonEnergyHandler("source");
-		}
-
-		BlockPos targetPos = toAbsolute(targetPosArg, location.getPos());
-		SidedPos targetSidedPos = getSidedPos(targetPos, controller);
-		if(targetSidedPos == null) throw badPosition("target");
-
-		EnumFacing targetSide = (targetSideArg != null) ? targetSideArg : targetSidedPos.getSide();
-
-		TileEntity targetTileEntity = location.getWorld().getTileEntity(targetPos);
-		if(targetTileEntity == null) throw nonTile("target");
-
-		if(!targetTileEntity.hasCapability(CapabilityEnergy.ENERGY, targetSide)) {
-			throw nonEnergyHandler("target");
-		}
-
-		IEnergyStorage handler = tileEntity.getCapability(CapabilityEnergy.ENERGY, side);
-		IEnergyStorage targetHandler = targetTileEntity.getCapability(CapabilityEnergy.ENERGY, targetSide);
-
-		if(!handler.canExtract()) {
+		if (!handler.canExtract()) {
 			throw new LuaException("can not extract energy from source");
 		}
 
-		if(!targetHandler.canReceive()) {
+		if (!targetHandler.canReceive()) {
 			throw new LuaException("can not insert energy into target");
 		}
 
+		//TODO We will be abiding by the transfer limits set for the XNet connectors in play,
+		// as well as the source and destination IEnergyStorage tiles
 		int transferred = 0;
 		int simulatedTicks = 0;
 		List<String> errors = new ArrayList<>();
-		while(transferred < amount && simulatedTicks < 1) {
+		while (transferred < amount && simulatedTicks < 1) {
 			int simAmount = handler.extractEnergy(amount - transferred, true);
-			if(simAmount <= 0) {
+			if (simAmount <= 0) {
 				errors.add("extractable amount from source is 0");
 				break;
 			}
 
 			int simReceived = targetHandler.receiveEnergy(simAmount, true);
-			if(simReceived <= 0) {
+			if (simReceived <= 0) {
 				errors.add("insertable amount into target is 0");
 				break;
 			}
@@ -539,8 +419,40 @@ public final class MethodsController {
 	}
 
 	@Nonnull
-	private static LuaException badPosition() {
-		return badPosition("");
+	private static <T> T getHandler(@Nonnull TileEntityController controller,
+									@Nonnull IWorldLocation location,
+									@Nonnull BlockPos pos,
+									EnumFacing side,
+									@Nonnull Capability<T> capability,
+									@Nonnull String type,
+									@Nonnull String description) throws LuaException {
+		/*FIXME If we are going to respect transfer limits of the Connectors,
+		 * we will need to use some of the same data computed here, namely `sidedPos`.
+		 * Compare performance of repeat calculation with the use of a `holder` class
+		 * that stores the calculated values
+		 */
+		BlockPos absolute = toAbsolute(pos, location.getPos());
+		SidedPos sidedPos = getSidedPos(absolute, controller, description);
+
+		EnumFacing facing = (side != null) ? side : sidedPos.getSide();
+
+		TileEntity tileEntity = location.getWorld().getTileEntity(absolute);
+		if (tileEntity == null) throw nonTile(description);
+
+		if (!tileEntity.hasCapability(capability, facing)) {
+			throw nonHandler(type, description);
+		}
+
+		T handler = tileEntity.getCapability(capability, facing);
+		/*
+		 * This check shouldn't be triggered, as the TE shouldn't change capabilities
+		 * between our call to `hasCapability` and `getCapability`.
+		 * However, this provides us with a guarantee of either a non-null return,
+		 * or a slightly more user friendly error.
+		 */
+		if (handler == null) throw nullCapability(type, description);
+
+		return handler;
 	}
 
 	@Nonnull
@@ -551,48 +463,22 @@ public final class MethodsController {
 	}
 
 	@Nonnull
-	private static LuaException nonTile() {
-		//REFINE Does this exception even make sense?
-		// I mean, if a block is connected to the network, shouldn't it be a TE?
-		return nonTile("");
-	}
-
-	@Nonnull
 	private static LuaException nonTile(@Nonnull String description) {
 		String descriptionPlus = !description.isEmpty() ? " - " + description : "";
 		return new LuaException("Not a tile entity" + descriptionPlus);
 	}
 
 	@Nonnull
-	private static LuaException nonItemHandler() {
-		return nonItemHandler("");
-	}
-
-	@Nonnull
-	private static LuaException nonItemHandler(@Nonnull String description) {
+	private static LuaException nonHandler(@Nonnull String type, @Nonnull String description) {
+		//REFINE While mildly better than "Not a(n) {type} handler",
+		// this still results in slightly awkward phrasing when `type` is "item"...
 		String descriptionPlus = !description.isEmpty() ? " - " + description : "";
-		return new LuaException("Not an item handler" + descriptionPlus);
+		return new LuaException("Not a handler for " + type + descriptionPlus);
 	}
 
 	@Nonnull
-	private static LuaException nonFluidHandler() {
-		return nonFluidHandler("");
-	}
-
-	@Nonnull
-	private static LuaException nonFluidHandler(@Nonnull String description) {
+	private static LuaException nullCapability(@Nonnull String type, @Nonnull String description) {
 		String descriptionPlus = !description.isEmpty() ? " - " + description : "";
-		return new LuaException("Not a fluid handler" + descriptionPlus);
-	}
-
-	@Nonnull
-	private static LuaException nonEnergyHandler() {
-		return nonEnergyHandler("");
-	}
-
-	@Nonnull
-	private static LuaException nonEnergyHandler(@Nonnull String description) {
-		String descriptionPlus = !description.isEmpty() ? " - " + description : "";
-		return new LuaException("Not an energy handler" + descriptionPlus);
+		return new LuaException("Error getting " + type + " capability" + descriptionPlus);
 	}
 }
