@@ -2,7 +2,6 @@ package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.EntityLookHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
@@ -14,11 +13,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.squiddev.plethora.gameplay.Plethora;
+import org.squiddev.plethora.integration.PlethoraIntegration;
+import org.squiddev.plethora.utils.TypedField;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public final class DisableAI {
 	public static final ResourceLocation DISABLE_AI = new ResourceLocation(Plethora.ID, "disableAI");
@@ -45,6 +44,7 @@ public final class DisableAI {
 
 	/**
 	 * Check if this entity should have its AI disabled and if so, ensure that our obedience AI is inserted.
+	 *
 	 * @param entity The entity to check
 	 */
 	public static void maybePossess(EntityLiving entity) {
@@ -106,16 +106,21 @@ public final class DisableAI {
 	}
 
 	public static class AIPlethoraObedience extends EntityAIBase {
+		private static final TypedField<EntityLiving, EntityLookHelper> LOOK_HELPER = TypedField.of(
+			EntityLiving.class, "lookHelper", "field_70749_g"
+		);
 
-		private EntityLiving entity;
-		private EntityLookHelper oldInstance;
+		private final EntityLiving entity;
+		private final PlethoraEntityLookHelper plethoraLook;
+		private EntityLookHelper oldLook;
 
 		AIPlethoraObedience(EntityLiving entityIn) {
-			this.entity = entityIn;
+			entity = entityIn;
+			plethoraLook = new PlethoraEntityLookHelper(entity);
 		}
 
 		private boolean isAIDisabled() {
-			DisableAI.IDisableAIHandler disable = this.entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
+			DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
 			if (disable == null) return false;
 			return disable.isDisabled();
 		}
@@ -123,56 +128,58 @@ public final class DisableAI {
 		@Override
 		public void startExecuting() {
 			// This should not be already set when we start executing because it should have been reset.
-			assert (!( this.entity.getLookHelper() instanceof PlethoraEntityLookHelper));
-			this.oldInstance = this.entity.getLookHelper();
-			ReflectionHelper.setPrivateValue(EntityLiving.class, this.entity, new PlethoraEntityLookHelper(), "lookHelper");
+			if (entity.getLookHelper() instanceof PlethoraEntityLookHelper) {
+				PlethoraIntegration.LOG.error("Look helper is not a PlethoraEntityLookHelper ({} instead)", entity.getLookHelper());
+				return;
+			}
+
+			oldLook = entity.getLookHelper();
+			LOOK_HELPER.set(entity, plethoraLook);
 		}
 
 		@Override
 		public void resetTask() {
-			if (this.entity.getLookHelper() instanceof PlethoraEntityLookHelper) {
-				ReflectionHelper.setPrivateValue(EntityLiving.class, this.entity, this.oldInstance, "lookHelper");
-				this.oldInstance = null;
+			if (entity.getLookHelper() instanceof PlethoraEntityLookHelper) {
+				LOOK_HELPER.set(entity, oldLook);
+				oldLook = null;
 			}
 		}
 
 		@Override
 		public boolean shouldExecute() {
-			return this.shouldContinueExecuting();
+			return shouldContinueExecuting();
 		}
 
 		@Override
 		public boolean shouldContinueExecuting() {
 			// So long as Plethora wants this entity to not think for itself, we continue doing our work.
-			return this.isAIDisabled();
+			return isAIDisabled();
 		}
 
 		@Override
 		public boolean isInterruptible() {
 			// We can be interrupted if the AI has been enabled
-			return !this.isAIDisabled();
+			return !isAIDisabled();
 		}
 
 		@Override
 		public void updateTask() {
-			// Noop
 		}
 
 		@Override
 		public int getMutexBits() {
-			return Integer.MAX_VALUE; // All the bits. This AI Task concurrency is incompatible with every other.
+			// All the bits. This AI Task concurrency is incompatible with every other.
+			return Integer.MAX_VALUE;
+		}
+	}
+
+	private static class PlethoraEntityLookHelper extends EntityLookHelper {
+		PlethoraEntityLookHelper(EntityLiving entity) {
+			super(entity);
 		}
 
-		private class PlethoraEntityLookHelper extends EntityLookHelper {
-
-			PlethoraEntityLookHelper() {
-				super(AIPlethoraObedience.this.entity);
-			}
-
-			@Override
-			public void onUpdateLook() {
-				// Noop
-			}
+		@Override
+		public void onUpdateLook() {
 		}
 	}
 }
