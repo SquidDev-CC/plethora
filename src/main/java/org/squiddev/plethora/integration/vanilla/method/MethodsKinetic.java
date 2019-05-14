@@ -59,7 +59,6 @@ public final class MethodsKinetic {
 		if (disable == null) throw new LuaException("Cannot disable AI");
 
 		disable.setDisabled(true);
-		DisableAI.maybePossess(entity);
 	}
 
 	@PlethoraMethod(
@@ -71,7 +70,6 @@ public final class MethodsKinetic {
 		if (disable == null) throw new LuaException("Cannot enable AI");
 
 		disable.setDisabled(false);
-		// We don't need to call maybePossess, because if our AI task isn't registered its irrelevant.
 	}
 
 	public static final SubtargetedModuleMethod<EntityLiving> WALK = SubtargetedModuleMethod.of(

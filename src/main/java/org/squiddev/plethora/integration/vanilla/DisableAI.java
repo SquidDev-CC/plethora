@@ -2,12 +2,14 @@ package org.squiddev.plethora.integration.vanilla;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.EntityLookHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -20,7 +22,7 @@ import org.squiddev.plethora.utils.TypedField;
 import javax.annotation.Nonnull;
 
 public final class DisableAI {
-	public static final ResourceLocation DISABLE_AI = new ResourceLocation(Plethora.ID, "disableAI");
+	static final ResourceLocation DISABLE_AI = new ResourceLocation(Plethora.ID, "disableAI");
 
 	@CapabilityInject(IDisableAIHandler.class)
 	public static Capability<IDisableAIHandler> DISABLE_AI_CAPABILITY = null;
@@ -42,30 +44,24 @@ public final class DisableAI {
 		}, DefaultDisableAI::new);
 	}
 
-	/**
-	 * Check if this entity should have its AI disabled and if so, ensure that our obedience AI is inserted.
-	 *
-	 * @param entity The entity to check
-	 */
-	public static void maybePossess(EntityLiving entity) {
-		IDisableAIHandler disableAI = entity.getCapability(DISABLE_AI_CAPABILITY, null);
-		if (disableAI != null && disableAI.isDisabled()) {
-			// Check that our obedience AI task is added.
-			// We don't remove this AI as it watches the Disable AI Capability for changes.
-			if (entity.tasks.taskEntries.stream().noneMatch(it -> it.action instanceof AIPlethoraObedience)) {
-				entity.tasks.addTask(Integer.MIN_VALUE, new AIPlethoraObedience(entity));
-			}
-		}
-	}
-
-	public interface IDisableAIHandler {
+	public interface IDisableAIHandler extends ITickable {
 		boolean isDisabled();
 
 		void setDisabled(boolean value);
 	}
 
-	public static class DefaultDisableAI implements IDisableAIHandler, ICapabilitySerializable<NBTTagCompound> {
+	static class DefaultDisableAI implements IDisableAIHandler, ICapabilitySerializable<NBTTagCompound> {
+		private final EntityLiving entity;
 		private boolean disabled;
+		private EntityAITasks.EntityAITaskEntry task;
+
+		DefaultDisableAI(EntityLiving entity) {
+			this.entity = entity;
+		}
+
+		DefaultDisableAI() {
+			entity = null;
+		}
 
 		@Override
 		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
@@ -73,9 +69,8 @@ public final class DisableAI {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-			return capability == DISABLE_AI_CAPABILITY ? (T) this : null;
+			return capability == DISABLE_AI_CAPABILITY ? DISABLE_AI_CAPABILITY.cast(this) : null;
 		}
 
 		@Override
@@ -85,7 +80,27 @@ public final class DisableAI {
 
 		@Override
 		public void setDisabled(boolean value) {
+			if (value == disabled) return;
+
 			disabled = value;
+			if (entity != null) entity.getNavigator().clearPath();
+			update();
+		}
+
+		@Override
+		public void update() {
+			if (!disabled || entity == null) return;
+
+			// Check that our obedience AI task is added.
+			// We don't remove this AI as it watches the Disable AI Capability for changes.
+			if (task == null) {
+				entity.tasks.addTask(Integer.MIN_VALUE, new AIPlethoraObedience(entity, this));
+				task = entity.tasks.taskEntries.stream()
+					.filter(it -> it.action instanceof AIPlethoraObedience).findFirst()
+					.orElse(null);
+			} else {
+				entity.tasks.taskEntries.add(task);
+			}
 		}
 
 		@Override
@@ -101,28 +116,29 @@ public final class DisableAI {
 
 		@Override
 		public void deserializeNBT(NBTTagCompound tag) {
-			disabled = tag != null && tag.getBoolean("disabled");
+			setDisabled(tag != null && tag.getBoolean("disabled"));
 		}
 	}
 
-	public static class AIPlethoraObedience extends EntityAIBase {
+	private static class AIPlethoraObedience extends EntityAIBase {
 		private static final TypedField<EntityLiving, EntityLookHelper> LOOK_HELPER = TypedField.of(
 			EntityLiving.class, "lookHelper", "field_70749_g"
 		);
 
 		private final EntityLiving entity;
+		private final IDisableAIHandler handler;
+
 		private final PlethoraEntityLookHelper plethoraLook;
 		private EntityLookHelper oldLook;
 
-		AIPlethoraObedience(EntityLiving entityIn) {
-			entity = entityIn;
-			plethoraLook = new PlethoraEntityLookHelper(entity);
+		AIPlethoraObedience(EntityLiving entity, IDisableAIHandler handler) {
+			this.handler = handler;
+			this.entity = entity;
+			plethoraLook = new PlethoraEntityLookHelper(this.entity);
 		}
 
 		private boolean isAIDisabled() {
-			DisableAI.IDisableAIHandler disable = entity.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
-			if (disable == null) return false;
-			return disable.isDisabled();
+			return handler.isDisabled();
 		}
 
 		@Override

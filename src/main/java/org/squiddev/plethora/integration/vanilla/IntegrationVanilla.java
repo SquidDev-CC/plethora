@@ -83,7 +83,7 @@ public final class IntegrationVanilla {
 	public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
 		Entity entity = event.getObject();
 		if (entity instanceof EntityLiving) {
-			event.addCapability(DisableAI.DISABLE_AI, new DisableAI.DefaultDisableAI());
+			event.addCapability(DisableAI.DISABLE_AI, new DisableAI.DefaultDisableAI((EntityLiving) entity));
 		}
 	}
 
@@ -91,7 +91,8 @@ public final class IntegrationVanilla {
 	public static void entityTick(LivingEvent.LivingUpdateEvent event) {
 		EntityLivingBase livingBase = event.getEntityLiving();
 		if (livingBase instanceof EntityLiving) {
-			DisableAI.maybePossess((EntityLiving) livingBase);
+			DisableAI.IDisableAIHandler handler = livingBase.getCapability(DisableAI.DISABLE_AI_CAPABILITY, null);
+			if (handler != null) handler.update();
 		}
 	}
 
