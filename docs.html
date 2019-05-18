@@ -146,11 +146,13 @@
 <li><a href="#targeted-methods-ic2.api.tile.IEnergyStorage" class="target-name">ic2.api.tile.IEnergyStorage</a></li>
 <li><a href="#targeted-methods-java.lang.Object" class="target-name">java.lang.Object</a></li>
 <li><a href="#targeted-methods-mcmultipart.api.container.IMultipartContainer" class="target-name">mcmultipart.api.container.IMultipartContainer</a></li>
+<li><a href="#targeted-methods-net.darkhax.tesla.api.ITeslaHolder" class="target-name">net.darkhax.tesla.api.ITeslaHolder</a></li>
 <li><a href="#targeted-methods-net.minecraft.item.ItemStack" class="target-name">net.minecraft.item.ItemStack</a></li>
 <li><a href="#targeted-methods-net.minecraft.tileentity.TileEntityBrewingStand" class="target-name">net.minecraft.tileentity.TileEntityBrewingStand</a></li>
 <li><a href="#targeted-methods-net.minecraft.tileentity.TileEntityFurnace" class="target-name">net.minecraft.tileentity.TileEntityFurnace</a></li>
 <li><a href="#targeted-methods-net.minecraft.tileentity.TileEntitySign" class="target-name">net.minecraft.tileentity.TileEntitySign</a></li>
 <li><a href="#targeted-methods-net.minecraftforge.common.capabilities.ICapabilityProvider" class="target-name">net.minecraftforge.common.capabilities.ICapabilityProvider</a></li>
+<li><a href="#targeted-methods-net.minecraftforge.energy.IEnergyStorage" class="target-name">net.minecraftforge.energy.IEnergyStorage</a></li>
 <li><a href="#targeted-methods-net.minecraftforge.fluids.capability.IFluidHandler" class="target-name">net.minecraftforge.fluids.capability.IFluidHandler</a></li>
 <li><a href="#targeted-methods-net.minecraftforge.items.IItemHandler" class="target-name">net.minecraftforge.items.IItemHandler</a></li>
 <li><a href="#targeted-methods-org.squiddev.plethora.api.method.IMethodCollection" class="target-name">org.squiddev.plethora.api.method.IMethodCollection</a></li>
@@ -683,6 +685,7 @@
 <table class="doc-list">
 <tr><th>Function</th><th>Synopsis</th></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-disableAI(IModuleContainer)" class="doc-name">disableAI</a><td>Disable the AI of this entity.</td></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-enableAI(IModuleContainer)" class="doc-name">enableAI</a><td>Enable the AI of this entity.</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity-explode(IModuleContainer)" class="doc-name">explode</a><td>Explode this creeper.</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-isWalking(IModuleContainer)" class="doc-name">isWalking</a><td>Whether the entity is currently walking somewhere.</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-launch" class="doc-name">launch</a><td>Launch the entity in a set direction</td></tr>
@@ -694,16 +697,26 @@
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions-swing(IModuleContainer)" class="doc-name">swing</a><td>Left click with this item.</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.computercraft.MethodsKineticTurtle-swing(IModuleContainer)" class="doc-name">swing</a><td>Left click with this item.</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKineticEntity-teleport" class="doc-name">teleport</a><td>Teleport to a position relative to the current one</td></tr>
-<tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions-use(IModuleContainer)" class="doc-name">use</a><td>Right click with this item using a particular hand ("left" or "right").</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.computercraft.MethodsKineticTurtle-use(IModuleContainer)" class="doc-name">use</a><td>Right click with this item.</td></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions-use(IModuleContainer)" class="doc-name">use</a><td>Right click with this item using a particular hand ("left" or "right").</td></tr>
 <tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-walk" class="doc-name">walk</a><td>Walk to a coordinate</td></tr>
 </table>
 <div class="doc-item">
 <h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-disableAI(IModuleContainer)" class="doc-name">disableAI()</h4>
 <p class="synopsis">Disable the AI of this entity.</p>
-<p>Be warned: this permanently scars them - they'll never be the same again!</p>
+<p>Their neural pathways will be inhibited preventing them thinking for themselves</p>
 <table class="doc-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic#disableAI(IModuleContainer)</code></td></tr>
+<tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
+<tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLiving</code></td></tr>
+<tr><td>Modules</td><td><code>plethora:kinetic</code> </td></tr>
+</table>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsKinetic-enableAI(IModuleContainer)" class="doc-name">enableAI()</h4>
+<p class="synopsis">Enable the AI of this entity.</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKinetic#enableAI(IModuleContainer)</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLiving</code></td></tr>
 <tr><td>Modules</td><td><code>plethora:kinetic</code> </td></tr>
@@ -822,17 +835,6 @@
 </table>
 </div>
 <div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions-use(IModuleContainer)" class="doc-name">use([duration:integer], [hand:string]):boolean, string|nil</h4>
-<p class="synopsis">Right click with this item using a particular hand ("left" or "right").</p>
-<p>The duration is in ticks, or 1/20th of a second.</p>
-<table class="doc-details">
-<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions#use(IModuleContainer)</code></td></tr>
-<tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
-<tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLivingBase</code></td></tr>
-<tr><td>Modules</td><td><code>plethora:kinetic</code> </td></tr>
-</table>
-</div>
-<div class="doc-item">
 <h4 id="org.squiddev.plethora.integration.computercraft.MethodsKineticTurtle-use(IModuleContainer)" class="doc-name">use([duration:integer]):boolean, string|nil</h4>
 <p class="synopsis">Right click with this item.</p>
 <p>The duration is in ticks, or 1/20th of a second.</p>
@@ -840,6 +842,17 @@
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.computercraft.MethodsKineticTurtle#use(IModuleContainer)</code></td></tr>
 <tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
 <tr><td>Sub-target</td><td><code>dan200.computercraft.api.turtle.ITurtleAccess</code></td></tr>
+<tr><td>Modules</td><td><code>plethora:kinetic</code> </td></tr>
+</table>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions-use(IModuleContainer)" class="doc-name">use([duration:integer], [hand:string]):boolean, string|nil</h4>
+<p class="synopsis">Right click with this item using a particular hand ("left" or "right").</p>
+<p>The duration is in ticks, or 1/20th of a second.</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsKineticActions#use(IModuleContainer)</code></td></tr>
+<tr><td>Target</td><td><code>org.squiddev.plethora.api.module.IModuleContainer</code></td></tr>
+<tr><td>Sub-target</td><td><code>net.minecraft.entity.EntityLivingBase</code></td></tr>
 <tr><td>Modules</td><td><code>plethora:kinetic</code> </td></tr>
 </table>
 </div>
@@ -1600,6 +1613,30 @@
 </table>
 </div>
 </div>
+<h3 id="targeted-methods-net.darkhax.tesla.api.ITeslaHolder" class="target-name" >net.darkhax.tesla.api.ITeslaHolder</h3>
+<div class="target-data">
+<table class="doc-list">
+<tr><th>Function</th><th>Synopsis</th></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.tesla.IntegrationTesla-getTeslaCapacity(ITeslaHolder)" class="doc-name">getTeslaCapacity</a><td>The maximum amount of Tesla that can be stored</td></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.tesla.IntegrationTesla-getTeslaStored(ITeslaHolder)" class="doc-name">getTeslaStored</a><td>The amount of Tesla currently stored</td></tr>
+</table>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.tesla.IntegrationTesla-getTeslaCapacity(ITeslaHolder)" class="doc-name">getTeslaCapacity():int</h4>
+<p class="synopsis">The maximum amount of Tesla that can be stored</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.tesla.IntegrationTesla#getTeslaCapacity(ITeslaHolder)</code></td></tr>
+<tr><td>Target</td><td><code>net.darkhax.tesla.api.ITeslaHolder</code></td></tr>
+</table>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.tesla.IntegrationTesla-getTeslaStored(ITeslaHolder)" class="doc-name">getTeslaStored():int</h4>
+<p class="synopsis">The amount of Tesla currently stored</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.tesla.IntegrationTesla#getTeslaStored(ITeslaHolder)</code></td></tr>
+<tr><td>Target</td><td><code>net.darkhax.tesla.api.ITeslaHolder</code></td></tr>
+</table>
+</div>
+</div>
 <h3 id="targeted-methods-net.minecraft.item.ItemStack" class="target-name" >net.minecraft.item.ItemStack</h3>
 <div class="target-data">
 <table class="doc-list">
@@ -1730,6 +1767,30 @@
 <table class="doc-details">
 <tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodFluidHandler</code></td></tr>
 <tr><td>Target</td><td><code>net.minecraftforge.common.capabilities.ICapabilityProvider</code></td></tr>
+</table>
+</div>
+</div>
+<h3 id="targeted-methods-net.minecraftforge.energy.IEnergyStorage" class="target-name" >net.minecraftforge.energy.IEnergyStorage</h3>
+<div class="target-data">
+<table class="doc-list">
+<tr><th>Function</th><th>Synopsis</th></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler-getEnergyCapacity(IEnergyStorage)" class="doc-name">getEnergyCapacity</a><td>The maximum amount of energy that can be stored</td></tr>
+<tr><td><a href="#org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler-getEnergyStored(IEnergyStorage)" class="doc-name">getEnergyStored</a><td>The amount of energy currently stored</td></tr>
+</table>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler-getEnergyCapacity(IEnergyStorage)" class="doc-name">getEnergyCapacity():int</h4>
+<p class="synopsis">The maximum amount of energy that can be stored</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler#getEnergyCapacity(IEnergyStorage)</code></td></tr>
+<tr><td>Target</td><td><code>net.minecraftforge.energy.IEnergyStorage</code></td></tr>
+</table>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler-getEnergyStored(IEnergyStorage)" class="doc-name">getEnergyStored():int</h4>
+<p class="synopsis">The amount of energy currently stored</p>
+<table class="doc-details">
+<tr><td>Class</td><td><code>org.squiddev.plethora.integration.vanilla.method.MethodsEnergyHandler#getEnergyStored(IEnergyStorage)</code></td></tr>
+<tr><td>Target</td><td><code>net.minecraftforge.energy.IEnergyStorage</code></td></tr>
 </table>
 </div>
 </div>
@@ -2741,11 +2802,11 @@
 <h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_EGG_NEST" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_EGG_NEST</h4>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  egg = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  egg = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     count = 1,
     damage = 0,
     displayName = <span class="s2">"Egg"</span>,
-    maxCount = 16,
+    maxCount = 64,
     maxDamage = 0,
     name = <span class="s2">"minecraft:egg"</span>,
     nbtHash = <span class="s2">"b9c70089b3f99aafa3164a74864ad8ca"</span>,
@@ -2764,7 +2825,7 @@
 <h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_NEST_PEN" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_NEST_PEN</h4>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     armor = <span class="meta-map"><span class="meta-brace">{</span>
       boots = <span class="kc">nil</span>,
       chestplate = <span class="kc">nil</span>,
@@ -2774,7 +2835,7 @@
     displayName = <span class="s2">"Chicken"</span>,
     health = 4,
     heldItem = <span class="kc">nil</span>,
-    id = <span class="s2">"768b4b7c-88b0-4060-a2b2-3a7495241627"</span>,
+    id = <span class="s2">"f4f2ed9d-46e1-454c-99b3-2b93bc84f30b"</span>,
     isAirborne = <span class="kc">false</span>,
     isAlive = <span class="kc">true</span>,
     isBurning = <span class="kc">false</span>,
@@ -2848,7 +2909,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   available = 0,
-  component = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  component = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     count = 1,
     damage = 0,
     displayName = <span class="s2">"Stick"</span>,
@@ -2886,8 +2947,8 @@
 <span class="meta-map"><span class="meta-brace">{</span>
   chickens = <span class="meta-map"><span class="meta-brace">{</span>
     analyzed = <span class="kc">false</span>,
-    dropItem = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
-    layItem = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
+    dropItem = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
+    layItem = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
     tier = 1,
     type = <span class="s2">"chickens:smartchicken"</span>
   <span class="meta-brace">}</span></span>
@@ -2900,8 +2961,8 @@
 <h4 id="org.squiddev.plethora.integration.chickens.MetaChickens.META_CHICKENS_REGISTRY_ITEM" class="doc-name">org.squiddev.plethora.integration.chickens.MetaChickens.META_CHICKENS_REGISTRY_ITEM</h4>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  dropItem = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
-  layItem = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
+  dropItem = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
+  layItem = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
   parent1 = <span class="kc">nil</span>,
   parent2 = <span class="kc">nil</span>,
   tier = 1,
@@ -2979,11 +3040,11 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   frames = <span class="meta-map"><span class="meta-brace">{</span>
-    block = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    block = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       displayName = <span class="s2">"Dirt"</span>,
       harvestLevel = 0,
       harvestTool = <span class="s2">"shovel"</span>,
-      material = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+      material = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
         blocksLight = <span class="kc">true</span>,
         blocksMovement = <span class="kc">true</span>,
         burns = <span class="kc">false</span>,
@@ -3095,7 +3156,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   analyzed = <span class="kc">true</span>,
-  genome = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  genome = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     active = <span class="meta-map"><span class="meta-brace">{</span>
       cave_dwelling = <span class="kc">false</span>,
       effect = <span class="s2">"forestry.effectNone"</span>,
@@ -3441,7 +3502,7 @@
 <span class="meta-map"><span class="meta-brace">{</span>
   harvestLevel = 0,
   harvestTool = <span class="s2">"pickaxe"</span>,
-  material = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  material = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     blocksLight = <span class="kc">true</span>,
     blocksMovement = <span class="kc">true</span>,
     burns = <span class="kc">false</span>,
@@ -3466,7 +3527,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   displayName = <span class="s2">"Experience Orb"</span>,
-  id = <span class="s2">"92cbf9d0-1ada-4ebb-8fe4-4d14787ae812"</span>,
+  id = <span class="s2">"8d359138-3558-4c64-8fc8-0eb035e03b79"</span>,
   motionX = 0.5,
   motionY = 0,
   motionZ = 0,
@@ -3492,12 +3553,12 @@
 <span class="meta-map"><span class="meta-brace">{</span>
   armor = <span class="meta-map"><span class="meta-brace">{</span>
     boots = <span class="kc">nil</span>,
-    chestplate = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
+    chestplate = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
     helmet = <span class="kc">nil</span>,
     leggings = <span class="kc">nil</span>
   <span class="meta-brace">}</span></span>,
   health = 20,
-  heldItem = <span class="o">«reference to net.minecraft.item.ItemStack»</span>,
+  heldItem = <span class="o">&laquo;reference to net.minecraft.item.ItemStack&raquo;</span>,
   isAirborne = <span class="kc">false</span>,
   isAlive = <span class="kc">true</span>,
   isBurning = <span class="kc">false</span>,
@@ -3524,7 +3585,7 @@
 <p class="synopsis">Provides the stack of a dropped item</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  item = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  item = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     count = 1,
     damage = 0,
     displayName = <span class="s2">"Dirt"</span>,
@@ -3573,11 +3634,23 @@
 <h3 id="metadata-providers-net.minecraft.item.ItemStack" class="target-name" >net.minecraft.item.ItemStack</h3>
 <div class="target-data">
 <div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemPrintout" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemPrintout</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  printout = <span class="meta-map"><span class="meta-brace">{</span>
+    lines = {},
+    pages = 0,
+    title = <span class="s2">"My page"</span>,
+    type = <span class="s2">"Single"</span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
 <h4 id="org.squiddev.plethora.integration.astralsorcery.MetaBlocks.META_ITEM_COLLECTOR_CRYSTAL" class="doc-name">org.squiddev.plethora.integration.astralsorcery.MetaBlocks.META_ITEM_COLLECTOR_CRYSTAL</h4>
 <p class="synopsis">Provides the attunement and crystal type for a Collector Crystal in item form</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -2090749,
     colour = -2090749,
     displayName = <span class="s2">"Discidia"</span>,
@@ -3588,7 +3661,7 @@
     tierColour = -14138420
   </span><span class="meta-brace">}</span></span>,
   crystalType = <span class="s2">"ROCK_CRYSTAL"</span>,
-  traitConstellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  traitConstellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -9073752,
     colour = -9073752,
     displayName = <span class="s2">"Gelu"</span>,
@@ -3601,17 +3674,754 @@
 <span class="meta-brace">}</span></span></pre>
 </div>
 <div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.VanillaMeta.ENCHANTED_ITEM" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.VanillaMeta.ENCHANTED_ITEM</h4>
+<p class="synopsis">Provides the enchantments on an item</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  enchantments = <span class="meta-map"><span class="meta-brace">{</span>
+    <span class="meta-map"><span class="meta-brace">{</span>
+      fullName = <span class="s2">"Unbreaking V"</span>,
+      level = 5,
+      name = <span class="s2">"enchantment.durability"</span>
+    <span class="meta-brace">}</span></span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  count = 5,
+  damage = 0,
+  displayName = <span class="s2">"Stick"</span>,
+  maxCount = 64,
+  maxDamage = 0,
+  name = <span class="s2">"minecraft:stick"</span>,
+  nbtHash = <span class="kc">nil</span>,
+  rawName = <span class="s2">"item.stick"</span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.cyclic.IntegrationCyclic.META_MONSTER_NET" class="doc-name">org.squiddev.plethora.integration.cyclic.IntegrationCyclic.META_MONSTER_NET</h4>
+<p class="synopsis">Provides the entity captured inside this monster net.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Squid"</span>,
+    health = 10,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"91334b80-21d3-4bfe-a00a-171289d60ed9"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 10,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Squid"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.9,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.4,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_FOOD" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_FOOD</h4>
+<p class="synopsis">Provides the hunger and saturation this foodstuff restores.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  heal = 5,
+  saturation = 0.6
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_POTION" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_POTION</h4>
+<p class="synopsis">Provides the potion type and effects of this item.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  effects = <span class="meta-map"><span class="meta-brace">{</span>
+    <span class="meta-map"><span class="meta-brace">{</span>
+      amplifier = 0,
+      color = 8171462,
+      duration = 180,
+      instant = <span class="kc">false</span>,
+      name = <span class="s2">"effect.moveSpeed"</span>
+    <span class="meta-brace">}</span></span>
+  <span class="meta-brace">}</span></span>,
+  potion = <span class="s2">"minecraft:swiftness"</span>,
+  potionType = <span class="s2">"normal"</span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_SPAWN_EGG" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_SPAWN_EGG</h4>
+<p class="synopsis">Provides information about items captured within spawn eggs.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Bat"</span>,
+    health = 6,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"bb7113ff-6269-4020-bae2-bf673bb87300"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 6,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Bat"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.95,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.45,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_TOOL_CLASS" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_TOOL_CLASS</h4>
+<p class="synopsis">Provides the tool classes an item may have.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  toolClass = <span class="meta-map"><span class="meta-brace">{</span>
+    pickaxe = 3
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.refinedstorage.MetaItemPattern" class="doc-name">org.squiddev.plethora.integration.refinedstorage.MetaItemPattern</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  pattern = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    byproducts = {},
+    fluidInputs = {},
+    fluidOutputs = {},
+    id = <span class="s2">"normal"</span>,
+    inputs = {},
+    oredict = <span class="kc">false</span>,
+    outputs = {},
+    processing = <span class="kc">false</span>,
+    valid = <span class="kc">false</span>
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemArmor" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemArmor</h4>
+<p class="synopsis">Provides type and colour of amour.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  armorType = <span class="s2">"chest"</span>,
+  color = 16711680,
+  colour = 16711680
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemComputer" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemComputer</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  computer = <span class="meta-map"><span class="meta-brace">{</span>
+    family = <span class="s2">"Normal"</span>,
+    id = 3,
+    label = <span class="s2">"My computer"</span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.ic2.MetaEnergyItem" class="doc-name">org.squiddev.plethora.integration.ic2.MetaEnergyItem</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  eu = <span class="meta-map"><span class="meta-brace">{</span>
+    capacity = 60000,
+    stored = 0,
+    tier = 1
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.tconstruct.MetaToolCore" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaToolCore</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  tool = <span class="meta-map"><span class="meta-brace">{</span>
+    attack = 2,
+    durability = 75,
+    freeModifiers = 3,
+    maxDurability = 75,
+    miningSpeed = 2,
+    modifiers = <span class="meta-map"><span class="meta-brace">{</span>
+      <span class="meta-map"><span class="meta-brace">{</span>
+        id = <span class="s2">"ecological"</span>,
+        name = <span class="s2">"Ecological"</span>
+      <span class="meta-brace">}</span></span>
+    <span class="meta-brace">}</span></span>,
+    parts = <span class="meta-map"><span class="meta-brace">{</span>
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        count = 1,
+        damage = 0,
+        displayName = <span class="s2">"Wooden Tool Rod"</span>,
+        maxCount = 64,
+        maxDamage = 0,
+        name = <span class="s2">"tconstruct:tool_rod"</span>,
+        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
+        ores = <span class="meta-map"><span class="meta-brace">{</span>
+          partToolRod = <span class="kc">true</span>
+        <span class="meta-brace">}</span></span>,
+        rawName = <span class="s2">"item.tconstruct.tool_rod"</span>,
+        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
+          id = <span class="s2">"wood"</span>,
+          name = <span class="s2">"Wood"</span>,
+          stats = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              durability = 25,
+              id = <span class="s2">"handle"</span>,
+              modifier = 1,
+              name = <span class="s2">"Handle"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>,
+          traits = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              id = <span class="s2">"ecological"</span>,
+              name = <span class="s2">"Ecological"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>
+        <span class="meta-brace">}</span></span>,
+        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
+          cost = 144
+        <span class="meta-brace">}</span></span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        count = 1,
+        damage = 0,
+        displayName = <span class="s2">"Wooden Pickaxe Head"</span>,
+        maxCount = 64,
+        maxDamage = 0,
+        name = <span class="s2">"tconstruct:pick_head"</span>,
+        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
+        ores = <span class="meta-map"><span class="meta-brace">{</span>
+          partPickHead = <span class="kc">true</span>
+        <span class="meta-brace">}</span></span>,
+        rawName = <span class="s2">"item.tconstruct.pick_head"</span>,
+        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
+          id = <span class="s2">"wood"</span>,
+          name = <span class="s2">"Wood"</span>,
+          stats = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              attack = 2,
+              durability = 35,
+              id = <span class="s2">"head"</span>,
+              miningLevel = 0,
+              miningSpeed = 2,
+              name = <span class="s2">"Head"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>,
+          traits = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              id = <span class="s2">"ecological"</span>,
+              name = <span class="s2">"Ecological"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>
+        <span class="meta-brace">}</span></span>,
+        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
+          cost = 288
+        <span class="meta-brace">}</span></span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        count = 1,
+        damage = 0,
+        displayName = <span class="s2">"Wooden Binding"</span>,
+        maxCount = 64,
+        maxDamage = 0,
+        name = <span class="s2">"tconstruct:binding"</span>,
+        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
+        ores = <span class="meta-map"><span class="meta-brace">{</span>
+          partBinding = <span class="kc">true</span>
+        <span class="meta-brace">}</span></span>,
+        rawName = <span class="s2">"item.tconstruct.binding"</span>,
+        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
+          id = <span class="s2">"wood"</span>,
+          name = <span class="s2">"Wood"</span>,
+          stats = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              extraDurability = 15,
+              id = <span class="s2">"extra"</span>,
+              name = <span class="s2">"Extra"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>,
+          traits = <span class="meta-map"><span class="meta-brace">{</span>
+            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+              id = <span class="s2">"ecological"</span>,
+              name = <span class="s2">"Ecological"</span>
+            </span><span class="meta-brace">}</span></span>
+          <span class="meta-brace">}</span></span>
+        <span class="meta-brace">}</span></span>,
+        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
+          cost = 144
+        <span class="meta-brace">}</span></span>
+      </span><span class="meta-brace">}</span></span>
+    <span class="meta-brace">}</span></span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemOreDict" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemOreDict</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  ores = <span class="meta-map"><span class="meta-brace">{</span>
+    blockGlass = <span class="kc">true</span>,
+    blockGlassColorless = <span class="kc">true</span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.tconstruct.MetaTConstruct.META_TOOL_PART" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaTConstruct.META_TOOL_PART</h4>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_ANIMAL_NET" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_ANIMAL_NET</h4>
+<p class="synopsis">Provides the entity captured inside this Animal Net.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Cow"</span>,
+    health = 10,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"4bed62a0-a19b-46eb-a8b5-92a4dc1f272f"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 10,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Cow"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.8,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 1.3,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_HATCHERY_EGG" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_HATCHERY_EGG</h4>
+<p class="synopsis">Provides the entity that may spawn from this Egg</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Chicken"</span>,
+    health = 4,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"6ef08c2c-597f-4c3b-ac98-1024563146f8"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 4,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Chicken"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    roost = <span class="meta-map"><span class="meta-brace">{</span>
+      name = <span class="s2">"vanilla"</span>,
+      type = <span class="s2">"minecraft:chicken"</span>
+    <span class="meta-brace">}</span></span>,
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.2,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.7,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.extrautilities.IntegrationExtraUtilities.META_MONSTER_NET" class="doc-name">org.squiddev.plethora.integration.extrautilities.IntegrationExtraUtilities.META_MONSTER_NET</h4>
+<p class="synopsis">Provides the entity captured inside this lasso.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Squid"</span>,
+    health = 10,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"14cae505-0b89-489f-a1df-e9f407978f64"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 10,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Squid"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.9,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.4,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.notenoughwands.IntegrationNEW.META_CAPTURING_WAND" class="doc-name">org.squiddev.plethora.integration.notenoughwands.IntegrationNEW.META_CAPTURING_WAND</h4>
+<p class="synopsis">Provides the entity captured inside this capturing wand.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Squid"</span>,
+    health = 10,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"d2a6b196-7688-41b5-8558-c63baa646c23"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 10,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Squid"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.9,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.4,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemMedia" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemMedia</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  media = <span class="meta-map"><span class="meta-brace">{</span>
+    label = <span class="s2">"My disk"</span>,
+    recordTitle = <span class="kc">nil</span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemMaterial" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemMaterial</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  material = <span class="s2">"DIAMOND"</span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.plethora.MetaItemModule" class="doc-name">org.squiddev.plethora.integration.plethora.MetaItemModule</h4>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.ic2.MetaItemCrop" class="doc-name">org.squiddev.plethora.integration.ic2.MetaItemCrop</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  crop = <span class="meta-map"><span class="meta-brace">{</span>
+    attributes = <span class="meta-map"><span class="meta-brace">{</span>
+      <span class="s2">"Gray"</span>,
+      <span class="s2">"Leaves"</span>,
+      <span class="s2">"Metal"</span>
+    <span class="meta-brace">}</span></span>,
+    discoverer = <span class="s2">"IC2 Team"</span>,
+    gain = 16,
+    growth = 4,
+    maxSize = 4,
+    name = <span class="s2">"ic2.crop.ferru"</span>,
+    owner = <span class="s2">"ic2"</span>,
+    props = <span class="meta-map"><span class="meta-brace">{</span>
+      chemistry = 2,
+      colorful = 1,
+      colourful = 1,
+      consumable = 0,
+      defensive = 0,
+      weed = 0
+    <span class="meta-brace">}</span></span>,
+    resistance = 10,
+    scanLevel = 4,
+    tier = 6
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.appliedenergistics.MetaItemPattern" class="doc-name">org.squiddev.plethora.integration.appliedenergistics.MetaItemPattern</h4>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemBanner" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemBanner</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  banner = <span class="meta-map"><span class="meta-brace">{</span>
+    <span class="meta-map"><span class="meta-brace">{</span>
+      color = <span class="s2">"purple"</span>,
+      colour = <span class="s2">"purple"</span>,
+      id = <span class="s2">"cre"</span>,
+      name = <span class="s2">"creeper"</span>
+    <span class="meta-brace">}</span></span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.rf.MetaEnergyContainerItem" class="doc-name">org.squiddev.plethora.integration.rf.MetaEnergyContainerItem</h4>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.industrialforegoing.IntegrationIF.META_MOB_IMPRISONMENT" class="doc-name">org.squiddev.plethora.integration.industrialforegoing.IntegrationIF.META_MOB_IMPRISONMENT</h4>
+<p class="synopsis">Provides the entity captured inside this mob imprisonment tool.</p>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+    armor = <span class="meta-map"><span class="meta-brace">{</span>
+      boots = <span class="kc">nil</span>,
+      chestplate = <span class="kc">nil</span>,
+      helmet = <span class="kc">nil</span>,
+      leggings = <span class="kc">nil</span>
+    <span class="meta-brace">}</span></span>,
+    displayName = <span class="s2">"Squid"</span>,
+    health = 10,
+    heldItem = <span class="kc">nil</span>,
+    id = <span class="s2">"6387920b-28e1-466b-a927-4776962161a8"</span>,
+    isAirborne = <span class="kc">false</span>,
+    isAlive = <span class="kc">true</span>,
+    isBurning = <span class="kc">false</span>,
+    isChild = <span class="kc">false</span>,
+    isDead = <span class="kc">false</span>,
+    isElytraFlying = <span class="kc">false</span>,
+    isInWater = <span class="kc">false</span>,
+    isOnLadder = <span class="kc">false</span>,
+    isRiding = <span class="kc">false</span>,
+    isSleeping = <span class="kc">false</span>,
+    isSneaking = <span class="kc">false</span>,
+    isSprinting = <span class="kc">false</span>,
+    isWet = <span class="kc">false</span>,
+    maxHealth = 10,
+    motionX = 0,
+    motionY = 0,
+    motionZ = 0,
+    name = <span class="s2">"Squid"</span>,
+    offhandItem = <span class="kc">nil</span>,
+    pitch = 0,
+    potionEffects = {},
+    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
+      x = 0.5,
+      y = 0.9,
+      z = 0.5
+    <span class="meta-brace">}</span></span>,
+    x = 0,
+    y = 0.4,
+    yaw = 0,
+    z = 0
+  </span><span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.tconstruct.MetaMaterial" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaMaterial</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
+    id = <span class="s2">"unknown"</span>,
+    name = <span class="s2">"material.unknown.name"</span>,
+    stats = <span class="meta-map"><span class="meta-brace">{</span>
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        attack = 1,
+        durability = 1,
+        id = <span class="s2">"head"</span>,
+        miningLevel = 0,
+        miningSpeed = 1,
+        name = <span class="s2">"Head"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        durability = 0,
+        id = <span class="s2">"handle"</span>,
+        modifier = 1,
+        name = <span class="s2">"Handle"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        extraDurability = 0,
+        id = <span class="s2">"extra"</span>,
+        name = <span class="s2">"Extra"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        id = <span class="s2">"bow"</span>,
+        name = <span class="s2">"Bow"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        id = <span class="s2">"bowstring"</span>,
+        name = <span class="s2">"Bowstring"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        id = <span class="s2">"shaft"</span>,
+        name = <span class="s2">"Arrow Shaft"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        id = <span class="s2">"fletching"</span>,
+        name = <span class="s2">"Fletching"</span>
+      </span><span class="meta-brace">}</span></span>,
+      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
+        id = <span class="s2">"projectile"</span>,
+        name = <span class="s2">"Projectile"</span>
+      </span><span class="meta-brace">}</span></span>
+    <span class="meta-brace">}</span></span>,
+    traits = {}
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
+<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemTurtle" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemTurtle</h4>
+<pre class="highlight">
+<span class="meta-map"><span class="meta-brace">{</span>
+  turtle = <span class="meta-map"><span class="meta-brace">{</span>
+    color = 65280,
+    colour = 65280,
+    fuel = 3000,
+    left = <span class="meta-map"><span class="meta-brace">{</span>
+      adjective = <span class="s2">"upgrade.computercraft:advanced_modem.adjective"</span>,
+      id = <span class="s2">"computercraft:advanced_modem"</span>,
+      type = <span class="s2">"Peripheral"</span>
+    <span class="meta-brace">}</span></span>,
+    right = <span class="kc">nil</span>
+  <span class="meta-brace">}</span></span>
+<span class="meta-brace">}</span></span></pre>
+</div>
+<div class="doc-item">
 <h4 id="org.squiddev.plethora.integration.forestry.MetaItemGenetic" class="doc-name">org.squiddev.plethora.integration.forestry.MetaItemGenetic</h4>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  individual = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  individual = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     analyzed = <span class="kc">true</span>,
     bee = <span class="meta-map"><span class="meta-brace">{</span>
       canSpawn = <span class="kc">false</span>,
       generation = 0,
       pristine = <span class="kc">true</span>
     <span class="meta-brace">}</span></span>,
-    genome = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    genome = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       active = <span class="meta-map"><span class="meta-brace">{</span>
         cave_dwelling = <span class="kc">false</span>,
         effect = <span class="s2">"forestry.effectNone"</span>,
@@ -3687,18 +4497,11 @@
 <span class="meta-brace">}</span></span></pre>
 </div>
 <div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemMaterial" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemMaterial</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  material = <span class="s2">"DIAMOND"</span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
 <h4 id="org.squiddev.plethora.integration.thermalexpansion.IntegrationThermalExpansion.META_MORB" class="doc-name">org.squiddev.plethora.integration.thermalexpansion.IntegrationThermalExpansion.META_MORB</h4>
 <p class="synopsis">Provides the entity captured inside this Morb.</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     armor = <span class="meta-map"><span class="meta-brace">{</span>
       boots = <span class="kc">nil</span>,
       chestplate = <span class="kc">nil</span>,
@@ -3708,7 +4511,7 @@
     displayName = <span class="s2">"Elder Guardian"</span>,
     health = 80,
     heldItem = <span class="kc">nil</span>,
-    id = <span class="s2">"9a334a40-55ec-4561-a554-5de5918c0d69"</span>,
+    id = <span class="s2">"ce103729-1fa2-4cc4-818d-bdbee4b92523"</span>,
     isAirborne = <span class="kc">false</span>,
     isAlive = <span class="kc">true</span>,
     isBurning = <span class="kc">false</span>,
@@ -3743,522 +4546,17 @@
 <span class="meta-brace">}</span></span></pre>
 </div>
 <div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.appliedenergistics.MetaItemPattern" class="doc-name">org.squiddev.plethora.integration.appliedenergistics.MetaItemPattern</h4>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemPrintout" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemPrintout</h4>
+<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemPocketComputer" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemPocketComputer</h4>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  printout = <span class="meta-map"><span class="meta-brace">{</span>
-    lines = {},
-    pages = 0,
-    title = <span class="s2">"My page"</span>,
-    type = <span class="s2">"Single"</span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.tconstruct.MetaTConstruct.META_TOOL_PART" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaTConstruct.META_TOOL_PART</h4>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.tconstruct.MetaToolCore" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaToolCore</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  tool = <span class="meta-map"><span class="meta-brace">{</span>
-    attack = 2,
-    durability = 75,
-    freeModifiers = 3,
-    maxDurability = 75,
-    miningSpeed = 2,
-    modifiers = <span class="meta-map"><span class="meta-brace">{</span>
-      <span class="meta-map"><span class="meta-brace">{</span>
-        id = <span class="s2">"ecological"</span>,
-        name = <span class="s2">"Ecological"</span>
-      <span class="meta-brace">}</span></span>
+  pocket = <span class="meta-map"><span class="meta-brace">{</span>
+    back = <span class="meta-map"><span class="meta-brace">{</span>
+      adjective = <span class="s2">"upgrade.computercraft:speaker.adjective"</span>,
+      id = <span class="s2">"computercraft:speaker"</span>
     <span class="meta-brace">}</span></span>,
-    parts = <span class="meta-map"><span class="meta-brace">{</span>
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        count = 1,
-        damage = 0,
-        displayName = <span class="s2">"Wooden Tool Rod"</span>,
-        maxCount = 64,
-        maxDamage = 0,
-        name = <span class="s2">"tconstruct:tool_rod"</span>,
-        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
-        ores = <span class="meta-map"><span class="meta-brace">{</span>
-          partToolRod = <span class="kc">true</span>
-        <span class="meta-brace">}</span></span>,
-        rawName = <span class="s2">"item.tconstruct.tool_rod"</span>,
-        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
-          id = <span class="s2">"wood"</span>,
-          name = <span class="s2">"Wood"</span>,
-          stats = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              durability = 25,
-              id = <span class="s2">"handle"</span>,
-              modifier = 1,
-              name = <span class="s2">"Handle"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>,
-          traits = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              id = <span class="s2">"ecological"</span>,
-              name = <span class="s2">"Ecological"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>
-        <span class="meta-brace">}</span></span>,
-        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
-          cost = 144
-        <span class="meta-brace">}</span></span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        count = 1,
-        damage = 0,
-        displayName = <span class="s2">"Wooden Pickaxe Head"</span>,
-        maxCount = 64,
-        maxDamage = 0,
-        name = <span class="s2">"tconstruct:pick_head"</span>,
-        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
-        ores = <span class="meta-map"><span class="meta-brace">{</span>
-          partPickHead = <span class="kc">true</span>
-        <span class="meta-brace">}</span></span>,
-        rawName = <span class="s2">"item.tconstruct.pick_head"</span>,
-        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
-          id = <span class="s2">"wood"</span>,
-          name = <span class="s2">"Wood"</span>,
-          stats = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              attack = 2,
-              durability = 35,
-              id = <span class="s2">"head"</span>,
-              miningLevel = 0,
-              miningSpeed = 2,
-              name = <span class="s2">"Head"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>,
-          traits = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              id = <span class="s2">"ecological"</span>,
-              name = <span class="s2">"Ecological"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>
-        <span class="meta-brace">}</span></span>,
-        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
-          cost = 288
-        <span class="meta-brace">}</span></span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        count = 1,
-        damage = 0,
-        displayName = <span class="s2">"Wooden Binding"</span>,
-        maxCount = 64,
-        maxDamage = 0,
-        name = <span class="s2">"tconstruct:binding"</span>,
-        nbtHash = <span class="s2">"1bff577798a5aea42adc2a3ebfc44f54"</span>,
-        ores = <span class="meta-map"><span class="meta-brace">{</span>
-          partBinding = <span class="kc">true</span>
-        <span class="meta-brace">}</span></span>,
-        rawName = <span class="s2">"item.tconstruct.binding"</span>,
-        toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
-          id = <span class="s2">"wood"</span>,
-          name = <span class="s2">"Wood"</span>,
-          stats = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              extraDurability = 15,
-              id = <span class="s2">"extra"</span>,
-              name = <span class="s2">"Extra"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>,
-          traits = <span class="meta-map"><span class="meta-brace">{</span>
-            <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-              id = <span class="s2">"ecological"</span>,
-              name = <span class="s2">"Ecological"</span>
-            </span><span class="meta-brace">}</span></span>
-          <span class="meta-brace">}</span></span>
-        <span class="meta-brace">}</span></span>,
-        toolPart = <span class="meta-map"><span class="meta-brace">{</span>
-          cost = 144
-        <span class="meta-brace">}</span></span>
-      </span><span class="meta-brace">}</span></span>
-    <span class="meta-brace">}</span></span>
+    color = 16711680,
+    colour = 16711680
   <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.ic2.MetaEnergyItem" class="doc-name">org.squiddev.plethora.integration.ic2.MetaEnergyItem</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  eu = <span class="meta-map"><span class="meta-brace">{</span>
-    capacity = 60000,
-    stored = 0,
-    tier = 1
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemMedia" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemMedia</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  media = <span class="meta-map"><span class="meta-brace">{</span>
-    label = <span class="s2">"My disk"</span>,
-    recordTitle = <span class="kc">nil</span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemTurtle" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemTurtle</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  turtle = <span class="meta-map"><span class="meta-brace">{</span>
-    color = 65280,
-    colour = 65280,
-    fuel = 3000,
-    left = <span class="meta-map"><span class="meta-brace">{</span>
-      adjective = <span class="s2">"upgrade.computercraft:advanced_modem.adjective"</span>,
-      id = <span class="s2">"computercraft:advanced_modem"</span>,
-      type = <span class="s2">"Peripheral"</span>
-    <span class="meta-brace">}</span></span>,
-    right = <span class="kc">nil</span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.plethora.MetaItemModule" class="doc-name">org.squiddev.plethora.integration.plethora.MetaItemModule</h4>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemOreDict" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemOreDict</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  ores = <span class="meta-map"><span class="meta-brace">{</span>
-    blockGlass = <span class="kc">true</span>,
-    blockGlassColorless = <span class="kc">true</span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.VanillaMeta.ENCHANTED_ITEM" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.VanillaMeta.ENCHANTED_ITEM</h4>
-<p class="synopsis">Provides the enchantments on an item</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  enchantments = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="meta-map"><span class="meta-brace">{</span>
-      fullName = <span class="s2">"Unbreaking V"</span>,
-      level = 5,
-      name = <span class="s2">"enchantment.durability"</span>
-    <span class="meta-brace">}</span></span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.ic2.MetaItemCrop" class="doc-name">org.squiddev.plethora.integration.ic2.MetaItemCrop</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  crop = <span class="meta-map"><span class="meta-brace">{</span>
-    attributes = <span class="meta-map"><span class="meta-brace">{</span>
-      <span class="s2">"Gray"</span>,
-      <span class="s2">"Leaves"</span>,
-      <span class="s2">"Metal"</span>
-    <span class="meta-brace">}</span></span>,
-    discoverer = <span class="s2">"IC2 Team"</span>,
-    gain = 16,
-    growth = 4,
-    maxSize = 4,
-    name = <span class="s2">"ic2.crop.ferru"</span>,
-    owner = <span class="s2">"ic2"</span>,
-    props = <span class="meta-map"><span class="meta-brace">{</span>
-      chemistry = 2,
-      colorful = 1,
-      colourful = 1,
-      consumable = 0,
-      defensive = 0,
-      weed = 0
-    <span class="meta-brace">}</span></span>,
-    resistance = 10,
-    scanLevel = 4,
-    tier = 6
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.tconstruct.MetaMaterial" class="doc-name">org.squiddev.plethora.integration.tconstruct.MetaMaterial</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  toolMaterial = <span class="meta-map"><span class="meta-brace">{</span>
-    id = <span class="s2">"unknown"</span>,
-    name = <span class="s2">"material.unknown.name"</span>,
-    stats = <span class="meta-map"><span class="meta-brace">{</span>
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        attack = 1,
-        durability = 1,
-        id = <span class="s2">"head"</span>,
-        miningLevel = 0,
-        miningSpeed = 1,
-        name = <span class="s2">"Head"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        durability = 0,
-        id = <span class="s2">"handle"</span>,
-        modifier = 1,
-        name = <span class="s2">"Handle"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        extraDurability = 0,
-        id = <span class="s2">"extra"</span>,
-        name = <span class="s2">"Extra"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        id = <span class="s2">"bow"</span>,
-        name = <span class="s2">"Bow"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        id = <span class="s2">"bowstring"</span>,
-        name = <span class="s2">"Bowstring"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        id = <span class="s2">"shaft"</span>,
-        name = <span class="s2">"Arrow Shaft"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        id = <span class="s2">"fletching"</span>,
-        name = <span class="s2">"Fletching"</span>
-      </span><span class="meta-brace">}</span></span>,
-      <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-        id = <span class="s2">"projectile"</span>,
-        name = <span class="s2">"Projectile"</span>
-      </span><span class="meta-brace">}</span></span>
-    <span class="meta-brace">}</span></span>,
-    traits = {}
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemBanner" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemBanner</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  banner = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="meta-map"><span class="meta-brace">{</span>
-      color = <span class="s2">"purple"</span>,
-      colour = <span class="s2">"purple"</span>,
-      id = <span class="s2">"cre"</span>,
-      name = <span class="s2">"creeper"</span>
-    <span class="meta-brace">}</span></span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_FOOD" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_FOOD</h4>
-<p class="synopsis">Provides the hunger and saturation this foodstuff restores.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  heal = 5,
-  saturation = 0.6
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_POTION" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_POTION</h4>
-<p class="synopsis">Provides the potion type and effects of this item.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  effects = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="meta-map"><span class="meta-brace">{</span>
-      amplifier = 0,
-      color = 8171462,
-      duration = 180,
-      instant = <span class="kc">false</span>,
-      name = <span class="s2">"effect.moveSpeed"</span>
-    <span class="meta-brace">}</span></span>
-  <span class="meta-brace">}</span></span>,
-  potion = <span class="s2">"minecraft:swiftness"</span>,
-  potionType = <span class="s2">"normal"</span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_SPAWN_EGG" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_SPAWN_EGG</h4>
-<p class="synopsis">Provides information about items captured within spawn eggs.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-    armor = <span class="meta-map"><span class="meta-brace">{</span>
-      boots = <span class="kc">nil</span>,
-      chestplate = <span class="kc">nil</span>,
-      helmet = <span class="kc">nil</span>,
-      leggings = <span class="kc">nil</span>
-    <span class="meta-brace">}</span></span>,
-    displayName = <span class="s2">"Bat"</span>,
-    health = 6,
-    heldItem = <span class="kc">nil</span>,
-    id = <span class="s2">"f8c799e8-87d3-4fde-aacb-b153924aaa2a"</span>,
-    isAirborne = <span class="kc">false</span>,
-    isAlive = <span class="kc">true</span>,
-    isBurning = <span class="kc">false</span>,
-    isChild = <span class="kc">false</span>,
-    isDead = <span class="kc">false</span>,
-    isElytraFlying = <span class="kc">false</span>,
-    isInWater = <span class="kc">false</span>,
-    isOnLadder = <span class="kc">false</span>,
-    isRiding = <span class="kc">false</span>,
-    isSleeping = <span class="kc">false</span>,
-    isSneaking = <span class="kc">false</span>,
-    isSprinting = <span class="kc">false</span>,
-    isWet = <span class="kc">false</span>,
-    maxHealth = 6,
-    motionX = 0,
-    motionY = 0,
-    motionZ = 0,
-    name = <span class="s2">"Bat"</span>,
-    offhandItem = <span class="kc">nil</span>,
-    pitch = 0,
-    potionEffects = {},
-    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
-      x = 0.5,
-      y = 0.95,
-      z = 0.5
-    <span class="meta-brace">}</span></span>,
-    x = 0,
-    y = 0.45,
-    yaw = 0,
-    z = 0
-  </span><span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_TOOL_CLASS" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItems.ITEM_TOOL_CLASS</h4>
-<p class="synopsis">Provides the tool classes an item may have.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  toolClass = <span class="meta-map"><span class="meta-brace">{</span>
-    pickaxe = 3
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_ANIMAL_NET" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_ANIMAL_NET</h4>
-<p class="synopsis">Provides the entity captured inside this Animal Net.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  capturedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-    armor = <span class="meta-map"><span class="meta-brace">{</span>
-      boots = <span class="kc">nil</span>,
-      chestplate = <span class="kc">nil</span>,
-      helmet = <span class="kc">nil</span>,
-      leggings = <span class="kc">nil</span>
-    <span class="meta-brace">}</span></span>,
-    displayName = <span class="s2">"Cow"</span>,
-    health = 10,
-    heldItem = <span class="kc">nil</span>,
-    id = <span class="s2">"35b2e617-2966-4025-aa54-050f58bf00b2"</span>,
-    isAirborne = <span class="kc">false</span>,
-    isAlive = <span class="kc">true</span>,
-    isBurning = <span class="kc">false</span>,
-    isChild = <span class="kc">false</span>,
-    isDead = <span class="kc">false</span>,
-    isElytraFlying = <span class="kc">false</span>,
-    isInWater = <span class="kc">false</span>,
-    isOnLadder = <span class="kc">false</span>,
-    isRiding = <span class="kc">false</span>,
-    isSleeping = <span class="kc">false</span>,
-    isSneaking = <span class="kc">false</span>,
-    isSprinting = <span class="kc">false</span>,
-    isWet = <span class="kc">false</span>,
-    maxHealth = 10,
-    motionX = 0,
-    motionY = 0,
-    motionZ = 0,
-    name = <span class="s2">"Cow"</span>,
-    offhandItem = <span class="kc">nil</span>,
-    pitch = 0,
-    potionEffects = {},
-    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
-      x = 0.5,
-      y = 0.8,
-      z = 0.5
-    <span class="meta-brace">}</span></span>,
-    x = 0,
-    y = 1.3,
-    yaw = 0,
-    z = 0
-  </span><span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_HATCHERY_EGG" class="doc-name">org.squiddev.plethora.integration.hatchery.IntegrationHatchery.META_HATCHERY_EGG</h4>
-<p class="synopsis">Provides the entity that may spawn from this Egg</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  storedEntity = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-    armor = <span class="meta-map"><span class="meta-brace">{</span>
-      boots = <span class="kc">nil</span>,
-      chestplate = <span class="kc">nil</span>,
-      helmet = <span class="kc">nil</span>,
-      leggings = <span class="kc">nil</span>
-    <span class="meta-brace">}</span></span>,
-    displayName = <span class="s2">"Chicken"</span>,
-    health = 4,
-    heldItem = <span class="kc">nil</span>,
-    id = <span class="s2">"c8c65760-190b-4b29-92ee-1ca5079c343e"</span>,
-    isAirborne = <span class="kc">false</span>,
-    isAlive = <span class="kc">true</span>,
-    isBurning = <span class="kc">false</span>,
-    isChild = <span class="kc">false</span>,
-    isDead = <span class="kc">false</span>,
-    isElytraFlying = <span class="kc">false</span>,
-    isInWater = <span class="kc">false</span>,
-    isOnLadder = <span class="kc">false</span>,
-    isRiding = <span class="kc">false</span>,
-    isSleeping = <span class="kc">false</span>,
-    isSneaking = <span class="kc">false</span>,
-    isSprinting = <span class="kc">false</span>,
-    isWet = <span class="kc">false</span>,
-    maxHealth = 4,
-    motionX = 0,
-    motionY = 0,
-    motionZ = 0,
-    name = <span class="s2">"Chicken"</span>,
-    offhandItem = <span class="kc">nil</span>,
-    pitch = 0,
-    potionEffects = {},
-    roost = <span class="meta-map"><span class="meta-brace">{</span>
-      name = <span class="s2">"vanilla"</span>,
-      type = <span class="s2">"minecraft:chicken"</span>
-    <span class="meta-brace">}</span></span>,
-    withinBlock = <span class="meta-map"><span class="meta-brace">{</span>
-      x = 0.5,
-      y = 0.2,
-      z = 0.5
-    <span class="meta-brace">}</span></span>,
-    x = 0,
-    y = 0.7,
-    yaw = 0,
-    z = 0
-  </span><span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemComputer" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemComputer</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  computer = <span class="meta-map"><span class="meta-brace">{</span>
-    family = <span class="s2">"Normal"</span>,
-    id = 3,
-    label = <span class="s2">"My computer"</span>
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.refinedstorage.MetaItemPattern" class="doc-name">org.squiddev.plethora.integration.refinedstorage.MetaItemPattern</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  pattern = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
-    byproducts = {},
-    fluidInputs = {},
-    fluidOutputs = {},
-    id = <span class="s2">"normal"</span>,
-    inputs = {},
-    oredict = <span class="kc">false</span>,
-    outputs = {},
-    processing = <span class="kc">false</span>,
-    valid = <span class="kc">false</span>
-  </span><span class="meta-brace">}</span></span>
 <span class="meta-brace">}</span></span></pre>
 </div>
 <div class="doc-item">
@@ -4266,7 +4564,7 @@
 <p class="synopsis">Provides the constellation(s) for an item</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  constellationFocus = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellationFocus = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -2090749,
     colour = -2090749,
     displayName = <span class="s2">"Discidia"</span>,
@@ -4276,7 +4574,7 @@
     tierColor = -14138420,
     tierColour = -14138420
   </span><span class="meta-brace">}</span></span>,
-  constellationTrait = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellationTrait = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -9073752,
     colour = -9073752,
     displayName = <span class="s2">"Gelu"</span>,
@@ -4293,7 +4591,7 @@
 <p class="synopsis">Provides the Constellation for a Constellation Paper</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -2090749,
     colour = -2090749,
     displayName = <span class="s2">"Discidia"</span>,
@@ -4311,7 +4609,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   papers = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       color = -2090749,
       colour = -2090749,
       displayName = <span class="s2">"Discidia"</span>,
@@ -4360,13 +4658,13 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   amuletEnchantments = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       bonusLevel = 1,
       bonusType = <span class="s2">"ADD_TO_EXISTING_SPECIFIC"</span>,
       boostedEnchant = <span class="s2">"enchantment.lootBonus"</span>,
       boostedEnchantFullName = <span class="s2">"Looting I"</span>
     </span><span class="meta-brace">}</span></span>,
-    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       bonusLevel = 2,
       bonusType = <span class="s2">"ADD_TO_EXISTING_ALL"</span>,
       boostedEnchant = <span class="s2">"all"</span>
@@ -4379,7 +4677,7 @@
 <p class="synopsis">Provides the constellation a Mantle of the Stars is attuned to</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -2090749,
     colour = -2090749,
     displayName = <span class="s2">"Discidia"</span>,
@@ -4405,7 +4703,7 @@
 <p class="synopsis">Provides the constellation a Resonating Wand is attuned to</p>
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
-  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+  constellation = <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
     color = -2090749,
     colour = -2090749,
     displayName = <span class="s2">"Discidia"</span>,
@@ -4430,47 +4728,6 @@
   targetType = <span class="s2">"small_shrine"</span>
 <span class="meta-brace">}</span></span></pre>
 </div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  count = 5,
-  damage = 0,
-  displayName = <span class="s2">"Stick"</span>,
-  maxCount = 64,
-  maxDamage = 0,
-  name = <span class="s2">"minecraft:stick"</span>,
-  nbtHash = <span class="kc">nil</span>,
-  rawName = <span class="s2">"item.stick"</span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.computercraft.MetaItemPocketComputer" class="doc-name">org.squiddev.plethora.integration.computercraft.MetaItemPocketComputer</h4>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  pocket = <span class="meta-map"><span class="meta-brace">{</span>
-    back = <span class="meta-map"><span class="meta-brace">{</span>
-      adjective = <span class="s2">"upgrade.computercraft:speaker.adjective"</span>,
-      id = <span class="s2">"computercraft:speaker"</span>
-    <span class="meta-brace">}</span></span>,
-    color = 16711680,
-    colour = 16711680
-  <span class="meta-brace">}</span></span>
-<span class="meta-brace">}</span></span></pre>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.rf.MetaEnergyContainerItem" class="doc-name">org.squiddev.plethora.integration.rf.MetaEnergyContainerItem</h4>
-</div>
-<div class="doc-item">
-<h4 id="org.squiddev.plethora.integration.vanilla.meta.MetaItemArmor" class="doc-name">org.squiddev.plethora.integration.vanilla.meta.MetaItemArmor</h4>
-<p class="synopsis">Provides type and colour of amour.</p>
-<pre class="highlight">
-<span class="meta-map"><span class="meta-brace">{</span>
-  armorType = <span class="s2">"chest"</span>,
-  color = 16711680,
-  colour = 16711680
-<span class="meta-brace">}</span></span></pre>
-</div>
 </div>
 <h3 id="metadata-providers-net.minecraft.tileentity.MobSpawnerBaseLogic" class="target-name" >net.minecraft.tileentity.MobSpawnerBaseLogic</h3>
 <div class="target-data">
@@ -4480,7 +4737,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   spawnedEntities = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       armor = <span class="meta-map"><span class="meta-brace">{</span>
         boots = <span class="kc">nil</span>,
         chestplate = <span class="kc">nil</span>,
@@ -4490,7 +4747,7 @@
       displayName = <span class="s2">"Squid"</span>,
       health = 10,
       heldItem = <span class="kc">nil</span>,
-      id = <span class="s2">"ff7566cd-f11a-4719-ad04-9df0d6e88d4d"</span>,
+      id = <span class="s2">"cbf1ba29-6046-4f77-b102-6f487527cd69"</span>,
       isAirborne = <span class="kc">false</span>,
       isAlive = <span class="kc">true</span>,
       isBurning = <span class="kc">false</span>,
@@ -4588,7 +4845,7 @@
 <pre class="highlight">
 <span class="meta-map"><span class="meta-brace">{</span>
   tanks = <span class="meta-map"><span class="meta-brace">{</span>
-    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">«nested metadata»</span> </span><span class="nested-meta-long">
+    <span class="nested-meta meta-map"><span class="meta-brace">{</span><span class="nested-meta-short"> <span class="o">&laquo;nested metadata&raquo;</span> </span><span class="nested-meta-long">
       amount = 525,
       capacity = 1000,
       displayName = <span class="s2">"Water"</span>,
@@ -4674,7 +4931,7 @@
 </div>
 </div>
 </div>
-<footer>Generated on 10:43:49 2019-05-03</footer>
+<footer>Generated on 08:20:26 2019-05-18</footer>
 <script type="text/javascript">
 	(() => {
 		const toggleActive = function (e) {
