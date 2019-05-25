@@ -145,7 +145,7 @@ public final class DisableAI {
 		public void startExecuting() {
 			// This should not be already set when we start executing because it should have been reset.
 			if (entity.getLookHelper() instanceof PlethoraEntityLookHelper) {
-				PlethoraIntegration.LOG.error("Look helper is not a PlethoraEntityLookHelper ({} instead)", entity.getLookHelper());
+				PlethoraIntegration.LOG.error("Look helper is already a PlethoraEntityLookHelper ({})", entity.getLookHelper());
 				return;
 			}
 
