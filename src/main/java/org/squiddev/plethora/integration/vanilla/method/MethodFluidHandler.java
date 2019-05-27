@@ -7,10 +7,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import org.squiddev.plethora.api.Injects;
-import org.squiddev.plethora.api.method.BasicMethod;
-import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
+import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.reference.BlockReference;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -54,19 +52,31 @@ public final class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {
 
 		return MethodResult.nextTick(() -> {
 			IPartialContext<ICapabilityProvider> baked = context.bake();
-			IFluidHandler handler = baked
-				.getTarget()
-				.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+			ICapabilityProvider provider = baked.getTarget();
+			IFluidTankProperties[] tanks = getTanks(provider, facing);
 
-			if (handler == null) return MethodResult.result(Collections.emptyMap());
+			// If we've no tank, and we're using the null side, try to use the current side we're on.
+			if (tanks == null && facing == null) {
+				BlockReference location = baked.getContext(ContextKeys.TARGET, BlockReference.class);
+				if (location != null && location.getSide() != null) tanks = getTanks(provider, location.getSide());
+			}
 
-			IFluidTankProperties[] info = handler.getTankProperties();
-			Map<Integer, Object> out = new HashMap<>(info.length);
-			for (int i = 0; i < info.length; i++) {
-				out.put(i + 1, baked.makePartialChild(info[i]).getMeta());
+			if (tanks == null) return MethodResult.result(Collections.emptyMap());
+
+			Map<Integer, Object> out = new HashMap<>(tanks.length);
+			for (int i = 0; i < tanks.length; i++) {
+				out.put(i + 1, baked.makePartialChild(tanks[i]).getMeta());
 			}
 
 			return MethodResult.result(out);
 		});
+	}
+
+	private static IFluidTankProperties[] getTanks(ICapabilityProvider provider, EnumFacing side) {
+		IFluidHandler handler = provider.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+		if (handler == null) return null;
+
+		IFluidTankProperties[] tanks = handler.getTankProperties();
+		return tanks == null || tanks.length == 0 ? null : tanks;
 	}
 }
