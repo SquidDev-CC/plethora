@@ -71,10 +71,11 @@ repositories {
 	maven { url "http://dl.bintray.com/raoulvdberge/dev" }
 
 	// Tesla
-	maven { url 'http://maven.epoxide.xyz' }
+	maven { url 'https://maven.mcmoddev.com' }
 
 	// CBMP
 	maven { url "http://chickenbones.net/maven" }
+	maven { url 'https://minecraft.curseforge.com/api/maven/' } // Everything else
 }
 
 def curseMod(String mod, int id, String version) {
@@ -111,7 +112,7 @@ dependencies {
 	compileOnly "slimeknights.mantle:Mantle:${project.mc_version}-1.1.3.199"
 
 	compileOnly "MCMultiPart:MCMultiPart:1.4.0:universal"
-	compileOnly "refinedstorage:refinedstorage:1.2.5-576"
+	compileOnly "refined-storage:refinedstorage:1.2.26"
 	compileOnly "codechicken:ForgeMultipart:1.10.2-2.0.0.31:deobf"
 
 	// All the Curse mods
