@@ -9,6 +9,7 @@ import hellfirepvp.astralsorcery.common.enchantment.dynamic.DynamicEnchantment;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalProperties;
 import hellfirepvp.astralsorcery.common.item.crystal.CrystalPropertyItem;
 import hellfirepvp.astralsorcery.common.lib.Constellations;
+import hellfirepvp.astralsorcery.common.util.nbt.NBTHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,9 +57,10 @@ public final class IntegrationAstralSorcery {
 
 	public static final ConstantConverter<ItemStack, CrystalProperties> ITEM_STACK_TO_CRYSTAL_PROPERTIES = stack -> {
 		Item item = stack.getItem();
-		return item instanceof CrystalPropertyItem
-			? ((CrystalPropertyItem) item).provideCurrentPropertiesOrNull(stack)
-			: CrystalProperties.getCrystalProperties(stack);
+		if (item instanceof CrystalPropertyItem) {
+			return ((CrystalPropertyItem) item).provideCurrentPropertiesOrNull(stack);
+		}
+		return NBTHelper.hasPersistentData(stack) ? CrystalProperties.getCrystalProperties(stack) : null;
 	};
 
 	public static final IMetaProvider<CrystalProperties> META_CRYSTAL_PROPERTY = new BasicMetaProvider<CrystalProperties>(
