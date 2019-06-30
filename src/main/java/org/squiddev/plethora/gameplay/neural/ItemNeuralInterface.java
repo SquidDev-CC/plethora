@@ -141,7 +141,6 @@ public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, ICo
 			// Fetch computer
 			if (forceActive) {
 				neural = ItemComputerHandler.getServer(stack, player, inventory);
-				neural.turnOn();
 				neural.keepAlive();
 			} else {
 				neural = ItemComputerHandler.tryGetServer(stack);

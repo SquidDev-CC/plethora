@@ -66,6 +66,7 @@ public final class ItemComputerHandler {
 			tag.setInteger(INSTANCE_ID, instanceId);
 			tag.setInteger(COMPUTER_ID, computerId);
 
+			neural.turnOn();
 			if (inventory != null) inventory.markDirty();
 		}
 
