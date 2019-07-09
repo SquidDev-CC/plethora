@@ -183,6 +183,12 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 	}
 
 	@Override
+	@Deprecated
+	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
+		return state.getValue(FACING) == side;
+	}
+
+	@Override
 	public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull EnumFacing enumFacing) {
 		final TileEntity te = world.getTileEntity(blockPos);
 		if (!(te instanceof TileManipulator)) return null;
