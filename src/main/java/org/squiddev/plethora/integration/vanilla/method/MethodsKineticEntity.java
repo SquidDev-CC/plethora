@@ -15,6 +15,7 @@ import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
@@ -36,6 +37,7 @@ import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 
 import javax.annotation.Nonnull;
+import java.util.EnumSet;
 
 import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -46,6 +48,12 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
  */
 @Injects
 public final class MethodsKineticEntity {
+	private static final EnumSet<SPacketPlayerPosLook.EnumFlags> LOOK_FLAGS = EnumSet.of(
+		SPacketPlayerPosLook.EnumFlags.X,
+		SPacketPlayerPosLook.EnumFlags.Y,
+		SPacketPlayerPosLook.EnumFlags.Z
+	);
+
 	private MethodsKineticEntity() {
 	}
 
@@ -58,7 +66,7 @@ public final class MethodsKineticEntity {
 
 		if (target instanceof EntityPlayerMP) {
 			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
-			handler.setPlayerLocation(target.posX, target.posY, target.posZ, (float) yaw, (float) pitch);
+			handler.setPlayerLocation(0, 0, 0, (float) yaw, (float) pitch, LOOK_FLAGS);
 		} else {
 			target.rotationYawHead = target.rotationYaw = target.renderYawOffset = (float) yaw;
 			target.rotationPitch = (float) pitch;
