@@ -45,7 +45,7 @@ multiple swings to break.
 
 ### Other functionality
 If you're a low-tech kind of person, you can always experience the joys of `.launch()` by hand. First, hold carefully
-grip the kinetic augment with either hand. Then charge it up by holding it right click, feeling the raw power accumulate
+grip the kinetic augment with either hand. Then charge it up by holding right click, feeling the raw power accumulate
 in your muscles. Finally release, and enjoy the feel of the wind rushing in your hair and the rapidly approaching brick
 wall.
 
