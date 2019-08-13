@@ -115,7 +115,7 @@ public class ComputerAccessExecutor implements IResultExecutor {
 		@Override
 		protected void submitTiming(long time) {
 			super.submitTiming(time);
-			monitor.trackWork(time, TimeUnit.NANOSECONDS);
+			if (monitor != null) monitor.trackWork(time, TimeUnit.NANOSECONDS);
 		}
 
 		@Override
