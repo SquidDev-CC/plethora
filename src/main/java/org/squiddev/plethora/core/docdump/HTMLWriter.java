@@ -15,6 +15,7 @@ import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.core.PartialContext;
 import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
+import org.squiddev.plethora.core.capabilities.EmptyCostHandler;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 import org.squiddev.plethora.utils.WorldDummy;
@@ -221,7 +222,7 @@ public class HTMLWriter implements IDocWriter {
 			Map<?, ?> meta = provider.getMeta(new PartialContext(1,
 				new String[]{ContextKeys.ORIGIN, ContextKeys.TARGET},
 				new Object[]{new WorldLocation(WorldDummy.INSTANCE, BlockPos.ORIGIN), example},
-				DefaultCostHandler.EMPTY,
+				EmptyCostHandler.INSTANCE,
 				BasicModuleContainer.EMPTY
 			));
 

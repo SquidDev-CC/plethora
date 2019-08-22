@@ -1,6 +1,5 @@
 package org.squiddev.plethora.core.capabilities;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.MapMaker;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -19,34 +18,15 @@ import static org.squiddev.plethora.core.ConfigCore.CostSystem;
  * @see PlethoraCore#onServerTick(TickEvent.ServerTickEvent)
  */
 public final class DefaultCostHandler implements ICostHandler {
-	public static final DefaultCostHandler EMPTY = new DefaultCostHandler(0, 0, 0, false, false);
-
 	/**
 	 * Used to store all handlers.
-	 * This uses the identity function
+	 *
+	 * This uses a custom map in order to ensure the keys are compared by identity, rather than equality.
 	 */
-	private static final Map<Object, DefaultCostHandler> handlers = new MapMaker().weakKeys().makeMap();
+	private static final Map<Object, DefaultCostHandler> handlers = new MapMaker()
+		.weakKeys().concurrencyLevel(1).makeMap();
 
-	private double value;
-	private final double regenRate;
-	private final double limit;
-	private final boolean allowNegative;
-	private final boolean allowAwait;
-
-	public DefaultCostHandler(double initial, double regenRate, double limit, boolean allowNegative, boolean allowAwait) {
-		Preconditions.checkArgument(initial >= 0, "initial must be >= 0");
-		Preconditions.checkArgument(regenRate >= 0, "regenRate must be > 0");
-		Preconditions.checkArgument(limit >= 0, "limit must be >= 0");
-
-		this.regenRate = regenRate;
-		this.limit = limit;
-		this.allowNegative = allowNegative;
-		this.allowAwait = allowAwait;
-	}
-
-	public DefaultCostHandler() {
-		this(CostSystem.initial, CostSystem.regen, CostSystem.limit, CostSystem.allowNegative, CostSystem.awaitRegen);
-	}
+	private double value = CostSystem.initial;
 
 	@Override
 	public synchronized double get() {
@@ -55,9 +35,9 @@ public final class DefaultCostHandler implements ICostHandler {
 
 	@Override
 	public synchronized boolean consume(double amount) {
-		Preconditions.checkArgument(amount >= 0, "amount must be >= 0");
+		if (amount < 0) throw new IllegalArgumentException("amount must be >= 0");
 
-		if (allowNegative) {
+		if (CostSystem.allowNegative) {
 			if (value <= 0) return false;
 		} else {
 			if (amount > value) return false;
@@ -73,7 +53,7 @@ public final class DefaultCostHandler implements ICostHandler {
 		if (consume(amount)) return next;
 
 		// Otherwise if we'll never be able to consume then give up.
-		if ((!allowNegative && amount > limit) || !allowAwait) {
+		if ((!CostSystem.allowNegative && amount > CostSystem.limit) || !CostSystem.awaitRegen) {
 			throw new LuaException("Insufficient energy (requires " + amount + ", has " + value + ".");
 		}
 
@@ -95,15 +75,15 @@ public final class DefaultCostHandler implements ICostHandler {
 		}
 
 		// Otherwise if we'll never be able to consume then give up.
-		if ((!allowNegative && amount > limit) || !allowAwait) {
-			throw new LuaException("Insufficient energy (requires " + amount + ", has " + value + ".");
+		if ((!CostSystem.allowNegative && amount > CostSystem.limit) || !CostSystem.awaitRegen) {
+			throw new LuaException("Insufficient energy (requires " + amount + ", has " + value + ").");
 		}
 
 		return MethodResult.awaiting(() -> consume(amount), next);
 	}
 
 	private synchronized void regen() {
-		if (value < limit) value = Math.min(limit, value + regenRate);
+		if (value < CostSystem.limit) value = Math.min(CostSystem.limit, value + CostSystem.regen);
 	}
 
 	public static ICostHandler get(Object owner) {
