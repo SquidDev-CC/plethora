@@ -36,6 +36,7 @@ public final class ModuleLevelRecipe extends ShapelessRecipes {
 			if (stack.getItem() != output.getItem() || stack.getItemDamage() != output.getItemDamage()) continue;
 
 			ItemStack result = stack.copy();
+			result.setCount(1);
 			NBTTagCompound tag = result.getTagCompound();
 			if (tag == null) result.setTagCompound(tag = new NBTTagCompound());
 			tag.setInteger("level", tag.hasKey("level", Constants.NBT.TAG_ANY_NUMERIC) ? tag.getInteger("level") + 1 : 1);
