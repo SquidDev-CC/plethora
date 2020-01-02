@@ -39,6 +39,9 @@ parallel.waitForAny(
 This loop just pulls user input. It handles a couple of function keys, as well as
 setting the "hover" field to true/false.
 
+We recommend running [with the keyboard in your neural interface](../items/keyboard.html#using-with-the-neural-interface),
+as this allows you to navigate without having the interface open.
+
 ```lua
 	function()
 		while true do
