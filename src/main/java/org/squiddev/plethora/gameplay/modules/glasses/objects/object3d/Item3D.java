@@ -155,7 +155,7 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 		if (rotation == null) {
 			RenderManager renderManager = mc.getRenderManager();
 			GlStateManager.rotate(180 - renderManager.playerViewY, 0, 1, 0);
-			GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
+			GlStateManager.rotate(-renderManager.playerViewX, 1, 0, 0);
 		} else {
 			GlStateManager.rotate((float) rotation.x, 1, 0, 0);
 			GlStateManager.rotate((float) rotation.y, 0, 1, 0);
