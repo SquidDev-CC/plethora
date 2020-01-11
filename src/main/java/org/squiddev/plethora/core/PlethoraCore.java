@@ -2,6 +2,7 @@ package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import li.cil.oc.api.IMC;
 import mcjty.xnet.XNet;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.crafting.IRecipe;
@@ -74,6 +75,7 @@ public class PlethoraCore {
 		// Integration modules. Generally just listen to capability events
 		IntegrationVanilla.setup();
 		FMLInterModComms.sendFunctionMessage(XNet.MODID, "getXNet", "org.squiddev.plethora.integration.xnet.NetworkChannelType$Setup");
+		FMLInterModComms.sendMessage("opencomputers", IMC.BLACKLIST_PERIPHERAL, MethodWrapperPeripheral.class.getName());
 	}
 
 	@Mod.EventHandler
