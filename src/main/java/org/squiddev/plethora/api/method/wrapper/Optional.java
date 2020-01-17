@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Nullable
 @TypeQualifierNickname
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
 @Nonnull(when = When.UNKNOWN)
 public @interface Optional {
 	long defLong() default -1;

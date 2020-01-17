@@ -11,7 +11,6 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.Optional;
@@ -42,7 +41,7 @@ public final class MethodsSensor {
 
 		return context.getCostHandler().await(range.getBulkCost(), () -> {
 			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, getBox(pos, range.getRange()), DEFAULT_PREDICATE::test);
-			return MethodResult.result(LuaList.of(entities, x -> MetaEntity.getBasicProperties(x, location)).asMap());
+			return MethodResult.result(Helpers.map(entities, x -> MetaEntity.getBasicProperties(x, location)));
 		});
 	}
 

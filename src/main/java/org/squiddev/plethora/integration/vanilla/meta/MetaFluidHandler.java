@@ -10,11 +10,12 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,14 +28,15 @@ public final class MetaFluidHandler extends BaseMetaProvider<IFluidHandler> {
 	public Map<String, ?> getMeta(@Nonnull IPartialContext<IFluidHandler> context) {
 		IFluidHandler handler = context.getTarget();
 
-		LuaList<Map<String, ?>> tanks = new LuaList<>();
-		for (IFluidTankProperties tank : handler.getTankProperties()) {
+		IFluidTankProperties[] properties = handler.getTankProperties();
+		List<Map<String, ?>> tanks = new ArrayList<>(properties.length);
+		for (IFluidTankProperties tank : properties) {
 			if (handler.equals(tank)) continue;
 			// Add any tanks which are not part of this one.
 			tanks.add(context.makePartialChild(tank).getMeta());
 		}
 
-		return tanks.isEmpty() ? Collections.emptyMap() : Collections.singletonMap("tanks", tanks.asMap());
+		return tanks.isEmpty() ? Collections.emptyMap() : Collections.singletonMap("tanks", tanks);
 	}
 
 	@Nonnull

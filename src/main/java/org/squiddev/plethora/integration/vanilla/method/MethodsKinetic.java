@@ -19,8 +19,8 @@ import org.squiddev.plethora.integration.vanilla.DisableAI;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
-import static dan200.computercraft.core.apis.ArgumentHelper.optNumber;
+import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
+import static dan200.computercraft.api.lua.ArgumentHelper.optFiniteDouble;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
@@ -37,9 +37,9 @@ public final class MethodsKinetic {
 	}
 
 	private static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final float yaw = (float) getReal(args, 0) % 360;
-		final float pitch = (float) getReal(args, 1) % 360;
-		final float power = (float) getReal(args, 2);
+		final float yaw = (float) getFiniteDouble(args, 0) % 360;
+		final float pitch = (float) getFiniteDouble(args, 1) % 360;
+		final float power = (float) getFiniteDouble(args, 2);
 
 		assertBetween(power, 0, Kinetic.launchMax, "Power out of range (%s).");
 
@@ -81,11 +81,11 @@ public final class MethodsKinetic {
 
 	@Nonnull
 	private static MethodResult walk(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double x = getReal(args, 0);
-		final double y = getReal(args, 1);
-		final double z = getReal(args, 2);
+		final double x = getFiniteDouble(args, 0);
+		final double y = getFiniteDouble(args, 1);
+		final double z = getFiniteDouble(args, 2);
 
-		final double speed = optNumber(args, 3, 1);
+		final double speed = optFiniteDouble(args, 3, 1);
 
 		assertBetween(x, -Kinetic.walkRange, Kinetic.walkRange, "X coordinate out of bounds (%s)");
 		assertBetween(y, -Kinetic.walkRange, Kinetic.walkRange, "Y coordinate out of bounds (%s)");

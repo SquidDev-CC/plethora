@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.api.lua.ArgumentHelper.getString;
 
 /**
  * Mimics parts of the howlci library, or at least those required by mcfly.

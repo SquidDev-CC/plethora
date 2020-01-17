@@ -8,13 +8,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.BannerPattern;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.utils.TypedField;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Injects
 public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
@@ -27,12 +24,13 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 	@Nonnull
 	@Override
 	public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemBanner banner) {
-		LuaList<Map<String, ?>> out = new LuaList<>();
+		List<Map<String, ?>> out;
 
 		NBTTagCompound tag = stack.getSubCompound("BlockEntityTag");
 		if (tag != null && tag.hasKey("Patterns")) {
 			NBTTagList nbttaglist = tag.getTagList("Patterns", 10);
 
+			out = new ArrayList<>(nbttaglist.tagCount());
 			for (int i = 0; i < nbttaglist.tagCount() && i < 6; ++i) {
 				NBTTagCompound patternTag = nbttaglist.getCompoundTagAt(i);
 
@@ -50,9 +48,11 @@ public final class MetaItemBanner extends ItemStackMetaProvider<ItemBanner> {
 					out.add(entry);
 				}
 			}
+		} else {
+			out = Collections.emptyList();
 		}
 
-		return Collections.singletonMap("banner", out.asMap());
+		return Collections.singletonMap("banner", out);
 	}
 
 	@Nonnull

@@ -25,8 +25,8 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.TypedField;
 import org.squiddev.plethora.utils.WorldDummy;
 
@@ -79,7 +79,7 @@ public final class VanillaMeta {
 
 		@Nonnull
 		@Override
-		public Map<String, Map<Integer, Map<String, ?>>> getMeta(@Nonnull IPartialContext<MobSpawnerBaseLogic> context) {
+		public Map<String, List<Map<String, ?>>> getMeta(@Nonnull IPartialContext<MobSpawnerBaseLogic> context) {
 			List<WeightedSpawnerEntity> potentialSpawns = FIELD_POTENTIAL.get(context.getTarget());
 			WeightedSpawnerEntity spawnData = FIELD_DATA.get(context.getTarget());
 			if (potentialSpawns == null && spawnData == null) return Collections.emptyMap();
@@ -89,22 +89,15 @@ public final class VanillaMeta {
 			}
 
 			IWorldLocation location = context.getContext(ContextKeys.ORIGIN, IWorldLocation.class);
-
-			LuaList<Map<String, ?>> spawns = new LuaList<>(potentialSpawns.size());
-			for (WeightedSpawnerEntity entry : potentialSpawns) {
+			return Collections.singletonMap("spawnedEntities", Helpers.map(potentialSpawns, entry -> {
 				if (location != null) {
 					Vec3d pos = location.getLoc();
 					Entity entity = AnvilChunkLoader.readWorldEntityPos(entry.getNbt(), location.getWorld(), pos.x, pos.y, pos.z, false);
-					if (entity != null) {
-						spawns.add(context.makePartialChild(entity).getMeta());
-						continue;
-					}
+					if (entity != null) return context.makePartialChild(entity).getMeta();
 				}
 
-				spawns.add(ItemEntityStorageMetaProvider.getBasicDetails(entry.getNbt()));
-			}
-
-			return Collections.singletonMap("spawnedEntities", spawns.asMap());
+				return ItemEntityStorageMetaProvider.getBasicDetails(entry.getNbt());
+			}));
 		}
 
 		@Nonnull
@@ -141,8 +134,7 @@ public final class VanillaMeta {
 			Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(target);
 			if (enchants.isEmpty()) return Collections.emptyMap();
 
-			LuaList<Map<String, ?>> out = new LuaList<>(enchants.size());
-			for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+			return Collections.singletonMap("enchantments", Helpers.map(enchants.entrySet(), entry -> {
 				Enchantment enchantment = entry.getKey();
 				int level = entry.getValue();
 				HashMap<String, Object> enchant = new HashMap<>(3);
@@ -150,10 +142,8 @@ public final class VanillaMeta {
 				enchant.put("level", level);
 				enchant.put("fullName", enchantment.getTranslatedName(level));
 
-				out.add(enchant);
-			}
-
-			return Collections.singletonMap("enchantments", out.asMap());
+				return enchant;
+			}));
 		}
 
 		@Nonnull

@@ -14,16 +14,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.Side;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.wrapper.FromSubtarget;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import org.squiddev.plethora.integration.EntityIdentifier;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class MethodsAstralSorcery {
 	private MethodsAstralSorcery() {
@@ -46,21 +47,20 @@ public final class MethodsAstralSorcery {
 			// I was going to filter this for the current node, but that will result in excessive collection manipulation
 			// if I can't convert to a stream API chain; otherwise, I would risk modifying the actual server data...
 			List<GatewayCache.GatewayNode> dimNodes = entry.getValue();
-			LuaList<Map<String, Object>> dimOut = new LuaList<>(dimNodes.size());
-			for (GatewayCache.GatewayNode node : dimNodes) {
+			List<Map<String, Object>> dimOut = Helpers.map(dimNodes, node -> {
 				Map<String, Object> inner = new HashMap<>(4);
 				inner.put("posX", node.getX());
 				inner.put("posY", node.getY());
 				inner.put("posZ", node.getZ());
 				inner.put("name", node.display);
-				dimOut.add(inner);
-			}
+				return inner;
+			});
 
 			//TODO Determine how to get a dimension's name; `DimensionType.getById(int).getName` is a start, but
 			// it doesn't account for named dimensions, e.g. RFTools Dimensions, Mystcraft, etc. ...
 			//REFINE I recall there being a difference between `String.valueOf` and `toString` for primitives, but I
 			// don't remember the specifics...
-			fullOut.put(String.valueOf(entry.getKey()), dimOut.asMap());
+			fullOut.put(String.valueOf(entry.getKey()), dimOut);
 		}
 
 		return fullOut;
@@ -108,12 +108,11 @@ public final class MethodsAstralSorcery {
 	}
 
 	@Nonnull
-	private static Map<Integer, TypedMeta<IConstellation, ?>> getConstellationMeta(IContext<?> context, Collection<String> translationKeys) {
-		LuaList<TypedMeta<IConstellation, ?>> out = new LuaList<>(translationKeys.size());
-		for (String translationKey : translationKeys) {
-			IConstellation constellation = ConstellationRegistry.getConstellationByName(translationKey);
-			if (constellation != null) out.add(context.makePartialChild(constellation).getMeta());
-		}
-		return out.asMap();
+	private static List<TypedMeta<IConstellation, ?>> getConstellationMeta(IContext<?> context, Collection<String> translationKeys) {
+		return translationKeys.stream()
+			.map(ConstellationRegistry::getConstellationByName)
+			.filter(Objects::nonNull)
+			.map(x -> context.makePartialChild(x).getMeta())
+			.collect(Collectors.toList());
 	}
 }

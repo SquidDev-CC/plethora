@@ -6,13 +6,14 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.slot.IPartSlot;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.utils.Helpers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -23,8 +24,8 @@ public final class MethodsMultipart {
 	}
 
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a list of all parts in the multipart.")
-	public static Map<Integer, ?> listParts(@FromTarget IMultipartContainer container) {
-		return LuaList.of(container.getParts().values(), IntegrationMcMultipart::getBasicMeta).asMap();
+	public static List<Map<String, ?>> listParts(@FromTarget IMultipartContainer container) {
+		return Helpers.map(container.getParts().values(), IntegrationMcMultipart::getBasicMeta);
 	}
 
 	@PlethoraMethod(modId = MCMultiPart.MODID, doc = "-- Get a lookup of slot to parts.")

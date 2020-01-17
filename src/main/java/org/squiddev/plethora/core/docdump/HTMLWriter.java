@@ -14,7 +14,6 @@ import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.core.PartialContext;
-import org.squiddev.plethora.core.capabilities.DefaultCostHandler;
 import org.squiddev.plethora.core.capabilities.EmptyCostHandler;
 import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 import org.squiddev.plethora.core.collections.SortedMultimap;
@@ -220,8 +219,8 @@ public class HTMLWriter implements IDocWriter {
 		Object example = provider.getExample();
 		if (example != null) {
 			Map<?, ?> meta = provider.getMeta(new PartialContext(1,
-				new String[]{ContextKeys.ORIGIN, ContextKeys.TARGET},
-				new Object[]{new WorldLocation(WorldDummy.INSTANCE, BlockPos.ORIGIN), example},
+				new String[]{ ContextKeys.ORIGIN, ContextKeys.TARGET },
+				new Object[]{ new WorldLocation(WorldDummy.INSTANCE, BlockPos.ORIGIN), example },
 				EmptyCostHandler.INSTANCE,
 				BasicModuleContainer.EMPTY
 			));
@@ -347,6 +346,24 @@ public class HTMLWriter implements IDocWriter {
 				.append("<span class=\"meta-brace\">{</span>");
 
 			writeMapBody(value, indent);
+
+			output
+				.append("<span class=\"meta-brace\">}</span>")
+				.append("</span>");
+		}
+
+		@Override
+		protected void writeValue(Collection<?> value, String indent) throws IOException {
+			if (value.isEmpty()) {
+				output.append("{}");
+				return;
+			}
+
+			output
+				.append("<span class=\"meta-map\">")
+				.append("<span class=\"meta-brace\">{</span>");
+
+			writeListBody(value, indent);
 
 			output
 				.append("<span class=\"meta-brace\">}</span>")

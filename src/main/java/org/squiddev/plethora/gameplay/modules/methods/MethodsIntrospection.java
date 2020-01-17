@@ -27,7 +27,7 @@ public final class MethodsIntrospection {
 	}
 
 	@PlethoraMethod(
-		module = {PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S},
+		module = { PlethoraModules.INTROSPECTION_S, PlethoraModules.SENSOR_S },
 		doc = "-- Get this entity's UUID."
 	)
 	public static TypedMeta<EntityLivingBase, ?> getMetaOwner(@FromSubtarget EntityIdentifier identifier, @Nonnull IContext<IModuleContainer> context) throws LuaException {

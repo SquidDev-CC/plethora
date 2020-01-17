@@ -39,10 +39,8 @@ import java.lang.reflect.TypeVariable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * Helper methods for various things
@@ -396,5 +394,40 @@ public final class Helpers {
 		if (!right.isEmpty() && right.getItem() == item && right.getItemDamage() == damage) return true;
 
 		return false;
+	}
+
+	/**
+	 * An direct version of {@link java.util.stream.Stream#map(Function)} and collecting to a list. This allows us to
+	 * presize the output.
+	 *
+	 * @param <T>  The elements in the input list
+	 * @param <U>  The elements in the output list
+	 * @param list The list to map over
+	 * @param f    The function to transform the objects
+	 * @return The
+	 */
+	@Nonnull
+	public static <T, U> List<U> map(@Nonnull Collection<T> list, @Nonnull Function<T, U> f) {
+		int size = list.size();
+		switch (size) {
+			case 0:
+				return Collections.emptyList();
+			case 1:
+				return Collections.singletonList(f.apply(list.iterator().next()));
+			default:
+				return map(list, size, f);
+		}
+	}
+
+	@Nonnull
+	public static <T, U> List<U> map(@Nonnull Iterable<T> list, @Nonnull Function<T, U> f) {
+		return map(list, 4, f);
+	}
+
+	@Nonnull
+	public static <T, U> List<U> map(@Nonnull Iterable<T> list, int size, @Nonnull Function<T, U> f) {
+		List<U> result = new ArrayList<>(size);
+		for (T elem : list) result.add(f.apply(elem));
+		return result;
 	}
 }

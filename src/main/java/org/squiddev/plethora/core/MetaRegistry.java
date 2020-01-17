@@ -106,7 +106,7 @@ public final class MetaRegistry implements IMetaRegistry {
 	private static final class WrapperTypedMeta<T, V> implements TypedMeta<T, V> {
 		private static final WrapperTypedMeta<?, ?> EMPTY = new WrapperTypedMeta<>(Collections.emptyMap());
 
-		@SuppressWarnings({"unchecked", "rawtypes"})
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public static <T> TypedMeta<T, ?> empty() {
 			return (TypedMeta) EMPTY;
 		}

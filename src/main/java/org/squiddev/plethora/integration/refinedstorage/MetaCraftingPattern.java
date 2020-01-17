@@ -6,7 +6,7 @@ import com.raoulvdberge.refinedstorage.item.ItemPattern;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ public final class MetaCraftingPattern extends BaseMetaProvider<ICraftingPattern
 		out.put("oredict", pattern.isOredict());
 		out.put("processing", pattern.isProcessing());
 		out.put("valid", pattern.isValid());
-		out.put("inputs", LuaList.of(pattern.getInputs(), x -> x.isEmpty() ? null : getMetaList(context, x)).asMap());
+		out.put("inputs", Helpers.map(pattern.getInputs(), x -> x.isEmpty() ? null : getMetaList(context, x)));
 
 		return out;
 	}

@@ -2,17 +2,16 @@ package org.squiddev.plethora.api.method;
 
 import net.minecraft.item.ItemStack;
 import org.squiddev.plethora.api.meta.TypedMeta;
-import org.squiddev.plethora.api.reference.Reference;
 import org.squiddev.plethora.core.ContextFactory;
 import org.squiddev.plethora.core.executor.BasicExecutor;
 import org.squiddev.plethora.integration.MetaWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public final class ContextHelpers {
 	private ContextHelpers() {
@@ -26,15 +25,15 @@ public final class ContextHelpers {
 	 * @return The converted list.
 	 */
 	@Nonnull
-	public static <T> Map<Integer, TypedMeta<T, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Collection<T> list) {
-		if (list == null) return Collections.emptyMap();
+	public static <T> List<TypedMeta<T, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable Collection<T> list) {
+		if (list == null) return Collections.emptyList();
 
-		LuaList<TypedMeta<T, ?>> out = new LuaList<>(list.size());
+		List<TypedMeta<T, ?>> out = new ArrayList<>(list.size());
 		for (T element : list) {
 			out.add(element == null ? null : context.makePartialChild(element).getMeta());
 		}
 
-		return out.asMap();
+		return out;
 	}
 
 	/**
@@ -45,42 +44,12 @@ public final class ContextHelpers {
 	 * @return The converted list.
 	 */
 	@Nonnull
-	public static <T> Map<Integer, TypedMeta<T, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable T[] list) {
-		if (list == null) return Collections.emptyMap();
+	public static <T> List<TypedMeta<T, ?>> getMetaList(@Nonnull IPartialContext<?> context, @Nullable T[] list) {
+		if (list == null) return Collections.emptyList();
 
-		Map<Integer, TypedMeta<T, ?>> map = new HashMap<>(list.length);
-		for (int i = 0; i < list.length; i++) {
-			T element = list[i];
-			if (element != null) {
-				map.put(i + 1, context.makePartialChild(element).getMeta());
-			}
-		}
-
-		return map;
-	}
-
-	/**
-	 * Generate a Lua list with the {@link TypedLuaObject} taken for each element in the list.
-	 *
-	 * This uses the identity reference ({@link Reference#id(Object)}) to capture objects.
-	 *
-	 * @param context The base context to use in getting objects.
-	 * @param list    The list to get items from.
-	 * @return The converted list.
-	 */
-	@Nonnull
-	public static <T> Map<Integer, TypedLuaObject<T>> getObjectList(@Nonnull IContext<?> context, @Nullable Collection<T> list) {
-		if (list == null) return Collections.emptyMap();
-
-		int i = 0;
-		Map<Integer, TypedLuaObject<T>> map = new HashMap<>(list.size());
+		List<TypedMeta<T, ?>> map = new ArrayList<>(list.length);
 		for (T element : list) {
-			if (element == null) {
-				++i;
-			} else {
-				map.put(++i, context.makeChildId(element).getObject());
-				map.put(++i, context.makeChild(element, Reference.id(element)).getObject());
-			}
+			map.add(element == null ? null : context.makePartialChild(element).getMeta());
 		}
 
 		return map;

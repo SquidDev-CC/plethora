@@ -2,14 +2,17 @@ package org.squiddev.plethora.integration.vanilla.meta;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.output.NullOutputStream;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.integration.PlethoraIntegration;
+import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,10 +56,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 			NBTTagCompound displayTag = tag.getCompoundTag("display");
 			if (displayTag.hasKey("Lore", Constants.NBT.TAG_LIST)) {
 				NBTTagList loreTag = displayTag.getTagList("Lore", Constants.NBT.TAG_STRING);
-				LuaList<String> loreText = new LuaList<>(loreTag.tagCount());
-				for (NBTBase child : loreTag) loreText.add(((NBTTagString) child).getString());
-
-				data.put("lore", loreText.asMap());
+				data.put("lore", Helpers.map(loreTag, x -> ((NBTTagString) x).getString()));
 			}
 		}
 

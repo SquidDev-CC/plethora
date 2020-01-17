@@ -24,7 +24,7 @@ import java.util.Map;
 import static org.squiddev.plethora.core.PlethoraCore.LOG;
 
 public final class PlethoraMethodRegistry {
-	private static final String[] ORIGIN = new String[]{ContextKeys.ORIGIN};
+	private static final String[] ORIGIN = new String[]{ ContextKeys.ORIGIN };
 
 	private static final Type PARTIAL_CONTEXT_T = IPartialContext.class.getTypeParameters()[0];
 
@@ -208,7 +208,7 @@ public final class PlethoraMethodRegistry {
 
 		// Extract some trivial properties
 		String[] names = annotation.name();
-		if (names.length == 0) names = new String[]{method.getName()};
+		if (names.length == 0) names = new String[]{ method.getName() };
 
 		// Get the marker interfaces.
 		MarkerInterfaces markers = method.getAnnotation(MarkerInterfaces.class);

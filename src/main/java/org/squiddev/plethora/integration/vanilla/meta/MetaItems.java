@@ -17,8 +17,8 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.integration.ItemEntityStorageMetaProvider;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -68,8 +68,7 @@ public final class MetaItems {
 
 			List<PotionEffect> effects = PotionUtils.getEffectsFromStack(stack);
 			if (!effects.isEmpty()) {
-				LuaList<Map<String, Object>> effectsInfo = new LuaList<>(effects.size());
-				for (PotionEffect effect : effects) {
+				data.put("effects", Helpers.map(effects, effect -> {
 					Map<String, Object> entry = new HashMap<>();
 
 					entry.put("duration", effect.getDuration() / 20); // ticks!
@@ -80,10 +79,8 @@ public final class MetaItems {
 					entry.put("instant", potion.isInstant());
 					entry.put("color", potion.getLiquidColor());
 
-					effectsInfo.add(entry);
-				}
-
-				data.put("effects", effectsInfo.asMap());
+					return entry;
+				}));
 			}
 
 			return data;

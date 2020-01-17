@@ -14,7 +14,7 @@ import org.squiddev.plethora.api.reference.ItemSlot;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optBoolean;
+import static dan200.computercraft.api.lua.ArgumentHelper.optBoolean;
 
 @Injects
 public final class MethodItemElytraActivate extends BasicMethod<ItemSlot> {

@@ -5,12 +5,10 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.SimpleMetaProvider;
-import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Injects("forgemultipartcbe")
 public final class IntegrationMultipart {
@@ -19,11 +17,11 @@ public final class IntegrationMultipart {
 	public static final SimpleMetaProvider<TSlottedPart> META_SLOTTED_PART = object -> {
 		int slots = object.getSlotMask();
 
-		LuaList<String> out = new LuaList<>(Integer.bitCount(slots));
-		for (PartMap slot : PartMap.values()) {
-			if ((slots & slot.mask) != 0) out.add(slot.name().toLowerCase(Locale.ENGLISH));
-		}
-		return Collections.singletonMap("slots", out.asMap());
+		List<String> maps = Arrays.stream(PartMap.values())
+			.filter(x -> (slots & x.mask) != 0)
+			.map(x -> x.name().toLowerCase(Locale.ENGLISH))
+			.collect(Collectors.toList());
+		return Collections.singletonMap("slots", maps);
 	};
 
 	private IntegrationMultipart() {

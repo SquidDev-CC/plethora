@@ -6,12 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Locale;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.api.lua.ArgumentHelper.*;
 
 /**
  * Various helpers for arguments.
  *
- * @see dan200.computercraft.core.apis.ArgumentHelper
+ * @see dan200.computercraft.api.lua.ArgumentHelper
  */
 public final class ArgumentHelper {
 	private ArgumentHelper() {
@@ -28,7 +28,7 @@ public final class ArgumentHelper {
 	}
 
 	public static float getFloat(@Nonnull Object[] args, int index) throws LuaException {
-		return (float) getReal(args, index);
+		return (float) getFiniteDouble(args, index);
 	}
 
 	@Nonnull
@@ -43,7 +43,7 @@ public final class ArgumentHelper {
 				throw new LuaException("Bad name '" + name.toLowerCase(Locale.ENGLISH) + "' for argument " + (index + 1));
 			}
 		} else {
-			throw badArgument(index, "string", value);
+			throw badArgumentOf(index, "string", value);
 		}
 	}
 
@@ -54,7 +54,7 @@ public final class ArgumentHelper {
 		} else if (value instanceof Number) {
 			return ((Number) value).floatValue();
 		} else {
-			throw badArgument(index, "number", value);
+			throw badArgumentOf(index, "number", value);
 		}
 	}
 

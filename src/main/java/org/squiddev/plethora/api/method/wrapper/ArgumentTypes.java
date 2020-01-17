@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.api.lua.ArgumentHelper.*;
 
 @Injects
 public final class ArgumentTypes {
@@ -69,7 +69,7 @@ public final class ArgumentTypes {
 					throw new LuaException("Bad uuid '" + uuid + "' for argument #" + (index + 1));
 				}
 			} else {
-				throw badArgument(index, "string", value);
+				throw badArgumentOf(index, "string", value);
 			}
 		}
 	};

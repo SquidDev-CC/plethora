@@ -48,7 +48,7 @@ public class MethodWrapper {
 	}
 
 	protected static Object[] getReferences(IComputerAccess access, ILuaContext context) {
-		return new Object[]{access, context};
+		return new Object[]{ access, context };
 	}
 
 	/**

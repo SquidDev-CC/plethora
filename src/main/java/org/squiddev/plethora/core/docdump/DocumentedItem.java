@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 class DocumentedItem<T> implements Comparable<DocumentedItem<T>> {
-	private static final char[] TERMINATORS = new char[]{'!', '.', '?', '\r', '\n'};
+	private static final char[] TERMINATORS = new char[]{ '!', '.', '?', '\r', '\n' };
 
 	private final T object;
 	private final String id;

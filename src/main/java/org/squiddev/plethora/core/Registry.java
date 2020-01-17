@@ -134,7 +134,7 @@ final class Registry {
 		});
 	}
 
-	@SuppressWarnings({"unchecked", "UnstableApiUsage"})
+	@SuppressWarnings({ "unchecked", "UnstableApiUsage" })
 	private static Result registerInstance(String name, AnnotatedElement element, Class<?> rawType, Type type, Supplier<?> instanceGetter) {
 		Object instance = null;
 

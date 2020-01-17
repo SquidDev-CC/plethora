@@ -15,7 +15,7 @@ import org.squiddev.plethora.integration.vanilla.meta.VanillaMeta;
 
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+import static dan200.computercraft.api.lua.ArgumentHelper.optString;
 
 public final class MethodsVanillaTileEntities {
 	private MethodsVanillaTileEntities() {

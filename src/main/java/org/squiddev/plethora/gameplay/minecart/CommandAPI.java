@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
-import static dan200.computercraft.core.apis.ArgumentHelper.getString;
+import static dan200.computercraft.api.lua.ArgumentHelper.getInt;
+import static dan200.computercraft.api.lua.ArgumentHelper.getString;
 
 /**
  * Copy of {@link CommandAPI} but with the Minecart Computer instead.
@@ -47,13 +47,13 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 
 	@Override
 	public String[] getNames() {
-		return new String[]{"commands"};
+		return new String[]{ "commands" };
 	}
 
 	@Nonnull
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"exec", "execAsync", "list", "getBlockPosition", "getBlockInfos", "getBlockInfo"};
+		return new String[]{ "exec", "execAsync", "list", "getBlockPosition", "getBlockInfos", "getBlockInfo" };
 	}
 
 	private static Map<Object, Object> createOutput(String output) {
@@ -62,7 +62,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 
 	private Object[] doCommand(String command) {
 		if (server == null || !server.isCommandBlockEnabled()) {
-			return new Object[]{false, Collections.singletonMap(1, "Command blocks disabled by server")};
+			return new Object[]{ false, Collections.singletonMap(1, "Command blocks disabled by server") };
 		}
 
 		ICommandManager commandManager = server.getCommandManager();
@@ -70,9 +70,9 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 			output.clear();
 
 			int result = commandManager.executeCommand(this, command);
-			return new Object[]{result > 0, new HashMap<>(output)};
+			return new Object[]{ result > 0, new HashMap<>(output) };
 		} catch (Exception | LinkageError t) {
-			return new Object[]{false, Collections.singletonMap(1, "Java Exception Thrown: " + t)};
+			return new Object[]{ false, Collections.singletonMap(1, "Java Exception Thrown: " + t) };
 		}
 	}
 
@@ -95,7 +95,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 		return table;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object getPropertyValue(IProperty property, Comparable value) {
 		if (value instanceof String || value instanceof Number || value instanceof Boolean) return value;
 		return property.getName(value);
@@ -111,7 +111,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 			case 1: { // execAsync
 				final String command = getString(arguments, 0);
 				long taskID = context.issueMainThreadTask(() -> doCommand(command));
-				return new Object[]{taskID};
+				return new Object[]{ taskID };
 			}
 			case 2: // list
 				return context.executeMainThreadTask(() ->
@@ -133,12 +133,12 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 							}
 						}
 					}
-					return new Object[]{result};
+					return new Object[]{ result };
 				});
 			case 3: { // getBlockPosition
 				// This is probably safe to do on the Lua thread. Probably.
 				BlockPos pos = entity.getPosition();
-				return new Object[]{pos.getX(), pos.getY(), pos.getZ()};
+				return new Object[]{ pos.getX(), pos.getY(), pos.getZ() };
 			}
 			case 4: { // getBlockInfos
 				final int minX = getInt(arguments, 0);
@@ -168,7 +168,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 							}
 						}
 					}
-					return new Object[]{results};
+					return new Object[]{ results };
 				});
 			}
 			case 5: { // getBlockInfo
@@ -181,7 +181,7 @@ public class CommandAPI extends CommandBlockBaseLogic implements ILuaAPI {
 					World world = getEntityWorld();
 					BlockPos position = new BlockPos(x, y, z);
 					if (!world.isValid(position)) throw new LuaException("co-ordinates out or range");
-					return new Object[]{getBlockInfo(world, position)};
+					return new Object[]{ getBlockInfo(world, position) };
 				});
 			}
 			default: {

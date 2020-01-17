@@ -121,7 +121,7 @@ public final class MethodResult {
 	 * @return The built MethodResult
 	 */
 	public static MethodResult result(Object arg) {
-		return new MethodResult(new Object[]{arg});
+		return new MethodResult(new Object[]{ arg });
 	}
 
 	/**
@@ -144,7 +144,7 @@ public final class MethodResult {
 	 * @return The built MethodResult
 	 */
 	public static MethodResult failure(String message) {
-		return new MethodResult(new Object[]{false, message});
+		return new MethodResult(new Object[]{ false, message });
 	}
 
 	/**

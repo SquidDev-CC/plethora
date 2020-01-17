@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.api.lua.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, IPeripheralTile {
@@ -91,7 +91,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			while (computers.hasNext()) {
 				IComputerAccess computer = computers.next();
 				try {
-					computer.queueEvent("redstone", new Object[]{computer.getAttachmentName()});
+					computer.queueEvent("redstone", new Object[]{ computer.getAttachmentName() });
 				} catch (RuntimeException e) {
 					Plethora.LOG.error("Could not queue redstone event", e);
 					computers.remove();
@@ -200,7 +200,7 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 					result.put(i + 1, EnumFacing.VALUES[i].getName());
 				}
 
-				return new Object[]{result};
+				return new Object[]{ result };
 			}
 			case 1: { // setOutput
 				int side = getFacing(args, 0).ordinal();
@@ -213,11 +213,11 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			}
 			case 2: { // getOutput
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{outputs[side] > 0};
+				return new Object[]{ outputs[side] > 0 };
 			}
 			case 3: { // getInput
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{inputs[side] > 0};
+				return new Object[]{ inputs[side] > 0 };
 			}
 			case 4: { // setBundledOutput
 				int side = getFacing(args, 0).ordinal();
@@ -229,16 +229,16 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			}
 			case 5: { // getBundledOutput
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{bundledOutputs[side]};
+				return new Object[]{ bundledOutputs[side] };
 			}
 			case 6: { // getBundledInput
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{bundledInputs[side]};
+				return new Object[]{ bundledInputs[side] };
 			}
 			case 7: { // testBundledInput
 				int side = getFacing(args, 0).ordinal();
 				int power = getInt(args, 1);
-				return new Object[]{(bundledInputs[side] & power) == power};
+				return new Object[]{ (bundledInputs[side] & power) == power };
 			}
 			case 8: // setAnalogueOutput
 			case 9: {
@@ -254,12 +254,12 @@ public class TileRedstoneIntegrator extends TileGeneric implements IPeripheral, 
 			case 10: // getAnalogueOutput
 			case 11: {
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{outputs[side]};
+				return new Object[]{ outputs[side] };
 			}
 			case 12: // getAnalogueInput
 			case 13: {
 				int side = getFacing(args, 0).ordinal();
-				return new Object[]{inputs[side]};
+				return new Object[]{ inputs[side] };
 			}
 			default:
 				return null;

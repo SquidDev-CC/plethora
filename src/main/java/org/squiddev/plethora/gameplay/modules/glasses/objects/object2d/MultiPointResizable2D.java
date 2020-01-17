@@ -7,7 +7,7 @@ import org.squiddev.plethora.utils.Vec2d;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.api.lua.ArgumentHelper.getInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 

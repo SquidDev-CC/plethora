@@ -4,7 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getInt;
+import static dan200.computercraft.api.lua.ArgumentHelper.getInt;
 
 /**
  * An object which can be coloured.
@@ -16,14 +16,14 @@ public interface Colourable {
 
 	void setColour(int colour);
 
-	@PlethoraMethod(name = {"getColour", "getColor"}, doc = "-- Get the colour for this object.", worldThread = false)
+	@PlethoraMethod(name = { "getColour", "getColor" }, doc = "-- Get the colour for this object.", worldThread = false)
 	static long getColour(@FromTarget Colourable colourable) {
 		int colour = colourable.getColour();
 		return colour & 0xffffffffL;
 	}
 
 	@PlethoraMethod(worldThread = false,
-		name = {"setColor", "setColour"},
+		name = { "setColor", "setColour" },
 		doc = "function(colour|r:int, [g:int, b:int], [alpha:int]):number -- Set the colour for this object."
 	)
 	static void setColour(@FromTarget Colourable object, Object[] args) throws LuaException {

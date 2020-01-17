@@ -11,7 +11,7 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.BaseMetaProvider;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
+import org.squiddev.plethora.utils.Helpers;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public final class MetaEntityLiving extends BaseMetaProvider<EntityLivingBase> {
 
 		map.put("heldItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)));
 		map.put("offhandItem", ContextHelpers.wrapStack(context, target.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND)));
-		map.put("potionEffects", LuaList.of(target.getActivePotionEffects(), PotionEffect::getEffectName).asMap());
+		map.put("potionEffects", Helpers.map(target.getActivePotionEffects(), PotionEffect::getEffectName));
 
 		map.put("health", target.getHealth());
 		map.put("maxHealth", target.getMaxHealth());
