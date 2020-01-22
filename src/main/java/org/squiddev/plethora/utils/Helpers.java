@@ -4,7 +4,6 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
-import com.sun.istack.internal.Nullable;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
@@ -33,6 +32,7 @@ import org.squiddev.plethora.core.PlethoraCore;
 import org.squiddev.plethora.gameplay.Plethora;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
