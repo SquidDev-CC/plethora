@@ -37,7 +37,10 @@ public final class MethodRegistry implements IMethodRegistry {
 	public void build() {
 		providers.clear();
 		for (RegisteredMethod<?> entry : all) {
-			if (entry.enabled()) providers.put(entry.target(), entry);
+			if (entry.enabled()) {
+				entry.build();
+				providers.put(entry.target(), entry);
+			}
 		}
 	}
 
