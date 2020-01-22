@@ -24,7 +24,6 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 @Injects
 public final class MethodsLaser {
 	public static final SubtargetedModuleMethod<IWorldLocation> FIRE = SubtargetedModuleMethod.of(
-		MethodsLaser.class.getName() + "#fire",
 		"fire", PlethoraModules.LASER_M, IWorldLocation.class,
 		"function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction",
 		MethodsLaser::fire

@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.method.wrapper;
 
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
 
 import java.lang.annotation.*;
 
@@ -9,7 +8,7 @@ import java.lang.annotation.*;
  * Extract this value from the context's target, rather than taking it as an argument.
  *
  * This is largely similar to {@link FromContext}, though is more selective in where it extracts the entry, and the
- * type will be used as a {@link ISubTargetedMethod#getSubTarget()}.
+ * type will be used as a {@link org.squiddev.plethora.api.method.IMethod#getSubTarget()}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

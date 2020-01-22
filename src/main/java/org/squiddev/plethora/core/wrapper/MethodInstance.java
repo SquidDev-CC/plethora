@@ -2,13 +2,13 @@ package org.squiddev.plethora.core.wrapper;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
+import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
 import org.squiddev.plethora.api.method.IUnbakedContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.module.IModuleContainer;
-import org.squiddev.plethora.api.module.IModuleMethod;
 import org.squiddev.plethora.core.ConfigCore;
+import org.squiddev.plethora.core.RegisteredMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,28 +17,32 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-final class MethodInstance<T, U> implements IModuleMethod<T>, ISubTargetedMethod<T, U> {
+final class MethodInstance<T> extends RegisteredMethod<T> implements IMethod<T> {
 	final Method method;
 
-	private final String id;
 	private final String name;
-	private final Class<T> target;
 	private final String documentation;
 	final boolean worldThread;
 	private final ContextInfo[] requiredContext;
 	final int totalContext;
 	final ResourceLocation[] modules;
 	private final Class<?>[] markerIfaces;
-	private final Class<U> subtarget;
+	private final Class<?> subtarget;
 
 	private volatile Delegate<T> delegate;
 
-	MethodInstance(Method method, Class<T> target, String name, String documentation, boolean worldThread, ContextInfo[] requiredContext, int totalContext, ResourceLocation[] modules, Class<?>[] markerIfaces, Class<U> subtarget) {
-		this.method = method;
+	MethodInstance(
+		Method method, Class<T> target, String modId, String name, String documentation, boolean worldThread,
+		ContextInfo[] requiredContext, int totalContext,
+		ResourceLocation[] modules, Class<?>[] markerIfaces, Class<?> subtarget
+	) {
+		super(
+			method.getDeclaringClass().getName() + "#" + method.getName() + "(" + target.getSimpleName() + ")",
+			modId, target
+		);
 
-		id = method.getDeclaringClass().getName() + "#" + method.getName() + "(" + target.getSimpleName() + ")";
+		this.method = method;
 		this.name = name;
-		this.target = target;
 		this.documentation = documentation;
 		this.worldThread = worldThread;
 		this.requiredContext = requiredContext;
@@ -55,7 +59,7 @@ final class MethodInstance<T, U> implements IModuleMethod<T>, ISubTargetedMethod
 	public boolean canApply(@Nonnull IPartialContext<T> context) {
 		// Ensure we have all required modules.
 		if (modules != null) {
-			IModuleContainer moduleContainer = IModuleContainer.class.isAssignableFrom(target) ? (IModuleContainer) context.getTarget() : context.getModules();
+			IModuleContainer moduleContainer = IModuleContainer.class.isAssignableFrom(target()) ? (IModuleContainer) context.getTarget() : context.getModules();
 			for (ResourceLocation module : modules) {
 				if (!moduleContainer.hasModule(module)) return false;
 			}
@@ -108,12 +112,6 @@ final class MethodInstance<T, U> implements IModuleMethod<T>, ISubTargetedMethod
 		return documentation;
 	}
 
-	@Nonnull
-	@Override
-	public String getId() {
-		return id;
-	}
-
 	@Override
 	public boolean has(@Nonnull Class<?> iface) {
 		if (markerIfaces == null) return false;
@@ -131,8 +129,13 @@ final class MethodInstance<T, U> implements IModuleMethod<T>, ISubTargetedMethod
 
 	@Nullable
 	@Override
-	public Class<U> getSubTarget() {
+	public Class<?> getSubTarget() {
 		return subtarget;
+	}
+
+	@Override
+	public IMethod<T> method() {
+		return this;
 	}
 
 	static class ContextInfo {

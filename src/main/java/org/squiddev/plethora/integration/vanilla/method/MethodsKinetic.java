@@ -27,7 +27,6 @@ import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 @Injects
 public final class MethodsKinetic {
 	public static final SubtargetedModuleMethod<Entity> LAUNCH = SubtargetedModuleMethod.of(
-		MethodsKinetic.class.getName() + "#launch",
 		"launch", PlethoraModules.KINETIC_M, Entity.class,
 		"function(yaw:number, pitch:number, power:number) -- Launch the entity in a set direction",
 		MethodsKinetic::launch
@@ -73,7 +72,6 @@ public final class MethodsKinetic {
 	}
 
 	public static final SubtargetedModuleMethod<EntityLiving> WALK = SubtargetedModuleMethod.of(
-		MethodsKinetic.class.getName() + "#walk",
 		"walk", PlethoraModules.KINETIC_M, EntityLiving.class,
 		"function(x:number, y:number, z:number):boolean, string|nil -- Walk to a coordinate",
 		MethodsKinetic::walk

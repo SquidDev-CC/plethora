@@ -69,7 +69,7 @@ final class MethodClassLoader extends ClassLoader {
 	}
 
 	@Nullable
-	private Class<?> writeClass(MethodInstance<?, ?> methodInstance) {
+	private Class<?> writeClass(MethodInstance<?> methodInstance) {
 		Method method = methodInstance.method;
 		Parameter[] parameters = method.getParameters();
 

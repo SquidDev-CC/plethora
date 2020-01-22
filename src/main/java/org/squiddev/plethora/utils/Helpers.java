@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
+import com.sun.istack.internal.Nullable;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
@@ -183,7 +184,9 @@ public final class Helpers {
 		return file;
 	}
 
-	public static boolean blacklisted(Iterable<String> blacklist, String name) {
+	public static boolean blacklisted(@Nullable Iterable<String> blacklist, @Nonnull String name) {
+		if (blacklist == null) return false;
+
 		for (String prefix : blacklist) {
 			if (!name.startsWith(prefix)) continue;
 
@@ -205,7 +208,11 @@ public final class Helpers {
 	private static final Set<String> blacklistedMods = new HashSet<>();
 
 	public static boolean modLoaded(String mod) {
-		return (Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod)) && !ConfigCore.Blacklist.blacklistMods.contains(mod) && !blacklistedMods.contains(mod);
+		return Loader.isModLoaded(mod) || ModAPIManager.INSTANCE.hasAPI(mod);
+	}
+
+	public static boolean modBlacklisted(String mod) {
+		return (ConfigCore.Blacklist.blacklistMods != null && ConfigCore.Blacklist.blacklistMods.contains(mod)) || blacklistedMods.contains(mod);
 	}
 
 	public static void blacklistMod(String mod) {

@@ -87,6 +87,7 @@ public class PlethoraCore {
 
 		Registry.register(asmData);
 		PlethoraMethodRegistry.loadAsm(asmData);
+		buildRegistries();
 
 		long finish = System.currentTimeMillis();
 
@@ -96,6 +97,13 @@ public class PlethoraCore {
 		);
 
 		ConfigCore.configuration.save();
+	}
+
+	static void buildRegistries() {
+		TransferRegistry.instance.build();
+		ConverterRegistry.instance.build();
+		MetaRegistry.instance.build();
+		MethodRegistry.instance.build();
 	}
 
 	@Mod.EventHandler
@@ -152,6 +160,7 @@ public class PlethoraCore {
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.getModID().equals(PlethoraCore.ID)) {
 			ConfigCore.sync();
+			buildRegistries();
 		}
 	}
 

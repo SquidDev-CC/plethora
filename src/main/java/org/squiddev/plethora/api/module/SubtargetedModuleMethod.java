@@ -2,7 +2,10 @@ package org.squiddev.plethora.api.module;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.*;
+import org.squiddev.plethora.api.method.ContextKeys;
+import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.api.method.IUnbakedContext;
+import org.squiddev.plethora.api.method.MethodResult;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -11,7 +14,7 @@ import java.util.Set;
 /**
  * A top-level module method which requires a particular context object to execute.
  */
-public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod implements ISubTargetedMethod<IModuleContainer, T> {
+public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod {
 	private final Class<T> klass;
 
 	public SubtargetedModuleMethod(String name, Set<ResourceLocation> modules, Class<T> klass, String docs) {
@@ -23,18 +26,12 @@ public abstract class SubtargetedModuleMethod<T> extends ModuleContainerMethod i
 		this.klass = klass;
 	}
 
-	public static <T> SubtargetedModuleMethod<T> of(String id, String name, ResourceLocation module, Class<T> klass, String docs, Delegate<IModuleContainer> delegate) {
+	public static <T> SubtargetedModuleMethod<T> of(String name, ResourceLocation module, Class<T> klass, String docs, Delegate<IModuleContainer> delegate) {
 		return new SubtargetedModuleMethod<T>(name, Collections.singleton(module), klass, docs) {
 			@Nonnull
 			@Override
 			public MethodResult apply(@Nonnull IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
 				return delegate.apply(context, args);
-			}
-
-			@Nonnull
-			@Override
-			public String getId() {
-				return id;
 			}
 		};
 	}

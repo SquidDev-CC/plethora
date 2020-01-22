@@ -14,7 +14,8 @@ public class RegistryTest {
 	@Test
 	public void registerInstanceClass() {
 		ConfigCore.Blacklist.blacklistProviders = new ArrayList<>();
-		Registry.register(TransferTileEntity.class);
+		Registry.register(TransferTileEntity.class, null);
+		PlethoraCore.buildRegistries();
 
 		TileEntity te = new TileEntityFurnace();
 		assertEquals(te, TransferRegistry.instance.getTransferLocation(te, "self"));

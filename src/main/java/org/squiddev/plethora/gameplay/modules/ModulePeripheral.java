@@ -3,8 +3,8 @@ package org.squiddev.plethora.gameplay.modules;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IAttachable;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.core.AttachableWrapperPeripheral;
+import org.squiddev.plethora.core.RegisteredMethod;
 import org.squiddev.plethora.core.UnbakedContext;
 import org.squiddev.plethora.core.executor.TaskRunner;
 
@@ -15,7 +15,7 @@ public class ModulePeripheral extends AttachableWrapperPeripheral {
 	private final int stackHash;
 
 	public ModulePeripheral(
-		String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+		String name, Object owner, Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> methods,
 		TaskRunner runner, Collection<IAttachable> attachments,
 		int stackHash
 	) {

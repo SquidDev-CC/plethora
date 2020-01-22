@@ -15,22 +15,21 @@ import java.util.*;
 public final class MetaRegistry implements IMetaRegistry {
 	public static final MetaRegistry instance = new MetaRegistry();
 
+	private static final Map<IMetaProvider<?>, TargetedRegisteredValue<? extends IMetaProvider<?>>> all = new HashMap<>();
 	final SortedMultimap<Class<?>, IMetaProvider<?>> providers = SortedMultimap.create(Comparator.comparingInt(IMetaProvider::getPriority));
-	private static final Map<IMetaProvider<?>, String> names = new HashMap<>();
 
-	<T> void registerMetaProvider(@Nonnull Class<T> target, @Nonnull IMetaProvider<T> provider, @Nonnull String name) {
-		Objects.requireNonNull(target, "target cannot be null");
+	void registerMetaProvider(@Nonnull TargetedRegisteredValue<? extends IMetaProvider<?>> provider) {
 		Objects.requireNonNull(provider, "provider cannot be null");
-		Objects.requireNonNull(name, "name cannot be null");
+		all.put(provider.value(), provider);
+	}
 
-		providers.put(target, provider);
-		names.put(provider, name);
+	void build() {
+		TargetedRegisteredValue.buildCache(all.values(), providers);
 	}
 
 	public String getName(@Nonnull IMetaProvider<?> provider) {
-		String name = names.get(provider);
-		if (name != null) return name;
-		return provider.getClass().getName();
+		TargetedRegisteredValue<? extends IMetaProvider<?>> item = all.get(provider);
+		return item == null ? provider.getClass().getName() : item.name();
 	}
 
 	@Nonnull

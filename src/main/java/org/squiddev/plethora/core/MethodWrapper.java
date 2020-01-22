@@ -1,13 +1,7 @@
 package org.squiddev.plethora.core;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import org.squiddev.plethora.api.PlethoraAPI;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IMethodRegistry;
-import org.squiddev.plethora.api.method.IUnbakedContext;
-import org.squiddev.plethora.api.method.MethodResult;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -19,18 +13,18 @@ import java.util.List;
  * @see dan200.computercraft.api.lua.ILuaObject
  */
 public class MethodWrapper {
-	private final List<IMethod<?>> methods;
+	private final List<RegisteredMethod<?>> methods;
 	private final List<UnbakedContext<?>> contexts;
 
 	private final String[] names;
 
-	public MethodWrapper(List<IMethod<?>> methods, List<UnbakedContext<?>> contexts) {
+	public MethodWrapper(List<RegisteredMethod<?>> methods, List<UnbakedContext<?>> contexts) {
 		this.contexts = contexts;
 		this.methods = methods;
 
 		String[] names = this.names = new String[methods.size()];
 		for (int i = 0; i < names.length; i++) {
-			names[i] = methods.get(i).getName();
+			names[i] = methods.get(i).method().getName();
 		}
 	}
 
@@ -39,7 +33,7 @@ public class MethodWrapper {
 		return names;
 	}
 
-	public IMethod<?> getMethod(int i) {
+	public RegisteredMethod<?> getMethod(int i) {
 		return methods.get(i);
 	}
 
@@ -70,29 +64,9 @@ public class MethodWrapper {
 			We *could* make a hash set but this path is not going to be visited much, also not sure if there would be
 			any efficiency gain: the method count is pretty small.
 		  */
-		for (IMethod method : methods) {
+		for (RegisteredMethod method : methods) {
 			if (!other.methods.contains(method)) return false;
 		}
 		return true;
-	}
-
-	private static final IMethodRegistry registry = PlethoraAPI.instance().methodRegistry();
-
-	@SuppressWarnings("unchecked")
-	static MethodResult doCallMethod(IMethod method, IUnbakedContext<?> context, Object[] args) throws LuaException {
-		try {
-			double cost = registry.getBaseMethodCost(method);
-			if (cost <= 0) return method.apply(context, args);
-
-			// This is a little sub-optimal, as argument validation will be deferred until later.
-			// However, we don't have much of a way round this as the method could technically
-			// have side effects.
-			return context.getCostHandler().await(cost, () -> method.apply(context, args));
-		} catch (LuaException e) {
-			throw e;
-		} catch (Exception | LinkageError | VirtualMachineError e) {
-			PlethoraCore.LOG.error("Unexpected error calling " + method.getName(), e);
-			throw new LuaException("Java Exception Thrown: " + e);
-		}
 	}
 }

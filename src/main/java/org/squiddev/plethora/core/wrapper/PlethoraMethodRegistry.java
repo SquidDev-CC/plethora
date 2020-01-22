@@ -11,6 +11,7 @@ import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.PlethoraCore;
+import org.squiddev.plethora.core.RegisteredMethod;
 import org.squiddev.plethora.core.wrapper.MethodInstance.ContextInfo;
 import org.squiddev.plethora.utils.Helpers;
 
@@ -31,7 +32,7 @@ public final class PlethoraMethodRegistry {
 	private PlethoraMethodRegistry() {
 	}
 
-	static boolean add(Method method) {
+	static boolean add(Method method, String modId) {
 		PlethoraMethod annotation = method.getAnnotation(PlethoraMethod.class);
 		String name = method.getDeclaringClass().getName() + "." + method.getName();
 		if (annotation == null) {
@@ -216,20 +217,20 @@ public final class PlethoraMethodRegistry {
 
 		if (!ok) return false;
 
-		MethodInstance<?, ?> instance = new MethodInstance<>(
-			method, target, names[0], docs,
+		MethodInstance<?> instance = new MethodInstance<>(
+			method, target, modId, names[0], docs,
 			annotation.worldThread(), context.toArray(new ContextInfo[0]),
-			contextIndex, modules, markerIfaces,
-			subTarget
+			contextIndex, modules, markerIfaces, subTarget
 		);
-		register(target, instance);
-		for (int i = 1; i < names.length; i++) register(target, new RenamedMethod<>(names[i], instance));
-		return true;
-	}
 
-	@SuppressWarnings("unchecked")
-	private static void register(Class<?> target, IMethod<?> instance) {
-		MethodRegistry.instance.registerMethod(target, (IMethod) instance);
+		MethodRegistry.instance.registerMethod(instance);
+		for (int i = 1; i < names.length; i++) {
+			MethodRegistry.instance.registerMethod(new RegisteredMethod.Impl<>(
+				instance.name(), instance.mod(), instance.target(),
+				new RenamedMethod<>(names[i], (MethodInstance) instance)
+			));
+		}
+		return true;
 	}
 
 	private static Class<?> getRawType(Parameter parameter) {
@@ -272,14 +273,10 @@ public final class PlethoraMethodRegistry {
 			String methodWhole = asmData.getObjectName();
 
 			try {
-				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, className + "#" + methodWhole)) {
-					PlethoraCore.LOG.debug("Ignoring " + className + "#" + methodWhole);
-					continue;
-				}
-
-				String modName = (String) asmData.getAnnotationInfo().get("modId");
-				if (!Strings.isNullOrEmpty(modName) && !Helpers.modLoaded(modName)) {
-					PlethoraCore.LOG.debug("Skipping " + className + "#" + methodWhole + " as " + modName + " is not loaded or is blacklisted");
+				String modId = (String) asmData.getAnnotationInfo().get("modId");
+				if (Strings.isNullOrEmpty(modId)) modId = null;
+				if (modId != null && !Helpers.modLoaded(modId)) {
+					PlethoraCore.LOG.debug("Skipping " + className + "#" + methodWhole + " as " + modId + " is not loaded or is blacklisted");
 					continue;
 				}
 
@@ -292,7 +289,7 @@ public final class PlethoraMethodRegistry {
 				}
 
 				PlethoraCore.LOG.debug("Registering " + className + "#" + methodWhole);
-				ok &= add(method);
+				ok &= add(method, modId);
 			} catch (Throwable e) {
 				PlethoraCore.LOG.error("Failed to load: " + className + "#" + methodWhole, e);
 				ok = false;

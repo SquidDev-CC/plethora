@@ -42,7 +42,6 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
-		@RequiresRestart(mc = false)
 		public static double initial;
 
 		/**
@@ -50,7 +49,6 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(10)
 		@Range(min = 0)
-		@RequiresRestart(mc = false)
 		public static double regen;
 
 		/**
@@ -58,7 +56,6 @@ public final class ConfigCore {
 		 */
 		@DefaultDouble(100)
 		@Range(min = 0)
-		@RequiresRestart(mc = false)
 		public static double limit;
 
 		/**
@@ -68,7 +65,6 @@ public final class ConfigCore {
 		 * buffer and so have a more traditional rate-limiting system.
 		 */
 		@DefaultBoolean(false)
-		@RequiresRestart(mc = false)
 		public static boolean allowNegative;
 
 		/**
@@ -76,7 +72,6 @@ public final class ConfigCore {
 		 * an error.
 		 */
 		@DefaultBoolean(true)
-		@RequiresRestart(mc = false)
 		public static boolean awaitRegen;
 
 		private CostSystem() {
@@ -100,7 +95,6 @@ public final class ConfigCore {
 		 * - "foo.bar.Provider" - This class, all its members and nested classes
 		 * - "foo.bar.Provider#method" - A particular method with a name
 		 */
-		@RequiresRestart
 		public static ArrayList<String> blacklistProviders;
 
 		/**
@@ -108,7 +102,6 @@ public final class ConfigCore {
 		 * as peripherals. For example use "net.minecraft." to disable wrapping
 		 * any vanilla peripheral. This does not blacklist subclasses.
 		 */
-		@RequiresRestart
 		public static ArrayList<String> blacklistTileEntities;
 
 		/**
@@ -116,7 +109,6 @@ public final class ConfigCore {
 		 * IMPORTANT: This does not block wrapping a mod's peripherals, just disables
 		 * custom mod specific integration.
 		 */
-		@RequiresRestart
 		public static HashSet<String> blacklistMods;
 
 		/**

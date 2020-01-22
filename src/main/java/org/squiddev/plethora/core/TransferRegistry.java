@@ -9,13 +9,13 @@ import org.squiddev.plethora.core.collections.ClassIteratorIterable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public final class TransferRegistry implements ITransferRegistry {
 	public static final TransferRegistry instance = new TransferRegistry();
+
+	private final List<TargetedRegisteredValue<? extends ITransferProvider<?>>> allPrimary = new ArrayList<>();
+	private final List<TargetedRegisteredValue<? extends ITransferProvider<?>>> allSecondary = new ArrayList<>();
 
 	private final Multimap<Class<?>, ITransferProvider<?>> primary = MultimapBuilder.hashKeys().hashSetValues().build();
 	private final Multimap<Class<?>, ITransferProvider<?>> secondary = MultimapBuilder.hashKeys().hashSetValues().build();
@@ -23,23 +23,23 @@ public final class TransferRegistry implements ITransferRegistry {
 	private TransferRegistry() {
 	}
 
-	<T> void registerPrimary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider) {
-		Objects.requireNonNull(klass, "klass cannot be null");
+	void registerPrimary(@Nonnull TargetedRegisteredValue<? extends ITransferProvider<?>> provider) {
 		Objects.requireNonNull(provider, "provider cannot be null");
-
-		primary.put(klass, provider);
+		allPrimary.add(provider);
 	}
 
-	<T> void registerSecondary(@Nonnull Class<T> klass, @Nonnull ITransferProvider<T> provider) {
-		Objects.requireNonNull(klass, "klass cannot be null");
+	void registerSecondary(@Nonnull TargetedRegisteredValue<? extends ITransferProvider<?>> provider) {
 		Objects.requireNonNull(provider, "provider cannot be null");
+		allSecondary.add(provider);
+	}
 
-		secondary.put(klass, provider);
+	void build() {
+		TargetedRegisteredValue.buildCache(allPrimary, primary);
+		TargetedRegisteredValue.buildCache(allSecondary, secondary);
 	}
 
 	@Nullable
 	@Override
-	@SuppressWarnings("unchecked")
 	public Object getTransferLocation(@Nonnull Object object, @Nonnull String key) {
 		Multimap<Class<?>, ITransferProvider<?>> map = primary;
 		String[] parts = key.split("\\.");

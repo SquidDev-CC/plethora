@@ -6,7 +6,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.method.IResultExecutor;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.core.executor.ComputerAccessExecutor;
@@ -29,7 +28,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	private final Map<IComputerAccess, ComputerAccessExecutor> accesses = new ConcurrentHashMap<>();
 
 	public MethodWrapperPeripheral(
-		String name, Object owner, List<IMethod<?>> methods, List<UnbakedContext<?>> contexts,
+		String name, Object owner, List<RegisteredMethod<?>> methods, List<UnbakedContext<?>> contexts,
 		TaskRunner runner
 	) {
 		super(methods, contexts);
@@ -39,7 +38,7 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 	}
 
 	public MethodWrapperPeripheral(
-		String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+		String name, Object owner, Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> methods,
 		TaskRunner runner
 	) {
 		this(name, owner, methods.getLeft(), methods.getRight(), runner);
@@ -74,7 +73,8 @@ public class MethodWrapperPeripheral extends MethodWrapper implements IPeriphera
 			context.target, keys, references, context.handler, context.modules, executor
 		);
 
-		MethodResult result = doCallMethod(getMethod(method), full, args);
+		@SuppressWarnings("unchecked")
+		MethodResult result = getMethod(method).call((UnbakedContext) full, args);
 		return executor.execute(result, luaContext);
 	}
 

@@ -79,7 +79,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityEnderman> TELEPORT = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#teleport",
 		"teleport", PlethoraModules.KINETIC_M, EntityEnderman.class,
 		"function(x:number, y:number, z:number) -- Teleport to a position relative to the current one",
 		MethodsKineticEntity::teleport
@@ -105,7 +104,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<AbstractSkeleton> SHOOT_SKELETON = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootSkeleton",
 		"shoot", PlethoraModules.KINETIC_M, AbstractSkeleton.class,
 		"function(potency:number) -- Fire an arrow in the direction the skeleton is looking",
 		MethodsKineticEntity::shootSkeleton
@@ -153,7 +151,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityBlaze> SHOOT_BLAZE = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootBlaze",
 		"shoot", PlethoraModules.KINETIC_M, EntityBlaze.class,
 		"function(yaw:number, pitch:number) -- Fire a fireball in the specified direction.",
 		MethodsKineticEntity::shootBlaze
@@ -190,7 +187,6 @@ public final class MethodsKineticEntity {
 	};
 
 	public static final SubtargetedModuleMethod<EntityWitch> SHOOT_WITCH = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootWitch",
 		"shoot", PlethoraModules.KINETIC_M, EntityWitch.class,
 		"function(potency:number) -- Throw a potion in the direction the witch is looking",
 		MethodsKineticEntity::shootWitch
@@ -222,7 +218,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityMinecart> PROPEL = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#propel",
 		"propel", PlethoraModules.KINETIC_M, EntityMinecart.class,
 		"function(velocity:number) -- Propel this minecart in along the track.",
 		MethodsKineticEntity::propel

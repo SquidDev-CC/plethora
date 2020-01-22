@@ -1,9 +1,7 @@
 package org.squiddev.plethora.core.docdump;
 
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.ISubTargetedMethod;
-import org.squiddev.plethora.api.module.IModuleMethod;
+import org.squiddev.plethora.core.RegisteredMethod;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Details about a method
  */
-public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
+public class DocumentedMethod extends DocumentedItem<RegisteredMethod<?>> {
 	private static final Pattern docString = Pattern.compile("^function(\\([^)]*\\).*?)--(.*)$");
 
 	private final String args;
@@ -22,23 +20,21 @@ public class DocumentedMethod extends DocumentedItem<IMethod<?>> {
 	private final Class<?> subtarget;
 	private final List<String> modules;
 
-	public DocumentedMethod(@Nonnull Class<?> target, @Nonnull IMethod<?> method) {
-		super(method, method.getId(), method.getName(), getDescription(method.getDocString()));
+	public DocumentedMethod(@Nonnull RegisteredMethod<?> method) {
+		super(method, method.name(), method.method().getName(), getDescription(method.method().getDocString()));
 
-		args = getArgs(method.getDocString());
-		this.target = target;
-		subtarget = method instanceof ISubTargetedMethod
-			? ((ISubTargetedMethod<?, ?>) method).getSubTarget()
-			: null;
+		target = method.target();
+		args = getArgs(getDetail());
+		subtarget = method.method().getSubTarget();
 
-		if (method instanceof IModuleMethod) {
-			Collection<ResourceLocation> modules = ((IModuleMethod<?>) method).getModules();
+		Collection<ResourceLocation> modules = method.method().getModules();
+		if (modules.isEmpty()) {
+			this.modules = Collections.emptyList();
+		} else {
 			List<String> moduleList = new ArrayList<>(modules.size());
 			for (ResourceLocation module : modules) moduleList.add(module.toString());
 			moduleList.sort(Comparator.naturalOrder());
 			this.modules = Collections.unmodifiableList(moduleList);
-		} else {
-			modules = Collections.emptyList();
 		}
 	}
 

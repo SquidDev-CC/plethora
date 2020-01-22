@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.core.ConfigCore;
 import org.squiddev.plethora.core.ContextFactory;
+import org.squiddev.plethora.core.MethodRegistry;
 import org.squiddev.plethora.core.executor.BasicExecutor;
 import org.squiddev.plethora.integration.vanilla.method.MethodsVanillaTileEntities;
 
@@ -38,7 +39,8 @@ public class PlethoraMethodRegistryTest {
 	@Test
 	public void testAddNoSync() throws NoSuchMethodException, LuaException, InterruptedException {
 		Method method = MethodsVanillaTileEntities.class.getMethod("getRemainingBurnTime", TileEntityFurnace.class);
-		assertTrue(PlethoraMethodRegistry.add(method));
+		assertTrue(PlethoraMethodRegistry.add(method, null));
+		MethodRegistry.instance.build();
 
 		TileEntityFurnace furnace = new TileEntityFurnace();
 		TypedLuaObject<TileEntityFurnace> object = ContextFactory
@@ -49,13 +51,14 @@ public class PlethoraMethodRegistryTest {
 		List<String> methods = Arrays.asList(object.getMethodNames());
 		assertThat(methods, CoreMatchers.hasItem("getRemainingBurnTime"));
 
-		assertArrayEquals(new Object[]{0}, object.callMethod(new BasicObject(), methods.indexOf("getRemainingBurnTime"), new Object[0]));
+		assertArrayEquals(new Object[]{ 0 }, object.callMethod(new BasicObject(), methods.indexOf("getRemainingBurnTime"), new Object[0]));
 	}
 
 	@Test
 	public void testAddSync() throws NoSuchMethodException, LuaException, InterruptedException {
 		Method method = MethodsVanillaTileEntities.class.getMethod("getSignText", TileEntitySign.class);
-		assertTrue(PlethoraMethodRegistry.add(method));
+		assertTrue(PlethoraMethodRegistry.add(method, null));
+		MethodRegistry.instance.build();
 
 		TileEntitySign sign = new TileEntitySign();
 		TypedLuaObject<TileEntitySign> object = ContextFactory
@@ -68,7 +71,7 @@ public class PlethoraMethodRegistryTest {
 
 		Map<Object, Object> result = new HashMap<>();
 		for (int i = 1; i <= 4; i++) result.put(i, "");
-		assertArrayEquals(new Object[]{result}, object.callMethod(new BasicObject(), methods.indexOf("getSignText"), new Object[0]));
+		assertArrayEquals(new Object[]{ result }, object.callMethod(new BasicObject(), methods.indexOf("getSignText"), new Object[0]));
 	}
 
 	private static class BasicObject implements ILuaContext {
