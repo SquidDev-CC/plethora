@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<style>
+		/* Basic reset on elements */
+		h1, h2, h3, h4, p, table, div, body {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+		/* Make the page a little more airy */
+		body {
+			margin: 40px auto;
+			max-width: 1000px;
+			padding: 0 10px;
+			line-height: 1.6;
+			color: #444;
+			background: #fff;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+			"Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		/* The main page title */
+		h1 {
+			font-size: 2.8em;
+			font-weight: lighter;
+			border-bottom: solid 2px #aaa;
+		}
+		/* Individual sections/types of value */
+		h2 {
+			font-size: 1.6em;
+			font-weight: bold;
+			margin-top: 1em;
+		}
+		/* Targets (modules/classes) */
+		h3 {
+			font-size: 1.4em;
+			font-weight: bold;
+			margin: 1.4em 0 0.3em;
+		}
+		/* Targets and methods should be styled as code */
+		.target-name, .doc-name, code, pre {
+			font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+		}
+		/* Let's make code look pretty */
+		code {
+			color: #c7254e;
+			background-color: #f9f2f4;
+		}
+		/** Try to make tables look somewhat sane */
+		table {
+			width: 100%;
+			box-sizing: border-box;
+		}
+		table, tr, td, th {
+			border: 1px solid #aaa; border-collapse: collapse;
+			min-width: 100px; padding: 3px;
+			text-align: left;
+		}
+		/* The main doc "item" (method). We do some weird stuff with padding
+		 * in order to make the header span the whole top
+		 */
+		.doc-item {
+			background: #fafafa;
+			margin-top: 10px; padding: 0 8px 8px 8px;
+		}
+		.doc-item h4 {
+			background: #eee;
+			width: 100%; padding: 4px 8px; margin-left: -8px;
+			font-size: 1.1em; font-weight: bold;
+		}
+		/* We try to make the synopsis the most prominent, followed by
+		 * description and then table.
+		 */
+		.doc-item p.synopsis { font-style: oblique; font-weight: normal; }
+		.doc-item p { margin: 0.2em 0; font-weight: lighter; }
+		.doc-details { font-size: 0.8em; }
+		/* Make the method listing smaller and stripey */
+		.doc-list { font-size: 0.8em; }
+		.doc-list tr:nth-child(odd) { background-color: #f9f9f9; }
+		.doc-list tr:nth-child(even) { background-color: #fff; }
+		/* "Fancy" syntax highlighting */
+		pre.highlight .o { color: #ff0086; }
+		pre.highlight .s2 { color: #fd8900; }
+		pre.highlight .kc { color: #3777e6; }
+		/* Meta toggling */
+		.nested-meta > .nested-meta-short { cursor: pointer; }
+		.nested-meta > .nested-meta-long { display: none; }
+		.nested-meta.active > .nested-meta-short{ opacity: 0.5; }
+		.nested-meta.active > .nested-meta-long { display: inline; }
+		/* More fancy metadata */
+		.meta-brace { display: inline-block; }
+		.meta-map.focus > .meta-brace { background: #eee; }
+		/* The footer */
+		footer {
+			color: #aaa;
+			font-size: 11px;
+			width: 100%;
+			margin-top: 10px;
+		}
+	</style>
+	<title>Plethora dump</title>
+</head>
+<body>
+<h1>Plethora dump</h1>
