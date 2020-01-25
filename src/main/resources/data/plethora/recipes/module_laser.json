@@ -1,5 +1,5 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"III",
 		"GDF",
@@ -10,12 +10,11 @@
 			{ "type": "plethora:enchanted", "id": "minecraft:flame" },
 			{ "type": "plethora:enchanted", "id": "minecraft:fire_aspect" }
 		],
-		"D": { "type": "forge:ore_dict", "ore": "gemDiamond" },
-		"G": { "type": "forge:ore_dict", "ore": "blockGlass" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
+		"D": { "tag": "forge:gems/diamond" },
+		"G": { "tag": "forge:glass" },
+		"I": { "tag": "forge:ingots/iron" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 1
+		"item": "plethora:module_laser"
 	}
 }

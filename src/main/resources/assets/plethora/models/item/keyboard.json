@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "plethora:items/keyboard"
+		"layer0": "plethora:item/keyboard"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "plethora:blocks/redstone_integrator"
+		"all": "plethora:block/redstone_integrator"
 	}
 }

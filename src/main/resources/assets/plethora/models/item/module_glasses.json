@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "plethora:items/module_glasses"
+		"layer0": "plethora:item/module_glasses"
 	}
 }

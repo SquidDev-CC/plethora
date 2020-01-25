@@ -1,0 +1,18 @@
+{
+	"type": "crafting_shaped",
+	"pattern": [
+		"GCG",
+		"RMR",
+		"III"
+	],
+	"key": {
+		"R": { "tag": "forge:dusts/redstone" },
+		"C": { "tag": "forge:ingots/gold" },
+		"G": { "tag": "forge:glass" },
+		"I": { "tag": "forge:ingots/iron" },
+		"M": { "item": "computercraft:wired_modem" }
+	},
+	"result": {
+		"item": "plethora:manipulator_mark_1"
+	}
+}

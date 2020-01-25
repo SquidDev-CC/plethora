@@ -1,5 +1,5 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"ERE",
 		"IOI",
@@ -9,10 +9,9 @@
 		"R": { "item": "minecraft:rotten_flesh" },
 		"E": { "item": "minecraft:ender_eye" },
 		"O": { "item": "minecraft:observer" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
+		"I": { "tag": "forge:ingots/iron" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 3
+		"item": "plethora:module_sensor"
 	}
 }

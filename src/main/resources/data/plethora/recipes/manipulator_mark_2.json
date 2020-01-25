@@ -1,0 +1,18 @@
+{
+	"type": "crafting_shaped",
+	"pattern": [
+		"CCC",
+		"RMR",
+		"III"
+	],
+	"key": {
+		"R": { "tag": "forge:dusts/redstone" },
+		"C": { "tag": "forge:ingots/gold" },
+		"I": { "tag": "forge:ingots/iron" },
+		"M": { "item": "plethora:manipulator_mark_1" }
+	},
+	"result": {
+		"item": "plethora:manipulator_mark_2",
+		"data": 1
+	}
+}

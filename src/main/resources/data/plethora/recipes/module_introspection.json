@@ -1,17 +1,16 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"GCG",
 		"CHC",
 		"GCG"
 	],
 	"key": {
-		"C": { "type": "forge:ore_dict", "ore": "chestEnder" },
-		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
+		"C": { "type": "forge:chests/ender" },
+		"G": { "type": "forge:ingots/gold" },
 		"H": { "item": "minecraft:diamond_helmet" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 0
+		"item": "plethora:module_introspection"
 	}
 }

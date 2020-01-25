@@ -1,17 +1,16 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"SRS",
 		"RCR",
 		"SRS"
 	],
 	"key": {
-		"S": { "type": "forge:ore_dict", "ore": "stone" },
-		"C": { "item": "computercraft:cable", "data": 0 },
-		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" }
+		"S": { "tag": "forge:stone" },
+		"C": { "item": "computercraft:cable" },
+		"R": { "tag": "forge:dusts/redstone" }
 	},
 	"result": {
-		"item": "plethora:redstone_integrator",
-		"data": 0
+		"item": "plethora:redstone_integrator"
 	}
 }

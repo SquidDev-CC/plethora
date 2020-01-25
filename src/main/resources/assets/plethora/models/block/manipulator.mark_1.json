@@ -1,10 +1,10 @@
 {
 	"parent": "block/block",
 	"textures": {
-		"particle": "plethora:blocks/manipulator_side",
-		"bottom": "plethora:blocks/manipulator_bottom",
-		"top": "plethora:blocks/manipulator_top1",
-		"side": "plethora:blocks/manipulator_side"
+		"particle": "plethora:block/manipulator_side",
+		"bottom": "plethora:block/manipulator_bottom",
+		"top": "plethora:block/manipulator_top1",
+		"side": "plethora:block/manipulator_side"
 	},
 	"elements": [
 		{

@@ -6,11 +6,11 @@
 		" GM"
 	],
 	"key": {
-		"P": { "item": "computercraft:pocket_computer", "data": 1 },
-		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
-		"G": { "type": "forge:ore_dict", "ore": "ingotGold" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
-		"M": { "item": "computercraft:cable", "data": 1 }
+		"P": { "item": "computercraft:pocket_computer_advanced" },
+		"R": { "tag": "forge:dust/redstone" },
+		"G": { "tag": "forge:ingots/gold" },
+		"I": { "tag": "forge:ingots/iron" },
+		"M": { "item": "computercraft:wired_modem" }
 	},
 	"result": {
 		"item": "plethora:neuralinterface"

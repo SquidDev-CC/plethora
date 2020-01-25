@@ -1,19 +1,18 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		" RS",
 		"WRN",
 		"IIS"
 	],
 	"key": {
-		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
-		"S": { "type": "forge:ore_dict", "ore": "stone" },
+		"R": { "tag": "forge:dusts/redstone" },
+		"S": { "tag": "forge:stone" },
 		"W": { "item": "#WOOL" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
+		"I": { "tag": "forge:ingots/iron" },
 		"N": { "item": "minecraft:noteblock" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 5
+		"item": "plethora:module_chat"
 	}
 }

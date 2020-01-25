@@ -1,8 +1,8 @@
 {
 	"type": "plethora:module_level",
 	"ingredients": [
-		{ "item": "plethora:module", "data": 3 },
+		{ "item": "plethora:module_sensor" },
 		{ "item": "minecraft:nether_star" }
 	],
-	"result": { "item": "plethora:module", "data": 3, "nbt": { "level": 1 } }
+	"result": { "item": "plethora:module_sensor_upgrade"}
 }

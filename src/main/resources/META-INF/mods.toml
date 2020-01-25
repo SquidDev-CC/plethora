@@ -1,0 +1,32 @@
+
+modLoader="javafml"
+loaderVersion="[25,)"
+
+# updateJSONURL="http://myurl.me/" #optional
+issueTrackerURL="https://github.com/SquidDev-CC/plethora/issues"
+displayURL="https://github.com/SquidDev-CC/plethora"
+logoFile="pack.png"
+
+credits="Created by SquidDev"
+authors="SquidDev"
+
+[[mods]]
+modId="computercraft"
+version="${version}"
+displayName="CC: Tweaked"
+description='''
+Plethora is a ComputerCraft/CC:Tweaked peripheral provider for Minecraft 1.8.9+. It aims to provide both metadata and peripherals for vanilla Minecraft and most mainstream mods.
+'''
+
+[[dependencies.computercraft]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+
+    modId="computercraft"
+    mandatory=true
+    versionRange="[1,86,2)"
+    ordering="NONE"
+    side="BOTH"

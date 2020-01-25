@@ -1,18 +1,17 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"MIM",
 		"GGG",
 		"IAI"
 	],
 	"key": {
-		"M": { "item": "computercraft:peripheral", "data": 1 },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
-		"G": { "item": "computercraft:peripheral", "data": 4 },
+		"M": { "item": "computercraft:wireless_modem_normal" },
+		"I": { "tag": "forge:ingots/iron" },
+		"G": { "item": "computercraft:monitor_advanced"},
 		"A": { "item": "minecraft:iron_helmet" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 6
+		"item": "plethora:module_glasses"
 	}
 }

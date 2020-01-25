@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "plethora:items/module_laser"
+		"layer0": "plethora:item/module_laser"
 	},
 	"display": {
 		"thirdperson_righthand": {

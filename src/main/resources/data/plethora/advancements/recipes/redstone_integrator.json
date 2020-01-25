@@ -11,7 +11,7 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "computercraft:cable"
+						"item": "computercraft:wired_modem"
 					}
 				]
 			}

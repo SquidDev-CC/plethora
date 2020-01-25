@@ -11,7 +11,7 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "computercraft:pocket_computer"
+						"item": "computercraft:pocket_computer_normal"
 					}
 				]
 			}

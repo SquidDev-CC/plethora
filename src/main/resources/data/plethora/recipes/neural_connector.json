@@ -1,14 +1,14 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"  R",
 		"IIR",
 		"IEI"
 	],
 	"key": {
-		"R": { "type": "forge:ore_dict", "ore": "dustRedstone" },
-		"E": { "type": "forge:ore_dict", "ore": "enderpearl" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
+		"R": { "tag": "forge:dusts/redstone" },
+		"E": { "item": "minecraft:ender_pearl" },
+		"I": { "tag": "forge:ingots/iron" }
 	},
 	"result": {
 		"item": "plethora:neuralconnector"

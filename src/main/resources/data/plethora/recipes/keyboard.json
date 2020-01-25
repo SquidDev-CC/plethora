@@ -1,14 +1,14 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"  M",
 		"SSI",
 		"SSS"
 	],
 	"key": {
-		"S": { "type": "forge:ore_dict", "ore": "stone" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" },
-		"M": { "item": "computercraft:peripheral", "data": 1 }
+		"S": { "tag": "forge:stone" },
+		"I": { "tag": "forge:ingots/iron" },
+		"M": { "item": "computercraft:wireless_modem_normal" }
 	},
 	"result": {
 		"item": "plethora:keyboard"

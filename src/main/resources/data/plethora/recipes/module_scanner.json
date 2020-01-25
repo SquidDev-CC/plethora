@@ -1,18 +1,17 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "crafting_shaped",
 	"pattern": [
 		"EDE",
 		"IOI",
 		"III"
 	],
 	"key": {
-		"D": { "type": "forge:ore_dict", "ore": "dirt" },
+		"D": { "type": "forge:dirt" },
 		"E": { "item": "minecraft:ender_eye" },
 		"O": { "item": "minecraft:observer" },
-		"I": { "type": "forge:ore_dict", "ore": "ingotIron" }
+		"I": { "tag": "forge:ingots/iron" }
 	},
 	"result": {
-		"item": "plethora:module",
-		"data": 2
+		"item": "plethora:module_scanner"
 	}
 }

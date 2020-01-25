@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "plethora:items/module_chat_creative"
+		"layer0": "plethora:item/module_chat_creative"
 	}
 }

@@ -1,8 +1,8 @@
 {
 	"type": "plethora:module_level",
 	"ingredients": [
-		{ "item": "plethora:module", "data": 2 },
+		{ "item": "plethora:module_scanner" },
 		{ "item": "minecraft:nether_star" }
 	],
-	"result": { "item": "plethora:module", "data": 2, "nbt": { "level": 1 } }
+	"result": { "item": "plethora:module_scanner_upgrade" }
 }
