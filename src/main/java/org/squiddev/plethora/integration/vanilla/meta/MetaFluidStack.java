@@ -16,7 +16,6 @@ import java.util.Map;
  */
 @Injects
 public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
-	private static final MetaFluidStack INSTANCE = new MetaFluidStack();
 
 	public MetaFluidStack() {
 		super("Provides information about a fluid, as well as how much is currently stored.");
@@ -24,12 +23,6 @@ public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 
 	@Nonnull
 	public static Map<String, ?> getBasicMeta(@Nonnull FluidStack fluidStack) {
-		return INSTANCE.getMeta(fluidStack);
-	}
-
-	@Nonnull
-	@Override
-	public Map<String, ?> getMeta(@Nonnull FluidStack fluidStack) {
 		Map<String, Object> data = new HashMap<>();
 		data.put("amount", fluidStack.amount);
 
@@ -42,6 +35,12 @@ public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 		}
 
 		return data;
+	}
+
+	@Nonnull
+	@Override
+	public Map<String, ?> getMeta(@Nonnull FluidStack fluidStack) {
+		return getBasicMeta(fluidStack);
 	}
 
 	@Nullable
