@@ -4,6 +4,7 @@ import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import net.minecraft.init.Items;
@@ -14,6 +15,7 @@ import org.squiddev.plethora.api.meta.BasicMetaProvider;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.SimpleMetaProvider;
 import org.squiddev.plethora.api.method.IPartialContext;
+import org.squiddev.plethora.integration.vanilla.meta.MetaFluidStack;
 import org.squiddev.plethora.integration.vanilla.meta.MetaItemBasic;
 
 import javax.annotation.Nonnull;
@@ -76,6 +78,13 @@ public final class MetaAppliedEnergistics {
 		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
 		data.put("count", stack.getStackSize());
 		data.put("isCraftable", stack.isCraftable());
+		return data;
+	}
+
+	@Nonnull
+	static HashMap<String, Object> getFluidStackProperties(@Nonnull IAEFluidStack stack) {
+		HashMap<String, Object> data = new HashMap<>();
+		data.putAll(MetaFluidStack.getBasicMeta(stack.getFluidStack()));
 		return data;
 	}
 }

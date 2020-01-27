@@ -7,10 +7,13 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
+import net.minecraftforge.fluids.FluidRegistry;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
@@ -57,6 +60,27 @@ public final class MethodsGrid {
 		return Helpers.map(items, items.size(), MetaAppliedEnergistics::getItemStackProperties);
 	}
 
+	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all fluids which are stored in the network")
+	public static List<Map<String, Object>> listAvailableFluids(IContext<IGrid> context) {
+		IGrid grid = context.getTarget();
+		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+		IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+		IItemList<IAEFluidStack> items = storageGrid.getInventory(channel).getStorageList();
+
+		return Helpers.map(items, items.size(), MetaAppliedEnergistics::getFluidStackProperties);
+	}
+
+	@Optional
+	@PlethoraMethod(
+			modId = AppEng.MOD_ID,
+			doc = "function(item:string):table -- Search for a fluid in the network. " +
+					"You can specify the fluid as a string ('minecraft:water')."
+	)
+	public static TypedLuaObject<IAEFluidStack> findFluid(final IContext<IGrid> baked, String fluidName) {
+		IAEFluidStack stack = findFluid(baked.getTarget(), fluidName);
+		return stack == null ? null : baked.makeChildId(stack).getObject();
+	}
+
 	@Optional
 	@PlethoraMethod(
 		modId = AppEng.MOD_ID,
@@ -99,6 +123,17 @@ public final class MethodsGrid {
 
 		for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
 			if (fingerprint.matches(aeStack.getDefinition())) return aeStack;
+		}
+
+		return null;
+	}
+
+	private static IAEFluidStack findFluid(IGrid network, String fluidName) {
+		IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+		IStorageGrid grid = network.getCache(IStorageGrid.class);
+
+		for (IAEFluidStack aeStack : grid.getInventory(channel).getStorageList()) {
+			if (FluidRegistry.getDefaultFluidName(aeStack.getFluid()).equals(fluidName)) return aeStack;
 		}
 
 		return null;

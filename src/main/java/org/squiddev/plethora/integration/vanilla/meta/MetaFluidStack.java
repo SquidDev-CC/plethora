@@ -16,13 +16,13 @@ import java.util.Map;
  */
 @Injects
 public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
+
 	public MetaFluidStack() {
 		super("Provides information about a fluid, as well as how much is currently stored.");
 	}
 
 	@Nonnull
-	@Override
-	public Map<String, ?> getMeta(@Nonnull FluidStack fluidStack) {
+	public static Map<String, ?> getBasicMeta(@Nonnull FluidStack fluidStack) {
 		Map<String, Object> data = new HashMap<>();
 		data.put("amount", fluidStack.amount);
 
@@ -35,6 +35,12 @@ public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
 		}
 
 		return data;
+	}
+
+	@Nonnull
+	@Override
+	public Map<String, ?> getMeta(@Nonnull FluidStack fluidStack) {
+		return getBasicMeta(fluidStack);
 	}
 
 	@Nullable
