@@ -69,8 +69,6 @@ public final class MetaAppliedEnergistics {
 		}
 	};
 
-	private static final MetaFluidStack META_FLUID_STACK = new MetaFluidStack();
-
 	private MetaAppliedEnergistics() {
 	}
 
@@ -86,7 +84,7 @@ public final class MetaAppliedEnergistics {
 	@Nonnull
 	static HashMap<String, Object> getFluidStackProperties(@Nonnull IAEFluidStack stack) {
 		HashMap<String, Object> data = new HashMap<>();
-		data.putAll(META_FLUID_STACK.getMeta(stack.getFluidStack()));
+		data.putAll(MetaFluidStack.getBasicMeta(stack.getFluidStack()));
 		return data;
 	}
 }

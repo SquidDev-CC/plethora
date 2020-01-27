@@ -16,8 +16,15 @@ import java.util.Map;
  */
 @Injects
 public final class MetaFluidStack extends BasicMetaProvider<FluidStack> {
+	private static final MetaFluidStack INSTANCE = new MetaFluidStack();
+
 	public MetaFluidStack() {
 		super("Provides information about a fluid, as well as how much is currently stored.");
+	}
+
+	@Nonnull
+	public static Map<String, ?> getBasicMeta(@Nonnull FluidStack fluidStack) {
+		return INSTANCE.getMeta(fluidStack);
 	}
 
 	@Nonnull
