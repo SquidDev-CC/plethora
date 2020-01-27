@@ -68,6 +68,7 @@ public class CommandPlethora extends CommandBase {
 		} else if (Objects.equals(type, "reload")) {
 			ConfigCore.configuration.load();
 			ConfigCore.sync();
+			PlethoraCore.buildRegistries();
 			sender.sendMessage(new TextComponentString("Config reloaded"));
 		} else {
 			throw new CommandException(USAGE);

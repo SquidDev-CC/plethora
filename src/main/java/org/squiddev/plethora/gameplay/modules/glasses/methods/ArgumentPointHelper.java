@@ -11,8 +11,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getTable;
-import static dan200.computercraft.core.apis.ArgumentHelper.getType;
+import static dan200.computercraft.api.lua.ArgumentHelper.getTable;
+import static dan200.computercraft.api.lua.ArgumentHelper.getType;
 
 @Injects
 public final class ArgumentPointHelper {

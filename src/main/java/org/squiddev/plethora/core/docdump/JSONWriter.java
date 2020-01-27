@@ -7,7 +7,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.stream.JsonWriter;
 import org.squiddev.plethora.api.meta.IMetaProvider;
-import org.squiddev.plethora.api.method.IMethod;
+import org.squiddev.plethora.core.RegisteredMethod;
 import org.squiddev.plethora.core.collections.SortedMultimap;
 
 import java.io.IOException;
@@ -30,14 +30,14 @@ public class JSONWriter implements IDocWriter {
 
 	public JSONWriter(
 		OutputStream stream,
-		Multimap<Class<?>, IMethod<?>> methods,
+		Multimap<Class<?>, RegisteredMethod<?>> methods,
 		SortedMultimap<Class<?>, IMetaProvider<?>> metaProviders
 	) {
 		writer = new JsonWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
 
 		List<DocumentedMethod> methodData = this.methodData = new ArrayList<>(methods.size());
-		for (Map.Entry<Class<?>, IMethod<?>> entry : methods.entries()) {
-			methodData.add(new DocumentedMethod(entry.getKey(), entry.getValue()));
+		for (RegisteredMethod<?> method : methods.values()) {
+			methodData.add(new DocumentedMethod(method));
 		}
 
 		List<DocumentedMetaProvider> data = metaData = new ArrayList<>();

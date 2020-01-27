@@ -67,7 +67,7 @@ public class TurtleUpgradeKinetic extends TurtleUpgradeModule {
 
 	private static TurtleCommandResult toResult(Pair<Boolean, String> result) {
 		return result.getLeft()
-			? TurtleCommandResult.success(new Object[]{result.getRight()})
+			? TurtleCommandResult.success(new Object[]{ result.getRight() })
 			: TurtleCommandResult.failure(result.getRight());
 	}
 }

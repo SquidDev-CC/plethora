@@ -11,7 +11,7 @@ import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
-import java.util.Map;
+import java.util.List;
 
 import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 
@@ -20,12 +20,12 @@ public final class MethodsCraftingTask {
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the items which are missing for this task.")
-	public static Map<Integer, TypedMeta<ItemStack, ?>> getMissing(IContext<ICraftingTask> context) {
+	public static List<TypedMeta<ItemStack, ?>> getMissing(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getMissing().getStacks());
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the fludis which are missing for this task.")
-	public static Map<Integer, TypedMeta<FluidStack, ?>> getMissingFluids(IContext<ICraftingTask> context) {
+	public static List<TypedMeta<FluidStack, ?>> getMissingFluids(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getMissingFluids().getStacks());
 	}
 
@@ -35,7 +35,7 @@ public final class MethodsCraftingTask {
 	}
 
 	@PlethoraMethod(modId = RS.ID, doc = "-- Get the various items required for this task.")
-	public static Map<Integer, TypedMeta<ICraftingPreviewElement, ?>> getComponents(IContext<ICraftingTask> context) {
+	public static List<TypedMeta<ICraftingPreviewElement, ?>> getComponents(IContext<ICraftingTask> context) {
 		return getMetaList(context, context.getTarget().getPreviewStacks());
 	}
 

@@ -15,13 +15,16 @@ import java.util.*;
 public class ConverterRegistry implements IConverterRegistry {
 	public static final ConverterRegistry instance = new ConverterRegistry();
 
+	private final List<TargetedRegisteredValue<? extends IConverter<?, ?>>> all = new ArrayList<>();
 	private final Multimap<Class<?>, IConverter<?, ?>> converters = MultimapBuilder.hashKeys().hashSetValues().build();
 
-	<TIn, TOut> void registerConverter(@Nonnull Class<TIn> source, @Nonnull IConverter<TIn, TOut> converter) {
-		Objects.requireNonNull(source, "source cannot be null");
+	void registerConverter(@Nonnull TargetedRegisteredValue<? extends IConverter<?, ?>> converter) {
 		Objects.requireNonNull(converter, "converter cannot be null");
+		all.add(converter);
+	}
 
-		converters.put(source, converter);
+	void build() {
+		TargetedRegisteredValue.buildCache(all, converters);
 	}
 
 	@Nonnull

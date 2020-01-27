@@ -58,7 +58,7 @@ public final class TypedField<O, T> {
 		} catch (NoSuchFieldException | SecurityException e) {
 			PlethoraCore.LOG.error("Unable to find {}.{}", type.getName(), deobfField, e);
 
-			@SuppressWarnings({"unchecked", "rawtypes"})
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			TypedField<O, T> empty = (TypedField) NONE;
 			return empty;
 		}

@@ -10,6 +10,10 @@ public final class SortedMultimap<K, V> {
 		this.comparator = comparator;
 	}
 
+	public void clear() {
+		items.clear();
+	}
+
 	public void put(K key, V value) {
 		SortedCollection<V> targetItems = items.get(key);
 		if (targetItems == null) {

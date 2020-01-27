@@ -101,18 +101,18 @@ public final class MethodsKineticActions {
 			switch (hit.typeOfHit) {
 				case ENTITY: {
 					Pair<Boolean, String> result = PlayerInteractionHelpers.attack(player, hit.entityHit);
-					return new Object[]{result.getLeft(), result.getRight()};
+					return new Object[]{ result.getLeft(), result.getRight() };
 				}
 				case BLOCK: {
 					if (fakePlayer != null) {
 						Pair<Boolean, String> result = fakePlayer.dig(hit.getBlockPos(), hit.sideHit);
-						return new Object[]{result.getLeft(), result.getRight()};
+						return new Object[]{ result.getLeft(), result.getRight() };
 					} else {
-						return new Object[]{false, "Nothing to do here"};
+						return new Object[]{ false, "Nothing to do here" };
 					}
 				}
 				default:
-					return new Object[]{false, "Nothing to do here"};
+					return new Object[]{ false, "Nothing to do here" };
 			}
 
 		} finally {

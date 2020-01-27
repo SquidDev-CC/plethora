@@ -1,7 +1,6 @@
 package org.squiddev.plethora.api.method.wrapper;
 
 import org.squiddev.plethora.api.method.*;
-import org.squiddev.plethora.api.module.IModuleMethod;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -57,7 +56,7 @@ public @interface PlethoraMethod {
 	 * The modules this function requires, or the empty list if none are required.
 	 *
 	 * @return This method's required module(s).
-	 * @see IModuleMethod#getModules()
+	 * @see IMethod#getModules()
 	 */
 	String[] module() default {};
 

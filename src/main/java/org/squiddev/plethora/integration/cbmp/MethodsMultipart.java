@@ -5,13 +5,14 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.utils.Helpers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -22,8 +23,8 @@ public final class MethodsMultipart {
 	}
 
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a list of all parts in the multipart.")
-	public static Map<Integer, ?> listParts(@FromTarget TileMultipart multipart) {
-		return LuaList.of(multipart.jPartList(), IntegrationMultipart::getBasicMeta).asMap();
+	public static List<Map<String, ?>> listParts(@FromTarget TileMultipart multipart) {
+		return Helpers.map(multipart.jPartList(), IntegrationMultipart::getBasicMeta);
 	}
 
 	@PlethoraMethod(modId = "forgemultipartcbe", doc = "-- Get a lookup of slot to parts.")

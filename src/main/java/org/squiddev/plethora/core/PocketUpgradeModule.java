@@ -19,7 +19,6 @@ import org.squiddev.plethora.api.IAttachable;
 import org.squiddev.plethora.api.IPlayerOwnable;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
 import org.squiddev.plethora.api.module.IModuleHandler;
@@ -125,7 +124,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		handler.getAdditionalContext(access, factory);
 
-		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
+		Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 		return paired.getLeft().isEmpty() ? null : new PocketPeripheral(this, access, paired, factory.getAttachments());
 	}
 
@@ -154,7 +153,7 @@ class PocketUpgradeModule implements IPocketUpgrade {
 
 		public PocketPeripheral(
 			PocketUpgradeModule owner, PocketModuleAccess access,
-			Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+			Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> methods,
 			List<IAttachable> attachments
 		) {
 			super(owner.getUpgradeID().toString(), owner, methods, new TaskRunner(), attachments);

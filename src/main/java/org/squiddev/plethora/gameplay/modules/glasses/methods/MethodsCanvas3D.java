@@ -16,7 +16,7 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group3
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Origin3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.*;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
+import static dan200.computercraft.api.lua.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;
 

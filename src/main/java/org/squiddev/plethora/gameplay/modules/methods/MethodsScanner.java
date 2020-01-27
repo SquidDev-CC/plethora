@@ -10,7 +10,6 @@ import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromContext;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
@@ -21,7 +20,9 @@ import org.squiddev.plethora.gameplay.modules.RangeInfo;
 import org.squiddev.plethora.integration.vanilla.meta.MetaBlockState;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
@@ -43,8 +44,8 @@ public final class MethodsScanner {
 		return context.getCostHandler().await(range.getBulkCost(), () -> MethodResult.result(scan(world, x, y, z, range.getRange())));
 	}
 
-	private static Map<Integer, Map<String, ?>> scan(World world, int x, int y, int z, int radius) {
-		LuaList<Map<String, ?>> result = new LuaList<>();
+	private static List<Map<String, ?>> scan(World world, int x, int y, int z, int radius) {
+		List<Map<String, ?>> result = new ArrayList<>();
 		for (int oX = x - radius; oX <= x + radius; oX++) {
 			for (int oY = y - radius; oY <= y + radius; oY++) {
 				for (int oZ = z - radius; oZ <= z + radius; oZ++) {
@@ -66,7 +67,7 @@ public final class MethodsScanner {
 			}
 		}
 
-		return result.asMap();
+		return result;
 	}
 
 	@Nonnull

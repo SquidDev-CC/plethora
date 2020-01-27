@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+import static dan200.computercraft.api.lua.ArgumentHelper.optString;
 
 @Injects
 public final class MethodFluidHandler extends BasicMethod<ICapabilityProvider> {

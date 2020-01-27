@@ -19,7 +19,11 @@ public class ConverterRegistryTest {
 	@Before
 	public void setup() {
 		registry = new ConverterRegistry();
-		registry.registerConverter(Value.class, (ConstantConverter<Value, Value>) from -> new Value(!from.active, from.value));
+		registry.registerConverter(new TargetedRegisteredValue<>(
+			"foo", null, Value.class,
+			(ConstantConverter<Value, Value>) from -> new Value(!from.active, from.value)
+		));
+		registry.build();
 	}
 
 	@Test
@@ -59,7 +63,7 @@ public class ConverterRegistryTest {
 	public void testExtendConverteReferencesMultiple() throws LuaException {
 		List<String> keys = Lists.newArrayList("test", "other");
 		List<Object> values = Lists.newArrayList(new Value(true, 0), new Value(true, 0));
-		List<Object> references = Lists.newArrayList(values.stream().map(Reference::id).collect(Collectors.toList()));
+		List<Object> references = values.stream().map(Reference::id).collect(Collectors.toList());
 
 		registry.extendConverted(keys, values, references, 0);
 
@@ -69,7 +73,7 @@ public class ConverterRegistryTest {
 		assertEquals(new Value(false, 0), references.get(2));
 		assertEquals(ConverterReference.class, references.get(3).getClass());
 		assertEquals(new Value(false, 0), ((ConverterReference) references.get(3))
-			.tryConvert(new Object[]{null, null, new Value(false, 0)}));
+			.tryConvert(new Object[]{ null, null, new Value(false, 0) }));
 	}
 
 	public static class Value {

@@ -23,7 +23,6 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
 import org.squiddev.plethora.api.method.ICostHandler;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -182,7 +181,7 @@ public final class NeuralHelpers {
 			handler.getAdditionalContext(access, builder);
 		}
 
-		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(builder.getBaked());
+		Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(builder.getBaked());
 		if (paired.getLeft().isEmpty()) return null;
 
 		ModulePeripheral peripheral = new ModulePeripheral("neuralInterface", owner, paired, computer.getExecutor(), builder.getAttachments(), moduleHash);

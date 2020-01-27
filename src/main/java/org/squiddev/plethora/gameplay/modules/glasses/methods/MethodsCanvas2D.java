@@ -15,7 +15,7 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group2
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object2d.*;
 import org.squiddev.plethora.utils.Vec2d;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optInt;
+import static dan200.computercraft.api.lua.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.optFloat;
 import static org.squiddev.plethora.gameplay.modules.glasses.methods.ArgumentPointHelper.getVec2d;
 import static org.squiddev.plethora.gameplay.modules.glasses.objects.Colourable.DEFAULT_COLOUR;

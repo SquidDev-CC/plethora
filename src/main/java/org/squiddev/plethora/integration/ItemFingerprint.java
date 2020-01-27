@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.badArgument;
+import static dan200.computercraft.api.lua.ArgumentHelper.badArgumentOf;
 import static org.squiddev.plethora.api.method.ArgumentHelper.*;
 
 /**
@@ -89,7 +89,7 @@ public class ItemFingerprint {
 			damage = damageObj == null ? null : ((Number) damageObj).intValue();
 			hash = hashObj == null ? null : (String) hashObj;
 		} else {
-			throw badArgument(index, "string or table", arg);
+			throw badArgumentOf(index, "string or table", arg);
 		}
 
 		ResourceLocation nameRes = new ResourceLocation(name);

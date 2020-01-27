@@ -30,8 +30,8 @@ import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.meta.IMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.meta.ItemStackMetaProvider;
+import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.utils.Helpers;
 
 import javax.annotation.Nonnull;
@@ -113,8 +113,7 @@ public final class MetaItems {
 			// and reduces processing overhead (Astral's `getStoredConstellationStacks` calls `getStoredConstellations`,
 			// and then creates an ItemStack for each)
 			return Collections.singletonMap("papers",
-				LuaList.of(ItemJournal.getStoredConstellations(context.getTarget()),
-					paper -> context.makePartialChild(paper).getMeta()).asMap());
+				ContextHelpers.getMetaList(context, ItemJournal.getStoredConstellations(context.getTarget())));
 		}
 
 		@Nonnull
@@ -140,18 +139,13 @@ public final class MetaItems {
 		@Override
 		public Map<String, ?> getMeta(@Nonnull ItemStack stack, @Nonnull ItemSkyResonator item) {
 			List<ItemSkyResonator.ResonatorUpgrade> modes = ItemSkyResonator.getUpgrades(stack);
-			LuaList<Map<String, String>> modesOut = new LuaList<>(modes.size());
-
-			for (ItemSkyResonator.ResonatorUpgrade mode : modes) {
+			return Collections.singletonMap("modes", Helpers.map(modes, mode -> {
 				Map<String, String> modeMap = new HashMap<>(2);
 				String translationKey = mode.getUnlocalizedUpgradeName();
 				modeMap.put("name", translationKey);
 				modeMap.put("displayName", Helpers.translateToLocal(translationKey));
-
-				modesOut.add(modeMap);
-			}
-
-			return Collections.singletonMap("modes", modesOut.asMap());
+				return modeMap;
+			}));
 		}
 
 		@Nonnull
@@ -206,8 +200,7 @@ public final class MetaItems {
 		@Override
 		public Map<String, ?> getMeta(@Nonnull IPartialContext<ItemStack> context, @Nonnull ItemEnchantmentAmulet item) {
 			return Collections.singletonMap("amuletEnchantments",
-				LuaList.of(ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget()),
-					e -> context.makePartialChild(e).getMeta()).asMap());
+				ContextHelpers.getMetaList(context, ItemEnchantmentAmulet.getAmuletEnchantments(context.getTarget())));
 		}
 
 		@Nonnull
@@ -316,9 +309,7 @@ public final class MetaItems {
 			ActiveStarMap starMap = ItemInfusedGlass.getMapEngravingInformations(context.getTarget());
 			return starMap == null
 				? Collections.emptyMap()
-				: Collections.singletonMap("constellations",
-				LuaList.of(starMap.getConstellations(),
-					c -> context.makePartialChild(c).getMeta()).asMap());
+				: Collections.singletonMap("constellations", ContextHelpers.getMetaList(context, starMap.getConstellations()));
 		}
 
 		@Nullable

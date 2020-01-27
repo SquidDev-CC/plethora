@@ -22,7 +22,7 @@ import org.squiddev.plethora.integration.vanilla.IntegrationVanilla;
 
 import java.util.List;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.*;
+import static dan200.computercraft.api.lua.ArgumentHelper.*;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 
 /**
@@ -77,11 +77,11 @@ public final class MethodsNoteblock {
 			sound = getInstrument("block.note." + name);
 			if (sound == null) throw new LuaException("Unknown instrument '" + name + "'");
 		} else {
-			throw badArgument(0, "string|number", arguments[0]);
+			throw badArgumentOf(0, "string|number", arguments[0]);
 		}
 
 		final int pitch = getInt(arguments, 1);
-		final float volume = (float) optNumber(arguments, 2, 3);
+		final float volume = (float) optFiniteDouble(arguments, 2, 3);
 
 		assertBetween(pitch, 0, 24, "Pitch out of bounds (%s)");
 		assertBetween(volume, 0.1, 5, "Volume out of bounds (%s)");
@@ -112,8 +112,8 @@ public final class MethodsNoteblock {
 		Object[] arguments
 	) throws LuaException {
 		final String name = getString(arguments, 0);
-		final float pitch = (float) optNumber(arguments, 1, 0);
-		final float volume = (float) optNumber(arguments, 2, 1);
+		final float pitch = (float) optFiniteDouble(arguments, 1, 0);
+		final float volume = (float) optFiniteDouble(arguments, 2, 1);
 
 		assertBetween(pitch, 0, 2, "Pitch out of bounds (%s)");
 		assertBetween(volume, 0.1, 5, "Volume out of bounds (%s)");

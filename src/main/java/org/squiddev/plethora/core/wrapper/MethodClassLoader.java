@@ -2,7 +2,7 @@ package org.squiddev.plethora.core.wrapper;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Primitives;
-import dan200.computercraft.core.apis.ArgumentHelper;
+import dan200.computercraft.api.lua.ArgumentHelper;
 import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.*;
 import org.squiddev.plethora.api.method.*;
@@ -69,7 +69,7 @@ final class MethodClassLoader extends ClassLoader {
 	}
 
 	@Nullable
-	private Class<?> writeClass(MethodInstance<?, ?> methodInstance) {
+	private Class<?> writeClass(MethodInstance<?> methodInstance) {
 		Method method = methodInstance.method;
 		Parameter[] parameters = method.getParameters();
 
@@ -78,7 +78,7 @@ final class MethodClassLoader extends ClassLoader {
 
 		// Construct a public final class which extends Object and implements MethodInstance.Delegate
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-		cw.visit(V1_8, ACC_PUBLIC | ACC_FINAL, internalName, null, INTERNAL_OBJECT, new String[]{INTERNAL_DELEGATE});
+		cw.visit(V1_8, ACC_PUBLIC | ACC_FINAL, internalName, null, INTERNAL_OBJECT, new String[]{ INTERNAL_DELEGATE });
 		cw.visitSource("Plethora generated method", null);
 
 		StringBuilder runDescBuilder = new StringBuilder();

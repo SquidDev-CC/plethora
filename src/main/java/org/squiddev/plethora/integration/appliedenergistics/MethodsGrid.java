@@ -17,18 +17,17 @@ import net.minecraftforge.fluids.FluidRegistry;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextHelpers;
 import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.LuaList;
 import org.squiddev.plethora.api.method.TypedLuaObject;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.integration.ItemFingerprint;
+import org.squiddev.plethora.utils.Helpers;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import static org.squiddev.plethora.integration.appliedenergistics.MetaAppliedEnergistics.getFluidStackProperties;
-import static org.squiddev.plethora.integration.appliedenergistics.MetaAppliedEnergistics.getItemStackProperties;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public final class MethodsGrid {
 	private MethodsGrid() {
@@ -52,27 +51,23 @@ public final class MethodsGrid {
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all items which are stored in the network")
-	public static Map<Integer, ?> listAvailableItems(IContext<IGrid> context) {
+	public static List<Map<String, Object>> listAvailableItems(IContext<IGrid> context) {
 		IGrid grid = context.getTarget();
 		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 		IItemList<IAEItemStack> items = storageGrid.getInventory(channel).getStorageList();
 
-		LuaList<Map<String, ?>> output = new LuaList<>(items.size());
-		for (IAEItemStack stack : items) output.add(getItemStackProperties(stack));
-		return output.asMap();
+		return Helpers.map(items, items.size(), MetaAppliedEnergistics::getItemStackProperties);
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all fluids which are stored in the network")
-	public static Map<Integer, ?> listAvailableFluids(IContext<IGrid> context) {
+	public static List<Map<String, Object>> listAvailableFluids(IContext<IGrid> context) {
 		IGrid grid = context.getTarget();
 		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
 		IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
 		IItemList<IAEFluidStack> items = storageGrid.getInventory(channel).getStorageList();
 
-		LuaList<Map<String, ?>> output = new LuaList<>(items.size());
-		for (IAEFluidStack stack : items) output.add(getFluidStackProperties(stack));
-		return output.asMap();
+		return Helpers.map(items, items.size(), MetaAppliedEnergistics::getFluidStackProperties);
 	}
 
 	@Optional
@@ -106,23 +101,18 @@ public final class MethodsGrid {
 			"or as a table with 'name', 'damage' and 'nbthash' fields. You must specify the 'name', but you can " +
 			"leave the other fields empty."
 	)
-	public static Map<Integer, TypedLuaObject<IAEItemStack>> findItems(IContext<IGrid> context, ItemFingerprint item) {
+	public static List<TypedLuaObject<IAEItemStack>> findItems(IContext<IGrid> context, ItemFingerprint item) {
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 		IStorageGrid grid = context.getTarget().getCache(IStorageGrid.class);
 
-		int i = 0;
-		Map<Integer, TypedLuaObject<IAEItemStack>> out = new HashMap<>();
-		for (IAEItemStack aeStack : grid.getInventory(channel).getStorageList()) {
-			if (item.matches(aeStack.getDefinition())) {
-				out.put(++i, context.makeChildId(aeStack).getObject());
-			}
-		}
-
-		return out;
+		return StreamSupport.stream(grid.getInventory(channel).getStorageList().spliterator(), false)
+			.filter(x -> item.matches(x.getDefinition()))
+			.map(x -> context.makeChildId(x).getObject())
+			.collect(Collectors.toList());
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all crafting cpus in the network")
-	public static Map<Integer, TypedMeta<ICraftingCPU, ?>> getCraftingCPUs(IContext<IGrid> context) {
+	public static List<TypedMeta<ICraftingCPU, ?>> getCraftingCPUs(IContext<IGrid> context) {
 		ICraftingGrid crafting = context.getTarget().getCache(ICraftingGrid.class);
 		return ContextHelpers.getMetaList(context, crafting.getCpus());
 	}

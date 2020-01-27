@@ -18,13 +18,12 @@ import org.squiddev.plethora.utils.PlayerHelpers;
 
 import javax.annotation.Nonnull;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
+import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
 
 @Injects
 public final class MethodsLaser {
 	public static final SubtargetedModuleMethod<IWorldLocation> FIRE = SubtargetedModuleMethod.of(
-		MethodsLaser.class.getName() + "#fire",
 		"fire", PlethoraModules.LASER_M, IWorldLocation.class,
 		"function(yaw:number, pitch:number, potency:number) -- Fire a laser in a set direction",
 		MethodsLaser::fire
@@ -35,9 +34,9 @@ public final class MethodsLaser {
 
 	@Nonnull
 	private static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final double yaw = getReal(args, 0) % 360;
-		double pitchArg = getReal(args, 1) % 360;
-		final float potency = (float) getReal(args, 2);
+		final double yaw = getFiniteDouble(args, 0) % 360;
+		double pitchArg = getFiniteDouble(args, 1) % 360;
+		final float potency = (float) getFiniteDouble(args, 2);
 
 		// Normalise the pitch to be between -180 and 180.
 		if (pitchArg > 180) pitchArg -= 360;

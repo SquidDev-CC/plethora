@@ -32,7 +32,6 @@ import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleAccess;
 import org.squiddev.plethora.api.module.IModuleContainer;
@@ -270,7 +269,7 @@ public final class BlockManipulator extends BlockBase<TileManipulator> implement
 			handler.getAdditionalContext(access, factory);
 		}
 
-		Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(factory.getBaked());
+		Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> paired = MethodRegistry.instance.getMethodsPaired(factory.getBaked());
 		if (paired.getLeft().isEmpty()) return null;
 
 		ModulePeripheral peripheral = new ModulePeripheral("manipulator", te, paired, manipulator.getRunner(), factory.getAttachments(), stackHash);

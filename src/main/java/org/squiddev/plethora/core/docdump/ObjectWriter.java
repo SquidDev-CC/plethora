@@ -8,9 +8,7 @@ import org.squiddev.plethora.integration.MetaWrapper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjectWriter {
 	private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("#.#######");
@@ -58,7 +56,7 @@ public class ObjectWriter {
 		output.append("}");
 	}
 
-	protected void writeMapBody(Map<?, ?> value, String indent) throws IOException {
+	protected final void writeMapBody(Map<?, ?> value, String indent) throws IOException {
 		// Try to work out if this is an "array like" table.
 		boolean arrayLike = true;
 		int max = 0;
@@ -106,10 +104,13 @@ public class ObjectWriter {
 				}
 			});
 
-			for (int i = 0; i < entries.size(); i++) {
-				Map.Entry<?, ?> entry = entries.get(i);
+			boolean any = false;
+			for (Map.Entry<?, ?> entry : entries) {
+				Object entryValue = entry.getValue();
+				if (entryValue == null) continue;
 
-				if (i > 0) output.append(",");
+				if (any) output.append(",");
+				any = true;
 				output.append("\n").append(childIndent);
 
 				Object key = entry.getKey();
@@ -122,8 +123,38 @@ public class ObjectWriter {
 				}
 
 				output.append(" = ");
-				write(entry.getValue(), childIndent);
+				write(entryValue, childIndent);
 			}
+		}
+
+		output.append("\n").append(indent);
+	}
+
+	protected final void writeValue(Object[] value, String indent) throws IOException {
+		writeValue(Arrays.asList(value), indent);
+	}
+
+	protected void writeValue(Collection<?> value, String indent) throws IOException {
+		if (value.isEmpty()) {
+			output.append("{}");
+			return;
+		}
+
+		output.append("{");
+		writeListBody(value, indent);
+		output.append("}");
+	}
+
+	protected final void writeListBody(Collection<?> value, String indent) throws IOException {
+		String childIndent = indent + "  ";
+
+		boolean later = false;
+		for (Object child : value) {
+			if (later) output.append(",");
+			later = true;
+
+			output.append("\n").append(childIndent);
+			write(child, childIndent);
 		}
 
 		output.append("\n").append(indent);
@@ -167,6 +198,10 @@ public class ObjectWriter {
 			writeMeta((TypedMeta<?, ?>) value, indent);
 		} else if (value instanceof Map) {
 			writeValue((Map<?, ?>) value, indent);
+		} else if (value instanceof Collection) {
+			writeValue((Collection<?>) value, indent);
+		} else if (value instanceof Object[]) {
+			writeValue((Object[]) value, indent);
 		} else if (value instanceof MethodWrapperLuaObject) {
 			Object target = null;
 			try {

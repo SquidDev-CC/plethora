@@ -41,8 +41,8 @@ public final class MetaItemPrintout extends ItemStackMetaProvider<ItemPrintout> 
 	@Override
 	public ItemStack getExample() {
 		return ItemPrintout.createSingleFromTitleAndText("My page",
-			new String[]{"This is the first line"},
-			new String[]{"FFFFFFFFFFFFFFFFFFFFFF"}
+			new String[]{ "This is the first line" },
+			new String[]{ "FFFFFFFFFFFFFFFFFFFFFF" }
 		);
 	}
 }

@@ -39,7 +39,7 @@ import org.squiddev.plethora.gameplay.modules.PlethoraModules;
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.getReal;
+import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
 
@@ -79,16 +79,15 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityEnderman> TELEPORT = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#teleport",
 		"teleport", PlethoraModules.KINETIC_M, EntityEnderman.class,
 		"function(x:number, y:number, z:number) -- Teleport to a position relative to the current one",
 		MethodsKineticEntity::teleport
 	);
 
 	private static MethodResult teleport(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final double x = getReal(args, 0);
-		final double y = getReal(args, 1);
-		final double z = getReal(args, 2);
+		final double x = getFiniteDouble(args, 0);
+		final double y = getFiniteDouble(args, 1);
+		final double z = getFiniteDouble(args, 2);
 
 		assertBetween(x, -Kinetic.teleportRange, Kinetic.teleportRange, "X coordinate out of bounds (%s)");
 		assertBetween(y, -Kinetic.teleportRange, Kinetic.teleportRange, "Y coordinate out of bounds (%s)");
@@ -105,7 +104,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<AbstractSkeleton> SHOOT_SKELETON = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootSkeleton",
 		"shoot", PlethoraModules.KINETIC_M, AbstractSkeleton.class,
 		"function(potency:number) -- Fire an arrow in the direction the skeleton is looking",
 		MethodsKineticEntity::shootSkeleton
@@ -113,7 +111,7 @@ public final class MethodsKineticEntity {
 
 	@Nonnull
 	private static MethodResult shootSkeleton(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double potency = getReal(args, 0);
+		final double potency = getFiniteDouble(args, 0);
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
@@ -153,7 +151,6 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityBlaze> SHOOT_BLAZE = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootBlaze",
 		"shoot", PlethoraModules.KINETIC_M, EntityBlaze.class,
 		"function(yaw:number, pitch:number) -- Fire a fireball in the specified direction.",
 		MethodsKineticEntity::shootBlaze
@@ -161,8 +158,8 @@ public final class MethodsKineticEntity {
 
 	@Nonnull
 	private static MethodResult shootBlaze(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double yaw = getReal(args, 0) % 360;
-		double pitch = getReal(args, 1) % 360;
+		final double yaw = getFiniteDouble(args, 0) % 360;
+		double pitch = getFiniteDouble(args, 1) % 360;
 
 		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
@@ -190,7 +187,6 @@ public final class MethodsKineticEntity {
 	};
 
 	public static final SubtargetedModuleMethod<EntityWitch> SHOOT_WITCH = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#shootWitch",
 		"shoot", PlethoraModules.KINETIC_M, EntityWitch.class,
 		"function(potency:number) -- Throw a potion in the direction the witch is looking",
 		MethodsKineticEntity::shootWitch
@@ -198,7 +194,7 @@ public final class MethodsKineticEntity {
 
 	@Nonnull
 	private static MethodResult shootWitch(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double potency = getReal(args, 0);
+		final double potency = getFiniteDouble(args, 0);
 
 		assertBetween(potency, 0.1, 1.0, "Potency out of range (%s).");
 
@@ -222,14 +218,13 @@ public final class MethodsKineticEntity {
 	}
 
 	public static final SubtargetedModuleMethod<EntityMinecart> PROPEL = SubtargetedModuleMethod.of(
-		MethodsKineticEntity.class.getName() + "#propel",
 		"propel", PlethoraModules.KINETIC_M, EntityMinecart.class,
 		"function(velocity:number) -- Propel this minecart in along the track.",
 		MethodsKineticEntity::propel
 	);
 
 	private static MethodResult propel(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		double given = getReal(args, 0);
+		double given = getFiniteDouble(args, 0);
 
 		assertBetween(given, -Kinetic.propelMax, Kinetic.propelMax, "Velocity coordinate out of bounds (%s)");
 

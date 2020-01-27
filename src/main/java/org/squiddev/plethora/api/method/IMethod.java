@@ -2,10 +2,16 @@ package org.squiddev.plethora.api.method;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
+import net.minecraft.util.ResourceLocation;
 import org.squiddev.plethora.api.Injects;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
+import org.squiddev.plethora.api.module.ModuleContainerMethod;
+import org.squiddev.plethora.api.module.SubtargetedModuleMethod;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A Lua side method targeting a class.
@@ -78,17 +84,6 @@ public interface IMethod<T> {
 	@Nonnull
 	MethodResult apply(@Nonnull IUnbakedContext<T> context, @Nonnull Object[] args) throws LuaException;
 
-
-	/**
-	 * Get a unique identifier for this method
-	 *
-	 * @return This method's unique identifier. This is only used within config files, to establish the base cost.
-	 */
-	@Nonnull
-	default String getId() {
-		return getClass().getName();
-	}
-
 	/**
 	 * See if this method implements an interface or class.
 	 *
@@ -100,6 +95,36 @@ public interface IMethod<T> {
 	 */
 	default boolean has(@Nonnull Class<?> iface) {
 		return iface.isInstance(this);
+	}
+
+	/**
+	 * Get the modules that this method requires.
+	 *
+	 * Note, this does not in and of itself impose any additional functionality; this only exists for documentation
+	 * purposes. You should override {@link #canApply(IPartialContext)} or use a existing class like
+	 * {@link ModuleContainerMethod} to actually enforce constraints.
+	 *
+	 * @return The modules that this method requires
+	 */
+	@Nonnull
+	default Collection<ResourceLocation> getModules() {
+		return Collections.emptySet();
+	}
+
+	/**
+	 * Get the sub-target for this method.
+	 *
+	 * For instance objects which reference particular {@link net.minecraft.item.Item} classes
+	 * will target {@link net.minecraft.item.ItemStack} instead.
+	 *
+	 * This does not have any actual functionality (use {@link SubtargetedModuleMethod}) for that, it only exists for
+	 * documentation purposes.
+	 *
+	 * @return The method's sub-target, or {@code null} if we have no sub-target.
+	 */
+	@Nullable
+	default Class<?> getSubTarget() {
+		return null;
 	}
 
 	/**

@@ -3,7 +3,6 @@ package org.squiddev.plethora.core;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.IAttachable;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.core.executor.TaskRunner;
 
 import javax.annotation.Nonnull;
@@ -19,7 +18,7 @@ public class AttachableWrapperPeripheral extends MethodWrapperPeripheral {
 	private final AtomicInteger count = new AtomicInteger(0);
 
 	public AttachableWrapperPeripheral(
-		String name, Object owner, Pair<List<IMethod<?>>, List<UnbakedContext<?>>> methods,
+		String name, Object owner, Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> methods,
 		TaskRunner runner, Collection<IAttachable> attachments
 	) {
 		super(name, owner, methods, runner);

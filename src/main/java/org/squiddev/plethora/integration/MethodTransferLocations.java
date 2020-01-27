@@ -8,7 +8,7 @@ import org.squiddev.plethora.api.method.*;
 import javax.annotation.Nonnull;
 import java.util.Set;
 
-import static dan200.computercraft.core.apis.ArgumentHelper.optString;
+import static dan200.computercraft.api.lua.ArgumentHelper.optString;
 
 /**
  * Lists all available transfer locations
@@ -40,7 +40,7 @@ public final class MethodTransferLocations extends BasicMethod<IMethodCollection
 				locations = PlethoraAPI.instance().transferRegistry().getTransferLocations(found, false);
 			}
 
-			return MethodResult.result(new LuaList<>(locations).asMap());
+			return MethodResult.result(locations);
 		});
 	}
 }

@@ -13,10 +13,11 @@ import org.squiddev.plethora.api.meta.ItemStackContextMetaProvider;
 import org.squiddev.plethora.api.meta.TypedMeta;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IPartialContext;
-import org.squiddev.plethora.api.method.LuaList;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Injects(RS.ID)
@@ -50,13 +51,13 @@ public final class MetaItemPattern extends ItemStackContextMetaProvider<ItemPatt
 		}
 	}
 
-	private static <T> Map<Integer, TypedMeta<T, ?>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
-		LuaList<TypedMeta<T, ?>> out = new LuaList<>(9);
+	private static <T> List<TypedMeta<T, ?>> getMetaItems(IPartialContext<?> context, ItemStack stack, IntStackFunction<T> func) {
+		List<TypedMeta<T, ?>> out = new ArrayList<>(9);
 		for (int i = 0; i < 9; i++) {
 			T result = func.apply(stack, i);
 			if (result != null) out.add(context.makePartialChild(result).getMeta());
 		}
-		return out.asMap();
+		return out;
 	}
 
 	@FunctionalInterface

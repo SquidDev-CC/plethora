@@ -64,7 +64,7 @@ import static org.squiddev.plethora.gameplay.neural.NeuralHelpers.ARMOR_SLOT;
 })
 @Mod.EventBusSubscriber(modid = Plethora.ID)
 public class ItemNeuralInterface extends ItemArmor implements ISpecialArmor, IComputerItem, IMedia, IBauble, ICosmeticAttachable {
-	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
+	private static final ArmorMaterial FAKE_ARMOUR = EnumHelper.addArmorMaterial("FAKE_ARMOUR", "iwasbored_fake", -1, new int[]{ 0, 0, 0, 0 }, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 2);
 	private static final ISpecialArmor.ArmorProperties FAKE_PROPERTIES = new ISpecialArmor.ArmorProperties(0, 0, 0);
 	private static final String NAME = "neuralInterface";
 

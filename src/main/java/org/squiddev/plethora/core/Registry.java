@@ -36,20 +36,16 @@ final class Registry {
 			// First extract the mod id and ensure we're allowed to register it.
 			Map<String, Object> info = asmData.getAnnotationInfo();
 			String modId = (String) info.get("value");
-			if (!Strings.isNullOrEmpty(modId) && !Helpers.modLoaded(modId)) {
-				LOG.debug("Skipping " + name + " as " + modId + " is not loaded or is blacklisted");
+			if (Strings.isNullOrEmpty(modId)) modId = null;
+
+			if (modId != null && !Helpers.modLoaded(modId)) {
+				LOG.debug("Skipping " + name + " as " + modId + " is not loaded.");
 				continue;
 			}
 
 			try {
 				LOG.debug("Injecting " + name);
-
-				if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-					LOG.debug("Ignoring " + name + " as it has been blacklisted");
-					continue;
-				}
-
-				Result result = register(Class.forName(name));
+				Result result = register(Class.forName(name), modId);
 				if (result == Result.PASS) LOG.warn("@Injects class {} has no usable fields or interfaces", name);
 				if (result == Result.ERROR) ok = false;
 			} catch (Exception | LinkageError e) {
@@ -63,13 +59,9 @@ final class Registry {
 		}
 	}
 
-	static Result register(Class<?> klass) {
+	static Result register(Class<?> klass, String mod) {
 		// Skip blacklisted classes
 		String name = klass.getName();
-		if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
-			LOG.debug("Ignoring " + name + " as it has been blacklisted");
-			return Result.OK;
-		}
 
 		// Verify this class is "public final"
 		int modifiers = klass.getModifiers();
@@ -82,7 +74,7 @@ final class Registry {
 			LOG.warn("@Injects class {} should be public final, but is only {}", name, Modifier.toString(modifiers));
 		}
 
-		Result result = registerInstance(name, klass, klass, klass, () -> {
+		Result result = registerInstance(name, mod, klass, klass, klass, () -> {
 			Object value;
 			try {
 				value = klass.newInstance();
@@ -95,12 +87,12 @@ final class Registry {
 			return value;
 		});
 
-		for (Field field : klass.getDeclaredFields()) result = result.plus(register(field));
+		for (Field field : klass.getDeclaredFields()) result = result.plus(register(field, mod));
 
 		return result;
 	}
 
-	private static Result register(Field field) {
+	private static Result register(Field field, String mod) {
 		// Skip blacklisted fields.
 		String name = field.getDeclaringClass().getName() + "." + field.getName();
 		if (Helpers.blacklisted(ConfigCore.Blacklist.blacklistProviders, name)) {
@@ -108,7 +100,7 @@ final class Registry {
 			return Result.OK;
 		}
 
-		return registerInstance(name, field, field.getType(), field.getGenericType(), () -> {
+		return registerInstance(name, mod, field, field.getType(), field.getGenericType(), () -> {
 			// Verify this is a "public static final" field. We do this inside the getter as it means we don't warn on
 			// fields which don't look like ours.
 			int modifiers = field.getModifiers();
@@ -134,8 +126,8 @@ final class Registry {
 		});
 	}
 
-	@SuppressWarnings({"unchecked", "UnstableApiUsage"})
-	private static Result registerInstance(String name, AnnotatedElement element, Class<?> rawType, Type type, Supplier<?> instanceGetter) {
+	@SuppressWarnings({ "unchecked", "UnstableApiUsage" })
+	private static Result registerInstance(String name, String mod, AnnotatedElement element, Class<?> rawType, Type type, Supplier<?> instanceGetter) {
 		Object instance = null;
 
 		// Register ITransferProviders
@@ -147,9 +139,10 @@ final class Registry {
 			if (instance == null) instance = instanceGetter.get();
 			if (instance == null) return Result.ERROR;
 
-			ITransferProvider provider = (ITransferProvider) instance;
-			if (provider.primary()) TransferRegistry.instance.registerPrimary(target, provider);
-			if (provider.secondary()) TransferRegistry.instance.registerSecondary(target, provider);
+			ITransferProvider<Object> provider = (ITransferProvider) instance;
+			TargetedRegisteredValue<ITransferProvider<?>> registration = new TargetedRegisteredValue<>(name, mod, target, provider);
+			if (provider.primary()) TransferRegistry.instance.registerPrimary(registration);
+			if (provider.secondary()) TransferRegistry.instance.registerSecondary(registration);
 
 			if (!provider.primary() && !provider.secondary()) {
 				LOG.warn("@Injects {} is neither a primary nor secondary ITransferProvider", name);
@@ -165,7 +158,7 @@ final class Registry {
 			if (instance == null) instance = instanceGetter.get();
 			if (instance == null) return Result.ERROR;
 
-			ConverterRegistry.instance.registerConverter(klass, (IConverter) instance);
+			ConverterRegistry.instance.registerConverter(new TargetedRegisteredValue<>(name, mod, klass, (IConverter<?, ?>) instance));
 		}
 
 		// Register IMethod
@@ -177,7 +170,9 @@ final class Registry {
 			if (instance == null) instance = instanceGetter.get();
 			if (instance == null) return Result.ERROR;
 
-			MethodRegistry.instance.registerMethod(klass, (IMethod) instance);
+			MethodRegistry.instance.registerMethod(
+				new RegisteredMethod.Impl(name, mod, klass, (IMethod<?>) instance)
+			);
 		}
 
 		// Register IMetaProvider
@@ -189,10 +184,11 @@ final class Registry {
 			if (instance == null) instance = instanceGetter.get();
 			if (instance == null) return Result.ERROR;
 
-			MetaRegistry.instance.registerMetaProvider(klass, (IMetaProvider) instance, name);
+			MetaRegistry.instance.registerMetaProvider(new TargetedRegisteredValue<>(name, mod, klass, (IMetaProvider<?>) instance));
 		}
 
-		// Register ArgumentType
+		// Register ArgumentType. We don't bother with a RegistrationEntry here, as disabling argument types isn't really
+		// possible.
 		if (ArgumentType.class.isAssignableFrom(rawType)) {
 			Type typeParameter = TypeToken.of(type).resolveType(ARGUMENT_TYPE_IN).getType();
 			Class<?> klass = getRawType(name, typeParameter, typeParameter);

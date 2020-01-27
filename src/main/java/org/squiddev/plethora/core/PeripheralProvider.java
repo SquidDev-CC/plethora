@@ -11,7 +11,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.squiddev.plethora.api.WorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.CostHelpers;
-import org.squiddev.plethora.api.method.IMethod;
 import org.squiddev.plethora.api.reference.BlockReference;
 import org.squiddev.plethora.core.executor.TaskRunner;
 import org.squiddev.plethora.utils.Helpers;
@@ -45,7 +44,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 				.withCostHandler(CostHelpers.getCostHandler(te, side))
 				.addContext(ContextKeys.ORIGIN, location);
 
-			Pair<List<IMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
+			Pair<List<RegisteredMethod<?>>, List<UnbakedContext<?>>> paired = registry.getMethodsPaired(factory.getBaked());
 			if (!paired.getLeft().isEmpty()) {
 				return new MethodWrapperPeripheral(Helpers.tryGetName(te).replace('.', '_'), te, paired, TaskRunner.SHARED);
 			}
