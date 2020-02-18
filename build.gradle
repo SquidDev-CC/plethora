@@ -124,6 +124,7 @@ dependencies {
 	integrationMod "cyclic:Cyclic:1.12.2:1.19.9"
 	integrationMod "extra-utilities:extrautils2:1.12:1.9.9"
 	integrationMod "not-enough-wands:notenoughwands:1.12:1.8.1"
+	integrationMod "buildcraft:buildcraft:all:7.99.24.4"
 
 	compileOnly('org.squiddev:ConfigGen:1.2.5') { exclude group: 'net.minecraftforge' }
 
