@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Injects(BCCore.MODID)
 public final class TileControllable {
 
 	@PlethoraMethod(modId = BCCore.MODID, doc = "-- Get a list of all supported control modes.")
@@ -25,27 +24,12 @@ public final class TileControllable {
 	}
 
 	@PlethoraMethod(modId = BCCore.MODID, doc = "-- Reports true if the Block accept the given mode.")
-	public static boolean acceptsControlMode(@FromTarget IControllable controllable, String modeName) throws LuaException {
-		IControllable.Mode mode;
-		try {
-			mode = IControllable.Mode.valueOf(modeName.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new LuaException("No such control mode");
-		}
-
-
+	public static boolean acceptsControlMode(@FromTarget IControllable controllable, IControllable.Mode mode) throws LuaException {
 		return controllable.acceptsControlMode(mode);
 	}
 
 	@PlethoraMethod(modId = BCCore.MODID, doc = "-- Set the Control mode of the block to the given mode.")
-	public static void setControlMode(@FromTarget IControllable controllable, String modeName) throws LuaException {
-		IControllable.Mode mode;
-		try {
-			mode = IControllable.Mode.valueOf(modeName.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new LuaException("No such control mode");
-		}
-
+	public static void setControlMode(@FromTarget IControllable controllable, IControllable.Mode mode) throws LuaException {
 		if (controllable.acceptsControlMode(mode)) {
 			controllable.setControlMode(mode);
 		}
