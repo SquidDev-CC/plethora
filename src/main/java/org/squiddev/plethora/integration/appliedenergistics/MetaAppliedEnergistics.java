@@ -28,12 +28,19 @@ import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 
 @Injects(AppEng.MOD_ID)
 public final class MetaAppliedEnergistics {
+
 	public static final SimpleMetaProvider<ICraftingCPU> META_CRAFTING_CPU = cpu -> {
-		Map<String, Object> out = new HashMap<>(4);
+		Map<String, Object> out = new HashMap<>(5);
 		out.put("name", cpu.getName());
 		out.put("busy", cpu.isBusy());
 		out.put("coprocessors", cpu.getCoProcessors());
 		out.put("storage", cpu.getAvailableStorage());
+
+		// get the current job
+		if (cpu.isBusy()) {
+			out.put("job", CraftingCPU.getCurrentJob(cpu));
+		}
+
 		return out;
 	};
 
