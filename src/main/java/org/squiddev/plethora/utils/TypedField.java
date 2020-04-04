@@ -44,6 +44,20 @@ public final class TypedField<O, T> {
 		}
 	}
 
+	public static <O, T> TypedField<O, T> of(@Nonnull Class<O> type, @Nonnull String name) {
+		try {
+			Field f = type.getDeclaredField(name);
+			f.setAccessible(true);
+			return new TypedField<>(f);
+		} catch (NoSuchFieldException | SecurityException e) {
+			PlethoraCore.LOG.error("Unable to find {}.{}", type.getName(), name, e);
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			TypedField<O, T> empty = (TypedField) NONE;
+			return empty;
+		}
+	}
+
 	public static <O, T> TypedField<O, T> of(@Nonnull Class<O> type, @Nonnull String deobfField, @Nonnull String obfField) {
 		try {
 			Field f;

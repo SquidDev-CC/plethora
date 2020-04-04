@@ -83,7 +83,7 @@ public final class PlethoraMethodRegistry {
 			if (counts > 1) {
 				PlethoraCore.LOG.error(
 					"@PlethoraMethod method {}'s has a context argument {} with multiple annotations",
-					name, parameter.getName(), parameter.getType().getName()
+					name, parameter.getName()
 				);
 				ok = false;
 			}
@@ -225,10 +225,12 @@ public final class PlethoraMethodRegistry {
 
 		MethodRegistry.instance.registerMethod(instance);
 		for (int i = 1; i < names.length; i++) {
-			MethodRegistry.instance.registerMethod(new RegisteredMethod.Impl<>(
+			@SuppressWarnings("unchecked")
+			RegisteredMethod<?> registered = new RegisteredMethod.Impl<>(
 				instance.name(), instance.mod(), instance.target(),
 				new RenamedMethod<>(names[i], (MethodInstance) instance)
-			));
+			);
+			MethodRegistry.instance.registerMethod(registered);
 		}
 		return true;
 	}

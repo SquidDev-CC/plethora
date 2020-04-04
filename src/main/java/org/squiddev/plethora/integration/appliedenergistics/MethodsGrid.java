@@ -51,7 +51,7 @@ public final class MethodsGrid {
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all items which are stored in the network")
-	public static List<Map<String, Object>> listAvailableItems(IContext<IGrid> context) {
+	public static List<Map<String, ?>> listAvailableItems(IContext<IGrid> context) {
 		IGrid grid = context.getTarget();
 		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
 		IItemStorageChannel channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
@@ -61,7 +61,7 @@ public final class MethodsGrid {
 	}
 
 	@PlethoraMethod(modId = AppEng.MOD_ID, doc = "-- List all fluids which are stored in the network")
-	public static List<Map<String, Object>> listAvailableFluids(IContext<IGrid> context) {
+	public static List<Map<String, ?>> listAvailableFluids(IContext<IGrid> context) {
 		IGrid grid = context.getTarget();
 		IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
 		IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
