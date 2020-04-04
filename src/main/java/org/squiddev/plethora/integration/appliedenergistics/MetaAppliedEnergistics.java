@@ -29,11 +29,13 @@ import static org.squiddev.plethora.api.method.ContextHelpers.getMetaList;
 @Injects(AppEng.MOD_ID)
 public final class MetaAppliedEnergistics {
 	public static final SimpleMetaProvider<ICraftingCPU> META_CRAFTING_CPU = cpu -> {
-		Map<String, Object> out = new HashMap<>(4);
+		Map<String, Object> out = new HashMap<>(5);
 		out.put("name", cpu.getName());
 		out.put("busy", cpu.isBusy());
 		out.put("coprocessors", cpu.getCoProcessors());
 		out.put("storage", cpu.getAvailableStorage());
+		if (cpu.isBusy()) out.put("job", CraftingCPU.getCurrentJob(cpu));
+
 		return out;
 	};
 
@@ -73,18 +75,16 @@ public final class MetaAppliedEnergistics {
 	}
 
 	@Nonnull
-	static HashMap<String, Object> getItemStackProperties(@Nonnull IAEItemStack stack) {
+	static Map<String, ?> getItemStackProperties(@Nonnull IAEItemStack stack) {
 		HashMap<String, Object> data = new HashMap<>();
-		data.putAll(MetaItemBasic.getBasicMeta(stack.getDefinition()));
+		MetaItemBasic.fillBasicMeta(data, stack.getDefinition());
 		data.put("count", stack.getStackSize());
 		data.put("isCraftable", stack.isCraftable());
 		return data;
 	}
 
 	@Nonnull
-	static HashMap<String, Object> getFluidStackProperties(@Nonnull IAEFluidStack stack) {
-		HashMap<String, Object> data = new HashMap<>();
-		data.putAll(MetaFluidStack.getBasicMeta(stack.getFluidStack()));
-		return data;
+	static Map<String, ?> getFluidStackProperties(@Nonnull IAEFluidStack stack) {
+		return MetaFluidStack.getBasicMeta(stack.getFluidStack());
 	}
 }

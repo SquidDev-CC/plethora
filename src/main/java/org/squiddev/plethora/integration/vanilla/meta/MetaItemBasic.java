@@ -70,7 +70,7 @@ public final class MetaItemBasic extends BasicMetaProvider<ItemStack> {
 		return data;
 	}
 
-	private static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull ItemStack stack) {
+	public static void fillBasicMeta(@Nonnull Map<? super String, Object> data, @Nonnull ItemStack stack) {
 		data.put("name", stack.getItem().getRegistryName().toString());
 		data.put("damage", stack.getItemDamage());
 		data.put("count", stack.getCount());
