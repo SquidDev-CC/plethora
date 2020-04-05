@@ -40,5 +40,5 @@ keybindings, triggering all sorts of actions.
 
 An additional ability gained by using the keyboard in conjunction with the overlay glasses. It gains the ability to
 capture mouse interactions, firing events when clicking, dragging or scrolling. Each event (`glasses_click`,
-`glasse_up`, `glasses_scroll`, and `glasses_drag`) give values similar to their `mouse` counterparts, though the mouse
+`glasses_up`, `glasses_scroll`, and `glasses_drag`) give values similar to their `mouse` counterparts, though the mouse
 positions are relative to the glasses' coordinate system.
