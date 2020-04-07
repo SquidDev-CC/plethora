@@ -46,7 +46,7 @@ item transfer system to move things between them.
 local inv = introspection.getInventory()
 local ender = introspection.getEnder()
 
-inv.pushItem("ender_chest", 1) -- Move slot 1 into the ender chest
+inv.pushItems("ender_chest", 1) -- Move slot 1 into the ender chest
 for slot, item in pairs(ender.list()) do
 	print(string.format("#%d: %s", slot, item.name))
 end
