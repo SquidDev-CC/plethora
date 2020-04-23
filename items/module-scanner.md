@@ -61,4 +61,4 @@ use, but looks kinda pretty.
 ### Configuring
 The block scanner can be configured using the `scanner` category of the `plethora.cfg` file:
 
- - `radus=8`: The maximum distance that a scaner can query. Note that the area is a cube, not a sphere.
+ - `radius=8`: The maximum distance that a scaner can query. Note that the area is a cube, not a sphere.
