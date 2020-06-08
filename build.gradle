@@ -68,11 +68,8 @@ repositories {
 	maven { url 'https://maven.k-4u.nl/' } // McJty's mods
 	maven { url 'https://maven.mcmoddev.com/' } // Tesla
 	maven { url 'https://maven.shadowfacts.net' } // Forgelin
-	maven { url 'https://maven.tterrag.com/' } // EnderCore
-	maven { url 'https://maven2.tterrag.com/' } // EnderIO
 	maven { url 'https://mod-buildcraft.com/maven/' } // Buildcraft
 	maven { url 'https://maven.hellfiredev.net/' } // Astral Sorcery
-	maven { url 'https://repo.raoulvdberge.com/' } // Refined Storage
 	maven { url 'https://squiddev.cc/maven/' } // CC: Tweaked
 	maven { url 'https://minecraft.curseforge.com/api/maven/' } // Everything else
 }
