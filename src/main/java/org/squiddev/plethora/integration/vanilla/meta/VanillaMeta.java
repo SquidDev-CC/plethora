@@ -31,10 +31,7 @@ import org.squiddev.plethora.utils.TypedField;
 import org.squiddev.plethora.utils.WorldDummy;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Injects
 public final class VanillaMeta {
@@ -134,16 +131,18 @@ public final class VanillaMeta {
 			Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(target);
 			if (enchants.isEmpty()) return Collections.emptyMap();
 
-			return Collections.singletonMap("enchantments", Helpers.map(enchants.entrySet(), entry -> {
-				Enchantment enchantment = entry.getKey();
-				int level = entry.getValue();
-				HashMap<String, Object> enchant = new HashMap<>(3);
-				enchant.put("name", enchantment.getName());
-				enchant.put("level", level);
-				enchant.put("fullName", enchantment.getTranslatedName(level));
+			return Collections.singletonMap("enchantments", enchants.entrySet().stream()
+				.filter(Objects::nonNull)
+				.map(entry -> {
+					Enchantment enchantment = entry.getKey();
+					int level = entry.getValue();
+					HashMap<String, Object> enchant = new HashMap<>(3);
+					enchant.put("name", enchantment.getName());
+					enchant.put("level", level);
+					enchant.put("fullName", enchantment.getTranslatedName(level));
 
-				return enchant;
-			}));
+					return enchant;
+				}).collect(Helpers.tinyCollect()));
 		}
 
 		@Nonnull
