@@ -2,10 +2,6 @@ package org.squiddev.plethora.utils;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.util.IDAssigner;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -34,14 +30,9 @@ import org.squiddev.plethora.gameplay.Plethora;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collector;
 
 /**
  * Helper methods for various things
@@ -88,37 +79,6 @@ public final class Helpers {
 		return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(format, args);
 	}
 
-	/**
-	 * Swap two characters in a string
-	 *
-	 * @param word The string to swap
-	 * @param a    First character
-	 * @param b    Second character
-	 * @return Swapped string
-	 */
-	public static String swapCharacters(String word, char a, char b) {
-		StringBuilder builder = new StringBuilder(word.length());
-
-		for (int i = 0; i < word.length(); i++) {
-			char c = word.charAt(i);
-			if (c == a) {
-				c = b;
-			} else if (c == b) {
-				c = a;
-			}
-			builder.append(c);
-		}
-		return builder.toString();
-	}
-
-	private static int nextId(World world, String type) {
-		return IDAssigner.getNextIDFromFile("computer/lastid_" + type + ".txt");
-	}
-
-	public static int nextId(World world, IPeripheral peripheral) {
-		return nextId(world, peripheral.getType());
-	}
-
 	public static String snakeCase(String name) {
 		return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
 	}
@@ -157,31 +117,6 @@ public final class Helpers {
 		}
 
 		return modIds;
-	}
-
-	public static File getContainingJar(Class<?> klass) {
-		String path = klass.getProtectionDomain().getCodeSource().getLocation().getPath();
-
-		int bangIndex = path.indexOf('!');
-		if (bangIndex >= 0) {
-			path = path.substring(0, bangIndex);
-		}
-
-		URL url;
-		try {
-			url = new URL(path);
-		} catch (MalformedURLException ignored) {
-			return null;
-		}
-
-		File file;
-		try {
-			file = new File(url.toURI());
-		} catch (URISyntaxException ignored) {
-			file = new File(url.getPath());
-		}
-
-		return file;
 	}
 
 	public static boolean blacklisted(@Nullable Iterable<String> blacklist, @Nonnull String name) {
@@ -301,73 +236,6 @@ public final class Helpers {
 		return result;
 	}
 
-	/**
-	 * Assert that this class's specified target matches the appropriate generic parameter.
-	 *
-	 * This will error when in strict mode, as well as not accepting any valid but non-equal
-	 * targets (such as subtypes).
-	 *
-	 * @param klass  The class to check
-	 * @param target The specified target
-	 * @param iface  The parent class or interface which takes the target as a type parameter.
-	 * @throws IllegalArgumentException If no matching type can be found (and in strict mode).
-	 */
-	public static void assertTarget(Class<?> klass, Class<?> target, Class<?> iface) {
-		// Gather
-		TypeToken<?> initial = TypeToken.of(klass);
-
-		TypeToken<?>.TypeSet collection = iface.isInterface()
-			? initial.getTypes().interfaces()
-			: initial.getTypes().classes();
-
-		// Look for perfect matches first, otherwise build up a list of all args.
-		List<Type> allTargets = null;
-		for (TypeToken<?> tok : collection) {
-			if (tok.getRawType() == iface) {
-				if (tok.getType() instanceof ParameterizedType) {
-					Type[] args = ((ParameterizedType) tok.getType()).getActualTypeArguments();
-					if (args.length == 0) continue;
-
-					Type arg = args[0];
-					if (arg == target) return;
-
-					if (allTargets == null) allTargets = Lists.newArrayList();
-					allTargets.add(arg);
-				}
-			}
-		}
-
-		if (allTargets != null) {
-			boolean valid = false;
-			for (Type arg : allTargets) {
-				// If the type argument is a subtype then work correctly.
-				if (arg instanceof Class<?> && ((Class<?>) arg).isAssignableFrom(target)) {
-					PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got superclass" + arg + " for " + klass.getName());
-					valid |= !ConfigCore.Testing.strict;
-				} else if (arg instanceof TypeVariable) {
-					// Try to find something limited by this arg
-					TypeVariable<?> var = (TypeVariable) arg;
-					for (Type bound : var.getBounds()) {
-						if (bound instanceof Class<?> && ((Class<?>) bound).isAssignableFrom(target)) {
-							PlethoraCore.LOG.warn("Specified target as " + target.getName() + " but got generic parameter with matching bound " + var.getName() + " extends " + ((Class<?>) bound).getName() + " for " + klass.getName());
-							valid |= !ConfigCore.Testing.strict;
-						}
-					}
-				}
-			}
-			if (valid) return;
-		}
-
-		String message = "Annotation target " + target.getName() + " does not match type parameters";
-		message += allTargets == null ? " (cannot find any type parameters)" : " (specified parameters are " + allTargets + ")";
-
-		if (ConfigCore.Testing.strict) {
-			throw new IllegalStateException(message);
-		} else {
-			PlethoraCore.LOG.error(message);
-		}
-	}
-
 	private static int hashStack(@Nonnull ItemStack stack) {
 		int hash = stack.getItem().hashCode() * 31 + stack.getItemDamage();
 		if (stack.hasTagCompound()) hash = hash * 31 + stack.getTagCompound().hashCode();
@@ -436,5 +304,12 @@ public final class Helpers {
 		List<U> result = new ArrayList<>(size);
 		for (T elem : list) result.add(f.apply(elem));
 		return result;
+	}
+
+	public static <T> Collector<T, ?, List<T>> tinyCollect() {
+		return Collector.of(() -> new ArrayList<>(4), List::add, (left, right) -> {
+			left.addAll(right);
+			return left;
+		});
 	}
 }
