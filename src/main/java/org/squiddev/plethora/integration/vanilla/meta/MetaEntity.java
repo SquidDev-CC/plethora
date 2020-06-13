@@ -17,6 +17,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.squiddev.plethora.utils.Helpers.normaliseAngle;
+
 @Injects
 public final class MetaEntity extends BaseMetaProvider<Entity> {
 	public MetaEntity() {
@@ -55,8 +57,8 @@ public final class MetaEntity extends BaseMetaProvider<Entity> {
 		result.put("motionY", entity.motionY);
 		result.put("motionZ", entity.motionZ);
 
-		result.put("pitch", entity.rotationPitch);
-		result.put("yaw", entity.rotationYaw);
+		result.put("pitch", normaliseAngle(entity.rotationPitch));
+		result.put("yaw", normaliseAngle(entity.rotationYaw));
 
 		if (location != null && location.getWorld() == entity.getEntityWorld()) {
 			Vec3d pos = location.getLoc();

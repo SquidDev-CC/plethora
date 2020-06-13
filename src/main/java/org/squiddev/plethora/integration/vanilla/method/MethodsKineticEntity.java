@@ -42,6 +42,7 @@ import java.util.EnumSet;
 import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
+import static org.squiddev.plethora.utils.Helpers.normaliseAngle;
 
 /**
  * Various methods for mobs
@@ -59,10 +60,8 @@ public final class MethodsKineticEntity {
 
 	@PlethoraMethod(module = PlethoraModules.KINETIC_S, doc = "-- Look in a set direction")
 	public static void look(@FromSubtarget EntityLivingBase target, double yaw, double pitch) {
-		yaw %= 360;
-		pitch %= 360;
-
-		pitch = MathHelper.clamp(pitch, -90, 90);
+		yaw = normaliseAngle(yaw);
+		pitch = MathHelper.clamp(normaliseAngle(pitch), -90, 90);
 
 		if (target instanceof EntityPlayerMP) {
 			NetHandlerPlayServer handler = ((EntityPlayerMP) target).connection;
@@ -158,8 +157,8 @@ public final class MethodsKineticEntity {
 
 	@Nonnull
 	private static MethodResult shootBlaze(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull final Object[] args) throws LuaException {
-		final double yaw = getFiniteDouble(args, 0) % 360;
-		double pitch = getFiniteDouble(args, 1) % 360;
+		final double yaw = normaliseAngle(getFiniteDouble(args, 0));
+		double pitch = normaliseAngle(getFiniteDouble(args, 1));
 
 		final double motionX = -Math.sin(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);
 		final double motionZ = Math.cos(yaw / 180.0f * (float) Math.PI) * Math.cos(pitch / 180.0f * (float) Math.PI);

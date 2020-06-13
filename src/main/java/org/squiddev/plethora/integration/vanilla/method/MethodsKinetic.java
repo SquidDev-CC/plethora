@@ -23,6 +23,7 @@ import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
 import static dan200.computercraft.api.lua.ArgumentHelper.optFiniteDouble;
 import static org.squiddev.plethora.api.method.ArgumentHelper.assertBetween;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Kinetic;
+import static org.squiddev.plethora.utils.Helpers.normaliseAngle;
 
 @Injects
 public final class MethodsKinetic {
@@ -36,8 +37,8 @@ public final class MethodsKinetic {
 	}
 
 	private static MethodResult launch(@Nonnull final IUnbakedContext<IModuleContainer> context, @Nonnull Object[] args) throws LuaException {
-		final float yaw = (float) getFiniteDouble(args, 0) % 360;
-		final float pitch = (float) getFiniteDouble(args, 1) % 360;
+		final float yaw = (float) normaliseAngle(getFiniteDouble(args, 0));
+		final float pitch = (float) normaliseAngle(getFiniteDouble(args, 1));
 		final float power = (float) getFiniteDouble(args, 2);
 
 		assertBetween(power, 0, Kinetic.launchMax, "Power out of range (%s).");

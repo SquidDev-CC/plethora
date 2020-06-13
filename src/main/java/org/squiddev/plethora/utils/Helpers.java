@@ -312,4 +312,29 @@ public final class Helpers {
 			return left;
 		});
 	}
+
+	/**
+	 * Take modulo for double numbers according to lua math, and return a double result.
+	 *
+	 * @param lhs Left-hand-side of the modulo.
+	 * @param rhs Right-hand-side of the modulo.
+	 * @return double value for the result of the modulo,
+	 * using lua's rules for modulo
+	 */
+	public static double mod(double lhs, double rhs) {
+		double mod = lhs % rhs;
+		return mod * rhs < 0 ? mod + rhs : mod;
+	}
+
+	/**
+	 * Normalise an angle between -180 and 180.
+	 *
+	 * @param angle The angle to normalise.
+	 * @return The normalised angle.
+	 */
+	public static double normaliseAngle(double angle) {
+		angle = mod(angle, 360);
+		if (angle > 180) angle -= 360;
+		return angle;
+	}
 }

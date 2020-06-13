@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 
 import static dan200.computercraft.api.lua.ArgumentHelper.getFiniteDouble;
 import static org.squiddev.plethora.gameplay.ConfigGameplay.Laser.*;
+import static org.squiddev.plethora.utils.Helpers.normaliseAngle;
 
 @Injects
 public final class MethodsLaser {
@@ -34,13 +35,9 @@ public final class MethodsLaser {
 
 	@Nonnull
 	private static MethodResult fire(@Nonnull final IUnbakedContext<IModuleContainer> unbaked, @Nonnull Object[] args) throws LuaException {
-		final double yaw = getFiniteDouble(args, 0) % 360;
-		double pitchArg = getFiniteDouble(args, 1) % 360;
+		double yaw = normaliseAngle(getFiniteDouble(args, 0));
+		double pitch = normaliseAngle(getFiniteDouble(args, 1));
 		final float potency = (float) getFiniteDouble(args, 2);
-
-		// Normalise the pitch to be between -180 and 180.
-		if (pitchArg > 180) pitchArg -= 360;
-		final double pitch = pitchArg;
 
 		ArgumentHelper.assertBetween(potency, minimumPotency, maximumPotency, "Potency out of range (%s).");
 
