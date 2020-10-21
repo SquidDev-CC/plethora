@@ -61,7 +61,7 @@ while true do
 	local _, message, pattern, player, uuid = os.pullEvent("chat_capture")
 	if pattern == "^!" then
 		-- Run the provided command in the shell. So "!ls" will execute "ls".
-		shell.run(command:sub(2))
+		shell.run(message:sub(2))
 	end
 end
 ```
