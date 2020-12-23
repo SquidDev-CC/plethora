@@ -52,7 +52,6 @@ runClient {
 }
 
 curseforge {
-	reobfShadowJar {}
 	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
 
 	project {
