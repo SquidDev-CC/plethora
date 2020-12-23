@@ -1,6 +1,5 @@
 // For those who want the bleeding edge
 plugins {
-	id 'com.matthewprenger.cursegradle' version '1.2.0'
 	id "com.github.ben-manes.versions" version "0.21.0" // Provides dependencyUpdates task.
 }
 
@@ -37,7 +36,6 @@ dependencies {
 	compile "mezz.jei:jei_1.12.2:4.15.0.268"
 
 	// External mods with maven dependencies. Have fun when the next version of Minecraft drops!
-	integrationMod "appeng:appliedenergistics2:rv6-stable-6"
 	integrationMod "codechicken:ChickenASM:1.12-1.0.2.9"
 	integrationMod "codechicken:CodeChickenLib:1.12.2-3.2.2.354:universal"
 	integrationMod("codechicken:ForgeMultipart:1.12.2-2.6.1.81:universal") { exclude group: "codechicken" }
@@ -107,32 +105,12 @@ processResources {
 	}
 }
 
-gradle.projectsEvaluated {
-	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint" << "-Xlint:-rawtypes" << "-Xlint:-processing" << "-parameters"
-	}
-}
-
 // Not quite ready for common usage, but helped a lot in checking stuff
 // compileJava { options.compilerArgs << "-Xplugin:ForgeLint" }
 
 // Added for mods that have per-player data, e.g. Astral Sorcery
 runClient {
 	args '--username', 'PlethoraDev'
-}
-
-curseforge {
-	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
-
-	project {
-		id = '248425'
-		releaseType = 'release'
-		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
-
-		 relations {
-			 requiredLibrary 'cc-tweaked'
-		 }
-	}
 }
 
 task runTestServer(type: JavaExec) {

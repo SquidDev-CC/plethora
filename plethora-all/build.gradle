@@ -1,3 +1,8 @@
+plugins {
+	id 'com.matthewprenger.cursegradle' version '1.2.0'
+	id "com.github.ben-manes.versions" version "0.21.0" // Provides dependencyUpdates task.
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -41,3 +46,34 @@ reobf {
 }
 
 build.dependsOn(shadowJar)
+
+// Added for mods that have per-player data, e.g. Astral Sorcery
+runClient {
+	args '--username', 'PlethoraDev'
+}
+
+curseforge {
+	reobfShadowJar {}
+	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
+
+	project {
+		id = '248425'
+		releaseType = 'release'
+		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
+
+		mainArtifact reobfShadowJar
+
+		relations {
+			requiredLibrary 'cc-tweaked'
+		}
+	}
+}
+
+task runTestServer(type: JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	main = "org.squiddev.plethora.boostrap.LaunchServer"
+	workingDir = "${project.projectDir}/test-files/server"
+	systemProperties = ["fml.queryResult": "confirm"]
+
+	workingDir.mkdirs()
+}

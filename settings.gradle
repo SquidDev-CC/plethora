@@ -2,7 +2,7 @@ rootProject.name = 'plethora'
 
 include 'plethora-all'
 include 'plethora-common'
-//include 'plethora-integration:appliedenergistics'
+include 'plethora-integration:appliedenergistics'
 //include 'plethora-integration:astralsorcery'
 //include 'plethora-integration:baubles'
 //include 'plethora-integration:blockcraftery'
