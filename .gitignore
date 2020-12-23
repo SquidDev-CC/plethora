@@ -56,18 +56,18 @@ $RECYCLE.BIN/
 # =========================
 # Forge Files
 # =========================
-/run-*/
-/build-*/
-/bin/
-/lib/ # Include libs manually
-/lib-*/
-/test-files
+run-*/
+build-*/
+bin/
+lib/ # Include libs manually
+lib-*/
+test-files/
 
 # Gradle
 # =========================
-/.gradle
-/build/
-/run/
+.gradle
+build/
+run/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Idea

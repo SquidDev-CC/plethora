@@ -1,12 +1,5 @@
 // For those who want the bleeding edge
 buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 	}
@@ -51,27 +44,6 @@ configurations {
 	compileOnly.extendsFrom integrationMod
 	testCompile.extendsFrom integrationMod
 	testCompile.extendsFrom forgeGradleGradleStart
-}
-
-repositories {
-	jcenter()
-
-	maven { url 'http://chickenbones.net/maven/' } // CBMP
-	maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's
-	maven { url 'http://dyonovan.com/maven2/' } // Industrial Foregoing
-	maven { url 'http://maven.ic2.player.to/' } // IC2 + Forestry
-	maven { url 'https://dl.bintray.com/squiddev/maven/' } // ConfigGen (why do I use this still?)
-	maven { url 'https://maven.amadornes.com/' } // Multipart
-	maven { url 'https://maven.blamejared.com/' } // Botania
-	maven { url 'https://maven.cil.li/' } // OpenComputers
-	maven { url 'https://maven.covers1624.net/' } // CoFH
-	maven { url 'https://maven.k-4u.nl/' } // McJty's mods
-	maven { url 'https://maven.mcmoddev.com/' } // Tesla
-	maven { url 'https://maven.shadowfacts.net' } // Forgelin
-	maven { url 'https://mod-buildcraft.com/maven/' } // Buildcraft
-	maven { url 'https://maven.hellfiredev.net/' } // Astral Sorcery
-	maven { url 'https://squiddev.cc/maven/' } // CC: Tweaked
-	maven { url 'https://minecraft.curseforge.com/api/maven/' } // Everything else
 }
 
 dependencies {
