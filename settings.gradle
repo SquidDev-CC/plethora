@@ -1,5 +1,6 @@
 rootProject.name = 'plethora'
 
+include 'plethora-all'
 include 'plethora-common'
 //include 'plethora-integration:appliedenergistics'
 //include 'plethora-integration:astralsorcery'

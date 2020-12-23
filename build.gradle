@@ -1,6 +1,8 @@
+project.ext.enabled_integration = subprojects.findAll{it.path.startsWith(':plethora-integration:') }.toList()
+
 allprojects {
 	group = 'org.squiddev'
-	version = mc_version + '-' + mod_version
+	version = "${project.mc_version}-${project.mod_version}"
 }
 
 subprojects {
@@ -12,6 +14,17 @@ subprojects {
 				url = "https://files.minecraftforge.net/maven"
 			}
 		}
+		dependencies {
+			classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+			classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+		}
+	}
+
+	configurations {
+		integrationMod
+		compileOnly.extendsFrom integrationMod
+		testCompile.extendsFrom integrationMod
+		testCompile.extendsFrom forgeGradleGradleStart
 	}
 
 	repositories {

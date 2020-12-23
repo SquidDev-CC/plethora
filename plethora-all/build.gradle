@@ -1,0 +1,43 @@
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+archivesBaseName = "plethora"
+
+minecraft {
+	version = "${project.mc_version}-${project.forge_version}"
+	runDir = "run"
+	mappings = project.mappings_version
+}
+
+jar {
+	manifest {
+		attributes(
+				'FMLAT': 'Plethora_at.cfg',
+		)
+	}
+
+	exclude "**/*.java"
+}
+
+dependencies {
+	compile project(':plethora-common')
+	project.enabled_integration.each{ integration ->
+		compile integration
+	}
+}
+
+shadowJar {
+	classifier = "forge"
+	dependencies {
+		include(project(':plethora-common'))
+		project.enabled_integration.each{ integration ->
+			include(project(integration.path))
+		}
+	}
+}
+
+reobf {
+	shadowJar {}
+}
+
+build.dependsOn(shadowJar)

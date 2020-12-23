@@ -1,10 +1,4 @@
 // For those who want the bleeding edge
-buildscript {
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-	}
-}
-
 plugins {
 	id 'com.matthewprenger.cursegradle' version '1.2.0'
 	id "com.github.ben-manes.versions" version "0.21.0" // Provides dependencyUpdates task.
@@ -14,14 +8,12 @@ buildDir = "build"
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = mc_version + "-" + mod_version
-group = "org.squiddev"
-archivesBaseName = "plethora"
+archivesBaseName = "plethora-common"
 
 minecraft {
 	version = "${project.mc_version}-${project.forge_version}"
 	runDir = "run"
-	mappings = "snapshot_20180814"
+	mappings = project.mappings_version
 
 	replace '${mod_version}', project.mod_version
 	replace '${mc_version}', project.mc_version
@@ -37,13 +29,6 @@ jar {
 	}
 
 	exclude "**/*.java"
-}
-
-configurations {
-	integrationMod
-	compileOnly.extendsFrom integrationMod
-	testCompile.extendsFrom integrationMod
-	testCompile.extendsFrom forgeGradleGradleStart
 }
 
 dependencies {
