@@ -1,0 +1,13 @@
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+minecraft {
+	version = "${project.mc_version}-${project.forge_version}"
+	runDir = "run"
+	mappings = project.mappings_version
+}
+
+dependencies {
+	compile project(':plethora-common')
+	// Maven
+	integrationMod "MCMultiPart2:MCMultiPart:2.5.3"
+}

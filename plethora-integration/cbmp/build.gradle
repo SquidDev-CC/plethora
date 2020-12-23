@@ -1,0 +1,15 @@
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+minecraft {
+	version = "${project.mc_version}-${project.forge_version}"
+	runDir = "run"
+	mappings = project.mappings_version
+}
+
+dependencies {
+	compile project(':plethora-common')
+	// Maven
+	integrationMod "codechicken:ChickenASM:1.12-1.0.2.9"
+	integrationMod "codechicken:CodeChickenLib:1.12.2-3.2.2.354:universal"
+	integrationMod("codechicken:ForgeMultipart:1.12.2-2.6.1.81:universal") { exclude group: "codechicken" }
+}

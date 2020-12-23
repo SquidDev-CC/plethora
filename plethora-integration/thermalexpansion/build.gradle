@@ -1,0 +1,17 @@
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+minecraft {
+	version = "${project.mc_version}-${project.forge_version}"
+	runDir = "run"
+	mappings = project.mappings_version
+}
+
+dependencies {
+	compile project(':plethora-common')
+	// Maven
+	integrationMod "cofh:CoFHCore:1.12.2-4.6.2.25:universal"
+	integrationMod "cofh:RedstoneFlux:1.12-2.1.0.7:universal"
+	integrationMod "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
+	integrationMod "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
+	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
+}
