@@ -32,7 +32,6 @@ dependencies {
 }
 
 shadowJar {
-	classifier = "forge"
 	dependencies {
 		include(project(':plethora-common'))
 		project.enabled_integration.each{ integration ->
