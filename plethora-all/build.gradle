@@ -3,35 +3,72 @@ plugins {
 	id "com.github.ben-manes.versions" version "0.21.0" // Provides dependencyUpdates task.
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 archivesBaseName = "plethora"
 
 minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
+	mappings channel: project.mappings_channel, version: project.mappings_version
 
-jar {
-	manifest {
-		attributes(
-				'FMLAT': 'Plethora_at.cfg',
-		)
+	runs {
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+			// Added for mods that have per-player data, e.g. Astral Sorcery
+			args '--username', 'PlethoraDev'
+
+			mods {
+				plethora {
+					source sourceSets.main
+				}
+			}
+		}
+
+		server {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+
+			mods {
+				plethora {
+					source sourceSets.main
+				}
+			}
+		}
+
+		testServer {
+			parent server
+			workingDirectory project.file('test-files/server')
+			main 'org.squiddev.plethora.boostrap.LaunchServer'
+			property 'fml.queryResult', 'confirm'
+
+			mods {
+				plethora {
+					source sourceSets.main
+					source sourceSets.test
+				}
+			}
+		}
 	}
-
-	exclude "**/*.java"
 }
 
 dependencies {
+	minecraft "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
 	compile project(':plethora-common')
 	project.enabled_integration.each{ integration ->
 		compile integration
 	}
+
+	// Maven
+	implementation fg.deobf("org.squiddev:cc-tweaked-${project.mc_version}:${project.cct_version}")
+
+	testCompile 'junit:junit:4.11'
 }
 
 shadowJar {
+	classifier = ""
 	dependencies {
 		include(project(':plethora-common'))
 		project.enabled_integration.each{ integration ->
@@ -44,12 +81,7 @@ reobf {
 	shadowJar {}
 }
 
-build.dependsOn(shadowJar)
-
-// Added for mods that have per-player data, e.g. Astral Sorcery
-runClient {
-	args '--username', 'PlethoraDev'
-}
+build.dependsOn(reobfShadowJar)
 
 curseforge {
 	apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
@@ -65,13 +97,4 @@ curseforge {
 			requiredLibrary 'cc-tweaked'
 		}
 	}
-}
-
-task runTestServer(type: JavaExec) {
-	classpath = sourceSets.test.runtimeClasspath
-	main = "org.squiddev.plethora.boostrap.LaunchServer"
-	workingDir = "${project.projectDir}/test-files/server"
-	systemProperties = ["fml.queryResult": "confirm"]
-
-	workingDir.mkdirs()
 }

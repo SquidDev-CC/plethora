@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	// Maven
 	integrationMod "slimeknights:TConstruct:1.12.2-2.12.0.116"
 	integrationMod "slimeknights.mantle:Mantle:1.12-1.3.3.51"

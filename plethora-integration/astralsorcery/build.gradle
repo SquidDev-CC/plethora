@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	// Maven
 	integrationMod "hellfirepvp.astralsorcery:astralsorcery:1.12.2-1.10.18-v129"
 	// Curse

@@ -1,0 +1,13 @@
+subprojects {
+	apply plugin: 'net.minecraftforge.gradle'
+
+	minecraft {
+		mappings channel: project.mappings_channel, version: project.mappings_version
+	}
+
+	dependencies {
+		minecraft "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
+		implementation project(':plethora-common')
+		implementation fg.deobf("org.squiddev:cc-tweaked-${project.mc_version}:${project.cct_version}")
+	}
+}

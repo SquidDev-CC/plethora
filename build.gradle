@@ -15,16 +15,21 @@ subprojects {
 	buildscript {
 		repositories {
 			jcenter()
+			mavenCentral()
 			maven {
 				name = "forge"
 				url = "https://files.minecraftforge.net/maven"
 			}
 		}
 		dependencies {
-			classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+			classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
 			classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
 		}
 	}
+
+	apply plugin: 'java'
+
+	sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 	configurations {
 		integrationMod
@@ -35,6 +40,7 @@ subprojects {
 
 	repositories {
 		jcenter()
+		mavenCentral()
 
 		maven { url 'http://chickenbones.net/maven/' } // CBMP
 		maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's

@@ -3,37 +3,20 @@ plugins {
 	id "com.github.ben-manes.versions" version "0.21.0" // Provides dependencyUpdates task.
 }
 
-buildDir = "build"
-
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 
 archivesBaseName = "plethora-common"
 
 minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-
-	replace '${mod_version}', project.mod_version
-	replace '${mc_version}', project.mc_version
-	replace '${cct_version}', project.cct_version
-	replace '${forge_version}', project.forge_version
-}
-
-jar {
-	manifest {
-		attributes(
-			'FMLAT': 'Plethora_at.cfg',
-		)
-	}
-
-	exclude "**/*.java"
+	mappings channel: project.mappings_channel, version: project.mappings_version
+	accessTransformer file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 dependencies {
-	deobfCompile "org.squiddev:cc-tweaked-${mc_version}:${cct_version}"
+	minecraft "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
+	implementation fg.deobf("org.squiddev:cc-tweaked-${project.mc_version}:${project.cct_version}")
 
-	compile "mezz.jei:jei_1.12.2:4.15.0.268"
+	compileOnly fg.deobf("mezz.jei:jei_${project.mc_version}:${project.jei_version}:api")
 
 	// External mods with maven dependencies. Have fun when the next version of Minecraft drops!
 	integrationMod("com.github.mcjty:mcjtylib:1.12-3.5.0") { transitive = false }
@@ -49,8 +32,37 @@ dependencies {
 
 	// compileOnly "org.squiddev:forgelint:0.1.1"
 	compileOnly "com.google.errorprone:error_prone_annotations:2.0.21"
+}
 
-	testCompile 'junit:junit:4.11'
+task processSources(type: Sync) {
+	inputs.property 'mod_version', project.mod_version
+	inputs.property 'mc_version', project.mc_version
+	inputs.property 'cct_version', project.cct_version
+	inputs.property 'forge_version', project.forge_version
+	inputs.files sourceSets.main.java
+
+	from(sourceSets.main.java.srcDirs) {
+		include 'org/squiddev/plethora/core/PlethoraCore.java'
+		include 'org/squiddev/plethora/gameplay/Plethora.java'
+
+		filter { line -> line
+				.replace('${mod_version}', project.mod_version)
+				.replace('${mc_version}', project.mc_version)
+				.replace('${cct_version}', project.cct_version)
+				.replace('${forge_version}', project.forge_version)
+		}
+	}
+
+	from(sourceSets.main.java.srcDirs) {
+		exclude 'org/squiddev/plethora/core/PlethoraCore.java'
+		exclude 'org/squiddev/plethora/gameplay/Plethora.java'
+	}
+
+	into "${project.buildDir}/src"
+}
+
+compileJava {
+	source = processSources.outputs
 }
 
 processResources {
@@ -74,17 +86,3 @@ processResources {
 
 // Not quite ready for common usage, but helped a lot in checking stuff
 // compileJava { options.compilerArgs << "-Xplugin:ForgeLint" }
-
-// Added for mods that have per-player data, e.g. Astral Sorcery
-runClient {
-	args '--username', 'PlethoraDev'
-}
-
-task runTestServer(type: JavaExec) {
-	classpath = sourceSets.test.runtimeClasspath
-	main = "org.squiddev.plethora.boostrap.LaunchServer"
-	workingDir = "${project.projectDir}/test-files/server"
-	systemProperties = ["fml.queryResult": "confirm"]
-
-	workingDir.mkdirs()
-}

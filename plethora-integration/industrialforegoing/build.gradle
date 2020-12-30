@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	// Maven
 	integrationMod("com.buuz135.industrial.IndustrialForegoing:industrialforegoing:1.12.2-1.5.13-136") { exclude group: "mezz.jei" }
 	integrationMod "net.ndrei:tesla-core-lib:1.12.2-1.0.15.16:deobf"

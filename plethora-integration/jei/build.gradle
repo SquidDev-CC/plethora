@@ -1,11 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
+	// Requires full jei for mezz.jei.util.Translator
+	integrationMod fg.deobf("mezz.jei:jei_${project.mc_version}:${project.jei_version}")
 }

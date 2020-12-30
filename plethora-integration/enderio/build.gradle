@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	compileOnly   ("com.enderio:EnderIO:1.12.2-5.0.43") { transitive = false }
 	compileOnly    "com.enderio.core:EnderCore:1.12.2-0.5.57" // EnderCore appears to crash in a development environment.
 }

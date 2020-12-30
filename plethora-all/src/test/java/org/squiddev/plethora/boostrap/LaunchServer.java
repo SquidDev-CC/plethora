@@ -1,6 +1,6 @@
 package org.squiddev.plethora.boostrap;
 
-import net.minecraftforge.gradle.GradleStartCommon;
+import net.minecraftforge.legacydev.MainServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,30 +9,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
-public final class LaunchServer extends GradleStartCommon {
+public final class LaunchServer {
 	private static final Logger LOG = LogManager.getLogger();
-
-
-	@Override
-	protected String getTweakClass() {
-		return "net.minecraftforge.fml.common.launcher.FMLServerTweaker";
-	}
-
-	@Override
-	protected String getBounceClass() {
-		return "net.minecraft.launchwrapper.Launch";
-	}
-
-	@Override
-	protected void preLaunch(Map<String, String> argMap, List<String> extras) {
-	}
-
-	@Override
-	protected void setDefaultArguments(Map<String, String> argMap) {
-	}
 
 	public static void main(String[] args) throws Throwable {
 		// Verify we're running from the correct directory.
@@ -67,6 +46,6 @@ public final class LaunchServer extends GradleStartCommon {
 		System.setProperty("buildcraft.debug", "disable"); // No Buildcraft logging
 
 		LOG.info("Launching Minecraft in {}", rootDir);
-		new LaunchServer().launch(new String[]{"--username", "PlethoraDev"});
+		MainServer.main(args);
 	}
 }

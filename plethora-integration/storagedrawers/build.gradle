@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	// Curse
 	integrationMod "storage-drawers:StorageDrawers:1.12.2:5.3.8"
 	integrationMod "chameleon:Chameleon:1.12:4.1.3"

@@ -1,13 +1,4 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-	version = "${project.mc_version}-${project.forge_version}"
-	runDir = "run"
-	mappings = project.mappings_version
-}
-
 dependencies {
-	compile project(':plethora-common')
 	// Maven
 	integrationMod "cofh:CoFHCore:1.12.2-4.6.2.25:universal"
 	integrationMod "cofh:RedstoneFlux:1.12-2.1.0.7:universal"
