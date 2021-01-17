@@ -7,6 +7,8 @@ layout: text
 This script allows the player to fly, as if they were in creative mode. Be warned, this isn't perfect, and lag may
 result in your death.
 
+**Warning**: This script is not suitable for servers as it causes a lot of lag!
+
 Firstly we want to ensure that we have a neural interface and wrap it.
 
 ```lua
