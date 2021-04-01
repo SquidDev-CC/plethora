@@ -37,7 +37,7 @@ local rect = canvas.addRectangle(0, 0, 100, 100, 0xFF0000FF)
 
 There's a couple of things which stand out here:
 
- - Our call to `.addRectange` returns an object, which allows us to change properties at a later date. Why not call
+ - Our call to `.addRectangle` returns an object, which allows us to change properties at a later date. Why not call
    `.getDocs()` on it to find out more?
  - We pass in 5 arguments, the first 4 are x, y, width and height. The last is an optional colour.
  - The glasses doesn't use CC's `colours` API, but instead allows specifying RBGA colours. If you've done any web
