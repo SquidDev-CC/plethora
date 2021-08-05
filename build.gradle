@@ -56,6 +56,7 @@ configurations {
 repositories {
 	jcenter()
 
+	maven { url "https://www.cursemaven.com" } // Applied Energistics + Industrial Forgering
 	maven { url 'http://chickenbones.net/maven/' } // CBMP
 	maven { url 'http://dvs1.progwml6.com/files/maven/' } // JEI + Tinker's
 	maven { url 'http://dyonovan.com/maven2/' } // Industrial Foregoing
@@ -80,7 +81,7 @@ dependencies {
 	compile "mezz.jei:jei_1.12.2:4.15.0.268"
 
 	// External mods with maven dependencies. Have fun when the next version of Minecraft drops!
-	integrationMod "appeng:appliedenergistics2:rv6-stable-6"
+	integrationMod "curse.maven:applied-energistics-2-223794:2747063"
 	integrationMod "codechicken:ChickenASM:1.12-1.0.2.9"
 	integrationMod "codechicken:CodeChickenLib:1.12.2-3.2.2.354:universal"
 	integrationMod("codechicken:ForgeMultipart:1.12.2-2.6.1.81:universal") { exclude group: "codechicken" }
@@ -89,7 +90,7 @@ dependencies {
 	integrationMod "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
 	integrationMod "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
 	integrationMod "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
-	integrationMod("com.buuz135.industrial.IndustrialForegoing:industrialforegoing:1.12.2-1.5.13-136") { exclude group: "mezz.jei" }
+	integrationMod("curse.maven:industrialforegoing-266515:2745321") { exclude group: "mezz.jei" }
 	compileOnly   ("com.enderio:EnderIO:1.12.2-5.0.43") { transitive = false }
 	compileOnly    "com.enderio.core:EnderCore:1.12.2-0.5.57" // EnderCore appears to crash in a development environment.
 	integrationMod("com.github.mcjty:mcjtylib:1.12-3.5.0") { transitive = false }
