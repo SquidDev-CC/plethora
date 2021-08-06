@@ -2,6 +2,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.method.IContext;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.TypedLuaObject;
@@ -166,6 +167,7 @@ public final class MethodsCanvas2D {
 		model.setScale(scale);
 		model.setItem(item);
 		model.setDamage(damage);
+		model.setNBTTagCompound(new NBTTagCompound());
 
 		canvas.add(model);
 		return baked.makeChild(model, canvas.reference(model)).getObject();

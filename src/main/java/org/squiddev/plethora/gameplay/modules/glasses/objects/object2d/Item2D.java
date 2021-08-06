@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,6 +20,7 @@ import org.squiddev.plethora.gameplay.client.RenderState;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ItemObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.NBTTaggable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
@@ -29,11 +31,12 @@ import javax.annotation.Nonnull;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.HEIGHT;
 import static org.squiddev.plethora.gameplay.modules.glasses.CanvasHandler.WIDTH;
 
-public class Item2D extends BaseObject implements Scalable, ItemObject, Positionable2D {
+public class Item2D extends BaseObject implements NBTTaggable, Scalable, ItemObject, Positionable2D {
 	private float scale;
 	private Vec2d position = Vec2d.ZERO;
 
 	private int damage;
+	private NBTTagCompound nbt;
 	private Item item;
 	private ItemStack stack;
 
@@ -83,6 +86,18 @@ public class Item2D extends BaseObject implements Scalable, ItemObject, Position
 	}
 
 	@Override
+	public void setNBTTagCompound(NBTTagCompound nbt) {
+		if (this.nbt == null || this.nbt != nbt) {
+			this.nbt = nbt;
+			stack = null;
+			setDirty();
+		}
+	}
+
+	@Override
+	public NBTTagCompound getNBTTagCompound() { return nbt;	}
+
+	@Override
 	@Nonnull
 	public Item getItem() {
 		return item;
@@ -103,6 +118,7 @@ public class Item2D extends BaseObject implements Scalable, ItemObject, Position
 		buf.writeFloat(scale);
 		ByteBufUtils.writeUTF8String(buf, item.getRegistryName().toString());
 		buf.writeInt(damage);
+		ByteBufUtils.writeTag(buf, nbt);
 	}
 
 	@Override
@@ -114,6 +130,8 @@ public class Item2D extends BaseObject implements Scalable, ItemObject, Position
 		item = Item.REGISTRY.getObject(name);
 
 		damage = buf.readInt();
+
+		nbt = ByteBufUtils.readTag(buf);
 	}
 
 	@Override
@@ -151,7 +169,10 @@ public class Item2D extends BaseObject implements Scalable, ItemObject, Position
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderHelper.enableGUIStandardItemLighting();
 
-		if (stack == null) stack = new ItemStack(item, 1, damage);
+		if (stack == null) {
+			stack = new ItemStack(item, 1, damage, nbt);
+			stack.setTagCompound(nbt);
+		}
 		Minecraft.getMinecraft().getRenderItem()
 			.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().player, stack, 0, 0);
 

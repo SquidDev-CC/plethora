@@ -1,6 +1,7 @@
 package org.squiddev.plethora.gameplay.modules.glasses.objects;
 
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;

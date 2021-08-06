@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ItemObject;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.NBTTaggable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
@@ -22,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class Item3D extends BaseObject implements Scalable, Positionable3D, DepthTestable, ItemObject, Rotatable3D {
+public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positionable3D, DepthTestable, ItemObject, Rotatable3D {
 	private float scale;
 	private Vec3d position = Vec3d.ZERO;
 	private Vec3d rotation = Vec3d.ZERO;
@@ -31,6 +33,7 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 	private int damage;
 	private Item item;
 	private ItemStack stack;
+	private NBTTagCompound nbt;
 
 	public Item3D(int id, int parent) {
 		super(id, parent, ObjectRegistry.ITEM_3D);
@@ -91,6 +94,18 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 	}
 
 	@Override
+	public NBTTagCompound getNBTTagCompound() { return nbt; }
+
+	@Override
+	public void setNBTTagCompound(NBTTagCompound nbt) {
+		if (this.nbt == null || this.nbt != nbt) {
+			this.nbt = nbt;
+			stack = null;
+			setDirty();
+		}
+	}
+
+	@Override
 	@Nonnull
 	public Item getItem() {
 		return item;
@@ -128,6 +143,7 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 
 		ByteBufUtils.writeUTF8String(buf, item.getRegistryName().toString());
 		buf.writeInt(damage);
+		ByteBufUtils.writeTag(buf, nbt);
 	}
 
 	@Override
@@ -141,6 +157,7 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 		item = Item.REGISTRY.getObject(name);
 
 		damage = buf.readInt();
+		nbt = ByteBufUtils.readTag(buf);
 	}
 
 	@Override
@@ -172,9 +189,13 @@ public class Item3D extends BaseObject implements Scalable, Positionable3D, Dept
 			GlStateManager.disableDepth();
 		}
 
-		if (stack == null) stack = new ItemStack(item, 1, damage);
+		if (stack == null) {
+			stack = new ItemStack(item, 1, damage, nbt);
+			stack.setTagCompound(nbt);
+		}
 		mc.getRenderItem().renderItem(stack, mc.player, ItemCameraTransforms.TransformType.NONE, false);
 
 		GlStateManager.popMatrix();
 	}
+
 }
