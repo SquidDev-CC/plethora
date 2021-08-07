@@ -3,6 +3,7 @@ package org.squiddev.plethora.gameplay.modules.glasses.methods;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
@@ -89,7 +90,7 @@ public final class MethodsCanvas3D {
 	public static TypedLuaObject<Line3D> addLine(
 		IContext<Group3D> baked, @FromContext CanvasServer canvas,
 		Vec3d start, Vec3d end,
-		@Optional(defDoub = 1.0f) float thickness, @Optional(defInt = DEFAULT_COLOUR) int colour
+		@Optional(defDoub = 1.0f) float thickness, @Optional() int colour
 	) {
 		Group3D group = baked.getTarget();
 
@@ -102,6 +103,22 @@ public final class MethodsCanvas3D {
 		canvas.add(line);
 
 		return baked.makeChild(line, canvas.reference(line)).getObject();
+	}
+
+	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+	public static TypedLuaObject<Entity3D> addEntity(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+													 Vec3d position, EntityEntry entityEntry,
+													 @Optional(defDoub = 1) float scale) {
+		Group3D group = baked.getTarget();
+
+		Entity3D model = new Entity3D(canvas.newObjectId(), group.id());
+		model.setEntityEntry(entityEntry);
+		model.setPosition(position);
+		model.setScale(scale);
+
+		canvas.add(model);
+
+		return baked.makeChild(model, canvas.reference(model)).getObject();
 	}
 
 	@PlethoraMethod(doc = "-- Create a item model.", worldThread = false)

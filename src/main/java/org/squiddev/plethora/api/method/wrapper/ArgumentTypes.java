@@ -2,10 +2,14 @@ package org.squiddev.plethora.api.method.wrapper;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.squiddev.plethora.api.Injects;
+import org.squiddev.plethora.utils.NBTUtilsRecursive;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,6 +96,14 @@ public final class ArgumentTypes {
 			return optTable(args, index, null);
 		}
 	};
+
+	public static final ArgumentType<NBTTagCompound> NBT_TAG_COMPOUND_ARG = TABLE.map(NBTUtilsRecursive::encodeNBTTagCompound);
+
+	public  static final  ArgumentType<EntityEntry> ENTITY_ARG = RESOURCE.map(name -> {
+		EntityEntry entityEntry = ForgeRegistries.ENTITIES.getValue(name);
+		if (entityEntry == null || !ForgeRegistries.ENTITIES.containsKey(name)) throw new LuaException("Unknown entity '" + name + "'");
+		return entityEntry;
+	});
 
 	private ArgumentTypes() {
 	}
