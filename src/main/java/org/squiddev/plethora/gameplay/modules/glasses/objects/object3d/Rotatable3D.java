@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.math.Vec3d;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
+import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 
 import javax.annotation.Nullable;
@@ -23,10 +24,7 @@ public interface Rotatable3D {
 	}
 
 	@PlethoraMethod(doc = "function([x:number, y:number, z:number]) -- Set the rotation for this object, passing nothing if it should face the player.", worldThread = false)
-	static void setRotation(@FromTarget Rotatable3D object, Object[] args) throws LuaException {
-		object.setRotation(args.length == 0 || (args.length == 1 && args[0] == null)
-			? null
-			: new Vec3d(getFloat(args, 0), getFloat(args, 1), getFloat(args, 2))
-		);
+	static void setRotation(@FromTarget Rotatable3D object, @Optional() Vec3d rotation) throws LuaException {
+		object.setRotation(rotation);
 	}
 }
