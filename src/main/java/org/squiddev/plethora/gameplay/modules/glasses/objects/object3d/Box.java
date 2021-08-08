@@ -2,13 +2,16 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.squiddev.plethora.api.method.MethodResult;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
@@ -16,12 +19,14 @@ import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ColourableObject;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
+import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 
-public class Box extends ColourableObject implements Positionable3D, DepthTestable {
+public class Box extends ColourableObject implements Rotatable3D, Positionable3D, DepthTestable {
 	private Vec3d position;
+	private Vec3d rotation;
 	private double width;
 	private double height;
 	private double depth;
@@ -59,6 +64,18 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 		}
 	}
 
+	@Nullable
+	@Override
+	public Vec3d getRotation() { return rotation; }
+
+	@Override
+	public void setRotation(@Nullable Vec3d rotation) {
+		if (this.rotation == null || !this.rotation.equals(rotation)) {
+			this.rotation = rotation;
+			setDirty();
+		}
+	}
+
 	public void setSize(double width, double height, double depth) {
 		if (this.width != width || this.height != height || this.depth != depth) {
 			this.width = width;
@@ -91,11 +108,23 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
+		Minecraft mc = Minecraft.getMinecraft();
+
 		setupFlat();
 		if (depthTest) {
 			GlStateManager.enableDepth();
 		} else {
 			GlStateManager.disableDepth();
+		}
+
+		if (rotation == null) {
+			RenderManager renderManager = mc.getRenderManager();
+			GlStateManager.rotate(180 - renderManager.playerViewY, 0, 1, 0);
+			GlStateManager.rotate(-renderManager.playerViewX, 1, 0, 0);
+		} else {
+			GlStateManager.rotate((float) rotation.x, 1, 0, 0);
+			GlStateManager.rotate((float) rotation.y, 0, 1, 0);
+			GlStateManager.rotate((float) rotation.z, 0, 0, 1);
 		}
 
 		double minX = position.x, minY = position.y, minZ = position.z;
@@ -106,6 +135,7 @@ public class Box extends ColourableObject implements Positionable3D, DepthTestab
 		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
+		//down
 		buffer.pos(minX, minY, minZ).color(red, green, blue, alpha).endVertex();
 		buffer.pos(maxX, minY, minZ).color(red, green, blue, alpha).endVertex();
 		buffer.pos(maxX, minY, maxZ).color(red, green, blue, alpha).endVertex();
