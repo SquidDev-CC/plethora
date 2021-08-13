@@ -19,12 +19,12 @@ public interface EntityObject {
 	void setEntityEntry(@Nonnull EntityEntry entityEntry);
 
 	@PlethoraMethod(doc = "function(): string -- Get the entity name for this object.", worldThread = false)
-	static MethodResult getEntity(@FromTarget Entity3D object) {
+	static MethodResult getEntity(@FromTarget EntityObject object) {
 		return MethodResult.result(object.getEntityEntry().getRegistryName().toString());
 	}
 
 	@PlethoraMethod(doc = "function(string name): -- Set the entity value for this object.", worldThread = false)
-	static void setEntity(@FromTarget Entity3D object, EntityEntry entityEntry) {
+	static void setEntity(@FromTarget EntityObject object, EntityEntry entityEntry) {
 		object.setEntityEntry(entityEntry);
 	}
 }
