@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.squiddev.plethora.api.Constants;
 import org.squiddev.plethora.api.PlethoraAPI;
 import org.squiddev.plethora.api.method.IContextBuilder;
@@ -149,7 +150,7 @@ public final class ItemModule extends ItemBase {
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int remaining) {
+	public void onPlayerStoppedUsing(@Nonnull ItemStack stack, World world, @Nonnull EntityLivingBase player, int remaining) {
 		if (world.isRemote) return;
 		if (isBlacklisted(stack)) return;
 
@@ -193,7 +194,7 @@ public final class ItemModule extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean hasEffect(@Nonnull ItemStack stack) {
 		return super.hasEffect(stack) || getLevel(stack) > 0;
 	}
 
@@ -229,7 +230,7 @@ public final class ItemModule extends ItemBase {
 
 	@Nonnull
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound tag) {
+	public ICapabilityProvider initCapabilities(@Nonnull ItemStack stack, NBTTagCompound tag) {
 		return new ItemModuleHandler(stack);
 	}
 
@@ -299,7 +300,7 @@ public final class ItemModule extends ItemBase {
 					// Inject range information for scanners
 					int level = getLevel(stack);
 					builder.addContext(moduleKey, RangeInfo.of(level,
-						x -> x * ConfigGameplay.Scanner.scanLevelCost,
+						x -> (x+1) * ConfigGameplay.Scanner.scanLevelCost,
 						x -> getEffectiveRange(x, ConfigGameplay.Scanner.radius, ConfigGameplay.Scanner.maxRadius)
 					));
 					break;
@@ -309,7 +310,7 @@ public final class ItemModule extends ItemBase {
 					// Inject range information for sensors
 					int level = getLevel(stack);
 					builder.addContext(moduleKey, RangeInfo.of(level,
-						x -> x * ConfigGameplay.Sensor.senseLevelCost,
+						x -> (x+1) * ConfigGameplay.Sensor.senseLevelCost,
 						x -> getEffectiveRange(x, ConfigGameplay.Sensor.radius, ConfigGameplay.Sensor.maxRadius)
 					));
 					break;
