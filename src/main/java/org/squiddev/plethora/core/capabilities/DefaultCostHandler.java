@@ -34,6 +34,11 @@ public final class DefaultCostHandler implements ICostHandler {
 	}
 
 	@Override
+	public double getLimit() {
+		return CostSystem.limit;
+	}
+
+	@Override
 	public synchronized boolean consume(double amount) {
 		if (amount < 0) throw new IllegalArgumentException("amount must be >= 0");
 

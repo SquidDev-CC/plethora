@@ -26,6 +26,8 @@ public interface ICostHandler {
 	 */
 	double get();
 
+	double getLimit();
+
 	/**
 	 * Consume a set amount of energy
 	 *
