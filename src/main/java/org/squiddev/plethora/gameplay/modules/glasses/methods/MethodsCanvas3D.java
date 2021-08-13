@@ -113,37 +113,37 @@ public final class MethodsCanvas3D {
 		return baked.makeChild(model, canvas.reference(model)).getObject();
 	}
 
-	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
-	public static TypedLuaObject<Player3D> addPlayerByUUID(IContext<Group3D> baked, @FromContext CanvasServer canvas,
-													 Vec3d position, UUID uuid,
-													 @Optional(defDoub = 1) float scale) {
-		Group3D group = baked.getTarget();
-
-		Player3D model = new Player3D(canvas.newObjectId(), group.id());
-		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(uuid,null)));
-		model.setPosition(position);
-		model.setScale(scale);
-
-		canvas.add(model);
-
-		return baked.makeChild(model, canvas.reference(model)).getObject();
-	}
-
-	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
-	public static TypedLuaObject<Player3D> addPlayerByName(IContext<Group3D> baked, @FromContext CanvasServer canvas,
-														   Vec3d position, String name,
-														   @Optional(defDoub = 1) float scale) {
-		Group3D group = baked.getTarget();
-
-		Player3D model = new Player3D(canvas.newObjectId(), group.id());
-		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(null, name)));
-		model.setPosition(position);
-		model.setScale(scale);
-
-		canvas.add(model);
-
-		return baked.makeChild(model, canvas.reference(model)).getObject();
-	}
+//	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+//	public static TypedLuaObject<Player3D> addPlayerByUUID(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+//													 Vec3d position, UUID uuid,
+//													 @Optional(defDoub = 1) float scale) {
+//		Group3D group = baked.getTarget();
+//
+//		Player3D model = new Player3D(canvas.newObjectId(), group.id());
+//		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(uuid,null)));
+//		model.setPosition(position);
+//		model.setScale(scale);
+//
+//		canvas.add(model);
+//
+//		return baked.makeChild(model, canvas.reference(model)).getObject();
+//	}
+//
+//	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+//	public static TypedLuaObject<Player3D> addPlayerByName(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+//														   Vec3d position, String name,
+//														   @Optional(defDoub = 1) float scale) {
+//		Group3D group = baked.getTarget();
+//
+//		Player3D model = new Player3D(canvas.newObjectId(), group.id());
+//		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(null, name)));
+//		model.setPosition(position);
+//		model.setScale(scale);
+//
+//		canvas.add(model);
+//
+//		return baked.makeChild(model, canvas.reference(model)).getObject();
+//	}
 
 
 
