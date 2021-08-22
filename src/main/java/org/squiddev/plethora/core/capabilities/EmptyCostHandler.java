@@ -18,9 +18,19 @@ public class EmptyCostHandler implements ICostHandler {
 	}
 
 	@Override
+	public double getLimit() {
+		return 0;
+	}
+
+	@Override
 	public boolean consume(double amount) {
 		if (amount < 0) throw new IllegalArgumentException("amount must be >= 0");
 		return amount == 0;
+	}
+
+	@Override
+	public MethodResult await(double amount, MethodResult next) throws LuaException {
+		throw new LuaException("Insufficient energy (requires " + amount + ", has 0).");
 	}
 
 	@Override

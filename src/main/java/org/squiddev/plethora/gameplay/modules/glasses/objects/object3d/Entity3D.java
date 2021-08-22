@@ -3,19 +3,16 @@ package org.squiddev.plethora.gameplay.modules.glasses.objects.object3d;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.squiddev.plethora.gameplay.modules.glasses.BaseObject;
 import org.squiddev.plethora.gameplay.modules.glasses.CanvasClient;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.ItemObject;
-import org.squiddev.plethora.gameplay.modules.glasses.objects.NBTTaggable;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectRegistry;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.Scalable;
 import org.squiddev.plethora.utils.ByteBufUtils;
@@ -24,20 +21,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positionable3D, DepthTestable, ItemObject, Rotatable3D {
+public class Entity3D extends BaseObject implements EntityObject, Scalable, Positionable3D, DepthTestable, Rotatable3D {
 	private float scale;
 	private Vec3d position = Vec3d.ZERO;
 	private Vec3d rotation = Vec3d.ZERO;
 	private boolean depthTest = true;
 
-	private int damage;
-	private Item item;
-	private ItemStack stack;
-	private NBTTagCompound nbt;
 
-	public Item3D(int id, int parent) {
-		super(id, parent, ObjectRegistry.ITEM_3D);
-	}
+	private EntityEntry entityEntry;
+	private Entity entity;
+
+
+	public Entity3D(int id, int parent) {super(id, parent, ObjectRegistry.ENTITY ); }
 
 	@Override
 	public float getScale() {
@@ -79,43 +74,13 @@ public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positio
 		}
 	}
 
-	@Override
-	public int getDamage() {
-		return damage;
-	}
-
-	@Override
-	public void setDamage(int damage) {
-		if (this.damage != damage) {
-			this.damage = damage;
-			stack = null;
-			setDirty();
-		}
-	}
-
-	@Override
-	public NBTTagCompound getNBTTagCompound() { return nbt; }
-
-	@Override
-	public void setNBTTagCompound(NBTTagCompound nbt) {
-		if (this.nbt == null || this.nbt != nbt) {
-			this.nbt = nbt;
-			stack = null;
-			setDirty();
-		}
-	}
-
-	@Override
 	@Nonnull
-	public Item getItem() {
-		return item;
-	}
+	public EntityEntry getEntityEntry() { return entityEntry; }
 
-	@Override
-	public void setItem(@Nonnull Item item) {
-		if (this.item != item) {
-			this.item = item;
-			stack = null;
+	public void setEntityEntry(@Nonnull EntityEntry entityEntry) {
+		if (this.entityEntry == null || this.entityEntry != entityEntry) {
+			this.entityEntry = entityEntry;
+			entity = null;
 			setDirty();
 		}
 	}
@@ -141,9 +106,7 @@ public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positio
 		buf.writeFloat(scale);
 		buf.writeBoolean(depthTest);
 
-		ByteBufUtils.writeUTF8String(buf, item.getRegistryName().toString());
-		buf.writeInt(damage);
-		ByteBufUtils.writeTag(buf, nbt);
+		ByteBufUtils.writeUTF8String(buf, entityEntry.getRegistryName().toString());
 	}
 
 	@Override
@@ -153,17 +116,20 @@ public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positio
 		scale = buf.readFloat();
 		depthTest = buf.readBoolean();
 
-		ResourceLocation name = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
-		item = Item.REGISTRY.getObject(name);
-
-		damage = buf.readInt();
-		nbt = ByteBufUtils.readTag(buf);
+		String resourceName = ByteBufUtils.readUTF8String(buf);
+		ResourceLocation name = new ResourceLocation(resourceName);
+		entityEntry = ForgeRegistries.ENTITIES.getValue(name);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void draw(CanvasClient canvas) {
+
 		Minecraft mc = Minecraft.getMinecraft();
+
+		if (entity == null) {
+			entity = entityEntry.newInstance(mc.world);
+		}
 
 		GlStateManager.pushMatrix();
 
@@ -171,6 +137,7 @@ public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positio
 		GlStateManager.scale(scale, scale, scale);
 		if (rotation == null) {
 			RenderManager renderManager = mc.getRenderManager();
+
 			GlStateManager.rotate(180 - renderManager.playerViewY, 0, 1, 0);
 			GlStateManager.rotate(-renderManager.playerViewX, 1, 0, 0);
 		} else {
@@ -189,13 +156,8 @@ public class Item3D extends BaseObject implements NBTTaggable, Scalable, Positio
 			GlStateManager.disableDepth();
 		}
 
-		if (stack == null) {
-			stack = new ItemStack(item, 1, damage, nbt);
-			stack.setTagCompound(nbt);
-		}
-		mc.getRenderItem().renderItem(stack, mc.player, ItemCameraTransforms.TransformType.NONE, false);
+		mc.getRenderManager().renderEntity(entity, position.x, position.y, position.z, 0, 0, true);
 
 		GlStateManager.popMatrix();
 	}
-
 }

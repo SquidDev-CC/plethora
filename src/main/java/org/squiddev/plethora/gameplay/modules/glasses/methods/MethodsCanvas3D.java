@@ -1,8 +1,10 @@
 package org.squiddev.plethora.gameplay.modules.glasses.methods;
 
+import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import org.squiddev.plethora.api.IWorldLocation;
 import org.squiddev.plethora.api.method.ContextKeys;
 import org.squiddev.plethora.api.method.IContext;
@@ -15,6 +17,9 @@ import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Group3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.ObjectGroup.Origin3D;
 import org.squiddev.plethora.gameplay.modules.glasses.objects.object3d.*;
+import org.squiddev.plethora.integration.EntityIdentifier;
+
+import java.util.UUID;
 
 import static dan200.computercraft.api.lua.ArgumentHelper.optInt;
 import static org.squiddev.plethora.api.method.ArgumentHelper.getFloat;
@@ -52,33 +57,19 @@ public final class MethodsCanvas3D {
 	}
 
 	@PlethoraMethod(worldThread = false,
-		doc = "function(x:number, y:number, z:number[, width:number, height:number, depth:number][, color:number]):table -- Create a new box."
+		doc = "function(x: table, [, width:number, height:number, depth:number][, color:number]):table -- Create a new box."
 	)
-	public static TypedLuaObject<Box> addBox(IContext<Group3D> baked, @FromContext CanvasServer canvas, Object[] args) throws LuaException {
-		double x = getFloat(args, 0);
-		double y = getFloat(args, 1);
-		double z = getFloat(args, 2);
-
-		int colour;
-		double width, height, depth;
-		if (args.length <= 4) {
-			width = 1;
-			height = 1;
-			depth = 1;
-			colour = optInt(args, 3, DEFAULT_COLOUR);
-		} else {
-			width = getFloat(args, 3);
-			height = getFloat(args, 4);
-			depth = getFloat(args, 5);
-			colour = optInt(args, 6, DEFAULT_COLOUR);
-		}
+	public static TypedLuaObject<Box> addBox(IContext<Group3D> baked, @FromContext CanvasServer canvas, Vec3d position,
+											 @Optional(defDoub = 1) double width, @Optional(defDoub = 1) double height,
+											 @Optional(defDoub = 1) double depth, @Optional(defInt = DEFAULT_COLOUR) int colour) {
 
 		Group3D group = baked.getTarget();
 
 		Box box = new Box(canvas.newObjectId(), group.id());
-		box.setPosition(new Vec3d(x, y, z));
+		box.setPosition(position);
 		box.setSize(width, height, depth);
 		box.setColour(colour);
+		box.setRotation(Vec3d.ZERO);
 
 		canvas.add(box);
 
@@ -89,7 +80,7 @@ public final class MethodsCanvas3D {
 	public static TypedLuaObject<Line3D> addLine(
 		IContext<Group3D> baked, @FromContext CanvasServer canvas,
 		Vec3d start, Vec3d end,
-		@Optional(defDoub = 1.0f) float thickness, @Optional(defInt = DEFAULT_COLOUR) int colour
+		@Optional(defDoub = 1.0f) float thickness, @Optional() int colour
 	) {
 		Group3D group = baked.getTarget();
 
@@ -103,6 +94,58 @@ public final class MethodsCanvas3D {
 
 		return baked.makeChild(line, canvas.reference(line)).getObject();
 	}
+
+
+
+	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+	public static TypedLuaObject<Entity3D> addEntity(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+													 Vec3d position, EntityEntry entityEntry,
+													 @Optional(defDoub = 1) float scale) {
+		Group3D group = baked.getTarget();
+
+		Entity3D model = new Entity3D(canvas.newObjectId(), group.id());
+		model.setEntityEntry(entityEntry);
+		model.setPosition(position);
+		model.setScale(scale);
+
+		canvas.add(model);
+
+		return baked.makeChild(model, canvas.reference(model)).getObject();
+	}
+
+//	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+//	public static TypedLuaObject<Player3D> addPlayerByUUID(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+//													 Vec3d position, UUID uuid,
+//													 @Optional(defDoub = 1) float scale) {
+//		Group3D group = baked.getTarget();
+//
+//		Player3D model = new Player3D(canvas.newObjectId(), group.id());
+//		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(uuid,null)));
+//		model.setPosition(position);
+//		model.setScale(scale);
+//
+//		canvas.add(model);
+//
+//		return baked.makeChild(model, canvas.reference(model)).getObject();
+//	}
+//
+//	@PlethoraMethod(doc = "function(position: table, entity: string, scale: number): table-- Create a entity model.", worldThread = false)
+//	public static TypedLuaObject<Player3D> addPlayerByName(IContext<Group3D> baked, @FromContext CanvasServer canvas,
+//														   Vec3d position, String name,
+//														   @Optional(defDoub = 1) float scale) {
+//		Group3D group = baked.getTarget();
+//
+//		Player3D model = new Player3D(canvas.newObjectId(), group.id());
+//		model.setPlayerIdentifier(new EntityIdentifier.Player(new GameProfile(null, name)));
+//		model.setPosition(position);
+//		model.setScale(scale);
+//
+//		canvas.add(model);
+//
+//		return baked.makeChild(model, canvas.reference(model)).getObject();
+//	}
+
+
 
 	@PlethoraMethod(doc = "-- Create a item model.", worldThread = false)
 	public static TypedLuaObject<Item3D> addItem(

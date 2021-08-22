@@ -217,10 +217,10 @@ final class MethodClassLoader extends ClassLoader {
 				}
 			} else if (argument == double.class) {
 				if (def == null) {
-					visitGet(mw, "Real", "D");
+					visitGet(mw, "Double", "D");
 				} else {
 					loadDouble(mw, def.defDoub());
-					visitOpt(mw, "Real", "D");
+					visitOpt(mw, "Double", "D");
 				}
 			} else if (argument == float.class) {
 				if (def == null) {

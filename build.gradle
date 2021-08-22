@@ -34,6 +34,7 @@ minecraft {
 	replace '${mc_version}', project.mc_version
 	replace '${cct_version}', project.cct_version
 	replace '${forge_version}', project.forge_version
+
 }
 
 jar {
@@ -129,7 +130,7 @@ dependencies {
 	// compileOnly "org.squiddev:forgelint:0.1.1"
 	compileOnly "com.google.errorprone:error_prone_annotations:2.0.21"
 
-	testCompile 'junit:junit:4.11'
+	testImplementation 'junit:junit:4.11'
 }
 
 processResources {
@@ -174,7 +175,7 @@ curseforge {
 		changelog = "Release notes can be found on the GitHub repository (https://github.com/SquidDev-CC/plethora/releases/tag/v${project.version})."
 
 		 relations {
-			 requiredLibrary 'cc-tweaked'
+			 requiredDependency 'cc-tweaked'
 		 }
 	}
 }

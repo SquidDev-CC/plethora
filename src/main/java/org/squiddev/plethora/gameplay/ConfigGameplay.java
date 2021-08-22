@@ -195,6 +195,13 @@ public final class ConfigGameplay {
 		@Range(min = 0)
 		public static int scanLevelCost;
 
+		/**
+		 * The additional cost each level incurs for rayTrace().
+		 */
+		@DefaultInt(5)
+		@Range(min = 0)
+		public static int rayTraceCost;
+
 		private Scanner() {
 		}
 	}

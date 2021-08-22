@@ -2,16 +2,14 @@ package org.squiddev.plethora.integration;
 
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.util.ResourceLocation;
-import org.squiddev.plethora.api.method.IContext;
-import org.squiddev.plethora.api.method.IMethod;
-import org.squiddev.plethora.api.method.IMethodCollection;
-import org.squiddev.plethora.api.method.TypedLuaObject;
+import org.squiddev.plethora.api.method.*;
 import org.squiddev.plethora.api.method.wrapper.ArgumentTypes;
 import org.squiddev.plethora.api.method.wrapper.FromTarget;
 import org.squiddev.plethora.api.method.wrapper.Optional;
 import org.squiddev.plethora.api.method.wrapper.PlethoraMethod;
 import org.squiddev.plethora.api.module.BasicModuleContainer;
 import org.squiddev.plethora.api.module.IModuleContainer;
+import org.squiddev.plethora.core.ConfigCore;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -73,5 +71,15 @@ public final class MethodsCore {
 
 			throw new LuaException("No such method");
 		}
+	}
+
+	@PlethoraMethod(doc = "function(): number -- Get current energy")
+	public static MethodResult getEnergy(IContext<IModuleContainer> context) {
+		return MethodResult.result(context.getCostHandler().get());
+	}
+
+	@PlethoraMethod(doc = "function(): number -- Get energy limit")
+	public static MethodResult getMaxEnergy(IContext<IModuleContainer> context) {
+		return MethodResult.result(context.getCostHandler().getLimit());
 	}
 }

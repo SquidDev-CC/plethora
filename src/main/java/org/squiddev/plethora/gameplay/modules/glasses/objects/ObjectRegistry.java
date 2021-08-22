@@ -22,8 +22,9 @@ public final class ObjectRegistry {
 	public static final byte BOX_3D = 11;
 	public static final byte ITEM_3D = 12;
 	public static final byte LINE_3D = 13;
+    public static final byte ENTITY = 14;
 
-	private static final BaseObject.Factory[] FACTORIES = new BaseObject.Factory[]{
+    private static final BaseObject.Factory[] FACTORIES = new BaseObject.Factory[]{
 		Rectangle::new,
 		Line::new,
 		Dot::new,
@@ -38,7 +39,8 @@ public final class ObjectRegistry {
 		ObjectFrame::new,
 		Box::new,
 		Item3D::new,
-		Line3D::new
+		Line3D::new,
+		Entity3D::new
 	};
 
 	private ObjectRegistry() {
